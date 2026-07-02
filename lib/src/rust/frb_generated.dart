@@ -64,7 +64,7 @@ class RustLib extends BaseEntrypoint<RustLibApi, RustLibApiImpl, RustLibWire> {
   String get codegenVersion => '2.12.0';
 
   @override
-  int get rustContentHash => 1739614014;
+  int get rustContentHash => -222721803;
 
   static const kDefaultExternalLibraryLoaderConfig =
       ExternalLibraryLoaderConfig(
@@ -76,28 +76,37 @@ class RustLib extends BaseEntrypoint<RustLibApi, RustLibApiImpl, RustLibWire> {
 }
 
 abstract class RustLibApi extends BaseApi {
+  Future<String> crateApiGogdlGogdlGogGetGameTitle({
+    required Gog that,
+    required int gameId,
+  });
+
   String crateApiGogdlGogdlGogGetLoginUrl({required Gog that});
 
-  Future<void> crateApiGogdlGogdlGogLoginWithCode({
+  Future<Int32List> crateApiGogdlGogdlGogGetOwnedGames({required Gog that});
+
+  Future<String> crateApiGogdlGogdlGogLoginWithCode({
     required Gog that,
     required String code,
   });
 
   Gog crateApiGogdlGogdlGogNew();
 
+  Future<void> crateApiGogdlGogdlGogRefreshAuthWithCallback({
+    required Gog that,
+    required FutureOr<void> Function(String) callback,
+  });
+
+  Future<void> crateApiGogdlGogdlGogRestoreAuthFromString({
+    required Gog that,
+    required String token,
+  });
+
   RustArcIncrementStrongCountFnType get rust_arc_increment_strong_count_Gog;
 
   RustArcDecrementStrongCountFnType get rust_arc_decrement_strong_count_Gog;
 
   CrossPlatformFinalizerArg get rust_arc_decrement_strong_count_GogPtr;
-
-  RustArcIncrementStrongCountFnType
-  get rust_arc_increment_strong_count_GogError;
-
-  RustArcDecrementStrongCountFnType
-  get rust_arc_decrement_strong_count_GogError;
-
-  CrossPlatformFinalizerArg get rust_arc_decrement_strong_count_GogErrorPtr;
 }
 
 class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
@@ -109,6 +118,44 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   });
 
   @override
+  Future<String> crateApiGogdlGogdlGogGetGameTitle({
+    required Gog that,
+    required int gameId,
+  }) {
+    return handler.executeNormal(
+      NormalTask(
+        callFfi: (port_) {
+          final serializer = SseSerializer(generalizedFrbRustBinding);
+          sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerGog(
+            that,
+            serializer,
+          );
+          sse_encode_i_32(gameId, serializer);
+          pdeCallFfi(
+            generalizedFrbRustBinding,
+            serializer,
+            funcId: 1,
+            port: port_,
+          );
+        },
+        codec: SseCodec(
+          decodeSuccessData: sse_decode_String,
+          decodeErrorData: sse_decode_gog_error,
+        ),
+        constMeta: kCrateApiGogdlGogdlGogGetGameTitleConstMeta,
+        argValues: [that, gameId],
+        apiImpl: this,
+      ),
+    );
+  }
+
+  TaskConstMeta get kCrateApiGogdlGogdlGogGetGameTitleConstMeta =>
+      const TaskConstMeta(
+        debugName: "Gog_get_game_title",
+        argNames: ["that", "gameId"],
+      );
+
+  @override
   String crateApiGogdlGogdlGogGetLoginUrl({required Gog that}) {
     return handler.executeSync(
       SyncTask(
@@ -118,7 +165,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
             that,
             serializer,
           );
-          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 1)!;
+          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 2)!;
         },
         codec: SseCodec(
           decodeSuccessData: sse_decode_String,
@@ -135,7 +182,38 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       const TaskConstMeta(debugName: "Gog_get_login_url", argNames: ["that"]);
 
   @override
-  Future<void> crateApiGogdlGogdlGogLoginWithCode({
+  Future<Int32List> crateApiGogdlGogdlGogGetOwnedGames({required Gog that}) {
+    return handler.executeNormal(
+      NormalTask(
+        callFfi: (port_) {
+          final serializer = SseSerializer(generalizedFrbRustBinding);
+          sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerGog(
+            that,
+            serializer,
+          );
+          pdeCallFfi(
+            generalizedFrbRustBinding,
+            serializer,
+            funcId: 3,
+            port: port_,
+          );
+        },
+        codec: SseCodec(
+          decodeSuccessData: sse_decode_list_prim_i_32_strict,
+          decodeErrorData: sse_decode_gog_error,
+        ),
+        constMeta: kCrateApiGogdlGogdlGogGetOwnedGamesConstMeta,
+        argValues: [that],
+        apiImpl: this,
+      ),
+    );
+  }
+
+  TaskConstMeta get kCrateApiGogdlGogdlGogGetOwnedGamesConstMeta =>
+      const TaskConstMeta(debugName: "Gog_get_owned_games", argNames: ["that"]);
+
+  @override
+  Future<String> crateApiGogdlGogdlGogLoginWithCode({
     required Gog that,
     required String code,
   }) {
@@ -151,14 +229,13 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 2,
+            funcId: 4,
             port: port_,
           );
         },
         codec: SseCodec(
-          decodeSuccessData: sse_decode_unit,
-          decodeErrorData:
-              sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerGogError,
+          decodeSuccessData: sse_decode_String,
+          decodeErrorData: sse_decode_gog_error,
         ),
         constMeta: kCrateApiGogdlGogdlGogLoginWithCodeConstMeta,
         argValues: [that, code],
@@ -179,7 +256,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       SyncTask(
         callFfi: () {
           final serializer = SseSerializer(generalizedFrbRustBinding);
-          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 3)!;
+          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 5)!;
         },
         codec: SseCodec(
           decodeSuccessData:
@@ -196,6 +273,120 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   TaskConstMeta get kCrateApiGogdlGogdlGogNewConstMeta =>
       const TaskConstMeta(debugName: "Gog_new", argNames: []);
 
+  @override
+  Future<void> crateApiGogdlGogdlGogRefreshAuthWithCallback({
+    required Gog that,
+    required FutureOr<void> Function(String) callback,
+  }) {
+    return handler.executeNormal(
+      NormalTask(
+        callFfi: (port_) {
+          final serializer = SseSerializer(generalizedFrbRustBinding);
+          sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerGog(
+            that,
+            serializer,
+          );
+          sse_encode_DartFn_Inputs_String_Output_unit_AnyhowException(
+            callback,
+            serializer,
+          );
+          pdeCallFfi(
+            generalizedFrbRustBinding,
+            serializer,
+            funcId: 6,
+            port: port_,
+          );
+        },
+        codec: SseCodec(
+          decodeSuccessData: sse_decode_unit,
+          decodeErrorData: sse_decode_gog_error,
+        ),
+        constMeta: kCrateApiGogdlGogdlGogRefreshAuthWithCallbackConstMeta,
+        argValues: [that, callback],
+        apiImpl: this,
+      ),
+    );
+  }
+
+  TaskConstMeta get kCrateApiGogdlGogdlGogRefreshAuthWithCallbackConstMeta =>
+      const TaskConstMeta(
+        debugName: "Gog_refresh_auth_with_callback",
+        argNames: ["that", "callback"],
+      );
+
+  @override
+  Future<void> crateApiGogdlGogdlGogRestoreAuthFromString({
+    required Gog that,
+    required String token,
+  }) {
+    return handler.executeNormal(
+      NormalTask(
+        callFfi: (port_) {
+          final serializer = SseSerializer(generalizedFrbRustBinding);
+          sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerGog(
+            that,
+            serializer,
+          );
+          sse_encode_String(token, serializer);
+          pdeCallFfi(
+            generalizedFrbRustBinding,
+            serializer,
+            funcId: 7,
+            port: port_,
+          );
+        },
+        codec: SseCodec(
+          decodeSuccessData: sse_decode_unit,
+          decodeErrorData: sse_decode_gog_error,
+        ),
+        constMeta: kCrateApiGogdlGogdlGogRestoreAuthFromStringConstMeta,
+        argValues: [that, token],
+        apiImpl: this,
+      ),
+    );
+  }
+
+  TaskConstMeta get kCrateApiGogdlGogdlGogRestoreAuthFromStringConstMeta =>
+      const TaskConstMeta(
+        debugName: "Gog_restore_auth_from_string",
+        argNames: ["that", "token"],
+      );
+
+  Future<void> Function(int, dynamic)
+  encode_DartFn_Inputs_String_Output_unit_AnyhowException(
+    FutureOr<void> Function(String) raw,
+  ) {
+    return (callId, rawArg0) async {
+      final arg0 = dco_decode_String(rawArg0);
+
+      Box<void>? rawOutput;
+      Box<AnyhowException>? rawError;
+      try {
+        rawOutput = Box(await raw(arg0));
+      } catch (e, s) {
+        rawError = Box(AnyhowException("$e\n\n$s"));
+      }
+
+      final serializer = SseSerializer(generalizedFrbRustBinding);
+      assert((rawOutput != null) ^ (rawError != null));
+      if (rawOutput != null) {
+        serializer.buffer.putUint8(0);
+        sse_encode_unit(rawOutput.value, serializer);
+      } else {
+        serializer.buffer.putUint8(1);
+        sse_encode_AnyhowException(rawError!.value, serializer);
+      }
+      final output = serializer.intoRaw();
+
+      generalizedFrbRustBinding.dartFnDeliverOutput(
+        callId: callId,
+        ptr: output.ptr,
+        rustVecLen: output.rustVecLen,
+        dataLen: output.dataLen,
+      );
+    };
+  }
+
   RustArcIncrementStrongCountFnType
   get rust_arc_increment_strong_count_Gog => wire
       .rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerGog;
@@ -204,13 +395,11 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   get rust_arc_decrement_strong_count_Gog => wire
       .rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerGog;
 
-  RustArcIncrementStrongCountFnType
-  get rust_arc_increment_strong_count_GogError => wire
-      .rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerGogError;
-
-  RustArcDecrementStrongCountFnType
-  get rust_arc_decrement_strong_count_GogError => wire
-      .rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerGogError;
+  @protected
+  AnyhowException dco_decode_AnyhowException(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return AnyhowException(raw as String);
+  }
 
   @protected
   Gog
@@ -219,15 +408,6 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   ) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     return GogImpl.frbInternalDcoDecode(raw as List<dynamic>);
-  }
-
-  @protected
-  GogError
-  dco_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerGogError(
-    dynamic raw,
-  ) {
-    // Codec=Dco (DartCObject based), see doc to use other codecs
-    return GogErrorImpl.frbInternalDcoDecode(raw as List<dynamic>);
   }
 
   @protected
@@ -240,6 +420,19 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  FutureOr<void> Function(String)
+  dco_decode_DartFn_Inputs_String_Output_unit_AnyhowException(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    throw UnimplementedError('');
+  }
+
+  @protected
+  Object dco_decode_DartOpaque(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return decodeDartOpaque(raw, generalizedFrbRustBinding);
+  }
+
+  @protected
   Gog
   dco_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerGog(
     dynamic raw,
@@ -249,18 +442,46 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
-  GogError
-  dco_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerGogError(
-    dynamic raw,
-  ) {
-    // Codec=Dco (DartCObject based), see doc to use other codecs
-    return GogErrorImpl.frbInternalDcoDecode(raw as List<dynamic>);
-  }
-
-  @protected
   String dco_decode_String(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     return raw as String;
+  }
+
+  @protected
+  GogError dco_decode_gog_error(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    switch (raw[0]) {
+      case 0:
+        return GogError_AuthError(message: dco_decode_String(raw[1]));
+      case 1:
+        return GogError_GameError(message: dco_decode_String(raw[1]));
+      case 2:
+        return GogError_DepotError(message: dco_decode_String(raw[1]));
+      case 3:
+        return GogError_SecureLinksError(message: dco_decode_String(raw[1]));
+      case 4:
+        return GogError_DownloadError(message: dco_decode_String(raw[1]));
+      default:
+        throw Exception("unreachable");
+    }
+  }
+
+  @protected
+  int dco_decode_i_32(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return raw as int;
+  }
+
+  @protected
+  PlatformInt64 dco_decode_isize(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return dcoDecodeI64(raw);
+  }
+
+  @protected
+  Int32List dco_decode_list_prim_i_32_strict(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return raw as Int32List;
   }
 
   @protected
@@ -288,24 +509,19 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  AnyhowException sse_decode_AnyhowException(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    var inner = sse_decode_String(deserializer);
+    return AnyhowException(inner);
+  }
+
+  @protected
   Gog
   sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerGog(
     SseDeserializer deserializer,
   ) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     return GogImpl.frbInternalSseDecode(
-      sse_decode_usize(deserializer),
-      sse_decode_i_32(deserializer),
-    );
-  }
-
-  @protected
-  GogError
-  sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerGogError(
-    SseDeserializer deserializer,
-  ) {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    return GogErrorImpl.frbInternalSseDecode(
       sse_decode_usize(deserializer),
       sse_decode_i_32(deserializer),
     );
@@ -324,6 +540,13 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  Object sse_decode_DartOpaque(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    var inner = sse_decode_isize(deserializer);
+    return decodeDartOpaque(inner, generalizedFrbRustBinding);
+  }
+
+  @protected
   Gog
   sse_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerGog(
     SseDeserializer deserializer,
@@ -336,22 +559,55 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
-  GogError
-  sse_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerGogError(
-    SseDeserializer deserializer,
-  ) {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    return GogErrorImpl.frbInternalSseDecode(
-      sse_decode_usize(deserializer),
-      sse_decode_i_32(deserializer),
-    );
-  }
-
-  @protected
   String sse_decode_String(SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     var inner = sse_decode_list_prim_u_8_strict(deserializer);
     return utf8.decoder.convert(inner);
+  }
+
+  @protected
+  GogError sse_decode_gog_error(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+
+    var tag_ = sse_decode_i_32(deserializer);
+    switch (tag_) {
+      case 0:
+        var var_message = sse_decode_String(deserializer);
+        return GogError_AuthError(message: var_message);
+      case 1:
+        var var_message = sse_decode_String(deserializer);
+        return GogError_GameError(message: var_message);
+      case 2:
+        var var_message = sse_decode_String(deserializer);
+        return GogError_DepotError(message: var_message);
+      case 3:
+        var var_message = sse_decode_String(deserializer);
+        return GogError_SecureLinksError(message: var_message);
+      case 4:
+        var var_message = sse_decode_String(deserializer);
+        return GogError_DownloadError(message: var_message);
+      default:
+        throw UnimplementedError('');
+    }
+  }
+
+  @protected
+  int sse_decode_i_32(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return deserializer.buffer.getInt32();
+  }
+
+  @protected
+  PlatformInt64 sse_decode_isize(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return deserializer.buffer.getPlatformInt64();
+  }
+
+  @protected
+  Int32List sse_decode_list_prim_i_32_strict(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    var len_ = sse_decode_i_32(deserializer);
+    return deserializer.buffer.getInt32List(len_);
   }
 
   @protected
@@ -379,15 +635,18 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
-  int sse_decode_i_32(SseDeserializer deserializer) {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    return deserializer.buffer.getInt32();
-  }
-
-  @protected
   bool sse_decode_bool(SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     return deserializer.buffer.getUint8() != 0;
+  }
+
+  @protected
+  void sse_encode_AnyhowException(
+    AnyhowException self,
+    SseSerializer serializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_String(self.message, serializer);
   }
 
   @protected
@@ -399,19 +658,6 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     // Codec=Sse (Serialization based), see doc to use other codecs
     sse_encode_usize(
       (self as GogImpl).frbInternalSseEncode(move: true),
-      serializer,
-    );
-  }
-
-  @protected
-  void
-  sse_encode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerGogError(
-    GogError self,
-    SseSerializer serializer,
-  ) {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    sse_encode_usize(
-      (self as GogErrorImpl).frbInternalSseEncode(move: true),
       serializer,
     );
   }
@@ -430,6 +676,33 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  void sse_encode_DartFn_Inputs_String_Output_unit_AnyhowException(
+    FutureOr<void> Function(String) self,
+    SseSerializer serializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_DartOpaque(
+      encode_DartFn_Inputs_String_Output_unit_AnyhowException(self),
+      serializer,
+    );
+  }
+
+  @protected
+  void sse_encode_DartOpaque(Object self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_isize(
+      PlatformPointerUtil.ptrToPlatformInt64(
+        encodeDartOpaque(
+          self,
+          portManager.dartHandlerPort,
+          generalizedFrbRustBinding,
+        ),
+      ),
+      serializer,
+    );
+  }
+
+  @protected
   void
   sse_encode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerGog(
     Gog self,
@@ -443,22 +716,53 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
-  void
-  sse_encode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerGogError(
-    GogError self,
-    SseSerializer serializer,
-  ) {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    sse_encode_usize(
-      (self as GogErrorImpl).frbInternalSseEncode(move: null),
-      serializer,
-    );
-  }
-
-  @protected
   void sse_encode_String(String self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     sse_encode_list_prim_u_8_strict(utf8.encoder.convert(self), serializer);
+  }
+
+  @protected
+  void sse_encode_gog_error(GogError self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    switch (self) {
+      case GogError_AuthError(message: final message):
+        sse_encode_i_32(0, serializer);
+        sse_encode_String(message, serializer);
+      case GogError_GameError(message: final message):
+        sse_encode_i_32(1, serializer);
+        sse_encode_String(message, serializer);
+      case GogError_DepotError(message: final message):
+        sse_encode_i_32(2, serializer);
+        sse_encode_String(message, serializer);
+      case GogError_SecureLinksError(message: final message):
+        sse_encode_i_32(3, serializer);
+        sse_encode_String(message, serializer);
+      case GogError_DownloadError(message: final message):
+        sse_encode_i_32(4, serializer);
+        sse_encode_String(message, serializer);
+    }
+  }
+
+  @protected
+  void sse_encode_i_32(int self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    serializer.buffer.putInt32(self);
+  }
+
+  @protected
+  void sse_encode_isize(PlatformInt64 self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    serializer.buffer.putPlatformInt64(self);
+  }
+
+  @protected
+  void sse_encode_list_prim_i_32_strict(
+    Int32List self,
+    SseSerializer serializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_i_32(self.length, serializer);
+    serializer.buffer.putInt32List(self);
   }
 
   @protected
@@ -489,36 +793,10 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
-  void sse_encode_i_32(int self, SseSerializer serializer) {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    serializer.buffer.putInt32(self);
-  }
-
-  @protected
   void sse_encode_bool(bool self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     serializer.buffer.putUint8(self ? 1 : 0);
   }
-}
-
-@sealed
-class GogErrorImpl extends RustOpaque implements GogError {
-  // Not to be used by end users
-  GogErrorImpl.frbInternalDcoDecode(List<dynamic> wire)
-    : super.frbInternalDcoDecode(wire, _kStaticData);
-
-  // Not to be used by end users
-  GogErrorImpl.frbInternalSseDecode(BigInt ptr, int externalSizeOnNative)
-    : super.frbInternalSseDecode(ptr, externalSizeOnNative, _kStaticData);
-
-  static final _kStaticData = RustArcStaticData(
-    rustArcIncrementStrongCount:
-        RustLib.instance.api.rust_arc_increment_strong_count_GogError,
-    rustArcDecrementStrongCount:
-        RustLib.instance.api.rust_arc_decrement_strong_count_GogError,
-    rustArcDecrementStrongCountPtr:
-        RustLib.instance.api.rust_arc_decrement_strong_count_GogErrorPtr,
-  );
 }
 
 @sealed
@@ -540,9 +818,27 @@ class GogImpl extends RustOpaque implements Gog {
         RustLib.instance.api.rust_arc_decrement_strong_count_GogPtr,
   );
 
+  Future<String> getGameTitle({required int gameId}) => RustLib.instance.api
+      .crateApiGogdlGogdlGogGetGameTitle(that: this, gameId: gameId);
+
   String getLoginUrl() =>
       RustLib.instance.api.crateApiGogdlGogdlGogGetLoginUrl(that: this);
 
-  Future<void> loginWithCode({required String code}) => RustLib.instance.api
+  Future<Int32List> getOwnedGames() =>
+      RustLib.instance.api.crateApiGogdlGogdlGogGetOwnedGames(that: this);
+
+  Future<String> loginWithCode({required String code}) => RustLib.instance.api
       .crateApiGogdlGogdlGogLoginWithCode(that: this, code: code);
+
+  Future<void> refreshAuthWithCallback({
+    required FutureOr<void> Function(String) callback,
+  }) => RustLib.instance.api.crateApiGogdlGogdlGogRefreshAuthWithCallback(
+    that: this,
+    callback: callback,
+  );
+
+  Future<void> restoreAuthFromString({required String token}) => RustLib
+      .instance
+      .api
+      .crateApiGogdlGogdlGogRestoreAuthFromString(that: this, token: token);
 }

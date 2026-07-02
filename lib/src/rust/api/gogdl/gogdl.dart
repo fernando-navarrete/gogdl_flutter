@@ -5,17 +5,42 @@
 
 import '../../frb_generated.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
+import 'package:freezed_annotation/freezed_annotation.dart' hide protected;
+part 'gogdl.freezed.dart';
 
-// These function are ignored because they are on traits that is not defined in current crate (put an empty `#[frb]` on it to unignore): `fmt`, `fmt`, `from`, `source`
+// These function are ignored because they are on traits that is not defined in current crate (put an empty `#[frb]` on it to unignore): `fmt`, `fmt`, `from`
 
 // Rust type: RustOpaqueMoi<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<Gog>>
 abstract class Gog implements RustOpaqueInterface {
+  Future<String> getGameTitle({required int gameId});
+
   String getLoginUrl();
 
-  Future<void> loginWithCode({required String code});
+  Future<Int32List> getOwnedGames();
+
+  Future<String> loginWithCode({required String code});
 
   factory Gog() => RustLib.instance.api.crateApiGogdlGogdlGogNew();
+
+  Future<void> refreshAuthWithCallback({
+    required FutureOr<void> Function(String) callback,
+  });
+
+  Future<void> restoreAuthFromString({required String token});
 }
 
-// Rust type: RustOpaqueMoi<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<GogError>>
-abstract class GogError implements RustOpaqueInterface {}
+@freezed
+sealed class GogError with _$GogError implements FrbException {
+  const GogError._();
+
+  const factory GogError.authError({required String message}) =
+      GogError_AuthError;
+  const factory GogError.gameError({required String message}) =
+      GogError_GameError;
+  const factory GogError.depotError({required String message}) =
+      GogError_DepotError;
+  const factory GogError.secureLinksError({required String message}) =
+      GogError_SecureLinksError;
+  const factory GogError.downloadError({required String message}) =
+      GogError_DownloadError;
+}

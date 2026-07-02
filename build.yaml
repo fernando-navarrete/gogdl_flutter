@@ -1,0 +1,10 @@
+# build.yaml
+targets:
+  $default:
+    builders:
+      # your existing builder config stays
+    sources:
+      exclude:
+        - example/**
+        - .fvm/**
+        - .dart_tool/**
