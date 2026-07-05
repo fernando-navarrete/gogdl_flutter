@@ -8,7 +8,8 @@ import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 import 'package:freezed_annotation/freezed_annotation.dart' hide protected;
 part 'gogdl.freezed.dart';
 
-// These function are ignored because they are on traits that is not defined in current crate (put an empty `#[frb]` on it to unignore): `clone`, `fmt`, `fmt`, `from`
+// These functions are ignored because they are not marked as `pub`: `get_downloadable_files`
+// These function are ignored because they are on traits that is not defined in current crate (put an empty `#[frb]` on it to unignore): `clone`, `clone`, `clone`, `fmt`, `fmt`, `from`
 
 // Rust type: RustOpaqueMoi<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<DownloadableProduct>>
 abstract class DownloadableProduct implements RustOpaqueInterface {
@@ -72,6 +73,35 @@ abstract class Gog implements RustOpaqueInterface {
   });
 
   Future<void> restoreAuthFromString({required String token});
+
+  Stream<VerificationStream> verifyDownload({
+    required String path,
+    required String buildName,
+    required List<String> selectedProducts,
+    required int gameId,
+  });
+}
+
+// Rust type: RustOpaqueMoi<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<VerificationStatus>>
+abstract class VerificationStatus implements RustOpaqueInterface {}
+
+// Rust type: RustOpaqueMoi<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<VerificationStream>>
+abstract class VerificationStream implements RustOpaqueInterface {
+  List<String> get errorFiles;
+
+  VerificationStatus get status;
+
+  BigInt get totalFiles;
+
+  BigInt get verifiedFiles;
+
+  set errorFiles(List<String> errorFiles);
+
+  set status(VerificationStatus status);
+
+  set totalFiles(BigInt totalFiles);
+
+  set verifiedFiles(BigInt verifiedFiles);
 }
 
 @freezed

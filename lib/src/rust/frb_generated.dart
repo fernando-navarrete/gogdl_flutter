@@ -64,7 +64,7 @@ class RustLib extends BaseEntrypoint<RustLibApi, RustLibApiImpl, RustLibWire> {
   String get codegenVersion => '2.12.0';
 
   @override
-  int get rustContentHash => -1972946907;
+  int get rustContentHash => -1642702666;
 
   static const kDefaultExternalLibraryLoaderConfig =
       ExternalLibraryLoaderConfig(
@@ -188,6 +188,50 @@ abstract class RustLibApi extends BaseApi {
     required String token,
   });
 
+  Stream<VerificationStream> crateApiGogdlGogdlGogVerifyDownload({
+    required Gog that,
+    required String path,
+    required String buildName,
+    required List<String> selectedProducts,
+    required int gameId,
+  });
+
+  List<String> crateApiGogdlGogdlVerificationStreamAutoAccessorGetErrorFiles({
+    required VerificationStream that,
+  });
+
+  VerificationStatus crateApiGogdlGogdlVerificationStreamAutoAccessorGetStatus({
+    required VerificationStream that,
+  });
+
+  BigInt crateApiGogdlGogdlVerificationStreamAutoAccessorGetTotalFiles({
+    required VerificationStream that,
+  });
+
+  BigInt crateApiGogdlGogdlVerificationStreamAutoAccessorGetVerifiedFiles({
+    required VerificationStream that,
+  });
+
+  void crateApiGogdlGogdlVerificationStreamAutoAccessorSetErrorFiles({
+    required VerificationStream that,
+    required List<String> errorFiles,
+  });
+
+  void crateApiGogdlGogdlVerificationStreamAutoAccessorSetStatus({
+    required VerificationStream that,
+    required VerificationStatus status,
+  });
+
+  void crateApiGogdlGogdlVerificationStreamAutoAccessorSetTotalFiles({
+    required VerificationStream that,
+    required BigInt totalFiles,
+  });
+
+  void crateApiGogdlGogdlVerificationStreamAutoAccessorSetVerifiedFiles({
+    required VerificationStream that,
+    required BigInt verifiedFiles,
+  });
+
   RustArcIncrementStrongCountFnType
   get rust_arc_increment_strong_count_DownloadableProduct;
 
@@ -210,6 +254,24 @@ abstract class RustLibApi extends BaseApi {
   RustArcDecrementStrongCountFnType get rust_arc_decrement_strong_count_Gog;
 
   CrossPlatformFinalizerArg get rust_arc_decrement_strong_count_GogPtr;
+
+  RustArcIncrementStrongCountFnType
+  get rust_arc_increment_strong_count_VerificationStatus;
+
+  RustArcDecrementStrongCountFnType
+  get rust_arc_decrement_strong_count_VerificationStatus;
+
+  CrossPlatformFinalizerArg
+  get rust_arc_decrement_strong_count_VerificationStatusPtr;
+
+  RustArcIncrementStrongCountFnType
+  get rust_arc_increment_strong_count_VerificationStream;
+
+  RustArcDecrementStrongCountFnType
+  get rust_arc_decrement_strong_count_VerificationStream;
+
+  CrossPlatformFinalizerArg
+  get rust_arc_decrement_strong_count_VerificationStreamPtr;
 }
 
 class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
@@ -1094,6 +1156,341 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         argNames: ["that", "token"],
       );
 
+  @override
+  Stream<VerificationStream> crateApiGogdlGogdlGogVerifyDownload({
+    required Gog that,
+    required String path,
+    required String buildName,
+    required List<String> selectedProducts,
+    required int gameId,
+  }) {
+    final stream = RustStreamSink<VerificationStream>();
+    unawaited(
+      handler.executeNormal(
+        NormalTask(
+          callFfi: (port_) {
+            final serializer = SseSerializer(generalizedFrbRustBinding);
+            sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerGog(
+              that,
+              serializer,
+            );
+            sse_encode_String(path, serializer);
+            sse_encode_String(buildName, serializer);
+            sse_encode_list_String(selectedProducts, serializer);
+            sse_encode_i_32(gameId, serializer);
+            sse_encode_StreamSink_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerVerificationStream_Sse(
+              stream,
+              serializer,
+            );
+            pdeCallFfi(
+              generalizedFrbRustBinding,
+              serializer,
+              funcId: 26,
+              port: port_,
+            );
+          },
+          codec: SseCodec(
+            decodeSuccessData: sse_decode_unit,
+            decodeErrorData: sse_decode_gog_error,
+          ),
+          constMeta: kCrateApiGogdlGogdlGogVerifyDownloadConstMeta,
+          argValues: [that, path, buildName, selectedProducts, gameId, stream],
+          apiImpl: this,
+        ),
+      ),
+    );
+    return stream.stream;
+  }
+
+  TaskConstMeta get kCrateApiGogdlGogdlGogVerifyDownloadConstMeta =>
+      const TaskConstMeta(
+        debugName: "Gog_verify_download",
+        argNames: [
+          "that",
+          "path",
+          "buildName",
+          "selectedProducts",
+          "gameId",
+          "stream",
+        ],
+      );
+
+  @override
+  List<String> crateApiGogdlGogdlVerificationStreamAutoAccessorGetErrorFiles({
+    required VerificationStream that,
+  }) {
+    return handler.executeSync(
+      SyncTask(
+        callFfi: () {
+          final serializer = SseSerializer(generalizedFrbRustBinding);
+          sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerVerificationStream(
+            that,
+            serializer,
+          );
+          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 27)!;
+        },
+        codec: SseCodec(
+          decodeSuccessData: sse_decode_list_String,
+          decodeErrorData: null,
+        ),
+        constMeta:
+            kCrateApiGogdlGogdlVerificationStreamAutoAccessorGetErrorFilesConstMeta,
+        argValues: [that],
+        apiImpl: this,
+      ),
+    );
+  }
+
+  TaskConstMeta
+  get kCrateApiGogdlGogdlVerificationStreamAutoAccessorGetErrorFilesConstMeta =>
+      const TaskConstMeta(
+        debugName: "VerificationStream_auto_accessor_get_error_files",
+        argNames: ["that"],
+      );
+
+  @override
+  VerificationStatus crateApiGogdlGogdlVerificationStreamAutoAccessorGetStatus({
+    required VerificationStream that,
+  }) {
+    return handler.executeSync(
+      SyncTask(
+        callFfi: () {
+          final serializer = SseSerializer(generalizedFrbRustBinding);
+          sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerVerificationStream(
+            that,
+            serializer,
+          );
+          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 28)!;
+        },
+        codec: SseCodec(
+          decodeSuccessData:
+              sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerVerificationStatus,
+          decodeErrorData: null,
+        ),
+        constMeta:
+            kCrateApiGogdlGogdlVerificationStreamAutoAccessorGetStatusConstMeta,
+        argValues: [that],
+        apiImpl: this,
+      ),
+    );
+  }
+
+  TaskConstMeta
+  get kCrateApiGogdlGogdlVerificationStreamAutoAccessorGetStatusConstMeta =>
+      const TaskConstMeta(
+        debugName: "VerificationStream_auto_accessor_get_status",
+        argNames: ["that"],
+      );
+
+  @override
+  BigInt crateApiGogdlGogdlVerificationStreamAutoAccessorGetTotalFiles({
+    required VerificationStream that,
+  }) {
+    return handler.executeSync(
+      SyncTask(
+        callFfi: () {
+          final serializer = SseSerializer(generalizedFrbRustBinding);
+          sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerVerificationStream(
+            that,
+            serializer,
+          );
+          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 29)!;
+        },
+        codec: SseCodec(
+          decodeSuccessData: sse_decode_u_64,
+          decodeErrorData: null,
+        ),
+        constMeta:
+            kCrateApiGogdlGogdlVerificationStreamAutoAccessorGetTotalFilesConstMeta,
+        argValues: [that],
+        apiImpl: this,
+      ),
+    );
+  }
+
+  TaskConstMeta
+  get kCrateApiGogdlGogdlVerificationStreamAutoAccessorGetTotalFilesConstMeta =>
+      const TaskConstMeta(
+        debugName: "VerificationStream_auto_accessor_get_total_files",
+        argNames: ["that"],
+      );
+
+  @override
+  BigInt crateApiGogdlGogdlVerificationStreamAutoAccessorGetVerifiedFiles({
+    required VerificationStream that,
+  }) {
+    return handler.executeSync(
+      SyncTask(
+        callFfi: () {
+          final serializer = SseSerializer(generalizedFrbRustBinding);
+          sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerVerificationStream(
+            that,
+            serializer,
+          );
+          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 30)!;
+        },
+        codec: SseCodec(
+          decodeSuccessData: sse_decode_u_64,
+          decodeErrorData: null,
+        ),
+        constMeta:
+            kCrateApiGogdlGogdlVerificationStreamAutoAccessorGetVerifiedFilesConstMeta,
+        argValues: [that],
+        apiImpl: this,
+      ),
+    );
+  }
+
+  TaskConstMeta
+  get kCrateApiGogdlGogdlVerificationStreamAutoAccessorGetVerifiedFilesConstMeta =>
+      const TaskConstMeta(
+        debugName: "VerificationStream_auto_accessor_get_verified_files",
+        argNames: ["that"],
+      );
+
+  @override
+  void crateApiGogdlGogdlVerificationStreamAutoAccessorSetErrorFiles({
+    required VerificationStream that,
+    required List<String> errorFiles,
+  }) {
+    return handler.executeSync(
+      SyncTask(
+        callFfi: () {
+          final serializer = SseSerializer(generalizedFrbRustBinding);
+          sse_encode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerVerificationStream(
+            that,
+            serializer,
+          );
+          sse_encode_list_String(errorFiles, serializer);
+          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 31)!;
+        },
+        codec: SseCodec(
+          decodeSuccessData: sse_decode_unit,
+          decodeErrorData: null,
+        ),
+        constMeta:
+            kCrateApiGogdlGogdlVerificationStreamAutoAccessorSetErrorFilesConstMeta,
+        argValues: [that, errorFiles],
+        apiImpl: this,
+      ),
+    );
+  }
+
+  TaskConstMeta
+  get kCrateApiGogdlGogdlVerificationStreamAutoAccessorSetErrorFilesConstMeta =>
+      const TaskConstMeta(
+        debugName: "VerificationStream_auto_accessor_set_error_files",
+        argNames: ["that", "errorFiles"],
+      );
+
+  @override
+  void crateApiGogdlGogdlVerificationStreamAutoAccessorSetStatus({
+    required VerificationStream that,
+    required VerificationStatus status,
+  }) {
+    return handler.executeSync(
+      SyncTask(
+        callFfi: () {
+          final serializer = SseSerializer(generalizedFrbRustBinding);
+          sse_encode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerVerificationStream(
+            that,
+            serializer,
+          );
+          sse_encode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerVerificationStatus(
+            status,
+            serializer,
+          );
+          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 32)!;
+        },
+        codec: SseCodec(
+          decodeSuccessData: sse_decode_unit,
+          decodeErrorData: null,
+        ),
+        constMeta:
+            kCrateApiGogdlGogdlVerificationStreamAutoAccessorSetStatusConstMeta,
+        argValues: [that, status],
+        apiImpl: this,
+      ),
+    );
+  }
+
+  TaskConstMeta
+  get kCrateApiGogdlGogdlVerificationStreamAutoAccessorSetStatusConstMeta =>
+      const TaskConstMeta(
+        debugName: "VerificationStream_auto_accessor_set_status",
+        argNames: ["that", "status"],
+      );
+
+  @override
+  void crateApiGogdlGogdlVerificationStreamAutoAccessorSetTotalFiles({
+    required VerificationStream that,
+    required BigInt totalFiles,
+  }) {
+    return handler.executeSync(
+      SyncTask(
+        callFfi: () {
+          final serializer = SseSerializer(generalizedFrbRustBinding);
+          sse_encode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerVerificationStream(
+            that,
+            serializer,
+          );
+          sse_encode_u_64(totalFiles, serializer);
+          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 33)!;
+        },
+        codec: SseCodec(
+          decodeSuccessData: sse_decode_unit,
+          decodeErrorData: null,
+        ),
+        constMeta:
+            kCrateApiGogdlGogdlVerificationStreamAutoAccessorSetTotalFilesConstMeta,
+        argValues: [that, totalFiles],
+        apiImpl: this,
+      ),
+    );
+  }
+
+  TaskConstMeta
+  get kCrateApiGogdlGogdlVerificationStreamAutoAccessorSetTotalFilesConstMeta =>
+      const TaskConstMeta(
+        debugName: "VerificationStream_auto_accessor_set_total_files",
+        argNames: ["that", "totalFiles"],
+      );
+
+  @override
+  void crateApiGogdlGogdlVerificationStreamAutoAccessorSetVerifiedFiles({
+    required VerificationStream that,
+    required BigInt verifiedFiles,
+  }) {
+    return handler.executeSync(
+      SyncTask(
+        callFfi: () {
+          final serializer = SseSerializer(generalizedFrbRustBinding);
+          sse_encode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerVerificationStream(
+            that,
+            serializer,
+          );
+          sse_encode_u_64(verifiedFiles, serializer);
+          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 34)!;
+        },
+        codec: SseCodec(
+          decodeSuccessData: sse_decode_unit,
+          decodeErrorData: null,
+        ),
+        constMeta:
+            kCrateApiGogdlGogdlVerificationStreamAutoAccessorSetVerifiedFilesConstMeta,
+        argValues: [that, verifiedFiles],
+        apiImpl: this,
+      ),
+    );
+  }
+
+  TaskConstMeta
+  get kCrateApiGogdlGogdlVerificationStreamAutoAccessorSetVerifiedFilesConstMeta =>
+      const TaskConstMeta(
+        debugName: "VerificationStream_auto_accessor_set_verified_files",
+        argNames: ["that", "verifiedFiles"],
+      );
+
   Future<void> Function(int, dynamic)
   encode_DartFn_Inputs_String_Output_unit_AnyhowException(
     FutureOr<void> Function(String) raw,
@@ -1153,6 +1550,22 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   get rust_arc_decrement_strong_count_Gog => wire
       .rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerGog;
 
+  RustArcIncrementStrongCountFnType
+  get rust_arc_increment_strong_count_VerificationStatus => wire
+      .rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerVerificationStatus;
+
+  RustArcDecrementStrongCountFnType
+  get rust_arc_decrement_strong_count_VerificationStatus => wire
+      .rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerVerificationStatus;
+
+  RustArcIncrementStrongCountFnType
+  get rust_arc_increment_strong_count_VerificationStream => wire
+      .rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerVerificationStream;
+
+  RustArcDecrementStrongCountFnType
+  get rust_arc_decrement_strong_count_VerificationStream => wire
+      .rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerVerificationStream;
+
   @protected
   AnyhowException dco_decode_AnyhowException(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
@@ -1187,6 +1600,24 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  VerificationStatus
+  dco_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerVerificationStatus(
+    dynamic raw,
+  ) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return VerificationStatusImpl.frbInternalDcoDecode(raw as List<dynamic>);
+  }
+
+  @protected
+  VerificationStream
+  dco_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerVerificationStream(
+    dynamic raw,
+  ) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return VerificationStreamImpl.frbInternalDcoDecode(raw as List<dynamic>);
+  }
+
+  @protected
   DownloadableProduct
   dco_decode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerDownloadableProduct(
     dynamic raw,
@@ -1202,6 +1633,15 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   ) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     return GameBuildImpl.frbInternalDcoDecode(raw as List<dynamic>);
+  }
+
+  @protected
+  VerificationStream
+  dco_decode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerVerificationStream(
+    dynamic raw,
+  ) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return VerificationStreamImpl.frbInternalDcoDecode(raw as List<dynamic>);
   }
 
   @protected
@@ -1229,6 +1669,15 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   ) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     return GogImpl.frbInternalDcoDecode(raw as List<dynamic>);
+  }
+
+  @protected
+  VerificationStream
+  dco_decode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerVerificationStream(
+    dynamic raw,
+  ) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return VerificationStreamImpl.frbInternalDcoDecode(raw as List<dynamic>);
   }
 
   @protected
@@ -1269,6 +1718,33 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   ) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     return GogImpl.frbInternalDcoDecode(raw as List<dynamic>);
+  }
+
+  @protected
+  VerificationStatus
+  dco_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerVerificationStatus(
+    dynamic raw,
+  ) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return VerificationStatusImpl.frbInternalDcoDecode(raw as List<dynamic>);
+  }
+
+  @protected
+  VerificationStream
+  dco_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerVerificationStream(
+    dynamic raw,
+  ) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return VerificationStreamImpl.frbInternalDcoDecode(raw as List<dynamic>);
+  }
+
+  @protected
+  RustStreamSink<VerificationStream>
+  dco_decode_StreamSink_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerVerificationStream_Sse(
+    dynamic raw,
+  ) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    throw UnimplementedError();
   }
 
   @protected
@@ -1353,6 +1829,12 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  BigInt dco_decode_u_64(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return dcoDecodeU64(raw);
+  }
+
+  @protected
   int dco_decode_u_8(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     return raw as int;
@@ -1414,6 +1896,30 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  VerificationStatus
+  sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerVerificationStatus(
+    SseDeserializer deserializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return VerificationStatusImpl.frbInternalSseDecode(
+      sse_decode_usize(deserializer),
+      sse_decode_i_32(deserializer),
+    );
+  }
+
+  @protected
+  VerificationStream
+  sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerVerificationStream(
+    SseDeserializer deserializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return VerificationStreamImpl.frbInternalSseDecode(
+      sse_decode_usize(deserializer),
+      sse_decode_i_32(deserializer),
+    );
+  }
+
+  @protected
   DownloadableProduct
   sse_decode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerDownloadableProduct(
     SseDeserializer deserializer,
@@ -1432,6 +1938,18 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   ) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     return GameBuildImpl.frbInternalSseDecode(
+      sse_decode_usize(deserializer),
+      sse_decode_i_32(deserializer),
+    );
+  }
+
+  @protected
+  VerificationStream
+  sse_decode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerVerificationStream(
+    SseDeserializer deserializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return VerificationStreamImpl.frbInternalSseDecode(
       sse_decode_usize(deserializer),
       sse_decode_i_32(deserializer),
     );
@@ -1468,6 +1986,18 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   ) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     return GogImpl.frbInternalSseDecode(
+      sse_decode_usize(deserializer),
+      sse_decode_i_32(deserializer),
+    );
+  }
+
+  @protected
+  VerificationStream
+  sse_decode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerVerificationStream(
+    SseDeserializer deserializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return VerificationStreamImpl.frbInternalSseDecode(
       sse_decode_usize(deserializer),
       sse_decode_i_32(deserializer),
     );
@@ -1514,6 +2044,39 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       sse_decode_usize(deserializer),
       sse_decode_i_32(deserializer),
     );
+  }
+
+  @protected
+  VerificationStatus
+  sse_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerVerificationStatus(
+    SseDeserializer deserializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return VerificationStatusImpl.frbInternalSseDecode(
+      sse_decode_usize(deserializer),
+      sse_decode_i_32(deserializer),
+    );
+  }
+
+  @protected
+  VerificationStream
+  sse_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerVerificationStream(
+    SseDeserializer deserializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return VerificationStreamImpl.frbInternalSseDecode(
+      sse_decode_usize(deserializer),
+      sse_decode_i_32(deserializer),
+    );
+  }
+
+  @protected
+  RustStreamSink<VerificationStream>
+  sse_decode_StreamSink_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerVerificationStream_Sse(
+    SseDeserializer deserializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    throw UnimplementedError('Unreachable ()');
   }
 
   @protected
@@ -1626,6 +2189,12 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  BigInt sse_decode_u_64(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return deserializer.buffer.getBigUint64();
+  }
+
+  @protected
   int sse_decode_u_8(SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     return deserializer.buffer.getUint8();
@@ -1698,6 +2267,32 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
 
   @protected
   void
+  sse_encode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerVerificationStatus(
+    VerificationStatus self,
+    SseSerializer serializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_usize(
+      (self as VerificationStatusImpl).frbInternalSseEncode(move: true),
+      serializer,
+    );
+  }
+
+  @protected
+  void
+  sse_encode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerVerificationStream(
+    VerificationStream self,
+    SseSerializer serializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_usize(
+      (self as VerificationStreamImpl).frbInternalSseEncode(move: true),
+      serializer,
+    );
+  }
+
+  @protected
+  void
   sse_encode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerDownloadableProduct(
     DownloadableProduct self,
     SseSerializer serializer,
@@ -1718,6 +2313,19 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     // Codec=Sse (Serialization based), see doc to use other codecs
     sse_encode_usize(
       (self as GameBuildImpl).frbInternalSseEncode(move: false),
+      serializer,
+    );
+  }
+
+  @protected
+  void
+  sse_encode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerVerificationStream(
+    VerificationStream self,
+    SseSerializer serializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_usize(
+      (self as VerificationStreamImpl).frbInternalSseEncode(move: false),
       serializer,
     );
   }
@@ -1757,6 +2365,19 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     // Codec=Sse (Serialization based), see doc to use other codecs
     sse_encode_usize(
       (self as GogImpl).frbInternalSseEncode(move: false),
+      serializer,
+    );
+  }
+
+  @protected
+  void
+  sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerVerificationStream(
+    VerificationStream self,
+    SseSerializer serializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_usize(
+      (self as VerificationStreamImpl).frbInternalSseEncode(move: false),
       serializer,
     );
   }
@@ -1823,6 +2444,51 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     // Codec=Sse (Serialization based), see doc to use other codecs
     sse_encode_usize(
       (self as GogImpl).frbInternalSseEncode(move: null),
+      serializer,
+    );
+  }
+
+  @protected
+  void
+  sse_encode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerVerificationStatus(
+    VerificationStatus self,
+    SseSerializer serializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_usize(
+      (self as VerificationStatusImpl).frbInternalSseEncode(move: null),
+      serializer,
+    );
+  }
+
+  @protected
+  void
+  sse_encode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerVerificationStream(
+    VerificationStream self,
+    SseSerializer serializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_usize(
+      (self as VerificationStreamImpl).frbInternalSseEncode(move: null),
+      serializer,
+    );
+  }
+
+  @protected
+  void
+  sse_encode_StreamSink_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerVerificationStream_Sse(
+    RustStreamSink<VerificationStream> self,
+    SseSerializer serializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_String(
+      self.setupAndSerialize(
+        codec: SseCodec(
+          decodeSuccessData:
+              sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerVerificationStream,
+          decodeErrorData: sse_decode_AnyhowException,
+        ),
+      ),
       serializer,
     );
   }
@@ -1926,6 +2592,12 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     // Codec=Sse (Serialization based), see doc to use other codecs
     sse_encode_i_32(self.length, serializer);
     serializer.buffer.putUint8List(self);
+  }
+
+  @protected
+  void sse_encode_u_64(BigInt self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    serializer.buffer.putBigUint64(self);
   }
 
   @protected
@@ -2131,4 +2803,107 @@ class GogImpl extends RustOpaque implements Gog {
       .instance
       .api
       .crateApiGogdlGogdlGogRestoreAuthFromString(that: this, token: token);
+
+  Stream<VerificationStream> verifyDownload({
+    required String path,
+    required String buildName,
+    required List<String> selectedProducts,
+    required int gameId,
+  }) => RustLib.instance.api.crateApiGogdlGogdlGogVerifyDownload(
+    that: this,
+    path: path,
+    buildName: buildName,
+    selectedProducts: selectedProducts,
+    gameId: gameId,
+  );
+}
+
+@sealed
+class VerificationStatusImpl extends RustOpaque implements VerificationStatus {
+  // Not to be used by end users
+  VerificationStatusImpl.frbInternalDcoDecode(List<dynamic> wire)
+    : super.frbInternalDcoDecode(wire, _kStaticData);
+
+  // Not to be used by end users
+  VerificationStatusImpl.frbInternalSseDecode(
+    BigInt ptr,
+    int externalSizeOnNative,
+  ) : super.frbInternalSseDecode(ptr, externalSizeOnNative, _kStaticData);
+
+  static final _kStaticData = RustArcStaticData(
+    rustArcIncrementStrongCount:
+        RustLib.instance.api.rust_arc_increment_strong_count_VerificationStatus,
+    rustArcDecrementStrongCount:
+        RustLib.instance.api.rust_arc_decrement_strong_count_VerificationStatus,
+    rustArcDecrementStrongCountPtr: RustLib
+        .instance
+        .api
+        .rust_arc_decrement_strong_count_VerificationStatusPtr,
+  );
+}
+
+@sealed
+class VerificationStreamImpl extends RustOpaque implements VerificationStream {
+  // Not to be used by end users
+  VerificationStreamImpl.frbInternalDcoDecode(List<dynamic> wire)
+    : super.frbInternalDcoDecode(wire, _kStaticData);
+
+  // Not to be used by end users
+  VerificationStreamImpl.frbInternalSseDecode(
+    BigInt ptr,
+    int externalSizeOnNative,
+  ) : super.frbInternalSseDecode(ptr, externalSizeOnNative, _kStaticData);
+
+  static final _kStaticData = RustArcStaticData(
+    rustArcIncrementStrongCount:
+        RustLib.instance.api.rust_arc_increment_strong_count_VerificationStream,
+    rustArcDecrementStrongCount:
+        RustLib.instance.api.rust_arc_decrement_strong_count_VerificationStream,
+    rustArcDecrementStrongCountPtr: RustLib
+        .instance
+        .api
+        .rust_arc_decrement_strong_count_VerificationStreamPtr,
+  );
+
+  List<String> get errorFiles => RustLib.instance.api
+      .crateApiGogdlGogdlVerificationStreamAutoAccessorGetErrorFiles(
+        that: this,
+      );
+
+  VerificationStatus get status => RustLib.instance.api
+      .crateApiGogdlGogdlVerificationStreamAutoAccessorGetStatus(that: this);
+
+  BigInt get totalFiles => RustLib.instance.api
+      .crateApiGogdlGogdlVerificationStreamAutoAccessorGetTotalFiles(
+        that: this,
+      );
+
+  BigInt get verifiedFiles => RustLib.instance.api
+      .crateApiGogdlGogdlVerificationStreamAutoAccessorGetVerifiedFiles(
+        that: this,
+      );
+
+  set errorFiles(List<String> errorFiles) => RustLib.instance.api
+      .crateApiGogdlGogdlVerificationStreamAutoAccessorSetErrorFiles(
+        that: this,
+        errorFiles: errorFiles,
+      );
+
+  set status(VerificationStatus status) => RustLib.instance.api
+      .crateApiGogdlGogdlVerificationStreamAutoAccessorSetStatus(
+        that: this,
+        status: status,
+      );
+
+  set totalFiles(BigInt totalFiles) => RustLib.instance.api
+      .crateApiGogdlGogdlVerificationStreamAutoAccessorSetTotalFiles(
+        that: this,
+        totalFiles: totalFiles,
+      );
+
+  set verifiedFiles(BigInt verifiedFiles) => RustLib.instance.api
+      .crateApiGogdlGogdlVerificationStreamAutoAccessorSetVerifiedFiles(
+        that: this,
+        verifiedFiles: verifiedFiles,
+      );
 }

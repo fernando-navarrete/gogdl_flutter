@@ -1,8 +1,11 @@
 use flutter_rust_bridge::{frb, DartFnFuture};
 use futures::stream::{self, StreamExt};
-use gogdl_lib2::{Client, GogDl, GogDlError};
+use gogdl_lib2::{Client, DownloadableFiles, GogDl, GogDlError, VerifyEvent};
 use std::sync::Arc;
 use thiserror::Error;
+use tokio::sync::mpsc;
+
+use crate::frb_generated::StreamSink;
 
 #[frb(opaque)]
 pub struct Gog {
@@ -22,6 +25,23 @@ pub struct DownloadableProduct {
     pub name: String,
     pub id: String,
     pub product_type: String,
+}
+
+#[frb(opaque)]
+#[derive(Clone)]
+pub enum VerificationStatus {
+    FetchingFiles,
+    Verifying,
+    Verified,
+}
+
+#[frb(opaque)]
+#[derive(Clone)]
+pub struct VerificationStream {
+    pub status: VerificationStatus,
+    pub total_files: u64,
+    pub verified_files: u64,
+    pub error_files: Vec<String>,
 }
 
 #[derive(Error, Debug)]
@@ -202,5 +222,87 @@ impl Gog {
     pub async fn restore_auth_from_string(&self, token: String) -> Result<(), GogError> {
         self.inner.restore_auth(&token).await?;
         Ok(())
+    }
+    pub async fn verify_download(
+        &self,
+        path: &str,
+        build_name: &str,
+        selected_products: &[String],
+        game_id: i32,
+        stream: StreamSink<VerificationStream>,
+    ) -> Result<(), GogError> {
+        stream
+            .add(VerificationStream {
+                status: VerificationStatus::FetchingFiles,
+                total_files: 0,
+                verified_files: 0,
+                error_files: Vec::new(),
+            })
+            .ok();
+        let files = self
+            .get_downloadable_files(game_id, build_name, selected_products)
+            .await?;
+
+        let mut total_files = 0;
+        for file_list in files.iter() {
+            total_files += file_list.product_files.len() as u64;
+        }
+
+        stream
+            .add(VerificationStream {
+                status: VerificationStatus::Verifying,
+                total_files,
+                verified_files: 0,
+                error_files: Vec::new(),
+            })
+            .ok();
+
+        let (tx, mut rx) = mpsc::unbounded_channel();
+
+        self.inner.verify_files(files, path, tx).await?;
+
+        let mut verified_files = 0;
+        let mut error_files = Vec::new();
+        while let Some(event) = rx.recv().await {
+            match event {
+                VerifyEvent::FileOk => {
+                    verified_files += 1;
+                    stream
+                        .add(VerificationStream {
+                            status: VerificationStatus::Verifying,
+                            total_files,
+                            verified_files: verified_files,
+                            error_files: error_files.clone(),
+                        })
+                        .ok();
+                }
+                VerifyEvent::FileChecksumMismatch(file) => {
+                    error_files.push(file);
+                    stream
+                        .add(VerificationStream {
+                            status: VerificationStatus::Verifying,
+                            total_files,
+                            verified_files: verified_files - 1,
+                            error_files: error_files.clone(),
+                        })
+                        .ok();
+                }
+            }
+        }
+        Ok(())
+    }
+
+    async fn get_downloadable_files(
+        &self,
+        game_id: i32,
+        build_name: &str,
+        selected_products: &[String],
+    ) -> Result<Vec<DownloadableFiles>, GogError> {
+        let products: Vec<&str> = selected_products.iter().map(|p| p.as_str()).collect();
+        let files = self
+            .inner
+            .get_downloadable_files(game_id, build_name, &products)
+            .await?;
+        Ok(files)
     }
 }
