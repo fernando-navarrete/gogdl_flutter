@@ -64,7 +64,7 @@ class RustLib extends BaseEntrypoint<RustLibApi, RustLibApiImpl, RustLibWire> {
   String get codegenVersion => '2.12.0';
 
   @override
-  int get rustContentHash => -222721803;
+  int get rustContentHash => -1972946907;
 
   static const kDefaultExternalLibraryLoaderConfig =
       ExternalLibraryLoaderConfig(
@@ -76,6 +76,92 @@ class RustLib extends BaseEntrypoint<RustLibApi, RustLibApiImpl, RustLibWire> {
 }
 
 abstract class RustLibApi extends BaseApi {
+  String crateApiGogdlGogdlDownloadableProductAutoAccessorGetId({
+    required DownloadableProduct that,
+  });
+
+  String crateApiGogdlGogdlDownloadableProductAutoAccessorGetName({
+    required DownloadableProduct that,
+  });
+
+  String crateApiGogdlGogdlDownloadableProductAutoAccessorGetProductType({
+    required DownloadableProduct that,
+  });
+
+  void crateApiGogdlGogdlDownloadableProductAutoAccessorSetId({
+    required DownloadableProduct that,
+    required String id,
+  });
+
+  void crateApiGogdlGogdlDownloadableProductAutoAccessorSetName({
+    required DownloadableProduct that,
+    required String name,
+  });
+
+  void crateApiGogdlGogdlDownloadableProductAutoAccessorSetProductType({
+    required DownloadableProduct that,
+    required String productType,
+  });
+
+  String crateApiGogdlGogdlGameBuildAutoAccessorGetBuildId({
+    required GameBuild that,
+  });
+
+  String crateApiGogdlGogdlGameBuildAutoAccessorGetReleaseDate({
+    required GameBuild that,
+  });
+
+  String crateApiGogdlGogdlGameBuildAutoAccessorGetVersionName({
+    required GameBuild that,
+  });
+
+  void crateApiGogdlGogdlGameBuildAutoAccessorSetBuildId({
+    required GameBuild that,
+    required String buildId,
+  });
+
+  void crateApiGogdlGogdlGameBuildAutoAccessorSetReleaseDate({
+    required GameBuild that,
+    required String releaseDate,
+  });
+
+  void crateApiGogdlGogdlGameBuildAutoAccessorSetVersionName({
+    required GameBuild that,
+    required String versionName,
+  });
+
+  Future<String> crateApiGogdlGogdlGogGetBackgroundImageLink({
+    required Gog that,
+    required int gameId,
+  });
+
+  Future<List<DownloadableProduct>>
+  crateApiGogdlGogdlGogGetDownloadableProducts({
+    required Gog that,
+    required int gameId,
+    required String buildName,
+  });
+
+  Future<String> crateApiGogdlGogdlGogGetGameBoxartLink({
+    required Gog that,
+    required int gameId,
+  });
+
+  Future<List<GameBuild>> crateApiGogdlGogdlGogGetGameBuilds({
+    required Gog that,
+    required int gameId,
+  });
+
+  Future<List<String>> crateApiGogdlGogdlGogGetGameScreenshots({
+    required Gog that,
+    required int gameId,
+  });
+
+  Future<String> crateApiGogdlGogdlGogGetGameSummary({
+    required Gog that,
+    required int gameId,
+  });
+
   Future<String> crateApiGogdlGogdlGogGetGameTitle({
     required Gog that,
     required int gameId,
@@ -102,6 +188,23 @@ abstract class RustLibApi extends BaseApi {
     required String token,
   });
 
+  RustArcIncrementStrongCountFnType
+  get rust_arc_increment_strong_count_DownloadableProduct;
+
+  RustArcDecrementStrongCountFnType
+  get rust_arc_decrement_strong_count_DownloadableProduct;
+
+  CrossPlatformFinalizerArg
+  get rust_arc_decrement_strong_count_DownloadableProductPtr;
+
+  RustArcIncrementStrongCountFnType
+  get rust_arc_increment_strong_count_GameBuild;
+
+  RustArcDecrementStrongCountFnType
+  get rust_arc_decrement_strong_count_GameBuild;
+
+  CrossPlatformFinalizerArg get rust_arc_decrement_strong_count_GameBuildPtr;
+
   RustArcIncrementStrongCountFnType get rust_arc_increment_strong_count_Gog;
 
   RustArcDecrementStrongCountFnType get rust_arc_decrement_strong_count_Gog;
@@ -116,6 +219,645 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     required super.generalizedFrbRustBinding,
     required super.portManager,
   });
+
+  @override
+  String crateApiGogdlGogdlDownloadableProductAutoAccessorGetId({
+    required DownloadableProduct that,
+  }) {
+    return handler.executeSync(
+      SyncTask(
+        callFfi: () {
+          final serializer = SseSerializer(generalizedFrbRustBinding);
+          sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerDownloadableProduct(
+            that,
+            serializer,
+          );
+          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 1)!;
+        },
+        codec: SseCodec(
+          decodeSuccessData: sse_decode_String,
+          decodeErrorData: null,
+        ),
+        constMeta:
+            kCrateApiGogdlGogdlDownloadableProductAutoAccessorGetIdConstMeta,
+        argValues: [that],
+        apiImpl: this,
+      ),
+    );
+  }
+
+  TaskConstMeta
+  get kCrateApiGogdlGogdlDownloadableProductAutoAccessorGetIdConstMeta =>
+      const TaskConstMeta(
+        debugName: "DownloadableProduct_auto_accessor_get_id",
+        argNames: ["that"],
+      );
+
+  @override
+  String crateApiGogdlGogdlDownloadableProductAutoAccessorGetName({
+    required DownloadableProduct that,
+  }) {
+    return handler.executeSync(
+      SyncTask(
+        callFfi: () {
+          final serializer = SseSerializer(generalizedFrbRustBinding);
+          sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerDownloadableProduct(
+            that,
+            serializer,
+          );
+          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 2)!;
+        },
+        codec: SseCodec(
+          decodeSuccessData: sse_decode_String,
+          decodeErrorData: null,
+        ),
+        constMeta:
+            kCrateApiGogdlGogdlDownloadableProductAutoAccessorGetNameConstMeta,
+        argValues: [that],
+        apiImpl: this,
+      ),
+    );
+  }
+
+  TaskConstMeta
+  get kCrateApiGogdlGogdlDownloadableProductAutoAccessorGetNameConstMeta =>
+      const TaskConstMeta(
+        debugName: "DownloadableProduct_auto_accessor_get_name",
+        argNames: ["that"],
+      );
+
+  @override
+  String crateApiGogdlGogdlDownloadableProductAutoAccessorGetProductType({
+    required DownloadableProduct that,
+  }) {
+    return handler.executeSync(
+      SyncTask(
+        callFfi: () {
+          final serializer = SseSerializer(generalizedFrbRustBinding);
+          sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerDownloadableProduct(
+            that,
+            serializer,
+          );
+          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 3)!;
+        },
+        codec: SseCodec(
+          decodeSuccessData: sse_decode_String,
+          decodeErrorData: null,
+        ),
+        constMeta:
+            kCrateApiGogdlGogdlDownloadableProductAutoAccessorGetProductTypeConstMeta,
+        argValues: [that],
+        apiImpl: this,
+      ),
+    );
+  }
+
+  TaskConstMeta
+  get kCrateApiGogdlGogdlDownloadableProductAutoAccessorGetProductTypeConstMeta =>
+      const TaskConstMeta(
+        debugName: "DownloadableProduct_auto_accessor_get_product_type",
+        argNames: ["that"],
+      );
+
+  @override
+  void crateApiGogdlGogdlDownloadableProductAutoAccessorSetId({
+    required DownloadableProduct that,
+    required String id,
+  }) {
+    return handler.executeSync(
+      SyncTask(
+        callFfi: () {
+          final serializer = SseSerializer(generalizedFrbRustBinding);
+          sse_encode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerDownloadableProduct(
+            that,
+            serializer,
+          );
+          sse_encode_String(id, serializer);
+          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 4)!;
+        },
+        codec: SseCodec(
+          decodeSuccessData: sse_decode_unit,
+          decodeErrorData: null,
+        ),
+        constMeta:
+            kCrateApiGogdlGogdlDownloadableProductAutoAccessorSetIdConstMeta,
+        argValues: [that, id],
+        apiImpl: this,
+      ),
+    );
+  }
+
+  TaskConstMeta
+  get kCrateApiGogdlGogdlDownloadableProductAutoAccessorSetIdConstMeta =>
+      const TaskConstMeta(
+        debugName: "DownloadableProduct_auto_accessor_set_id",
+        argNames: ["that", "id"],
+      );
+
+  @override
+  void crateApiGogdlGogdlDownloadableProductAutoAccessorSetName({
+    required DownloadableProduct that,
+    required String name,
+  }) {
+    return handler.executeSync(
+      SyncTask(
+        callFfi: () {
+          final serializer = SseSerializer(generalizedFrbRustBinding);
+          sse_encode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerDownloadableProduct(
+            that,
+            serializer,
+          );
+          sse_encode_String(name, serializer);
+          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 5)!;
+        },
+        codec: SseCodec(
+          decodeSuccessData: sse_decode_unit,
+          decodeErrorData: null,
+        ),
+        constMeta:
+            kCrateApiGogdlGogdlDownloadableProductAutoAccessorSetNameConstMeta,
+        argValues: [that, name],
+        apiImpl: this,
+      ),
+    );
+  }
+
+  TaskConstMeta
+  get kCrateApiGogdlGogdlDownloadableProductAutoAccessorSetNameConstMeta =>
+      const TaskConstMeta(
+        debugName: "DownloadableProduct_auto_accessor_set_name",
+        argNames: ["that", "name"],
+      );
+
+  @override
+  void crateApiGogdlGogdlDownloadableProductAutoAccessorSetProductType({
+    required DownloadableProduct that,
+    required String productType,
+  }) {
+    return handler.executeSync(
+      SyncTask(
+        callFfi: () {
+          final serializer = SseSerializer(generalizedFrbRustBinding);
+          sse_encode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerDownloadableProduct(
+            that,
+            serializer,
+          );
+          sse_encode_String(productType, serializer);
+          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 6)!;
+        },
+        codec: SseCodec(
+          decodeSuccessData: sse_decode_unit,
+          decodeErrorData: null,
+        ),
+        constMeta:
+            kCrateApiGogdlGogdlDownloadableProductAutoAccessorSetProductTypeConstMeta,
+        argValues: [that, productType],
+        apiImpl: this,
+      ),
+    );
+  }
+
+  TaskConstMeta
+  get kCrateApiGogdlGogdlDownloadableProductAutoAccessorSetProductTypeConstMeta =>
+      const TaskConstMeta(
+        debugName: "DownloadableProduct_auto_accessor_set_product_type",
+        argNames: ["that", "productType"],
+      );
+
+  @override
+  String crateApiGogdlGogdlGameBuildAutoAccessorGetBuildId({
+    required GameBuild that,
+  }) {
+    return handler.executeSync(
+      SyncTask(
+        callFfi: () {
+          final serializer = SseSerializer(generalizedFrbRustBinding);
+          sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerGameBuild(
+            that,
+            serializer,
+          );
+          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 7)!;
+        },
+        codec: SseCodec(
+          decodeSuccessData: sse_decode_String,
+          decodeErrorData: null,
+        ),
+        constMeta: kCrateApiGogdlGogdlGameBuildAutoAccessorGetBuildIdConstMeta,
+        argValues: [that],
+        apiImpl: this,
+      ),
+    );
+  }
+
+  TaskConstMeta
+  get kCrateApiGogdlGogdlGameBuildAutoAccessorGetBuildIdConstMeta =>
+      const TaskConstMeta(
+        debugName: "GameBuild_auto_accessor_get_build_id",
+        argNames: ["that"],
+      );
+
+  @override
+  String crateApiGogdlGogdlGameBuildAutoAccessorGetReleaseDate({
+    required GameBuild that,
+  }) {
+    return handler.executeSync(
+      SyncTask(
+        callFfi: () {
+          final serializer = SseSerializer(generalizedFrbRustBinding);
+          sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerGameBuild(
+            that,
+            serializer,
+          );
+          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 8)!;
+        },
+        codec: SseCodec(
+          decodeSuccessData: sse_decode_String,
+          decodeErrorData: null,
+        ),
+        constMeta:
+            kCrateApiGogdlGogdlGameBuildAutoAccessorGetReleaseDateConstMeta,
+        argValues: [that],
+        apiImpl: this,
+      ),
+    );
+  }
+
+  TaskConstMeta
+  get kCrateApiGogdlGogdlGameBuildAutoAccessorGetReleaseDateConstMeta =>
+      const TaskConstMeta(
+        debugName: "GameBuild_auto_accessor_get_release_date",
+        argNames: ["that"],
+      );
+
+  @override
+  String crateApiGogdlGogdlGameBuildAutoAccessorGetVersionName({
+    required GameBuild that,
+  }) {
+    return handler.executeSync(
+      SyncTask(
+        callFfi: () {
+          final serializer = SseSerializer(generalizedFrbRustBinding);
+          sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerGameBuild(
+            that,
+            serializer,
+          );
+          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 9)!;
+        },
+        codec: SseCodec(
+          decodeSuccessData: sse_decode_String,
+          decodeErrorData: null,
+        ),
+        constMeta:
+            kCrateApiGogdlGogdlGameBuildAutoAccessorGetVersionNameConstMeta,
+        argValues: [that],
+        apiImpl: this,
+      ),
+    );
+  }
+
+  TaskConstMeta
+  get kCrateApiGogdlGogdlGameBuildAutoAccessorGetVersionNameConstMeta =>
+      const TaskConstMeta(
+        debugName: "GameBuild_auto_accessor_get_version_name",
+        argNames: ["that"],
+      );
+
+  @override
+  void crateApiGogdlGogdlGameBuildAutoAccessorSetBuildId({
+    required GameBuild that,
+    required String buildId,
+  }) {
+    return handler.executeSync(
+      SyncTask(
+        callFfi: () {
+          final serializer = SseSerializer(generalizedFrbRustBinding);
+          sse_encode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerGameBuild(
+            that,
+            serializer,
+          );
+          sse_encode_String(buildId, serializer);
+          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 10)!;
+        },
+        codec: SseCodec(
+          decodeSuccessData: sse_decode_unit,
+          decodeErrorData: null,
+        ),
+        constMeta: kCrateApiGogdlGogdlGameBuildAutoAccessorSetBuildIdConstMeta,
+        argValues: [that, buildId],
+        apiImpl: this,
+      ),
+    );
+  }
+
+  TaskConstMeta
+  get kCrateApiGogdlGogdlGameBuildAutoAccessorSetBuildIdConstMeta =>
+      const TaskConstMeta(
+        debugName: "GameBuild_auto_accessor_set_build_id",
+        argNames: ["that", "buildId"],
+      );
+
+  @override
+  void crateApiGogdlGogdlGameBuildAutoAccessorSetReleaseDate({
+    required GameBuild that,
+    required String releaseDate,
+  }) {
+    return handler.executeSync(
+      SyncTask(
+        callFfi: () {
+          final serializer = SseSerializer(generalizedFrbRustBinding);
+          sse_encode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerGameBuild(
+            that,
+            serializer,
+          );
+          sse_encode_String(releaseDate, serializer);
+          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 11)!;
+        },
+        codec: SseCodec(
+          decodeSuccessData: sse_decode_unit,
+          decodeErrorData: null,
+        ),
+        constMeta:
+            kCrateApiGogdlGogdlGameBuildAutoAccessorSetReleaseDateConstMeta,
+        argValues: [that, releaseDate],
+        apiImpl: this,
+      ),
+    );
+  }
+
+  TaskConstMeta
+  get kCrateApiGogdlGogdlGameBuildAutoAccessorSetReleaseDateConstMeta =>
+      const TaskConstMeta(
+        debugName: "GameBuild_auto_accessor_set_release_date",
+        argNames: ["that", "releaseDate"],
+      );
+
+  @override
+  void crateApiGogdlGogdlGameBuildAutoAccessorSetVersionName({
+    required GameBuild that,
+    required String versionName,
+  }) {
+    return handler.executeSync(
+      SyncTask(
+        callFfi: () {
+          final serializer = SseSerializer(generalizedFrbRustBinding);
+          sse_encode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerGameBuild(
+            that,
+            serializer,
+          );
+          sse_encode_String(versionName, serializer);
+          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 12)!;
+        },
+        codec: SseCodec(
+          decodeSuccessData: sse_decode_unit,
+          decodeErrorData: null,
+        ),
+        constMeta:
+            kCrateApiGogdlGogdlGameBuildAutoAccessorSetVersionNameConstMeta,
+        argValues: [that, versionName],
+        apiImpl: this,
+      ),
+    );
+  }
+
+  TaskConstMeta
+  get kCrateApiGogdlGogdlGameBuildAutoAccessorSetVersionNameConstMeta =>
+      const TaskConstMeta(
+        debugName: "GameBuild_auto_accessor_set_version_name",
+        argNames: ["that", "versionName"],
+      );
+
+  @override
+  Future<String> crateApiGogdlGogdlGogGetBackgroundImageLink({
+    required Gog that,
+    required int gameId,
+  }) {
+    return handler.executeNormal(
+      NormalTask(
+        callFfi: (port_) {
+          final serializer = SseSerializer(generalizedFrbRustBinding);
+          sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerGog(
+            that,
+            serializer,
+          );
+          sse_encode_i_32(gameId, serializer);
+          pdeCallFfi(
+            generalizedFrbRustBinding,
+            serializer,
+            funcId: 13,
+            port: port_,
+          );
+        },
+        codec: SseCodec(
+          decodeSuccessData: sse_decode_String,
+          decodeErrorData: sse_decode_gog_error,
+        ),
+        constMeta: kCrateApiGogdlGogdlGogGetBackgroundImageLinkConstMeta,
+        argValues: [that, gameId],
+        apiImpl: this,
+      ),
+    );
+  }
+
+  TaskConstMeta get kCrateApiGogdlGogdlGogGetBackgroundImageLinkConstMeta =>
+      const TaskConstMeta(
+        debugName: "Gog_get_background_image_link",
+        argNames: ["that", "gameId"],
+      );
+
+  @override
+  Future<List<DownloadableProduct>>
+  crateApiGogdlGogdlGogGetDownloadableProducts({
+    required Gog that,
+    required int gameId,
+    required String buildName,
+  }) {
+    return handler.executeNormal(
+      NormalTask(
+        callFfi: (port_) {
+          final serializer = SseSerializer(generalizedFrbRustBinding);
+          sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerGog(
+            that,
+            serializer,
+          );
+          sse_encode_i_32(gameId, serializer);
+          sse_encode_String(buildName, serializer);
+          pdeCallFfi(
+            generalizedFrbRustBinding,
+            serializer,
+            funcId: 14,
+            port: port_,
+          );
+        },
+        codec: SseCodec(
+          decodeSuccessData:
+              sse_decode_list_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerDownloadableProduct,
+          decodeErrorData: sse_decode_gog_error,
+        ),
+        constMeta: kCrateApiGogdlGogdlGogGetDownloadableProductsConstMeta,
+        argValues: [that, gameId, buildName],
+        apiImpl: this,
+      ),
+    );
+  }
+
+  TaskConstMeta get kCrateApiGogdlGogdlGogGetDownloadableProductsConstMeta =>
+      const TaskConstMeta(
+        debugName: "Gog_get_downloadable_products",
+        argNames: ["that", "gameId", "buildName"],
+      );
+
+  @override
+  Future<String> crateApiGogdlGogdlGogGetGameBoxartLink({
+    required Gog that,
+    required int gameId,
+  }) {
+    return handler.executeNormal(
+      NormalTask(
+        callFfi: (port_) {
+          final serializer = SseSerializer(generalizedFrbRustBinding);
+          sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerGog(
+            that,
+            serializer,
+          );
+          sse_encode_i_32(gameId, serializer);
+          pdeCallFfi(
+            generalizedFrbRustBinding,
+            serializer,
+            funcId: 15,
+            port: port_,
+          );
+        },
+        codec: SseCodec(
+          decodeSuccessData: sse_decode_String,
+          decodeErrorData: sse_decode_gog_error,
+        ),
+        constMeta: kCrateApiGogdlGogdlGogGetGameBoxartLinkConstMeta,
+        argValues: [that, gameId],
+        apiImpl: this,
+      ),
+    );
+  }
+
+  TaskConstMeta get kCrateApiGogdlGogdlGogGetGameBoxartLinkConstMeta =>
+      const TaskConstMeta(
+        debugName: "Gog_get_game_boxart_link",
+        argNames: ["that", "gameId"],
+      );
+
+  @override
+  Future<List<GameBuild>> crateApiGogdlGogdlGogGetGameBuilds({
+    required Gog that,
+    required int gameId,
+  }) {
+    return handler.executeNormal(
+      NormalTask(
+        callFfi: (port_) {
+          final serializer = SseSerializer(generalizedFrbRustBinding);
+          sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerGog(
+            that,
+            serializer,
+          );
+          sse_encode_i_32(gameId, serializer);
+          pdeCallFfi(
+            generalizedFrbRustBinding,
+            serializer,
+            funcId: 16,
+            port: port_,
+          );
+        },
+        codec: SseCodec(
+          decodeSuccessData:
+              sse_decode_list_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerGameBuild,
+          decodeErrorData: sse_decode_gog_error,
+        ),
+        constMeta: kCrateApiGogdlGogdlGogGetGameBuildsConstMeta,
+        argValues: [that, gameId],
+        apiImpl: this,
+      ),
+    );
+  }
+
+  TaskConstMeta get kCrateApiGogdlGogdlGogGetGameBuildsConstMeta =>
+      const TaskConstMeta(
+        debugName: "Gog_get_game_builds",
+        argNames: ["that", "gameId"],
+      );
+
+  @override
+  Future<List<String>> crateApiGogdlGogdlGogGetGameScreenshots({
+    required Gog that,
+    required int gameId,
+  }) {
+    return handler.executeNormal(
+      NormalTask(
+        callFfi: (port_) {
+          final serializer = SseSerializer(generalizedFrbRustBinding);
+          sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerGog(
+            that,
+            serializer,
+          );
+          sse_encode_i_32(gameId, serializer);
+          pdeCallFfi(
+            generalizedFrbRustBinding,
+            serializer,
+            funcId: 17,
+            port: port_,
+          );
+        },
+        codec: SseCodec(
+          decodeSuccessData: sse_decode_list_String,
+          decodeErrorData: sse_decode_gog_error,
+        ),
+        constMeta: kCrateApiGogdlGogdlGogGetGameScreenshotsConstMeta,
+        argValues: [that, gameId],
+        apiImpl: this,
+      ),
+    );
+  }
+
+  TaskConstMeta get kCrateApiGogdlGogdlGogGetGameScreenshotsConstMeta =>
+      const TaskConstMeta(
+        debugName: "Gog_get_game_screenshots",
+        argNames: ["that", "gameId"],
+      );
+
+  @override
+  Future<String> crateApiGogdlGogdlGogGetGameSummary({
+    required Gog that,
+    required int gameId,
+  }) {
+    return handler.executeNormal(
+      NormalTask(
+        callFfi: (port_) {
+          final serializer = SseSerializer(generalizedFrbRustBinding);
+          sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerGog(
+            that,
+            serializer,
+          );
+          sse_encode_i_32(gameId, serializer);
+          pdeCallFfi(
+            generalizedFrbRustBinding,
+            serializer,
+            funcId: 18,
+            port: port_,
+          );
+        },
+        codec: SseCodec(
+          decodeSuccessData: sse_decode_String,
+          decodeErrorData: sse_decode_gog_error,
+        ),
+        constMeta: kCrateApiGogdlGogdlGogGetGameSummaryConstMeta,
+        argValues: [that, gameId],
+        apiImpl: this,
+      ),
+    );
+  }
+
+  TaskConstMeta get kCrateApiGogdlGogdlGogGetGameSummaryConstMeta =>
+      const TaskConstMeta(
+        debugName: "Gog_get_game_summary",
+        argNames: ["that", "gameId"],
+      );
 
   @override
   Future<String> crateApiGogdlGogdlGogGetGameTitle({
@@ -134,7 +876,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 1,
+            funcId: 19,
             port: port_,
           );
         },
@@ -165,7 +907,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
             that,
             serializer,
           );
-          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 2)!;
+          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 20)!;
         },
         codec: SseCodec(
           decodeSuccessData: sse_decode_String,
@@ -194,7 +936,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 3,
+            funcId: 21,
             port: port_,
           );
         },
@@ -229,7 +971,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 4,
+            funcId: 22,
             port: port_,
           );
         },
@@ -256,7 +998,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       SyncTask(
         callFfi: () {
           final serializer = SseSerializer(generalizedFrbRustBinding);
-          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 5)!;
+          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 23)!;
         },
         codec: SseCodec(
           decodeSuccessData:
@@ -293,7 +1035,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 6,
+            funcId: 24,
             port: port_,
           );
         },
@@ -331,7 +1073,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 7,
+            funcId: 25,
             port: port_,
           );
         },
@@ -388,6 +1130,22 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   RustArcIncrementStrongCountFnType
+  get rust_arc_increment_strong_count_DownloadableProduct => wire
+      .rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerDownloadableProduct;
+
+  RustArcDecrementStrongCountFnType
+  get rust_arc_decrement_strong_count_DownloadableProduct => wire
+      .rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerDownloadableProduct;
+
+  RustArcIncrementStrongCountFnType
+  get rust_arc_increment_strong_count_GameBuild => wire
+      .rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerGameBuild;
+
+  RustArcDecrementStrongCountFnType
+  get rust_arc_decrement_strong_count_GameBuild => wire
+      .rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerGameBuild;
+
+  RustArcIncrementStrongCountFnType
   get rust_arc_increment_strong_count_Gog => wire
       .rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerGog;
 
@@ -402,12 +1160,66 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  DownloadableProduct
+  dco_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerDownloadableProduct(
+    dynamic raw,
+  ) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return DownloadableProductImpl.frbInternalDcoDecode(raw as List<dynamic>);
+  }
+
+  @protected
+  GameBuild
+  dco_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerGameBuild(
+    dynamic raw,
+  ) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return GameBuildImpl.frbInternalDcoDecode(raw as List<dynamic>);
+  }
+
+  @protected
   Gog
   dco_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerGog(
     dynamic raw,
   ) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     return GogImpl.frbInternalDcoDecode(raw as List<dynamic>);
+  }
+
+  @protected
+  DownloadableProduct
+  dco_decode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerDownloadableProduct(
+    dynamic raw,
+  ) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return DownloadableProductImpl.frbInternalDcoDecode(raw as List<dynamic>);
+  }
+
+  @protected
+  GameBuild
+  dco_decode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerGameBuild(
+    dynamic raw,
+  ) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return GameBuildImpl.frbInternalDcoDecode(raw as List<dynamic>);
+  }
+
+  @protected
+  DownloadableProduct
+  dco_decode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerDownloadableProduct(
+    dynamic raw,
+  ) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return DownloadableProductImpl.frbInternalDcoDecode(raw as List<dynamic>);
+  }
+
+  @protected
+  GameBuild
+  dco_decode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerGameBuild(
+    dynamic raw,
+  ) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return GameBuildImpl.frbInternalDcoDecode(raw as List<dynamic>);
   }
 
   @protected
@@ -430,6 +1242,24 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   Object dco_decode_DartOpaque(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     return decodeDartOpaque(raw, generalizedFrbRustBinding);
+  }
+
+  @protected
+  DownloadableProduct
+  dco_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerDownloadableProduct(
+    dynamic raw,
+  ) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return DownloadableProductImpl.frbInternalDcoDecode(raw as List<dynamic>);
+  }
+
+  @protected
+  GameBuild
+  dco_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerGameBuild(
+    dynamic raw,
+  ) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return GameBuildImpl.frbInternalDcoDecode(raw as List<dynamic>);
   }
 
   @protected
@@ -479,6 +1309,38 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  List<DownloadableProduct>
+  dco_decode_list_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerDownloadableProduct(
+    dynamic raw,
+  ) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return (raw as List<dynamic>)
+        .map(
+          dco_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerDownloadableProduct,
+        )
+        .toList();
+  }
+
+  @protected
+  List<GameBuild>
+  dco_decode_list_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerGameBuild(
+    dynamic raw,
+  ) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return (raw as List<dynamic>)
+        .map(
+          dco_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerGameBuild,
+        )
+        .toList();
+  }
+
+  @protected
+  List<String> dco_decode_list_String(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return (raw as List<dynamic>).map(dco_decode_String).toList();
+  }
+
+  @protected
   Int32List dco_decode_list_prim_i_32_strict(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     return raw as Int32List;
@@ -516,12 +1378,84 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  DownloadableProduct
+  sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerDownloadableProduct(
+    SseDeserializer deserializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return DownloadableProductImpl.frbInternalSseDecode(
+      sse_decode_usize(deserializer),
+      sse_decode_i_32(deserializer),
+    );
+  }
+
+  @protected
+  GameBuild
+  sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerGameBuild(
+    SseDeserializer deserializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return GameBuildImpl.frbInternalSseDecode(
+      sse_decode_usize(deserializer),
+      sse_decode_i_32(deserializer),
+    );
+  }
+
+  @protected
   Gog
   sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerGog(
     SseDeserializer deserializer,
   ) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     return GogImpl.frbInternalSseDecode(
+      sse_decode_usize(deserializer),
+      sse_decode_i_32(deserializer),
+    );
+  }
+
+  @protected
+  DownloadableProduct
+  sse_decode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerDownloadableProduct(
+    SseDeserializer deserializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return DownloadableProductImpl.frbInternalSseDecode(
+      sse_decode_usize(deserializer),
+      sse_decode_i_32(deserializer),
+    );
+  }
+
+  @protected
+  GameBuild
+  sse_decode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerGameBuild(
+    SseDeserializer deserializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return GameBuildImpl.frbInternalSseDecode(
+      sse_decode_usize(deserializer),
+      sse_decode_i_32(deserializer),
+    );
+  }
+
+  @protected
+  DownloadableProduct
+  sse_decode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerDownloadableProduct(
+    SseDeserializer deserializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return DownloadableProductImpl.frbInternalSseDecode(
+      sse_decode_usize(deserializer),
+      sse_decode_i_32(deserializer),
+    );
+  }
+
+  @protected
+  GameBuild
+  sse_decode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerGameBuild(
+    SseDeserializer deserializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return GameBuildImpl.frbInternalSseDecode(
       sse_decode_usize(deserializer),
       sse_decode_i_32(deserializer),
     );
@@ -544,6 +1478,30 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     // Codec=Sse (Serialization based), see doc to use other codecs
     var inner = sse_decode_isize(deserializer);
     return decodeDartOpaque(inner, generalizedFrbRustBinding);
+  }
+
+  @protected
+  DownloadableProduct
+  sse_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerDownloadableProduct(
+    SseDeserializer deserializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return DownloadableProductImpl.frbInternalSseDecode(
+      sse_decode_usize(deserializer),
+      sse_decode_i_32(deserializer),
+    );
+  }
+
+  @protected
+  GameBuild
+  sse_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerGameBuild(
+    SseDeserializer deserializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return GameBuildImpl.frbInternalSseDecode(
+      sse_decode_usize(deserializer),
+      sse_decode_i_32(deserializer),
+    );
   }
 
   @protected
@@ -604,6 +1562,56 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  List<DownloadableProduct>
+  sse_decode_list_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerDownloadableProduct(
+    SseDeserializer deserializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+
+    var len_ = sse_decode_i_32(deserializer);
+    var ans_ = <DownloadableProduct>[];
+    for (var idx_ = 0; idx_ < len_; ++idx_) {
+      ans_.add(
+        sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerDownloadableProduct(
+          deserializer,
+        ),
+      );
+    }
+    return ans_;
+  }
+
+  @protected
+  List<GameBuild>
+  sse_decode_list_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerGameBuild(
+    SseDeserializer deserializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+
+    var len_ = sse_decode_i_32(deserializer);
+    var ans_ = <GameBuild>[];
+    for (var idx_ = 0; idx_ < len_; ++idx_) {
+      ans_.add(
+        sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerGameBuild(
+          deserializer,
+        ),
+      );
+    }
+    return ans_;
+  }
+
+  @protected
+  List<String> sse_decode_list_String(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+
+    var len_ = sse_decode_i_32(deserializer);
+    var ans_ = <String>[];
+    for (var idx_ = 0; idx_ < len_; ++idx_) {
+      ans_.add(sse_decode_String(deserializer));
+    }
+    return ans_;
+  }
+
+  @protected
   Int32List sse_decode_list_prim_i_32_strict(SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     var len_ = sse_decode_i_32(deserializer);
@@ -651,6 +1659,32 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
 
   @protected
   void
+  sse_encode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerDownloadableProduct(
+    DownloadableProduct self,
+    SseSerializer serializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_usize(
+      (self as DownloadableProductImpl).frbInternalSseEncode(move: true),
+      serializer,
+    );
+  }
+
+  @protected
+  void
+  sse_encode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerGameBuild(
+    GameBuild self,
+    SseSerializer serializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_usize(
+      (self as GameBuildImpl).frbInternalSseEncode(move: true),
+      serializer,
+    );
+  }
+
+  @protected
+  void
   sse_encode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerGog(
     Gog self,
     SseSerializer serializer,
@@ -658,6 +1692,58 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     // Codec=Sse (Serialization based), see doc to use other codecs
     sse_encode_usize(
       (self as GogImpl).frbInternalSseEncode(move: true),
+      serializer,
+    );
+  }
+
+  @protected
+  void
+  sse_encode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerDownloadableProduct(
+    DownloadableProduct self,
+    SseSerializer serializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_usize(
+      (self as DownloadableProductImpl).frbInternalSseEncode(move: false),
+      serializer,
+    );
+  }
+
+  @protected
+  void
+  sse_encode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerGameBuild(
+    GameBuild self,
+    SseSerializer serializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_usize(
+      (self as GameBuildImpl).frbInternalSseEncode(move: false),
+      serializer,
+    );
+  }
+
+  @protected
+  void
+  sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerDownloadableProduct(
+    DownloadableProduct self,
+    SseSerializer serializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_usize(
+      (self as DownloadableProductImpl).frbInternalSseEncode(move: false),
+      serializer,
+    );
+  }
+
+  @protected
+  void
+  sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerGameBuild(
+    GameBuild self,
+    SseSerializer serializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_usize(
+      (self as GameBuildImpl).frbInternalSseEncode(move: false),
       serializer,
     );
   }
@@ -698,6 +1784,32 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           generalizedFrbRustBinding,
         ),
       ),
+      serializer,
+    );
+  }
+
+  @protected
+  void
+  sse_encode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerDownloadableProduct(
+    DownloadableProduct self,
+    SseSerializer serializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_usize(
+      (self as DownloadableProductImpl).frbInternalSseEncode(move: null),
+      serializer,
+    );
+  }
+
+  @protected
+  void
+  sse_encode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerGameBuild(
+    GameBuild self,
+    SseSerializer serializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_usize(
+      (self as GameBuildImpl).frbInternalSseEncode(move: null),
       serializer,
     );
   }
@@ -756,6 +1868,47 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  void
+  sse_encode_list_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerDownloadableProduct(
+    List<DownloadableProduct> self,
+    SseSerializer serializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_i_32(self.length, serializer);
+    for (final item in self) {
+      sse_encode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerDownloadableProduct(
+        item,
+        serializer,
+      );
+    }
+  }
+
+  @protected
+  void
+  sse_encode_list_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerGameBuild(
+    List<GameBuild> self,
+    SseSerializer serializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_i_32(self.length, serializer);
+    for (final item in self) {
+      sse_encode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerGameBuild(
+        item,
+        serializer,
+      );
+    }
+  }
+
+  @protected
+  void sse_encode_list_String(List<String> self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_i_32(self.length, serializer);
+    for (final item in self) {
+      sse_encode_String(item, serializer);
+    }
+  }
+
+  @protected
   void sse_encode_list_prim_i_32_strict(
     Int32List self,
     SseSerializer serializer,
@@ -800,6 +1953,111 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
 }
 
 @sealed
+class DownloadableProductImpl extends RustOpaque
+    implements DownloadableProduct {
+  // Not to be used by end users
+  DownloadableProductImpl.frbInternalDcoDecode(List<dynamic> wire)
+    : super.frbInternalDcoDecode(wire, _kStaticData);
+
+  // Not to be used by end users
+  DownloadableProductImpl.frbInternalSseDecode(
+    BigInt ptr,
+    int externalSizeOnNative,
+  ) : super.frbInternalSseDecode(ptr, externalSizeOnNative, _kStaticData);
+
+  static final _kStaticData = RustArcStaticData(
+    rustArcIncrementStrongCount: RustLib
+        .instance
+        .api
+        .rust_arc_increment_strong_count_DownloadableProduct,
+    rustArcDecrementStrongCount: RustLib
+        .instance
+        .api
+        .rust_arc_decrement_strong_count_DownloadableProduct,
+    rustArcDecrementStrongCountPtr: RustLib
+        .instance
+        .api
+        .rust_arc_decrement_strong_count_DownloadableProductPtr,
+  );
+
+  String get id => RustLib.instance.api
+      .crateApiGogdlGogdlDownloadableProductAutoAccessorGetId(that: this);
+
+  String get name => RustLib.instance.api
+      .crateApiGogdlGogdlDownloadableProductAutoAccessorGetName(that: this);
+
+  String get productType => RustLib.instance.api
+      .crateApiGogdlGogdlDownloadableProductAutoAccessorGetProductType(
+        that: this,
+      );
+
+  set id(String id) => RustLib.instance.api
+      .crateApiGogdlGogdlDownloadableProductAutoAccessorSetId(
+        that: this,
+        id: id,
+      );
+
+  set name(String name) => RustLib.instance.api
+      .crateApiGogdlGogdlDownloadableProductAutoAccessorSetName(
+        that: this,
+        name: name,
+      );
+
+  set productType(String productType) => RustLib.instance.api
+      .crateApiGogdlGogdlDownloadableProductAutoAccessorSetProductType(
+        that: this,
+        productType: productType,
+      );
+}
+
+@sealed
+class GameBuildImpl extends RustOpaque implements GameBuild {
+  // Not to be used by end users
+  GameBuildImpl.frbInternalDcoDecode(List<dynamic> wire)
+    : super.frbInternalDcoDecode(wire, _kStaticData);
+
+  // Not to be used by end users
+  GameBuildImpl.frbInternalSseDecode(BigInt ptr, int externalSizeOnNative)
+    : super.frbInternalSseDecode(ptr, externalSizeOnNative, _kStaticData);
+
+  static final _kStaticData = RustArcStaticData(
+    rustArcIncrementStrongCount:
+        RustLib.instance.api.rust_arc_increment_strong_count_GameBuild,
+    rustArcDecrementStrongCount:
+        RustLib.instance.api.rust_arc_decrement_strong_count_GameBuild,
+    rustArcDecrementStrongCountPtr:
+        RustLib.instance.api.rust_arc_decrement_strong_count_GameBuildPtr,
+  );
+
+  String get buildId => RustLib.instance.api
+      .crateApiGogdlGogdlGameBuildAutoAccessorGetBuildId(that: this);
+
+  String get releaseDate => RustLib.instance.api
+      .crateApiGogdlGogdlGameBuildAutoAccessorGetReleaseDate(that: this);
+
+  String get versionName => RustLib.instance.api
+      .crateApiGogdlGogdlGameBuildAutoAccessorGetVersionName(that: this);
+
+  set buildId(String buildId) =>
+      RustLib.instance.api.crateApiGogdlGogdlGameBuildAutoAccessorSetBuildId(
+        that: this,
+        buildId: buildId,
+      );
+
+  set releaseDate(String releaseDate) => RustLib.instance.api
+      .crateApiGogdlGogdlGameBuildAutoAccessorSetReleaseDate(
+        that: this,
+        releaseDate: releaseDate,
+      );
+
+  set versionName(String versionName) => RustLib.instance.api
+      .crateApiGogdlGogdlGameBuildAutoAccessorSetVersionName(
+        that: this,
+        versionName: versionName,
+      );
+}
+
+@sealed
 class GogImpl extends RustOpaque implements Gog {
   // Not to be used by end users
   GogImpl.frbInternalDcoDecode(List<dynamic> wire)
@@ -817,6 +2075,38 @@ class GogImpl extends RustOpaque implements Gog {
     rustArcDecrementStrongCountPtr:
         RustLib.instance.api.rust_arc_decrement_strong_count_GogPtr,
   );
+
+  Future<String> getBackgroundImageLink({required int gameId}) => RustLib
+      .instance
+      .api
+      .crateApiGogdlGogdlGogGetBackgroundImageLink(that: this, gameId: gameId);
+
+  Future<List<DownloadableProduct>> getDownloadableProducts({
+    required int gameId,
+    required String buildName,
+  }) => RustLib.instance.api.crateApiGogdlGogdlGogGetDownloadableProducts(
+    that: this,
+    gameId: gameId,
+    buildName: buildName,
+  );
+
+  Future<String> getGameBoxartLink({required int gameId}) => RustLib
+      .instance
+      .api
+      .crateApiGogdlGogdlGogGetGameBoxartLink(that: this, gameId: gameId);
+
+  Future<List<GameBuild>> getGameBuilds({required int gameId}) => RustLib
+      .instance
+      .api
+      .crateApiGogdlGogdlGogGetGameBuilds(that: this, gameId: gameId);
+
+  Future<List<String>> getGameScreenshots({required int gameId}) => RustLib
+      .instance
+      .api
+      .crateApiGogdlGogdlGogGetGameScreenshots(that: this, gameId: gameId);
+
+  Future<String> getGameSummary({required int gameId}) => RustLib.instance.api
+      .crateApiGogdlGogdlGogGetGameSummary(that: this, gameId: gameId);
 
   Future<String> getGameTitle({required int gameId}) => RustLib.instance.api
       .crateApiGogdlGogdlGogGetGameTitle(that: this, gameId: gameId);

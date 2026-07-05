@@ -8,10 +8,55 @@ import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 import 'package:freezed_annotation/freezed_annotation.dart' hide protected;
 part 'gogdl.freezed.dart';
 
-// These function are ignored because they are on traits that is not defined in current crate (put an empty `#[frb]` on it to unignore): `fmt`, `fmt`, `from`
+// These function are ignored because they are on traits that is not defined in current crate (put an empty `#[frb]` on it to unignore): `clone`, `fmt`, `fmt`, `from`
+
+// Rust type: RustOpaqueMoi<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<DownloadableProduct>>
+abstract class DownloadableProduct implements RustOpaqueInterface {
+  String get id;
+
+  String get name;
+
+  String get productType;
+
+  set id(String id);
+
+  set name(String name);
+
+  set productType(String productType);
+}
+
+// Rust type: RustOpaqueMoi<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<GameBuild>>
+abstract class GameBuild implements RustOpaqueInterface {
+  String get buildId;
+
+  String get releaseDate;
+
+  String get versionName;
+
+  set buildId(String buildId);
+
+  set releaseDate(String releaseDate);
+
+  set versionName(String versionName);
+}
 
 // Rust type: RustOpaqueMoi<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<Gog>>
 abstract class Gog implements RustOpaqueInterface {
+  Future<String> getBackgroundImageLink({required int gameId});
+
+  Future<List<DownloadableProduct>> getDownloadableProducts({
+    required int gameId,
+    required String buildName,
+  });
+
+  Future<String> getGameBoxartLink({required int gameId});
+
+  Future<List<GameBuild>> getGameBuilds({required int gameId});
+
+  Future<List<String>> getGameScreenshots({required int gameId});
+
+  Future<String> getGameSummary({required int gameId});
+
   Future<String> getGameTitle({required int gameId});
 
   String getLoginUrl();

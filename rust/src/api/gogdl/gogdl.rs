@@ -9,6 +9,21 @@ pub struct Gog {
     inner: Arc<GogDl>,
 }
 
+#[frb(opaque)]
+pub struct GameBuild {
+    pub build_id: String,
+    pub version_name: String,
+    pub release_date: String,
+}
+
+#[frb(opaque)]
+#[derive(Clone)]
+pub struct DownloadableProduct {
+    pub name: String,
+    pub id: String,
+    pub product_type: String,
+}
+
 #[derive(Error, Debug)]
 pub enum GogError {
     #[error("AuthError: {message}")]
@@ -84,7 +99,7 @@ impl Gog {
                     Ok::<(i32, String), GogError>((id, details.title))
                 }
             })
-            .buffer_unordered(8)
+            .buffer_unordered(4)
             .collect()
             .await;
 
@@ -101,6 +116,87 @@ impl Gog {
         let game_details = self.inner.get_game_details(game_id).await?;
         let title = game_details.title;
         Ok(title)
+    }
+
+    pub async fn get_downloadable_products(
+        &self,
+        game_id: i32,
+        build_name: &str,
+    ) -> Result<Vec<DownloadableProduct>, GogError> {
+        let downloadable_products = self
+            .inner
+            .get_downloadable_products(game_id, build_name)
+            .await?;
+
+        let results: Vec<Result<DownloadableProduct, GogError>> =
+            stream::iter(downloadable_products)
+                .map(|product| {
+                    let inner = self.inner.clone();
+                    async move {
+                        let details = inner.get_product_details(&product.product_id).await?;
+                        let product_type = details.get_product_type();
+                        Ok::<DownloadableProduct, GogError>(DownloadableProduct {
+                            name: details.title,
+                            id: product.product_id,
+                            product_type: product_type,
+                        })
+                    }
+                })
+                .buffer_unordered(4)
+                .collect()
+                .await;
+
+        let products: Vec<DownloadableProduct> = results
+            .iter()
+            .filter(|result| result.is_ok())
+            .map(|result| result.as_ref().unwrap().clone())
+            .collect();
+
+        Ok(products)
+    }
+
+    pub async fn get_game_screenshots(&self, game_id: i32) -> Result<Vec<String>, GogError> {
+        let game_screenshots = self.inner.get_game_screenshots(game_id).await?;
+        let links = match game_screenshots.resolve_links() {
+            Ok(links) => links,
+            Err(_e) => {
+                return Err(GogError::GameError {
+                    message: "Could not obtain screenshot links".to_string(),
+                })
+            }
+        };
+        Ok(links)
+    }
+
+    pub async fn get_game_boxart_link(&self, game_id: i32) -> Result<String, GogError> {
+        let game_links = self.inner.get_game_links(game_id).await?;
+        let boxart_link = game_links.links.box_art_image.href;
+        Ok(boxart_link)
+    }
+
+    pub async fn get_background_image_link(&self, game_id: i32) -> Result<String, GogError> {
+        let game_links = self.inner.get_game_links(game_id).await?;
+        let background_link = game_links.links.galaxy_background_image.href;
+        Ok(background_link)
+    }
+    pub async fn get_game_summary(&self, game_id: i32) -> Result<String, GogError> {
+        let game_summary = self.inner.get_game_summary(game_id).await?;
+        let summary = game_summary.summary.english;
+        Ok(summary)
+    }
+
+    pub async fn get_game_builds(&self, game_id: i32) -> Result<Vec<GameBuild>, GogError> {
+        let game_builds = self.inner.get_game_builds(game_id).await?;
+        let builds: Vec<GameBuild> = game_builds
+            .items
+            .iter()
+            .map(|build| GameBuild {
+                build_id: build.build_id.clone(),
+                version_name: build.version_name.clone(),
+                release_date: build.date_published.to_rfc2822(),
+            })
+            .collect();
+        Ok(builds)
     }
 
     pub async fn restore_auth_from_string(&self, token: String) -> Result<(), GogError> {
