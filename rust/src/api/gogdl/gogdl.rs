@@ -259,36 +259,43 @@ impl Gog {
 
         let (tx, mut rx) = mpsc::unbounded_channel();
 
-        self.inner.verify_files(files, path, tx).await?;
+        let mut verified_files: u64 = 0;
+        let mut error_files: Vec<String> = Vec::new();
 
-        let mut verified_files = 0;
-        let mut error_files = Vec::new();
-        while let Some(event) = rx.recv().await {
-            match event {
-                VerifyEvent::FileOk => {
-                    verified_files += 1;
-                    stream
-                        .add(VerificationStream {
-                            status: VerificationStatus::Verifying,
-                            total_files,
-                            verified_files: verified_files,
-                            error_files: error_files.clone(),
-                        })
-                        .ok();
+        let verify_future = self.inner.verify_files(files, path, tx);
+        let drain_future = async {
+            while let Some(event) = rx.recv().await {
+                match event {
+                    VerifyEvent::FileOk => {
+                        verified_files += 1;
+                    }
+                    VerifyEvent::FileChecksumMismatch(file) => {
+                        error_files.push(file);
+                    }
                 }
-                VerifyEvent::FileChecksumMismatch(file) => {
-                    error_files.push(file);
-                    stream
-                        .add(VerificationStream {
-                            status: VerificationStatus::Verifying,
-                            total_files,
-                            verified_files: verified_files - 1,
-                            error_files: error_files.clone(),
-                        })
-                        .ok();
-                }
+                stream
+                    .add(VerificationStream {
+                        status: VerificationStatus::Verifying,
+                        total_files,
+                        verified_files,
+                        error_files: error_files.clone(),
+                    })
+                    .ok();
             }
-        }
+        };
+
+        let (verify_result, ()) = tokio::join!(verify_future, drain_future);
+        verify_result?;
+
+        stream
+            .add(VerificationStream {
+                status: VerificationStatus::Verified,
+                total_files,
+                verified_files,
+                error_files: error_files.clone(),
+            })
+            .ok();
+
         Ok(())
     }
 
