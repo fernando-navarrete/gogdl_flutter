@@ -32,11 +32,15 @@ abstract class GameBuild implements RustOpaqueInterface {
 
   String get releaseDate;
 
+  PlatformInt64 get releaseDateTimestamp;
+
   String get versionName;
 
   set buildId(String buildId);
 
   set releaseDate(String releaseDate);
+
+  set releaseDateTimestamp(PlatformInt64 releaseDateTimestamp);
 
   set versionName(String versionName);
 }
@@ -87,21 +91,21 @@ abstract class VerificationStatus implements RustOpaqueInterface {}
 
 // Rust type: RustOpaqueMoi<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<VerificationStream>>
 abstract class VerificationStream implements RustOpaqueInterface {
-  List<String> get errorFiles;
+  List<String> get errorChunks;
 
   VerificationStatus get status;
 
-  BigInt get totalFiles;
+  BigInt get totalChunks;
 
-  BigInt get verifiedFiles;
+  BigInt get verifiedChunks;
 
-  set errorFiles(List<String> errorFiles);
+  set errorChunks(List<String> errorChunks);
 
   set status(VerificationStatus status);
 
-  set totalFiles(BigInt totalFiles);
+  set totalChunks(BigInt totalChunks);
 
-  set verifiedFiles(BigInt verifiedFiles);
+  set verifiedChunks(BigInt verifiedChunks);
 }
 
 @freezed

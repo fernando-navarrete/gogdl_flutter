@@ -39,7 +39,7 @@ flutter_rust_bridge::frb_generated_boilerplate!(
     default_rust_auto_opaque = RustAutoOpaqueMoi,
 );
 pub(crate) const FLUTTER_RUST_BRIDGE_CODEGEN_VERSION: &str = "2.12.0";
-pub(crate) const FLUTTER_RUST_BRIDGE_CODEGEN_CONTENT_HASH: i32 = -1642702666;
+pub(crate) const FLUTTER_RUST_BRIDGE_CODEGEN_CONTENT_HASH: i32 = 476482684;
 
 // Section: executor
 
@@ -430,6 +430,52 @@ fn wire__crate__api__gogdl__gogdl__GameBuild_auto_accessor_get_release_date_impl
         },
     )
 }
+fn wire__crate__api__gogdl__gogdl__GameBuild_auto_accessor_get_release_date_timestamp_impl(
+    ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
+    rust_vec_len_: i32,
+    data_len_: i32,
+) -> flutter_rust_bridge::for_generated::WireSyncRust2DartSse {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap_sync::<flutter_rust_bridge::for_generated::SseCodec, _>(
+        flutter_rust_bridge::for_generated::TaskInfo {
+            debug_name: "GameBuild_auto_accessor_get_release_date_timestamp",
+            port: None,
+            mode: flutter_rust_bridge::for_generated::FfiCallMode::Sync,
+        },
+        move || {
+            let message = unsafe {
+                flutter_rust_bridge::for_generated::Dart2RustMessageSse::from_wire(
+                    ptr_,
+                    rust_vec_len_,
+                    data_len_,
+                )
+            };
+            let mut deserializer =
+                flutter_rust_bridge::for_generated::SseDeserializer::new(message);
+            let api_that = <RustOpaqueMoi<
+                flutter_rust_bridge::for_generated::RustAutoOpaqueInner<GameBuild>,
+            >>::sse_decode(&mut deserializer);
+            deserializer.end();
+            transform_result_sse::<_, ()>((move || {
+                let mut api_that_guard = None;
+                let decode_indices_ =
+                    flutter_rust_bridge::for_generated::lockable_compute_decode_order(vec![
+                        flutter_rust_bridge::for_generated::LockableOrderInfo::new(
+                            &api_that, 0, false,
+                        ),
+                    ]);
+                for i in decode_indices_ {
+                    match i {
+                        0 => api_that_guard = Some(api_that.lockable_decode_sync_ref()),
+                        _ => unreachable!(),
+                    }
+                }
+                let api_that_guard = api_that_guard.unwrap();
+                let output_ok = Result::<_, ()>::Ok(api_that_guard.release_date_timestamp.clone())?;
+                Ok(output_ok)
+            })())
+        },
+    )
+}
 fn wire__crate__api__gogdl__gogdl__GameBuild_auto_accessor_get_version_name_impl(
     ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
     rust_vec_len_: i32,
@@ -571,6 +617,57 @@ fn wire__crate__api__gogdl__gogdl__GameBuild_auto_accessor_set_release_date_impl
                 let output_ok = Result::<_, ()>::Ok({
                     {
                         api_that_guard.release_date = api_release_date;
+                    };
+                })?;
+                Ok(output_ok)
+            })())
+        },
+    )
+}
+fn wire__crate__api__gogdl__gogdl__GameBuild_auto_accessor_set_release_date_timestamp_impl(
+    ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
+    rust_vec_len_: i32,
+    data_len_: i32,
+) -> flutter_rust_bridge::for_generated::WireSyncRust2DartSse {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap_sync::<flutter_rust_bridge::for_generated::SseCodec, _>(
+        flutter_rust_bridge::for_generated::TaskInfo {
+            debug_name: "GameBuild_auto_accessor_set_release_date_timestamp",
+            port: None,
+            mode: flutter_rust_bridge::for_generated::FfiCallMode::Sync,
+        },
+        move || {
+            let message = unsafe {
+                flutter_rust_bridge::for_generated::Dart2RustMessageSse::from_wire(
+                    ptr_,
+                    rust_vec_len_,
+                    data_len_,
+                )
+            };
+            let mut deserializer =
+                flutter_rust_bridge::for_generated::SseDeserializer::new(message);
+            let api_that = <RustOpaqueMoi<
+                flutter_rust_bridge::for_generated::RustAutoOpaqueInner<GameBuild>,
+            >>::sse_decode(&mut deserializer);
+            let api_release_date_timestamp = <i64>::sse_decode(&mut deserializer);
+            deserializer.end();
+            transform_result_sse::<_, ()>((move || {
+                let mut api_that_guard = None;
+                let decode_indices_ =
+                    flutter_rust_bridge::for_generated::lockable_compute_decode_order(vec![
+                        flutter_rust_bridge::for_generated::LockableOrderInfo::new(
+                            &api_that, 0, true,
+                        ),
+                    ]);
+                for i in decode_indices_ {
+                    match i {
+                        0 => api_that_guard = Some(api_that.lockable_decode_sync_ref_mut()),
+                        _ => unreachable!(),
+                    }
+                }
+                let mut api_that_guard = api_that_guard.unwrap();
+                let output_ok = Result::<_, ()>::Ok({
+                    {
+                        api_that_guard.release_date_timestamp = api_release_date_timestamp;
                     };
                 })?;
                 Ok(output_ok)
@@ -1438,14 +1535,14 @@ fn wire__crate__api__gogdl__gogdl__Gog_verify_download_impl(
         },
     )
 }
-fn wire__crate__api__gogdl__gogdl__VerificationStream_auto_accessor_get_error_files_impl(
+fn wire__crate__api__gogdl__gogdl__VerificationStream_auto_accessor_get_error_chunks_impl(
     ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
     rust_vec_len_: i32,
     data_len_: i32,
 ) -> flutter_rust_bridge::for_generated::WireSyncRust2DartSse {
     FLUTTER_RUST_BRIDGE_HANDLER.wrap_sync::<flutter_rust_bridge::for_generated::SseCodec, _>(
         flutter_rust_bridge::for_generated::TaskInfo {
-            debug_name: "VerificationStream_auto_accessor_get_error_files",
+            debug_name: "VerificationStream_auto_accessor_get_error_chunks",
             port: None,
             mode: flutter_rust_bridge::for_generated::FfiCallMode::Sync,
         },
@@ -1478,7 +1575,7 @@ fn wire__crate__api__gogdl__gogdl__VerificationStream_auto_accessor_get_error_fi
                     }
                 }
                 let api_that_guard = api_that_guard.unwrap();
-                let output_ok = Result::<_, ()>::Ok(api_that_guard.error_files.clone())?;
+                let output_ok = Result::<_, ()>::Ok(api_that_guard.error_chunks.clone())?;
                 Ok(output_ok)
             })())
         },
@@ -1530,14 +1627,14 @@ fn wire__crate__api__gogdl__gogdl__VerificationStream_auto_accessor_get_status_i
         },
     )
 }
-fn wire__crate__api__gogdl__gogdl__VerificationStream_auto_accessor_get_total_files_impl(
+fn wire__crate__api__gogdl__gogdl__VerificationStream_auto_accessor_get_total_chunks_impl(
     ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
     rust_vec_len_: i32,
     data_len_: i32,
 ) -> flutter_rust_bridge::for_generated::WireSyncRust2DartSse {
     FLUTTER_RUST_BRIDGE_HANDLER.wrap_sync::<flutter_rust_bridge::for_generated::SseCodec, _>(
         flutter_rust_bridge::for_generated::TaskInfo {
-            debug_name: "VerificationStream_auto_accessor_get_total_files",
+            debug_name: "VerificationStream_auto_accessor_get_total_chunks",
             port: None,
             mode: flutter_rust_bridge::for_generated::FfiCallMode::Sync,
         },
@@ -1570,20 +1667,20 @@ fn wire__crate__api__gogdl__gogdl__VerificationStream_auto_accessor_get_total_fi
                     }
                 }
                 let api_that_guard = api_that_guard.unwrap();
-                let output_ok = Result::<_, ()>::Ok(api_that_guard.total_files.clone())?;
+                let output_ok = Result::<_, ()>::Ok(api_that_guard.total_chunks.clone())?;
                 Ok(output_ok)
             })())
         },
     )
 }
-fn wire__crate__api__gogdl__gogdl__VerificationStream_auto_accessor_get_verified_files_impl(
+fn wire__crate__api__gogdl__gogdl__VerificationStream_auto_accessor_get_verified_chunks_impl(
     ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
     rust_vec_len_: i32,
     data_len_: i32,
 ) -> flutter_rust_bridge::for_generated::WireSyncRust2DartSse {
     FLUTTER_RUST_BRIDGE_HANDLER.wrap_sync::<flutter_rust_bridge::for_generated::SseCodec, _>(
         flutter_rust_bridge::for_generated::TaskInfo {
-            debug_name: "VerificationStream_auto_accessor_get_verified_files",
+            debug_name: "VerificationStream_auto_accessor_get_verified_chunks",
             port: None,
             mode: flutter_rust_bridge::for_generated::FfiCallMode::Sync,
         },
@@ -1616,20 +1713,20 @@ fn wire__crate__api__gogdl__gogdl__VerificationStream_auto_accessor_get_verified
                     }
                 }
                 let api_that_guard = api_that_guard.unwrap();
-                let output_ok = Result::<_, ()>::Ok(api_that_guard.verified_files.clone())?;
+                let output_ok = Result::<_, ()>::Ok(api_that_guard.verified_chunks.clone())?;
                 Ok(output_ok)
             })())
         },
     )
 }
-fn wire__crate__api__gogdl__gogdl__VerificationStream_auto_accessor_set_error_files_impl(
+fn wire__crate__api__gogdl__gogdl__VerificationStream_auto_accessor_set_error_chunks_impl(
     ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
     rust_vec_len_: i32,
     data_len_: i32,
 ) -> flutter_rust_bridge::for_generated::WireSyncRust2DartSse {
     FLUTTER_RUST_BRIDGE_HANDLER.wrap_sync::<flutter_rust_bridge::for_generated::SseCodec, _>(
         flutter_rust_bridge::for_generated::TaskInfo {
-            debug_name: "VerificationStream_auto_accessor_set_error_files",
+            debug_name: "VerificationStream_auto_accessor_set_error_chunks",
             port: None,
             mode: flutter_rust_bridge::for_generated::FfiCallMode::Sync,
         },
@@ -1646,7 +1743,7 @@ fn wire__crate__api__gogdl__gogdl__VerificationStream_auto_accessor_set_error_fi
             let api_that = <RustOpaqueMoi<
                 flutter_rust_bridge::for_generated::RustAutoOpaqueInner<VerificationStream>,
             >>::sse_decode(&mut deserializer);
-            let api_error_files = <Vec<String>>::sse_decode(&mut deserializer);
+            let api_error_chunks = <Vec<String>>::sse_decode(&mut deserializer);
             deserializer.end();
             transform_result_sse::<_, ()>((move || {
                 let mut api_that_guard = None;
@@ -1665,7 +1762,7 @@ fn wire__crate__api__gogdl__gogdl__VerificationStream_auto_accessor_set_error_fi
                 let mut api_that_guard = api_that_guard.unwrap();
                 let output_ok = Result::<_, ()>::Ok({
                     {
-                        api_that_guard.error_files = api_error_files;
+                        api_that_guard.error_chunks = api_error_chunks;
                     };
                 })?;
                 Ok(output_ok)
@@ -1724,14 +1821,14 @@ fn wire__crate__api__gogdl__gogdl__VerificationStream_auto_accessor_set_status_i
         },
     )
 }
-fn wire__crate__api__gogdl__gogdl__VerificationStream_auto_accessor_set_total_files_impl(
+fn wire__crate__api__gogdl__gogdl__VerificationStream_auto_accessor_set_total_chunks_impl(
     ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
     rust_vec_len_: i32,
     data_len_: i32,
 ) -> flutter_rust_bridge::for_generated::WireSyncRust2DartSse {
     FLUTTER_RUST_BRIDGE_HANDLER.wrap_sync::<flutter_rust_bridge::for_generated::SseCodec, _>(
         flutter_rust_bridge::for_generated::TaskInfo {
-            debug_name: "VerificationStream_auto_accessor_set_total_files",
+            debug_name: "VerificationStream_auto_accessor_set_total_chunks",
             port: None,
             mode: flutter_rust_bridge::for_generated::FfiCallMode::Sync,
         },
@@ -1748,7 +1845,7 @@ fn wire__crate__api__gogdl__gogdl__VerificationStream_auto_accessor_set_total_fi
             let api_that = <RustOpaqueMoi<
                 flutter_rust_bridge::for_generated::RustAutoOpaqueInner<VerificationStream>,
             >>::sse_decode(&mut deserializer);
-            let api_total_files = <u64>::sse_decode(&mut deserializer);
+            let api_total_chunks = <u64>::sse_decode(&mut deserializer);
             deserializer.end();
             transform_result_sse::<_, ()>((move || {
                 let mut api_that_guard = None;
@@ -1767,7 +1864,7 @@ fn wire__crate__api__gogdl__gogdl__VerificationStream_auto_accessor_set_total_fi
                 let mut api_that_guard = api_that_guard.unwrap();
                 let output_ok = Result::<_, ()>::Ok({
                     {
-                        api_that_guard.total_files = api_total_files;
+                        api_that_guard.total_chunks = api_total_chunks;
                     };
                 })?;
                 Ok(output_ok)
@@ -1775,14 +1872,14 @@ fn wire__crate__api__gogdl__gogdl__VerificationStream_auto_accessor_set_total_fi
         },
     )
 }
-fn wire__crate__api__gogdl__gogdl__VerificationStream_auto_accessor_set_verified_files_impl(
+fn wire__crate__api__gogdl__gogdl__VerificationStream_auto_accessor_set_verified_chunks_impl(
     ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
     rust_vec_len_: i32,
     data_len_: i32,
 ) -> flutter_rust_bridge::for_generated::WireSyncRust2DartSse {
     FLUTTER_RUST_BRIDGE_HANDLER.wrap_sync::<flutter_rust_bridge::for_generated::SseCodec, _>(
         flutter_rust_bridge::for_generated::TaskInfo {
-            debug_name: "VerificationStream_auto_accessor_set_verified_files",
+            debug_name: "VerificationStream_auto_accessor_set_verified_chunks",
             port: None,
             mode: flutter_rust_bridge::for_generated::FfiCallMode::Sync,
         },
@@ -1799,7 +1896,7 @@ fn wire__crate__api__gogdl__gogdl__VerificationStream_auto_accessor_set_verified
             let api_that = <RustOpaqueMoi<
                 flutter_rust_bridge::for_generated::RustAutoOpaqueInner<VerificationStream>,
             >>::sse_decode(&mut deserializer);
-            let api_verified_files = <u64>::sse_decode(&mut deserializer);
+            let api_verified_chunks = <u64>::sse_decode(&mut deserializer);
             deserializer.end();
             transform_result_sse::<_, ()>((move || {
                 let mut api_that_guard = None;
@@ -1818,7 +1915,7 @@ fn wire__crate__api__gogdl__gogdl__VerificationStream_auto_accessor_set_verified
                 let mut api_that_guard = api_that_guard.unwrap();
                 let output_ok = Result::<_, ()>::Ok({
                     {
-                        api_that_guard.verified_files = api_verified_files;
+                        api_that_guard.verified_chunks = api_verified_chunks;
                     };
                 })?;
                 Ok(output_ok)
@@ -2056,6 +2153,13 @@ impl SseDecode for i32 {
     }
 }
 
+impl SseDecode for i64 {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        deserializer.cursor.read_i64::<NativeEndian>().unwrap()
+    }
+}
+
 impl SseDecode for isize {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
@@ -2165,73 +2269,73 @@ fn pde_ffi_dispatcher_primary_impl(
 ) {
     // Codec=Pde (Serialization + dispatch), see doc to use other codecs
     match func_id {
-        13 => wire__crate__api__gogdl__gogdl__Gog_get_background_image_link_impl(
+        15 => wire__crate__api__gogdl__gogdl__Gog_get_background_image_link_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        14 => wire__crate__api__gogdl__gogdl__Gog_get_downloadable_products_impl(
+        16 => wire__crate__api__gogdl__gogdl__Gog_get_downloadable_products_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        15 => wire__crate__api__gogdl__gogdl__Gog_get_game_boxart_link_impl(
+        17 => wire__crate__api__gogdl__gogdl__Gog_get_game_boxart_link_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        16 => wire__crate__api__gogdl__gogdl__Gog_get_game_builds_impl(
+        18 => wire__crate__api__gogdl__gogdl__Gog_get_game_builds_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        17 => wire__crate__api__gogdl__gogdl__Gog_get_game_screenshots_impl(
+        19 => wire__crate__api__gogdl__gogdl__Gog_get_game_screenshots_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        18 => wire__crate__api__gogdl__gogdl__Gog_get_game_summary_impl(
+        20 => wire__crate__api__gogdl__gogdl__Gog_get_game_summary_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        19 => wire__crate__api__gogdl__gogdl__Gog_get_game_title_impl(
+        21 => wire__crate__api__gogdl__gogdl__Gog_get_game_title_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        21 => wire__crate__api__gogdl__gogdl__Gog_get_owned_games_impl(
+        23 => wire__crate__api__gogdl__gogdl__Gog_get_owned_games_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        22 => wire__crate__api__gogdl__gogdl__Gog_login_with_code_impl(
+        24 => wire__crate__api__gogdl__gogdl__Gog_login_with_code_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        24 => wire__crate__api__gogdl__gogdl__Gog_refresh_auth_with_callback_impl(
+        26 => wire__crate__api__gogdl__gogdl__Gog_refresh_auth_with_callback_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        25 => wire__crate__api__gogdl__gogdl__Gog_restore_auth_from_string_impl(
+        27 => wire__crate__api__gogdl__gogdl__Gog_restore_auth_from_string_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        26 => wire__crate__api__gogdl__gogdl__Gog_verify_download_impl(
+        28 => wire__crate__api__gogdl__gogdl__Gog_verify_download_impl(
             port,
             ptr,
             rust_vec_len,
@@ -2249,126 +2353,32 @@ fn pde_ffi_dispatcher_sync_impl(
 ) -> flutter_rust_bridge::for_generated::WireSyncRust2DartSse {
     // Codec=Pde (Serialization + dispatch), see doc to use other codecs
     match func_id {
-        1 => wire__crate__api__gogdl__gogdl__DownloadableProduct_auto_accessor_get_id_impl(
-            ptr,
-            rust_vec_len,
-            data_len,
-        ),
-        2 => wire__crate__api__gogdl__gogdl__DownloadableProduct_auto_accessor_get_name_impl(
-            ptr,
-            rust_vec_len,
-            data_len,
-        ),
-        3 => {
-            wire__crate__api__gogdl__gogdl__DownloadableProduct_auto_accessor_get_product_type_impl(
-                ptr,
-                rust_vec_len,
-                data_len,
-            )
-        }
-        4 => wire__crate__api__gogdl__gogdl__DownloadableProduct_auto_accessor_set_id_impl(
-            ptr,
-            rust_vec_len,
-            data_len,
-        ),
-        5 => wire__crate__api__gogdl__gogdl__DownloadableProduct_auto_accessor_set_name_impl(
-            ptr,
-            rust_vec_len,
-            data_len,
-        ),
-        6 => {
-            wire__crate__api__gogdl__gogdl__DownloadableProduct_auto_accessor_set_product_type_impl(
-                ptr,
-                rust_vec_len,
-                data_len,
-            )
-        }
-        7 => wire__crate__api__gogdl__gogdl__GameBuild_auto_accessor_get_build_id_impl(
-            ptr,
-            rust_vec_len,
-            data_len,
-        ),
-        8 => wire__crate__api__gogdl__gogdl__GameBuild_auto_accessor_get_release_date_impl(
-            ptr,
-            rust_vec_len,
-            data_len,
-        ),
-        9 => wire__crate__api__gogdl__gogdl__GameBuild_auto_accessor_get_version_name_impl(
-            ptr,
-            rust_vec_len,
-            data_len,
-        ),
-        10 => wire__crate__api__gogdl__gogdl__GameBuild_auto_accessor_set_build_id_impl(
-            ptr,
-            rust_vec_len,
-            data_len,
-        ),
-        11 => wire__crate__api__gogdl__gogdl__GameBuild_auto_accessor_set_release_date_impl(
-            ptr,
-            rust_vec_len,
-            data_len,
-        ),
-        12 => wire__crate__api__gogdl__gogdl__GameBuild_auto_accessor_set_version_name_impl(
-            ptr,
-            rust_vec_len,
-            data_len,
-        ),
-        20 => wire__crate__api__gogdl__gogdl__Gog_get_login_url_impl(ptr, rust_vec_len, data_len),
-        23 => wire__crate__api__gogdl__gogdl__Gog_new_impl(ptr, rust_vec_len, data_len),
-        27 => {
-            wire__crate__api__gogdl__gogdl__VerificationStream_auto_accessor_get_error_files_impl(
-                ptr,
-                rust_vec_len,
-                data_len,
-            )
-        }
-        28 => wire__crate__api__gogdl__gogdl__VerificationStream_auto_accessor_get_status_impl(
-            ptr,
-            rust_vec_len,
-            data_len,
-        ),
-        29 => {
-            wire__crate__api__gogdl__gogdl__VerificationStream_auto_accessor_get_total_files_impl(
-                ptr,
-                rust_vec_len,
-                data_len,
-            )
-        }
-        30 => {
-            wire__crate__api__gogdl__gogdl__VerificationStream_auto_accessor_get_verified_files_impl(
-                ptr,
-                rust_vec_len,
-                data_len,
-            )
-        }
-        31 => {
-            wire__crate__api__gogdl__gogdl__VerificationStream_auto_accessor_set_error_files_impl(
-                ptr,
-                rust_vec_len,
-                data_len,
-            )
-        }
-        32 => wire__crate__api__gogdl__gogdl__VerificationStream_auto_accessor_set_status_impl(
-            ptr,
-            rust_vec_len,
-            data_len,
-        ),
-        33 => {
-            wire__crate__api__gogdl__gogdl__VerificationStream_auto_accessor_set_total_files_impl(
-                ptr,
-                rust_vec_len,
-                data_len,
-            )
-        }
-        34 => {
-            wire__crate__api__gogdl__gogdl__VerificationStream_auto_accessor_set_verified_files_impl(
-                ptr,
-                rust_vec_len,
-                data_len,
-            )
-        }
-        _ => unreachable!(),
-    }
+                        1 => wire__crate__api__gogdl__gogdl__DownloadableProduct_auto_accessor_get_id_impl(ptr, rust_vec_len, data_len),
+2 => wire__crate__api__gogdl__gogdl__DownloadableProduct_auto_accessor_get_name_impl(ptr, rust_vec_len, data_len),
+3 => wire__crate__api__gogdl__gogdl__DownloadableProduct_auto_accessor_get_product_type_impl(ptr, rust_vec_len, data_len),
+4 => wire__crate__api__gogdl__gogdl__DownloadableProduct_auto_accessor_set_id_impl(ptr, rust_vec_len, data_len),
+5 => wire__crate__api__gogdl__gogdl__DownloadableProduct_auto_accessor_set_name_impl(ptr, rust_vec_len, data_len),
+6 => wire__crate__api__gogdl__gogdl__DownloadableProduct_auto_accessor_set_product_type_impl(ptr, rust_vec_len, data_len),
+7 => wire__crate__api__gogdl__gogdl__GameBuild_auto_accessor_get_build_id_impl(ptr, rust_vec_len, data_len),
+8 => wire__crate__api__gogdl__gogdl__GameBuild_auto_accessor_get_release_date_impl(ptr, rust_vec_len, data_len),
+9 => wire__crate__api__gogdl__gogdl__GameBuild_auto_accessor_get_release_date_timestamp_impl(ptr, rust_vec_len, data_len),
+10 => wire__crate__api__gogdl__gogdl__GameBuild_auto_accessor_get_version_name_impl(ptr, rust_vec_len, data_len),
+11 => wire__crate__api__gogdl__gogdl__GameBuild_auto_accessor_set_build_id_impl(ptr, rust_vec_len, data_len),
+12 => wire__crate__api__gogdl__gogdl__GameBuild_auto_accessor_set_release_date_impl(ptr, rust_vec_len, data_len),
+13 => wire__crate__api__gogdl__gogdl__GameBuild_auto_accessor_set_release_date_timestamp_impl(ptr, rust_vec_len, data_len),
+14 => wire__crate__api__gogdl__gogdl__GameBuild_auto_accessor_set_version_name_impl(ptr, rust_vec_len, data_len),
+22 => wire__crate__api__gogdl__gogdl__Gog_get_login_url_impl(ptr, rust_vec_len, data_len),
+25 => wire__crate__api__gogdl__gogdl__Gog_new_impl(ptr, rust_vec_len, data_len),
+29 => wire__crate__api__gogdl__gogdl__VerificationStream_auto_accessor_get_error_chunks_impl(ptr, rust_vec_len, data_len),
+30 => wire__crate__api__gogdl__gogdl__VerificationStream_auto_accessor_get_status_impl(ptr, rust_vec_len, data_len),
+31 => wire__crate__api__gogdl__gogdl__VerificationStream_auto_accessor_get_total_chunks_impl(ptr, rust_vec_len, data_len),
+32 => wire__crate__api__gogdl__gogdl__VerificationStream_auto_accessor_get_verified_chunks_impl(ptr, rust_vec_len, data_len),
+33 => wire__crate__api__gogdl__gogdl__VerificationStream_auto_accessor_set_error_chunks_impl(ptr, rust_vec_len, data_len),
+34 => wire__crate__api__gogdl__gogdl__VerificationStream_auto_accessor_set_status_impl(ptr, rust_vec_len, data_len),
+35 => wire__crate__api__gogdl__gogdl__VerificationStream_auto_accessor_set_total_chunks_impl(ptr, rust_vec_len, data_len),
+36 => wire__crate__api__gogdl__gogdl__VerificationStream_auto_accessor_set_verified_chunks_impl(ptr, rust_vec_len, data_len),
+                        _ => unreachable!(),
+                    }
 }
 
 // Section: rust2dart
@@ -2648,6 +2658,13 @@ impl SseEncode for i32 {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
         serializer.cursor.write_i32::<NativeEndian>(self).unwrap();
+    }
+}
+
+impl SseEncode for i64 {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        serializer.cursor.write_i64::<NativeEndian>(self).unwrap();
     }
 }
 

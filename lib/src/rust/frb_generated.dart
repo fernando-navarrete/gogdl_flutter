@@ -64,7 +64,7 @@ class RustLib extends BaseEntrypoint<RustLibApi, RustLibApiImpl, RustLibWire> {
   String get codegenVersion => '2.12.0';
 
   @override
-  int get rustContentHash => -1642702666;
+  int get rustContentHash => 476482684;
 
   static const kDefaultExternalLibraryLoaderConfig =
       ExternalLibraryLoaderConfig(
@@ -111,6 +111,10 @@ abstract class RustLibApi extends BaseApi {
     required GameBuild that,
   });
 
+  PlatformInt64 crateApiGogdlGogdlGameBuildAutoAccessorGetReleaseDateTimestamp({
+    required GameBuild that,
+  });
+
   String crateApiGogdlGogdlGameBuildAutoAccessorGetVersionName({
     required GameBuild that,
   });
@@ -123,6 +127,11 @@ abstract class RustLibApi extends BaseApi {
   void crateApiGogdlGogdlGameBuildAutoAccessorSetReleaseDate({
     required GameBuild that,
     required String releaseDate,
+  });
+
+  void crateApiGogdlGogdlGameBuildAutoAccessorSetReleaseDateTimestamp({
+    required GameBuild that,
+    required PlatformInt64 releaseDateTimestamp,
   });
 
   void crateApiGogdlGogdlGameBuildAutoAccessorSetVersionName({
@@ -196,7 +205,7 @@ abstract class RustLibApi extends BaseApi {
     required int gameId,
   });
 
-  List<String> crateApiGogdlGogdlVerificationStreamAutoAccessorGetErrorFiles({
+  List<String> crateApiGogdlGogdlVerificationStreamAutoAccessorGetErrorChunks({
     required VerificationStream that,
   });
 
@@ -204,17 +213,17 @@ abstract class RustLibApi extends BaseApi {
     required VerificationStream that,
   });
 
-  BigInt crateApiGogdlGogdlVerificationStreamAutoAccessorGetTotalFiles({
+  BigInt crateApiGogdlGogdlVerificationStreamAutoAccessorGetTotalChunks({
     required VerificationStream that,
   });
 
-  BigInt crateApiGogdlGogdlVerificationStreamAutoAccessorGetVerifiedFiles({
+  BigInt crateApiGogdlGogdlVerificationStreamAutoAccessorGetVerifiedChunks({
     required VerificationStream that,
   });
 
-  void crateApiGogdlGogdlVerificationStreamAutoAccessorSetErrorFiles({
+  void crateApiGogdlGogdlVerificationStreamAutoAccessorSetErrorChunks({
     required VerificationStream that,
-    required List<String> errorFiles,
+    required List<String> errorChunks,
   });
 
   void crateApiGogdlGogdlVerificationStreamAutoAccessorSetStatus({
@@ -222,14 +231,14 @@ abstract class RustLibApi extends BaseApi {
     required VerificationStatus status,
   });
 
-  void crateApiGogdlGogdlVerificationStreamAutoAccessorSetTotalFiles({
+  void crateApiGogdlGogdlVerificationStreamAutoAccessorSetTotalChunks({
     required VerificationStream that,
-    required BigInt totalFiles,
+    required BigInt totalChunks,
   });
 
-  void crateApiGogdlGogdlVerificationStreamAutoAccessorSetVerifiedFiles({
+  void crateApiGogdlGogdlVerificationStreamAutoAccessorSetVerifiedChunks({
     required VerificationStream that,
-    required BigInt verifiedFiles,
+    required BigInt verifiedChunks,
   });
 
   RustArcIncrementStrongCountFnType
@@ -552,7 +561,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       );
 
   @override
-  String crateApiGogdlGogdlGameBuildAutoAccessorGetVersionName({
+  PlatformInt64 crateApiGogdlGogdlGameBuildAutoAccessorGetReleaseDateTimestamp({
     required GameBuild that,
   }) {
     return handler.executeSync(
@@ -564,6 +573,39 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
             serializer,
           );
           return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 9)!;
+        },
+        codec: SseCodec(
+          decodeSuccessData: sse_decode_i_64,
+          decodeErrorData: null,
+        ),
+        constMeta:
+            kCrateApiGogdlGogdlGameBuildAutoAccessorGetReleaseDateTimestampConstMeta,
+        argValues: [that],
+        apiImpl: this,
+      ),
+    );
+  }
+
+  TaskConstMeta
+  get kCrateApiGogdlGogdlGameBuildAutoAccessorGetReleaseDateTimestampConstMeta =>
+      const TaskConstMeta(
+        debugName: "GameBuild_auto_accessor_get_release_date_timestamp",
+        argNames: ["that"],
+      );
+
+  @override
+  String crateApiGogdlGogdlGameBuildAutoAccessorGetVersionName({
+    required GameBuild that,
+  }) {
+    return handler.executeSync(
+      SyncTask(
+        callFfi: () {
+          final serializer = SseSerializer(generalizedFrbRustBinding);
+          sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerGameBuild(
+            that,
+            serializer,
+          );
+          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 10)!;
         },
         codec: SseCodec(
           decodeSuccessData: sse_decode_String,
@@ -598,7 +640,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
             serializer,
           );
           sse_encode_String(buildId, serializer);
-          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 10)!;
+          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 11)!;
         },
         codec: SseCodec(
           decodeSuccessData: sse_decode_unit,
@@ -632,7 +674,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
             serializer,
           );
           sse_encode_String(releaseDate, serializer);
-          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 11)!;
+          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 12)!;
         },
         codec: SseCodec(
           decodeSuccessData: sse_decode_unit,
@@ -654,6 +696,41 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       );
 
   @override
+  void crateApiGogdlGogdlGameBuildAutoAccessorSetReleaseDateTimestamp({
+    required GameBuild that,
+    required PlatformInt64 releaseDateTimestamp,
+  }) {
+    return handler.executeSync(
+      SyncTask(
+        callFfi: () {
+          final serializer = SseSerializer(generalizedFrbRustBinding);
+          sse_encode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerGameBuild(
+            that,
+            serializer,
+          );
+          sse_encode_i_64(releaseDateTimestamp, serializer);
+          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 13)!;
+        },
+        codec: SseCodec(
+          decodeSuccessData: sse_decode_unit,
+          decodeErrorData: null,
+        ),
+        constMeta:
+            kCrateApiGogdlGogdlGameBuildAutoAccessorSetReleaseDateTimestampConstMeta,
+        argValues: [that, releaseDateTimestamp],
+        apiImpl: this,
+      ),
+    );
+  }
+
+  TaskConstMeta
+  get kCrateApiGogdlGogdlGameBuildAutoAccessorSetReleaseDateTimestampConstMeta =>
+      const TaskConstMeta(
+        debugName: "GameBuild_auto_accessor_set_release_date_timestamp",
+        argNames: ["that", "releaseDateTimestamp"],
+      );
+
+  @override
   void crateApiGogdlGogdlGameBuildAutoAccessorSetVersionName({
     required GameBuild that,
     required String versionName,
@@ -667,7 +744,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
             serializer,
           );
           sse_encode_String(versionName, serializer);
-          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 12)!;
+          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 14)!;
         },
         codec: SseCodec(
           decodeSuccessData: sse_decode_unit,
@@ -705,7 +782,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 13,
+            funcId: 15,
             port: port_,
           );
         },
@@ -746,7 +823,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 14,
+            funcId: 16,
             port: port_,
           );
         },
@@ -785,7 +862,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 15,
+            funcId: 17,
             port: port_,
           );
         },
@@ -823,7 +900,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 16,
+            funcId: 18,
             port: port_,
           );
         },
@@ -862,7 +939,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 17,
+            funcId: 19,
             port: port_,
           );
         },
@@ -900,7 +977,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 18,
+            funcId: 20,
             port: port_,
           );
         },
@@ -938,7 +1015,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 19,
+            funcId: 21,
             port: port_,
           );
         },
@@ -969,7 +1046,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
             that,
             serializer,
           );
-          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 20)!;
+          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 22)!;
         },
         codec: SseCodec(
           decodeSuccessData: sse_decode_String,
@@ -998,7 +1075,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 21,
+            funcId: 23,
             port: port_,
           );
         },
@@ -1033,7 +1110,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 22,
+            funcId: 24,
             port: port_,
           );
         },
@@ -1060,7 +1137,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       SyncTask(
         callFfi: () {
           final serializer = SseSerializer(generalizedFrbRustBinding);
-          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 23)!;
+          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 25)!;
         },
         codec: SseCodec(
           decodeSuccessData:
@@ -1097,7 +1174,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 24,
+            funcId: 26,
             port: port_,
           );
         },
@@ -1135,7 +1212,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 25,
+            funcId: 27,
             port: port_,
           );
         },
@@ -1185,7 +1262,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
             pdeCallFfi(
               generalizedFrbRustBinding,
               serializer,
-              funcId: 26,
+              funcId: 28,
               port: port_,
             );
           },
@@ -1216,7 +1293,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       );
 
   @override
-  List<String> crateApiGogdlGogdlVerificationStreamAutoAccessorGetErrorFiles({
+  List<String> crateApiGogdlGogdlVerificationStreamAutoAccessorGetErrorChunks({
     required VerificationStream that,
   }) {
     return handler.executeSync(
@@ -1227,14 +1304,14 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
             that,
             serializer,
           );
-          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 27)!;
+          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 29)!;
         },
         codec: SseCodec(
           decodeSuccessData: sse_decode_list_String,
           decodeErrorData: null,
         ),
         constMeta:
-            kCrateApiGogdlGogdlVerificationStreamAutoAccessorGetErrorFilesConstMeta,
+            kCrateApiGogdlGogdlVerificationStreamAutoAccessorGetErrorChunksConstMeta,
         argValues: [that],
         apiImpl: this,
       ),
@@ -1242,9 +1319,9 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   TaskConstMeta
-  get kCrateApiGogdlGogdlVerificationStreamAutoAccessorGetErrorFilesConstMeta =>
+  get kCrateApiGogdlGogdlVerificationStreamAutoAccessorGetErrorChunksConstMeta =>
       const TaskConstMeta(
-        debugName: "VerificationStream_auto_accessor_get_error_files",
+        debugName: "VerificationStream_auto_accessor_get_error_chunks",
         argNames: ["that"],
       );
 
@@ -1260,7 +1337,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
             that,
             serializer,
           );
-          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 28)!;
+          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 30)!;
         },
         codec: SseCodec(
           decodeSuccessData:
@@ -1283,7 +1360,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       );
 
   @override
-  BigInt crateApiGogdlGogdlVerificationStreamAutoAccessorGetTotalFiles({
+  BigInt crateApiGogdlGogdlVerificationStreamAutoAccessorGetTotalChunks({
     required VerificationStream that,
   }) {
     return handler.executeSync(
@@ -1294,14 +1371,14 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
             that,
             serializer,
           );
-          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 29)!;
+          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 31)!;
         },
         codec: SseCodec(
           decodeSuccessData: sse_decode_u_64,
           decodeErrorData: null,
         ),
         constMeta:
-            kCrateApiGogdlGogdlVerificationStreamAutoAccessorGetTotalFilesConstMeta,
+            kCrateApiGogdlGogdlVerificationStreamAutoAccessorGetTotalChunksConstMeta,
         argValues: [that],
         apiImpl: this,
       ),
@@ -1309,14 +1386,14 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   TaskConstMeta
-  get kCrateApiGogdlGogdlVerificationStreamAutoAccessorGetTotalFilesConstMeta =>
+  get kCrateApiGogdlGogdlVerificationStreamAutoAccessorGetTotalChunksConstMeta =>
       const TaskConstMeta(
-        debugName: "VerificationStream_auto_accessor_get_total_files",
+        debugName: "VerificationStream_auto_accessor_get_total_chunks",
         argNames: ["that"],
       );
 
   @override
-  BigInt crateApiGogdlGogdlVerificationStreamAutoAccessorGetVerifiedFiles({
+  BigInt crateApiGogdlGogdlVerificationStreamAutoAccessorGetVerifiedChunks({
     required VerificationStream that,
   }) {
     return handler.executeSync(
@@ -1327,14 +1404,14 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
             that,
             serializer,
           );
-          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 30)!;
+          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 32)!;
         },
         codec: SseCodec(
           decodeSuccessData: sse_decode_u_64,
           decodeErrorData: null,
         ),
         constMeta:
-            kCrateApiGogdlGogdlVerificationStreamAutoAccessorGetVerifiedFilesConstMeta,
+            kCrateApiGogdlGogdlVerificationStreamAutoAccessorGetVerifiedChunksConstMeta,
         argValues: [that],
         apiImpl: this,
       ),
@@ -1342,16 +1419,16 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   TaskConstMeta
-  get kCrateApiGogdlGogdlVerificationStreamAutoAccessorGetVerifiedFilesConstMeta =>
+  get kCrateApiGogdlGogdlVerificationStreamAutoAccessorGetVerifiedChunksConstMeta =>
       const TaskConstMeta(
-        debugName: "VerificationStream_auto_accessor_get_verified_files",
+        debugName: "VerificationStream_auto_accessor_get_verified_chunks",
         argNames: ["that"],
       );
 
   @override
-  void crateApiGogdlGogdlVerificationStreamAutoAccessorSetErrorFiles({
+  void crateApiGogdlGogdlVerificationStreamAutoAccessorSetErrorChunks({
     required VerificationStream that,
-    required List<String> errorFiles,
+    required List<String> errorChunks,
   }) {
     return handler.executeSync(
       SyncTask(
@@ -1361,26 +1438,26 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
             that,
             serializer,
           );
-          sse_encode_list_String(errorFiles, serializer);
-          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 31)!;
+          sse_encode_list_String(errorChunks, serializer);
+          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 33)!;
         },
         codec: SseCodec(
           decodeSuccessData: sse_decode_unit,
           decodeErrorData: null,
         ),
         constMeta:
-            kCrateApiGogdlGogdlVerificationStreamAutoAccessorSetErrorFilesConstMeta,
-        argValues: [that, errorFiles],
+            kCrateApiGogdlGogdlVerificationStreamAutoAccessorSetErrorChunksConstMeta,
+        argValues: [that, errorChunks],
         apiImpl: this,
       ),
     );
   }
 
   TaskConstMeta
-  get kCrateApiGogdlGogdlVerificationStreamAutoAccessorSetErrorFilesConstMeta =>
+  get kCrateApiGogdlGogdlVerificationStreamAutoAccessorSetErrorChunksConstMeta =>
       const TaskConstMeta(
-        debugName: "VerificationStream_auto_accessor_set_error_files",
-        argNames: ["that", "errorFiles"],
+        debugName: "VerificationStream_auto_accessor_set_error_chunks",
+        argNames: ["that", "errorChunks"],
       );
 
   @override
@@ -1400,7 +1477,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
             status,
             serializer,
           );
-          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 32)!;
+          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 34)!;
         },
         codec: SseCodec(
           decodeSuccessData: sse_decode_unit,
@@ -1422,9 +1499,9 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       );
 
   @override
-  void crateApiGogdlGogdlVerificationStreamAutoAccessorSetTotalFiles({
+  void crateApiGogdlGogdlVerificationStreamAutoAccessorSetTotalChunks({
     required VerificationStream that,
-    required BigInt totalFiles,
+    required BigInt totalChunks,
   }) {
     return handler.executeSync(
       SyncTask(
@@ -1434,32 +1511,32 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
             that,
             serializer,
           );
-          sse_encode_u_64(totalFiles, serializer);
-          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 33)!;
+          sse_encode_u_64(totalChunks, serializer);
+          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 35)!;
         },
         codec: SseCodec(
           decodeSuccessData: sse_decode_unit,
           decodeErrorData: null,
         ),
         constMeta:
-            kCrateApiGogdlGogdlVerificationStreamAutoAccessorSetTotalFilesConstMeta,
-        argValues: [that, totalFiles],
+            kCrateApiGogdlGogdlVerificationStreamAutoAccessorSetTotalChunksConstMeta,
+        argValues: [that, totalChunks],
         apiImpl: this,
       ),
     );
   }
 
   TaskConstMeta
-  get kCrateApiGogdlGogdlVerificationStreamAutoAccessorSetTotalFilesConstMeta =>
+  get kCrateApiGogdlGogdlVerificationStreamAutoAccessorSetTotalChunksConstMeta =>
       const TaskConstMeta(
-        debugName: "VerificationStream_auto_accessor_set_total_files",
-        argNames: ["that", "totalFiles"],
+        debugName: "VerificationStream_auto_accessor_set_total_chunks",
+        argNames: ["that", "totalChunks"],
       );
 
   @override
-  void crateApiGogdlGogdlVerificationStreamAutoAccessorSetVerifiedFiles({
+  void crateApiGogdlGogdlVerificationStreamAutoAccessorSetVerifiedChunks({
     required VerificationStream that,
-    required BigInt verifiedFiles,
+    required BigInt verifiedChunks,
   }) {
     return handler.executeSync(
       SyncTask(
@@ -1469,26 +1546,26 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
             that,
             serializer,
           );
-          sse_encode_u_64(verifiedFiles, serializer);
-          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 34)!;
+          sse_encode_u_64(verifiedChunks, serializer);
+          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 36)!;
         },
         codec: SseCodec(
           decodeSuccessData: sse_decode_unit,
           decodeErrorData: null,
         ),
         constMeta:
-            kCrateApiGogdlGogdlVerificationStreamAutoAccessorSetVerifiedFilesConstMeta,
-        argValues: [that, verifiedFiles],
+            kCrateApiGogdlGogdlVerificationStreamAutoAccessorSetVerifiedChunksConstMeta,
+        argValues: [that, verifiedChunks],
         apiImpl: this,
       ),
     );
   }
 
   TaskConstMeta
-  get kCrateApiGogdlGogdlVerificationStreamAutoAccessorSetVerifiedFilesConstMeta =>
+  get kCrateApiGogdlGogdlVerificationStreamAutoAccessorSetVerifiedChunksConstMeta =>
       const TaskConstMeta(
-        debugName: "VerificationStream_auto_accessor_set_verified_files",
-        argNames: ["that", "verifiedFiles"],
+        debugName: "VerificationStream_auto_accessor_set_verified_chunks",
+        argNames: ["that", "verifiedChunks"],
       );
 
   Future<void> Function(int, dynamic)
@@ -1776,6 +1853,12 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   int dco_decode_i_32(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     return raw as int;
+  }
+
+  @protected
+  PlatformInt64 dco_decode_i_64(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return dcoDecodeI64(raw);
   }
 
   @protected
@@ -2116,6 +2199,12 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   int sse_decode_i_32(SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     return deserializer.buffer.getInt32();
+  }
+
+  @protected
+  PlatformInt64 sse_decode_i_64(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return deserializer.buffer.getPlatformInt64();
   }
 
   @protected
@@ -2528,6 +2617,12 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  void sse_encode_i_64(PlatformInt64 self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    serializer.buffer.putPlatformInt64(self);
+  }
+
+  @protected
   void sse_encode_isize(PlatformInt64 self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     serializer.buffer.putPlatformInt64(self);
@@ -2707,6 +2802,11 @@ class GameBuildImpl extends RustOpaque implements GameBuild {
   String get releaseDate => RustLib.instance.api
       .crateApiGogdlGogdlGameBuildAutoAccessorGetReleaseDate(that: this);
 
+  PlatformInt64 get releaseDateTimestamp => RustLib.instance.api
+      .crateApiGogdlGogdlGameBuildAutoAccessorGetReleaseDateTimestamp(
+        that: this,
+      );
+
   String get versionName => RustLib.instance.api
       .crateApiGogdlGogdlGameBuildAutoAccessorGetVersionName(that: this);
 
@@ -2720,6 +2820,14 @@ class GameBuildImpl extends RustOpaque implements GameBuild {
       .crateApiGogdlGogdlGameBuildAutoAccessorSetReleaseDate(
         that: this,
         releaseDate: releaseDate,
+      );
+
+  set releaseDateTimestamp(PlatformInt64 releaseDateTimestamp) => RustLib
+      .instance
+      .api
+      .crateApiGogdlGogdlGameBuildAutoAccessorSetReleaseDateTimestamp(
+        that: this,
+        releaseDateTimestamp: releaseDateTimestamp,
       );
 
   set versionName(String versionName) => RustLib.instance.api
@@ -2865,28 +2973,28 @@ class VerificationStreamImpl extends RustOpaque implements VerificationStream {
         .rust_arc_decrement_strong_count_VerificationStreamPtr,
   );
 
-  List<String> get errorFiles => RustLib.instance.api
-      .crateApiGogdlGogdlVerificationStreamAutoAccessorGetErrorFiles(
+  List<String> get errorChunks => RustLib.instance.api
+      .crateApiGogdlGogdlVerificationStreamAutoAccessorGetErrorChunks(
         that: this,
       );
 
   VerificationStatus get status => RustLib.instance.api
       .crateApiGogdlGogdlVerificationStreamAutoAccessorGetStatus(that: this);
 
-  BigInt get totalFiles => RustLib.instance.api
-      .crateApiGogdlGogdlVerificationStreamAutoAccessorGetTotalFiles(
+  BigInt get totalChunks => RustLib.instance.api
+      .crateApiGogdlGogdlVerificationStreamAutoAccessorGetTotalChunks(
         that: this,
       );
 
-  BigInt get verifiedFiles => RustLib.instance.api
-      .crateApiGogdlGogdlVerificationStreamAutoAccessorGetVerifiedFiles(
+  BigInt get verifiedChunks => RustLib.instance.api
+      .crateApiGogdlGogdlVerificationStreamAutoAccessorGetVerifiedChunks(
         that: this,
       );
 
-  set errorFiles(List<String> errorFiles) => RustLib.instance.api
-      .crateApiGogdlGogdlVerificationStreamAutoAccessorSetErrorFiles(
+  set errorChunks(List<String> errorChunks) => RustLib.instance.api
+      .crateApiGogdlGogdlVerificationStreamAutoAccessorSetErrorChunks(
         that: this,
-        errorFiles: errorFiles,
+        errorChunks: errorChunks,
       );
 
   set status(VerificationStatus status) => RustLib.instance.api
@@ -2895,15 +3003,15 @@ class VerificationStreamImpl extends RustOpaque implements VerificationStream {
         status: status,
       );
 
-  set totalFiles(BigInt totalFiles) => RustLib.instance.api
-      .crateApiGogdlGogdlVerificationStreamAutoAccessorSetTotalFiles(
+  set totalChunks(BigInt totalChunks) => RustLib.instance.api
+      .crateApiGogdlGogdlVerificationStreamAutoAccessorSetTotalChunks(
         that: this,
-        totalFiles: totalFiles,
+        totalChunks: totalChunks,
       );
 
-  set verifiedFiles(BigInt verifiedFiles) => RustLib.instance.api
-      .crateApiGogdlGogdlVerificationStreamAutoAccessorSetVerifiedFiles(
+  set verifiedChunks(BigInt verifiedChunks) => RustLib.instance.api
+      .crateApiGogdlGogdlVerificationStreamAutoAccessorSetVerifiedChunks(
         that: this,
-        verifiedFiles: verifiedFiles,
+        verifiedChunks: verifiedChunks,
       );
 }

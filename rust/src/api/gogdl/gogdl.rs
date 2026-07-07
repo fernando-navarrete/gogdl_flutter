@@ -17,6 +17,7 @@ pub struct GameBuild {
     pub build_id: String,
     pub version_name: String,
     pub release_date: String,
+    pub release_date_timestamp: i64,
 }
 
 #[frb(opaque)]
@@ -39,9 +40,9 @@ pub enum VerificationStatus {
 #[derive(Clone)]
 pub struct VerificationStream {
     pub status: VerificationStatus,
-    pub total_files: u64,
-    pub verified_files: u64,
-    pub error_files: Vec<String>,
+    pub total_chunks: u64,
+    pub verified_chunks: u64,
+    pub error_chunks: Vec<String>,
 }
 
 #[derive(Error, Debug)]
@@ -214,6 +215,7 @@ impl Gog {
                 build_id: build.build_id.clone(),
                 version_name: build.version_name.clone(),
                 release_date: build.date_published.to_rfc2822(),
+                release_date_timestamp: build.date_published.timestamp(),
             })
             .collect();
         Ok(builds)
@@ -234,51 +236,61 @@ impl Gog {
         stream
             .add(VerificationStream {
                 status: VerificationStatus::FetchingFiles,
-                total_files: 0,
-                verified_files: 0,
-                error_files: Vec::new(),
+                total_chunks: 0,
+                verified_chunks: 0,
+                error_chunks: Vec::new(),
             })
             .ok();
         let files = self
             .get_downloadable_files(game_id, build_name, selected_products)
             .await?;
 
-        let mut total_files = 0;
-        for file_list in files.iter() {
-            total_files += file_list.product_files.len() as u64;
-        }
+        let total_chunks = files
+            .iter()
+            .map(|file| {
+                file.product_files
+                    .iter()
+                    .map(|depot| depot.get_download_units().len() as u64)
+            })
+            .flatten()
+            .sum::<u64>();
 
         stream
             .add(VerificationStream {
                 status: VerificationStatus::Verifying,
-                total_files,
-                verified_files: 0,
-                error_files: Vec::new(),
+                total_chunks: total_chunks,
+                verified_chunks: 0,
+                error_chunks: Vec::new(),
             })
             .ok();
 
         let (tx, mut rx) = mpsc::unbounded_channel();
 
-        let mut verified_files: u64 = 0;
-        let mut error_files: Vec<String> = Vec::new();
+        let mut verified_chunks: u64 = 0;
+        let mut error_chunks: Vec<String> = Vec::new();
 
         let verify_future = self.inner.verify_files(files, path, tx);
         let drain_future = async {
             while let Some(event) = rx.recv().await {
                 match event {
-                    VerifyEvent::FileOk => {
-                        verified_files += 1;
+                    VerifyEvent::ChunkOk => {
+                        verified_chunks += 1;
                     }
-                    VerifyEvent::FileChecksumMismatch(file) => {
-                        error_files.push(file);
+                    VerifyEvent::ChunkChecksumMismatch(file) => {
+                        verified_chunks += 1;
+                        error_chunks.push(file);
+                    }
+                    VerifyEvent::FileNotFound(file) => {
+                        verified_chunks += 1;
+                        error_chunks.push(file);
                     }
                 }
                 stream
                     .add(VerificationStream {
                         status: VerificationStatus::Verifying,
-                        total_files,
-                        verified_files,
-                        error_files: error_files.clone(),
+                        total_chunks,
+                        verified_chunks,
+                        error_chunks: error_chunks.clone(),
                     })
                     .ok();
             }
@@ -290,9 +302,9 @@ impl Gog {
         stream
             .add(VerificationStream {
                 status: VerificationStatus::Verified,
-                total_files,
-                verified_files,
-                error_files: error_files.clone(),
+                total_chunks,
+                verified_chunks,
+                error_chunks: error_chunks.clone(),
             })
             .ok();
 
