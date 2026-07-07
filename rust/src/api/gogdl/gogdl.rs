@@ -1,6 +1,9 @@
 use flutter_rust_bridge::{frb, DartFnFuture};
 use futures::stream::{self, StreamExt};
-use gogdl_lib2::{Client, DownloadableFiles, GogDl, GogDlError, VerifyEvent};
+use gogdl_lib2::{
+    Client, DownloadEvent, DownloadableFiles, FileAllocationEvent, FileVerifyEvent, GogDl,
+    GogDlError, RepairDetail, RepairEvent, RepairStage, VerifyChunksEvent, VerifyEvent,
+};
 use std::sync::Arc;
 use thiserror::Error;
 use tokio::sync::mpsc;
@@ -43,6 +46,51 @@ pub struct VerificationStream {
     pub total_chunks: u64,
     pub verified_chunks: u64,
     pub error_chunks: Vec<String>,
+}
+
+#[frb(opaque)]
+#[derive(Clone, Copy, PartialEq)]
+pub enum RepairStatus {
+    FetchingFiles,
+    VerifyingFiles,
+    Allocating,
+    VerifyingChunks,
+    Downloading,
+    Repaired,
+}
+
+impl RepairStatus {
+    // Opaque enums expose no variant info to Dart, so this accessor is what
+    // lets a client tell which stage a `RepairStream` snapshot came from,
+    // e.g. `switch (event.status.name()) { case "downloading": ... }`.
+    #[frb(sync)]
+    pub fn name(&self) -> String {
+        match self {
+            RepairStatus::FetchingFiles => "fetchingFiles",
+            RepairStatus::VerifyingFiles => "verifyingFiles",
+            RepairStatus::Allocating => "allocating",
+            RepairStatus::VerifyingChunks => "verifyingChunks",
+            RepairStatus::Downloading => "downloading",
+            RepairStatus::Repaired => "repaired",
+        }
+        .to_string()
+    }
+}
+
+#[frb(opaque)]
+#[derive(Clone)]
+pub struct RepairStream {
+    pub status: RepairStatus,
+    // file-verify stage progress
+    pub total_files: u64,
+    pub processed_files: u64,
+    // download stage progress (populated from DownloadEvent::Total / Progress)
+    pub total_chunks: u64,
+    pub downloaded_chunks: u64,
+    pub total_bytes: u64,
+    pub downloaded_bytes: u64,
+    // accumulated problem paths across all stages
+    pub error_files: Vec<String>,
 }
 
 #[derive(Error, Debug)]
@@ -284,6 +332,10 @@ impl Gog {
                         verified_chunks += 1;
                         error_chunks.push(file);
                     }
+                    VerifyEvent::CouldNotResolvePath(file) => {
+                        verified_chunks += 1;
+                        error_chunks.push(file);
+                    }
                 }
                 stream
                     .add(VerificationStream {
@@ -305,6 +357,149 @@ impl Gog {
                 total_chunks,
                 verified_chunks,
                 error_chunks: error_chunks.clone(),
+            })
+            .ok();
+
+        Ok(())
+    }
+
+    pub async fn repair_download(
+        &self,
+        path: &str,
+        build_name: &str,
+        selected_products: &[String],
+        game_id: i32,
+        stream: StreamSink<RepairStream>,
+    ) -> Result<(), GogError> {
+        stream
+            .add(RepairStream {
+                status: RepairStatus::FetchingFiles,
+                total_files: 0,
+                processed_files: 0,
+                total_chunks: 0,
+                downloaded_chunks: 0,
+                total_bytes: 0,
+                downloaded_bytes: 0,
+                error_files: Vec::new(),
+            })
+            .ok();
+        let files = self
+            .get_downloadable_files(game_id, build_name, selected_products)
+            .await?;
+
+        let total_files = files
+            .iter()
+            .map(|file| file.product_files.len() as u64)
+            .sum::<u64>();
+
+        stream
+            .add(RepairStream {
+                status: RepairStatus::VerifyingFiles,
+                total_files,
+                processed_files: 0,
+                total_chunks: 0,
+                downloaded_chunks: 0,
+                total_bytes: 0,
+                downloaded_bytes: 0,
+                error_files: Vec::new(),
+            })
+            .ok();
+
+        let (tx, mut rx) = mpsc::unbounded_channel::<RepairEvent>();
+
+        let mut processed_files: u64 = 0;
+        let mut total_chunks: u64 = 0;
+        let mut downloaded_chunks: u64 = 0;
+        let mut total_bytes: u64 = 0;
+        let mut downloaded_bytes: u64 = 0;
+        let mut error_files: Vec<String> = Vec::new();
+
+        let repair_future = self.inner.repair_files(files, path, tx);
+        let drain_future = async {
+            while let Some(RepairEvent { stage, detail }) = rx.recv().await {
+                let status = match stage {
+                    RepairStage::VerifyingFiles => RepairStatus::VerifyingFiles,
+                    RepairStage::Allocating => RepairStatus::Allocating,
+                    RepairStage::VerifyingChunks => RepairStatus::VerifyingChunks,
+                    RepairStage::Downloading => RepairStatus::Downloading,
+                };
+                match detail {
+                    RepairDetail::FileVerify(event) => {
+                        processed_files += 1;
+                        match event {
+                            FileVerifyEvent::FileOk => {}
+                            FileVerifyEvent::FileNotFound(path)
+                            | FileVerifyEvent::CouldNotResolvePath(path)
+                            | FileVerifyEvent::CouldNotReadFileSize(path)
+                            | FileVerifyEvent::ChecksumMismatch(path)
+                            | FileVerifyEvent::SizeMismatch(path, _, _) => {
+                                error_files.push(path);
+                            }
+                        }
+                    }
+                    RepairDetail::Allocation(event) => match event {
+                        FileAllocationEvent::FileOk | FileAllocationEvent::FileAllocated(_) => {}
+                        FileAllocationEvent::PathResolveError(path)
+                        | FileAllocationEvent::AllocationError(path)
+                        | FileAllocationEvent::FileSizeError(path) => {
+                            error_files.push(path);
+                        }
+                    },
+                    RepairDetail::ChunkVerify(event) => match event {
+                        VerifyChunksEvent::PathResolveError(path)
+                        | VerifyChunksEvent::FileNotFound(path)
+                        | VerifyChunksEvent::ChecksumCalculationError(path)
+                        | VerifyChunksEvent::ChunkChecksumMismatch(path) => {
+                            error_files.push(path);
+                        }
+                    },
+                    RepairDetail::Download(event) => match event {
+                        DownloadEvent::Total { bytes, chunks } => {
+                            total_bytes = bytes;
+                            total_chunks = chunks as u64;
+                        }
+                        DownloadEvent::Progress { bytes } => {
+                            downloaded_bytes += bytes;
+                        }
+                        DownloadEvent::ChunkDownloaded { .. } => {
+                            downloaded_chunks += 1;
+                        }
+                        DownloadEvent::SecureLinkError(path)
+                        | DownloadEvent::DownloadError(path)
+                        | DownloadEvent::WriteError(path)
+                        | DownloadEvent::PathResolveError(path) => {
+                            error_files.push(path);
+                        }
+                    },
+                }
+                stream
+                    .add(RepairStream {
+                        status,
+                        total_files,
+                        processed_files,
+                        total_chunks,
+                        downloaded_chunks,
+                        total_bytes,
+                        downloaded_bytes,
+                        error_files: error_files.clone(),
+                    })
+                    .ok();
+            }
+        };
+
+        let (repair_result, ()) = tokio::join!(repair_future, drain_future);
+        repair_result?;
+
+        stream
+            .add(RepairStream {
+                status: RepairStatus::Repaired,
+                total_files,
+                processed_files,
+                total_chunks,
+                downloaded_chunks,
+                total_bytes,
+                downloaded_bytes,
+                error_files: error_files.clone(),
             })
             .ok();
 

@@ -64,7 +64,7 @@ class RustLib extends BaseEntrypoint<RustLibApi, RustLibApiImpl, RustLibWire> {
   String get codegenVersion => '2.12.0';
 
   @override
-  int get rustContentHash => 476482684;
+  int get rustContentHash => -103689423;
 
   static const kDefaultExternalLibraryLoaderConfig =
       ExternalLibraryLoaderConfig(
@@ -192,6 +192,14 @@ abstract class RustLibApi extends BaseApi {
     required FutureOr<void> Function(String) callback,
   });
 
+  Stream<RepairStream> crateApiGogdlGogdlGogRepairDownload({
+    required Gog that,
+    required String path,
+    required String buildName,
+    required List<String> selectedProducts,
+    required int gameId,
+  });
+
   Future<void> crateApiGogdlGogdlGogRestoreAuthFromString({
     required Gog that,
     required String token,
@@ -203,6 +211,80 @@ abstract class RustLibApi extends BaseApi {
     required String buildName,
     required List<String> selectedProducts,
     required int gameId,
+  });
+
+  String crateApiGogdlGogdlRepairStatusName({required RepairStatus that});
+
+  BigInt crateApiGogdlGogdlRepairStreamAutoAccessorGetDownloadedBytes({
+    required RepairStream that,
+  });
+
+  BigInt crateApiGogdlGogdlRepairStreamAutoAccessorGetDownloadedChunks({
+    required RepairStream that,
+  });
+
+  List<String> crateApiGogdlGogdlRepairStreamAutoAccessorGetErrorFiles({
+    required RepairStream that,
+  });
+
+  BigInt crateApiGogdlGogdlRepairStreamAutoAccessorGetProcessedFiles({
+    required RepairStream that,
+  });
+
+  RepairStatus crateApiGogdlGogdlRepairStreamAutoAccessorGetStatus({
+    required RepairStream that,
+  });
+
+  BigInt crateApiGogdlGogdlRepairStreamAutoAccessorGetTotalBytes({
+    required RepairStream that,
+  });
+
+  BigInt crateApiGogdlGogdlRepairStreamAutoAccessorGetTotalChunks({
+    required RepairStream that,
+  });
+
+  BigInt crateApiGogdlGogdlRepairStreamAutoAccessorGetTotalFiles({
+    required RepairStream that,
+  });
+
+  void crateApiGogdlGogdlRepairStreamAutoAccessorSetDownloadedBytes({
+    required RepairStream that,
+    required BigInt downloadedBytes,
+  });
+
+  void crateApiGogdlGogdlRepairStreamAutoAccessorSetDownloadedChunks({
+    required RepairStream that,
+    required BigInt downloadedChunks,
+  });
+
+  void crateApiGogdlGogdlRepairStreamAutoAccessorSetErrorFiles({
+    required RepairStream that,
+    required List<String> errorFiles,
+  });
+
+  void crateApiGogdlGogdlRepairStreamAutoAccessorSetProcessedFiles({
+    required RepairStream that,
+    required BigInt processedFiles,
+  });
+
+  void crateApiGogdlGogdlRepairStreamAutoAccessorSetStatus({
+    required RepairStream that,
+    required RepairStatus status,
+  });
+
+  void crateApiGogdlGogdlRepairStreamAutoAccessorSetTotalBytes({
+    required RepairStream that,
+    required BigInt totalBytes,
+  });
+
+  void crateApiGogdlGogdlRepairStreamAutoAccessorSetTotalChunks({
+    required RepairStream that,
+    required BigInt totalChunks,
+  });
+
+  void crateApiGogdlGogdlRepairStreamAutoAccessorSetTotalFiles({
+    required RepairStream that,
+    required BigInt totalFiles,
   });
 
   List<String> crateApiGogdlGogdlVerificationStreamAutoAccessorGetErrorChunks({
@@ -263,6 +345,22 @@ abstract class RustLibApi extends BaseApi {
   RustArcDecrementStrongCountFnType get rust_arc_decrement_strong_count_Gog;
 
   CrossPlatformFinalizerArg get rust_arc_decrement_strong_count_GogPtr;
+
+  RustArcIncrementStrongCountFnType
+  get rust_arc_increment_strong_count_RepairStatus;
+
+  RustArcDecrementStrongCountFnType
+  get rust_arc_decrement_strong_count_RepairStatus;
+
+  CrossPlatformFinalizerArg get rust_arc_decrement_strong_count_RepairStatusPtr;
+
+  RustArcIncrementStrongCountFnType
+  get rust_arc_increment_strong_count_RepairStream;
+
+  RustArcDecrementStrongCountFnType
+  get rust_arc_decrement_strong_count_RepairStream;
+
+  CrossPlatformFinalizerArg get rust_arc_decrement_strong_count_RepairStreamPtr;
 
   RustArcIncrementStrongCountFnType
   get rust_arc_increment_strong_count_VerificationStatus;
@@ -1196,6 +1294,65 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       );
 
   @override
+  Stream<RepairStream> crateApiGogdlGogdlGogRepairDownload({
+    required Gog that,
+    required String path,
+    required String buildName,
+    required List<String> selectedProducts,
+    required int gameId,
+  }) {
+    final stream = RustStreamSink<RepairStream>();
+    unawaited(
+      handler.executeNormal(
+        NormalTask(
+          callFfi: (port_) {
+            final serializer = SseSerializer(generalizedFrbRustBinding);
+            sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerGog(
+              that,
+              serializer,
+            );
+            sse_encode_String(path, serializer);
+            sse_encode_String(buildName, serializer);
+            sse_encode_list_String(selectedProducts, serializer);
+            sse_encode_i_32(gameId, serializer);
+            sse_encode_StreamSink_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerRepairStream_Sse(
+              stream,
+              serializer,
+            );
+            pdeCallFfi(
+              generalizedFrbRustBinding,
+              serializer,
+              funcId: 27,
+              port: port_,
+            );
+          },
+          codec: SseCodec(
+            decodeSuccessData: sse_decode_unit,
+            decodeErrorData: sse_decode_gog_error,
+          ),
+          constMeta: kCrateApiGogdlGogdlGogRepairDownloadConstMeta,
+          argValues: [that, path, buildName, selectedProducts, gameId, stream],
+          apiImpl: this,
+        ),
+      ),
+    );
+    return stream.stream;
+  }
+
+  TaskConstMeta get kCrateApiGogdlGogdlGogRepairDownloadConstMeta =>
+      const TaskConstMeta(
+        debugName: "Gog_repair_download",
+        argNames: [
+          "that",
+          "path",
+          "buildName",
+          "selectedProducts",
+          "gameId",
+          "stream",
+        ],
+      );
+
+  @override
   Future<void> crateApiGogdlGogdlGogRestoreAuthFromString({
     required Gog that,
     required String token,
@@ -1212,7 +1369,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 27,
+            funcId: 28,
             port: port_,
           );
         },
@@ -1262,7 +1419,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
             pdeCallFfi(
               generalizedFrbRustBinding,
               serializer,
-              funcId: 28,
+              funcId: 29,
               port: port_,
             );
           },
@@ -1293,6 +1450,580 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       );
 
   @override
+  String crateApiGogdlGogdlRepairStatusName({required RepairStatus that}) {
+    return handler.executeSync(
+      SyncTask(
+        callFfi: () {
+          final serializer = SseSerializer(generalizedFrbRustBinding);
+          sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerRepairStatus(
+            that,
+            serializer,
+          );
+          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 30)!;
+        },
+        codec: SseCodec(
+          decodeSuccessData: sse_decode_String,
+          decodeErrorData: null,
+        ),
+        constMeta: kCrateApiGogdlGogdlRepairStatusNameConstMeta,
+        argValues: [that],
+        apiImpl: this,
+      ),
+    );
+  }
+
+  TaskConstMeta get kCrateApiGogdlGogdlRepairStatusNameConstMeta =>
+      const TaskConstMeta(debugName: "RepairStatus_name", argNames: ["that"]);
+
+  @override
+  BigInt crateApiGogdlGogdlRepairStreamAutoAccessorGetDownloadedBytes({
+    required RepairStream that,
+  }) {
+    return handler.executeSync(
+      SyncTask(
+        callFfi: () {
+          final serializer = SseSerializer(generalizedFrbRustBinding);
+          sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerRepairStream(
+            that,
+            serializer,
+          );
+          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 31)!;
+        },
+        codec: SseCodec(
+          decodeSuccessData: sse_decode_u_64,
+          decodeErrorData: null,
+        ),
+        constMeta:
+            kCrateApiGogdlGogdlRepairStreamAutoAccessorGetDownloadedBytesConstMeta,
+        argValues: [that],
+        apiImpl: this,
+      ),
+    );
+  }
+
+  TaskConstMeta
+  get kCrateApiGogdlGogdlRepairStreamAutoAccessorGetDownloadedBytesConstMeta =>
+      const TaskConstMeta(
+        debugName: "RepairStream_auto_accessor_get_downloaded_bytes",
+        argNames: ["that"],
+      );
+
+  @override
+  BigInt crateApiGogdlGogdlRepairStreamAutoAccessorGetDownloadedChunks({
+    required RepairStream that,
+  }) {
+    return handler.executeSync(
+      SyncTask(
+        callFfi: () {
+          final serializer = SseSerializer(generalizedFrbRustBinding);
+          sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerRepairStream(
+            that,
+            serializer,
+          );
+          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 32)!;
+        },
+        codec: SseCodec(
+          decodeSuccessData: sse_decode_u_64,
+          decodeErrorData: null,
+        ),
+        constMeta:
+            kCrateApiGogdlGogdlRepairStreamAutoAccessorGetDownloadedChunksConstMeta,
+        argValues: [that],
+        apiImpl: this,
+      ),
+    );
+  }
+
+  TaskConstMeta
+  get kCrateApiGogdlGogdlRepairStreamAutoAccessorGetDownloadedChunksConstMeta =>
+      const TaskConstMeta(
+        debugName: "RepairStream_auto_accessor_get_downloaded_chunks",
+        argNames: ["that"],
+      );
+
+  @override
+  List<String> crateApiGogdlGogdlRepairStreamAutoAccessorGetErrorFiles({
+    required RepairStream that,
+  }) {
+    return handler.executeSync(
+      SyncTask(
+        callFfi: () {
+          final serializer = SseSerializer(generalizedFrbRustBinding);
+          sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerRepairStream(
+            that,
+            serializer,
+          );
+          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 33)!;
+        },
+        codec: SseCodec(
+          decodeSuccessData: sse_decode_list_String,
+          decodeErrorData: null,
+        ),
+        constMeta:
+            kCrateApiGogdlGogdlRepairStreamAutoAccessorGetErrorFilesConstMeta,
+        argValues: [that],
+        apiImpl: this,
+      ),
+    );
+  }
+
+  TaskConstMeta
+  get kCrateApiGogdlGogdlRepairStreamAutoAccessorGetErrorFilesConstMeta =>
+      const TaskConstMeta(
+        debugName: "RepairStream_auto_accessor_get_error_files",
+        argNames: ["that"],
+      );
+
+  @override
+  BigInt crateApiGogdlGogdlRepairStreamAutoAccessorGetProcessedFiles({
+    required RepairStream that,
+  }) {
+    return handler.executeSync(
+      SyncTask(
+        callFfi: () {
+          final serializer = SseSerializer(generalizedFrbRustBinding);
+          sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerRepairStream(
+            that,
+            serializer,
+          );
+          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 34)!;
+        },
+        codec: SseCodec(
+          decodeSuccessData: sse_decode_u_64,
+          decodeErrorData: null,
+        ),
+        constMeta:
+            kCrateApiGogdlGogdlRepairStreamAutoAccessorGetProcessedFilesConstMeta,
+        argValues: [that],
+        apiImpl: this,
+      ),
+    );
+  }
+
+  TaskConstMeta
+  get kCrateApiGogdlGogdlRepairStreamAutoAccessorGetProcessedFilesConstMeta =>
+      const TaskConstMeta(
+        debugName: "RepairStream_auto_accessor_get_processed_files",
+        argNames: ["that"],
+      );
+
+  @override
+  RepairStatus crateApiGogdlGogdlRepairStreamAutoAccessorGetStatus({
+    required RepairStream that,
+  }) {
+    return handler.executeSync(
+      SyncTask(
+        callFfi: () {
+          final serializer = SseSerializer(generalizedFrbRustBinding);
+          sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerRepairStream(
+            that,
+            serializer,
+          );
+          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 35)!;
+        },
+        codec: SseCodec(
+          decodeSuccessData:
+              sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerRepairStatus,
+          decodeErrorData: null,
+        ),
+        constMeta:
+            kCrateApiGogdlGogdlRepairStreamAutoAccessorGetStatusConstMeta,
+        argValues: [that],
+        apiImpl: this,
+      ),
+    );
+  }
+
+  TaskConstMeta
+  get kCrateApiGogdlGogdlRepairStreamAutoAccessorGetStatusConstMeta =>
+      const TaskConstMeta(
+        debugName: "RepairStream_auto_accessor_get_status",
+        argNames: ["that"],
+      );
+
+  @override
+  BigInt crateApiGogdlGogdlRepairStreamAutoAccessorGetTotalBytes({
+    required RepairStream that,
+  }) {
+    return handler.executeSync(
+      SyncTask(
+        callFfi: () {
+          final serializer = SseSerializer(generalizedFrbRustBinding);
+          sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerRepairStream(
+            that,
+            serializer,
+          );
+          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 36)!;
+        },
+        codec: SseCodec(
+          decodeSuccessData: sse_decode_u_64,
+          decodeErrorData: null,
+        ),
+        constMeta:
+            kCrateApiGogdlGogdlRepairStreamAutoAccessorGetTotalBytesConstMeta,
+        argValues: [that],
+        apiImpl: this,
+      ),
+    );
+  }
+
+  TaskConstMeta
+  get kCrateApiGogdlGogdlRepairStreamAutoAccessorGetTotalBytesConstMeta =>
+      const TaskConstMeta(
+        debugName: "RepairStream_auto_accessor_get_total_bytes",
+        argNames: ["that"],
+      );
+
+  @override
+  BigInt crateApiGogdlGogdlRepairStreamAutoAccessorGetTotalChunks({
+    required RepairStream that,
+  }) {
+    return handler.executeSync(
+      SyncTask(
+        callFfi: () {
+          final serializer = SseSerializer(generalizedFrbRustBinding);
+          sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerRepairStream(
+            that,
+            serializer,
+          );
+          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 37)!;
+        },
+        codec: SseCodec(
+          decodeSuccessData: sse_decode_u_64,
+          decodeErrorData: null,
+        ),
+        constMeta:
+            kCrateApiGogdlGogdlRepairStreamAutoAccessorGetTotalChunksConstMeta,
+        argValues: [that],
+        apiImpl: this,
+      ),
+    );
+  }
+
+  TaskConstMeta
+  get kCrateApiGogdlGogdlRepairStreamAutoAccessorGetTotalChunksConstMeta =>
+      const TaskConstMeta(
+        debugName: "RepairStream_auto_accessor_get_total_chunks",
+        argNames: ["that"],
+      );
+
+  @override
+  BigInt crateApiGogdlGogdlRepairStreamAutoAccessorGetTotalFiles({
+    required RepairStream that,
+  }) {
+    return handler.executeSync(
+      SyncTask(
+        callFfi: () {
+          final serializer = SseSerializer(generalizedFrbRustBinding);
+          sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerRepairStream(
+            that,
+            serializer,
+          );
+          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 38)!;
+        },
+        codec: SseCodec(
+          decodeSuccessData: sse_decode_u_64,
+          decodeErrorData: null,
+        ),
+        constMeta:
+            kCrateApiGogdlGogdlRepairStreamAutoAccessorGetTotalFilesConstMeta,
+        argValues: [that],
+        apiImpl: this,
+      ),
+    );
+  }
+
+  TaskConstMeta
+  get kCrateApiGogdlGogdlRepairStreamAutoAccessorGetTotalFilesConstMeta =>
+      const TaskConstMeta(
+        debugName: "RepairStream_auto_accessor_get_total_files",
+        argNames: ["that"],
+      );
+
+  @override
+  void crateApiGogdlGogdlRepairStreamAutoAccessorSetDownloadedBytes({
+    required RepairStream that,
+    required BigInt downloadedBytes,
+  }) {
+    return handler.executeSync(
+      SyncTask(
+        callFfi: () {
+          final serializer = SseSerializer(generalizedFrbRustBinding);
+          sse_encode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerRepairStream(
+            that,
+            serializer,
+          );
+          sse_encode_u_64(downloadedBytes, serializer);
+          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 39)!;
+        },
+        codec: SseCodec(
+          decodeSuccessData: sse_decode_unit,
+          decodeErrorData: null,
+        ),
+        constMeta:
+            kCrateApiGogdlGogdlRepairStreamAutoAccessorSetDownloadedBytesConstMeta,
+        argValues: [that, downloadedBytes],
+        apiImpl: this,
+      ),
+    );
+  }
+
+  TaskConstMeta
+  get kCrateApiGogdlGogdlRepairStreamAutoAccessorSetDownloadedBytesConstMeta =>
+      const TaskConstMeta(
+        debugName: "RepairStream_auto_accessor_set_downloaded_bytes",
+        argNames: ["that", "downloadedBytes"],
+      );
+
+  @override
+  void crateApiGogdlGogdlRepairStreamAutoAccessorSetDownloadedChunks({
+    required RepairStream that,
+    required BigInt downloadedChunks,
+  }) {
+    return handler.executeSync(
+      SyncTask(
+        callFfi: () {
+          final serializer = SseSerializer(generalizedFrbRustBinding);
+          sse_encode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerRepairStream(
+            that,
+            serializer,
+          );
+          sse_encode_u_64(downloadedChunks, serializer);
+          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 40)!;
+        },
+        codec: SseCodec(
+          decodeSuccessData: sse_decode_unit,
+          decodeErrorData: null,
+        ),
+        constMeta:
+            kCrateApiGogdlGogdlRepairStreamAutoAccessorSetDownloadedChunksConstMeta,
+        argValues: [that, downloadedChunks],
+        apiImpl: this,
+      ),
+    );
+  }
+
+  TaskConstMeta
+  get kCrateApiGogdlGogdlRepairStreamAutoAccessorSetDownloadedChunksConstMeta =>
+      const TaskConstMeta(
+        debugName: "RepairStream_auto_accessor_set_downloaded_chunks",
+        argNames: ["that", "downloadedChunks"],
+      );
+
+  @override
+  void crateApiGogdlGogdlRepairStreamAutoAccessorSetErrorFiles({
+    required RepairStream that,
+    required List<String> errorFiles,
+  }) {
+    return handler.executeSync(
+      SyncTask(
+        callFfi: () {
+          final serializer = SseSerializer(generalizedFrbRustBinding);
+          sse_encode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerRepairStream(
+            that,
+            serializer,
+          );
+          sse_encode_list_String(errorFiles, serializer);
+          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 41)!;
+        },
+        codec: SseCodec(
+          decodeSuccessData: sse_decode_unit,
+          decodeErrorData: null,
+        ),
+        constMeta:
+            kCrateApiGogdlGogdlRepairStreamAutoAccessorSetErrorFilesConstMeta,
+        argValues: [that, errorFiles],
+        apiImpl: this,
+      ),
+    );
+  }
+
+  TaskConstMeta
+  get kCrateApiGogdlGogdlRepairStreamAutoAccessorSetErrorFilesConstMeta =>
+      const TaskConstMeta(
+        debugName: "RepairStream_auto_accessor_set_error_files",
+        argNames: ["that", "errorFiles"],
+      );
+
+  @override
+  void crateApiGogdlGogdlRepairStreamAutoAccessorSetProcessedFiles({
+    required RepairStream that,
+    required BigInt processedFiles,
+  }) {
+    return handler.executeSync(
+      SyncTask(
+        callFfi: () {
+          final serializer = SseSerializer(generalizedFrbRustBinding);
+          sse_encode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerRepairStream(
+            that,
+            serializer,
+          );
+          sse_encode_u_64(processedFiles, serializer);
+          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 42)!;
+        },
+        codec: SseCodec(
+          decodeSuccessData: sse_decode_unit,
+          decodeErrorData: null,
+        ),
+        constMeta:
+            kCrateApiGogdlGogdlRepairStreamAutoAccessorSetProcessedFilesConstMeta,
+        argValues: [that, processedFiles],
+        apiImpl: this,
+      ),
+    );
+  }
+
+  TaskConstMeta
+  get kCrateApiGogdlGogdlRepairStreamAutoAccessorSetProcessedFilesConstMeta =>
+      const TaskConstMeta(
+        debugName: "RepairStream_auto_accessor_set_processed_files",
+        argNames: ["that", "processedFiles"],
+      );
+
+  @override
+  void crateApiGogdlGogdlRepairStreamAutoAccessorSetStatus({
+    required RepairStream that,
+    required RepairStatus status,
+  }) {
+    return handler.executeSync(
+      SyncTask(
+        callFfi: () {
+          final serializer = SseSerializer(generalizedFrbRustBinding);
+          sse_encode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerRepairStream(
+            that,
+            serializer,
+          );
+          sse_encode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerRepairStatus(
+            status,
+            serializer,
+          );
+          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 43)!;
+        },
+        codec: SseCodec(
+          decodeSuccessData: sse_decode_unit,
+          decodeErrorData: null,
+        ),
+        constMeta:
+            kCrateApiGogdlGogdlRepairStreamAutoAccessorSetStatusConstMeta,
+        argValues: [that, status],
+        apiImpl: this,
+      ),
+    );
+  }
+
+  TaskConstMeta
+  get kCrateApiGogdlGogdlRepairStreamAutoAccessorSetStatusConstMeta =>
+      const TaskConstMeta(
+        debugName: "RepairStream_auto_accessor_set_status",
+        argNames: ["that", "status"],
+      );
+
+  @override
+  void crateApiGogdlGogdlRepairStreamAutoAccessorSetTotalBytes({
+    required RepairStream that,
+    required BigInt totalBytes,
+  }) {
+    return handler.executeSync(
+      SyncTask(
+        callFfi: () {
+          final serializer = SseSerializer(generalizedFrbRustBinding);
+          sse_encode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerRepairStream(
+            that,
+            serializer,
+          );
+          sse_encode_u_64(totalBytes, serializer);
+          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 44)!;
+        },
+        codec: SseCodec(
+          decodeSuccessData: sse_decode_unit,
+          decodeErrorData: null,
+        ),
+        constMeta:
+            kCrateApiGogdlGogdlRepairStreamAutoAccessorSetTotalBytesConstMeta,
+        argValues: [that, totalBytes],
+        apiImpl: this,
+      ),
+    );
+  }
+
+  TaskConstMeta
+  get kCrateApiGogdlGogdlRepairStreamAutoAccessorSetTotalBytesConstMeta =>
+      const TaskConstMeta(
+        debugName: "RepairStream_auto_accessor_set_total_bytes",
+        argNames: ["that", "totalBytes"],
+      );
+
+  @override
+  void crateApiGogdlGogdlRepairStreamAutoAccessorSetTotalChunks({
+    required RepairStream that,
+    required BigInt totalChunks,
+  }) {
+    return handler.executeSync(
+      SyncTask(
+        callFfi: () {
+          final serializer = SseSerializer(generalizedFrbRustBinding);
+          sse_encode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerRepairStream(
+            that,
+            serializer,
+          );
+          sse_encode_u_64(totalChunks, serializer);
+          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 45)!;
+        },
+        codec: SseCodec(
+          decodeSuccessData: sse_decode_unit,
+          decodeErrorData: null,
+        ),
+        constMeta:
+            kCrateApiGogdlGogdlRepairStreamAutoAccessorSetTotalChunksConstMeta,
+        argValues: [that, totalChunks],
+        apiImpl: this,
+      ),
+    );
+  }
+
+  TaskConstMeta
+  get kCrateApiGogdlGogdlRepairStreamAutoAccessorSetTotalChunksConstMeta =>
+      const TaskConstMeta(
+        debugName: "RepairStream_auto_accessor_set_total_chunks",
+        argNames: ["that", "totalChunks"],
+      );
+
+  @override
+  void crateApiGogdlGogdlRepairStreamAutoAccessorSetTotalFiles({
+    required RepairStream that,
+    required BigInt totalFiles,
+  }) {
+    return handler.executeSync(
+      SyncTask(
+        callFfi: () {
+          final serializer = SseSerializer(generalizedFrbRustBinding);
+          sse_encode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerRepairStream(
+            that,
+            serializer,
+          );
+          sse_encode_u_64(totalFiles, serializer);
+          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 46)!;
+        },
+        codec: SseCodec(
+          decodeSuccessData: sse_decode_unit,
+          decodeErrorData: null,
+        ),
+        constMeta:
+            kCrateApiGogdlGogdlRepairStreamAutoAccessorSetTotalFilesConstMeta,
+        argValues: [that, totalFiles],
+        apiImpl: this,
+      ),
+    );
+  }
+
+  TaskConstMeta
+  get kCrateApiGogdlGogdlRepairStreamAutoAccessorSetTotalFilesConstMeta =>
+      const TaskConstMeta(
+        debugName: "RepairStream_auto_accessor_set_total_files",
+        argNames: ["that", "totalFiles"],
+      );
+
+  @override
   List<String> crateApiGogdlGogdlVerificationStreamAutoAccessorGetErrorChunks({
     required VerificationStream that,
   }) {
@@ -1304,7 +2035,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
             that,
             serializer,
           );
-          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 29)!;
+          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 47)!;
         },
         codec: SseCodec(
           decodeSuccessData: sse_decode_list_String,
@@ -1337,7 +2068,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
             that,
             serializer,
           );
-          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 30)!;
+          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 48)!;
         },
         codec: SseCodec(
           decodeSuccessData:
@@ -1371,7 +2102,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
             that,
             serializer,
           );
-          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 31)!;
+          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 49)!;
         },
         codec: SseCodec(
           decodeSuccessData: sse_decode_u_64,
@@ -1404,7 +2135,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
             that,
             serializer,
           );
-          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 32)!;
+          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 50)!;
         },
         codec: SseCodec(
           decodeSuccessData: sse_decode_u_64,
@@ -1439,7 +2170,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
             serializer,
           );
           sse_encode_list_String(errorChunks, serializer);
-          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 33)!;
+          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 51)!;
         },
         codec: SseCodec(
           decodeSuccessData: sse_decode_unit,
@@ -1477,7 +2208,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
             status,
             serializer,
           );
-          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 34)!;
+          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 52)!;
         },
         codec: SseCodec(
           decodeSuccessData: sse_decode_unit,
@@ -1512,7 +2243,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
             serializer,
           );
           sse_encode_u_64(totalChunks, serializer);
-          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 35)!;
+          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 53)!;
         },
         codec: SseCodec(
           decodeSuccessData: sse_decode_unit,
@@ -1547,7 +2278,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
             serializer,
           );
           sse_encode_u_64(verifiedChunks, serializer);
-          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 36)!;
+          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 54)!;
         },
         codec: SseCodec(
           decodeSuccessData: sse_decode_unit,
@@ -1628,6 +2359,22 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       .rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerGog;
 
   RustArcIncrementStrongCountFnType
+  get rust_arc_increment_strong_count_RepairStatus => wire
+      .rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerRepairStatus;
+
+  RustArcDecrementStrongCountFnType
+  get rust_arc_decrement_strong_count_RepairStatus => wire
+      .rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerRepairStatus;
+
+  RustArcIncrementStrongCountFnType
+  get rust_arc_increment_strong_count_RepairStream => wire
+      .rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerRepairStream;
+
+  RustArcDecrementStrongCountFnType
+  get rust_arc_decrement_strong_count_RepairStream => wire
+      .rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerRepairStream;
+
+  RustArcIncrementStrongCountFnType
   get rust_arc_increment_strong_count_VerificationStatus => wire
       .rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerVerificationStatus;
 
@@ -1677,6 +2424,24 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  RepairStatus
+  dco_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerRepairStatus(
+    dynamic raw,
+  ) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return RepairStatusImpl.frbInternalDcoDecode(raw as List<dynamic>);
+  }
+
+  @protected
+  RepairStream
+  dco_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerRepairStream(
+    dynamic raw,
+  ) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return RepairStreamImpl.frbInternalDcoDecode(raw as List<dynamic>);
+  }
+
+  @protected
   VerificationStatus
   dco_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerVerificationStatus(
     dynamic raw,
@@ -1713,6 +2478,15 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  RepairStream
+  dco_decode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerRepairStream(
+    dynamic raw,
+  ) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return RepairStreamImpl.frbInternalDcoDecode(raw as List<dynamic>);
+  }
+
+  @protected
   VerificationStream
   dco_decode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerVerificationStream(
     dynamic raw,
@@ -1746,6 +2520,24 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   ) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     return GogImpl.frbInternalDcoDecode(raw as List<dynamic>);
+  }
+
+  @protected
+  RepairStatus
+  dco_decode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerRepairStatus(
+    dynamic raw,
+  ) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return RepairStatusImpl.frbInternalDcoDecode(raw as List<dynamic>);
+  }
+
+  @protected
+  RepairStream
+  dco_decode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerRepairStream(
+    dynamic raw,
+  ) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return RepairStreamImpl.frbInternalDcoDecode(raw as List<dynamic>);
   }
 
   @protected
@@ -1798,6 +2590,24 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  RepairStatus
+  dco_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerRepairStatus(
+    dynamic raw,
+  ) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return RepairStatusImpl.frbInternalDcoDecode(raw as List<dynamic>);
+  }
+
+  @protected
+  RepairStream
+  dco_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerRepairStream(
+    dynamic raw,
+  ) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return RepairStreamImpl.frbInternalDcoDecode(raw as List<dynamic>);
+  }
+
+  @protected
   VerificationStatus
   dco_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerVerificationStatus(
     dynamic raw,
@@ -1813,6 +2623,15 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   ) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     return VerificationStreamImpl.frbInternalDcoDecode(raw as List<dynamic>);
+  }
+
+  @protected
+  RustStreamSink<RepairStream>
+  dco_decode_StreamSink_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerRepairStream_Sse(
+    dynamic raw,
+  ) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    throw UnimplementedError();
   }
 
   @protected
@@ -1979,6 +2798,30 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  RepairStatus
+  sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerRepairStatus(
+    SseDeserializer deserializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return RepairStatusImpl.frbInternalSseDecode(
+      sse_decode_usize(deserializer),
+      sse_decode_i_32(deserializer),
+    );
+  }
+
+  @protected
+  RepairStream
+  sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerRepairStream(
+    SseDeserializer deserializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return RepairStreamImpl.frbInternalSseDecode(
+      sse_decode_usize(deserializer),
+      sse_decode_i_32(deserializer),
+    );
+  }
+
+  @protected
   VerificationStatus
   sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerVerificationStatus(
     SseDeserializer deserializer,
@@ -2027,6 +2870,18 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  RepairStream
+  sse_decode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerRepairStream(
+    SseDeserializer deserializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return RepairStreamImpl.frbInternalSseDecode(
+      sse_decode_usize(deserializer),
+      sse_decode_i_32(deserializer),
+    );
+  }
+
+  @protected
   VerificationStream
   sse_decode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerVerificationStream(
     SseDeserializer deserializer,
@@ -2069,6 +2924,30 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   ) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     return GogImpl.frbInternalSseDecode(
+      sse_decode_usize(deserializer),
+      sse_decode_i_32(deserializer),
+    );
+  }
+
+  @protected
+  RepairStatus
+  sse_decode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerRepairStatus(
+    SseDeserializer deserializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return RepairStatusImpl.frbInternalSseDecode(
+      sse_decode_usize(deserializer),
+      sse_decode_i_32(deserializer),
+    );
+  }
+
+  @protected
+  RepairStream
+  sse_decode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerRepairStream(
+    SseDeserializer deserializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return RepairStreamImpl.frbInternalSseDecode(
       sse_decode_usize(deserializer),
       sse_decode_i_32(deserializer),
     );
@@ -2130,6 +3009,30 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  RepairStatus
+  sse_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerRepairStatus(
+    SseDeserializer deserializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return RepairStatusImpl.frbInternalSseDecode(
+      sse_decode_usize(deserializer),
+      sse_decode_i_32(deserializer),
+    );
+  }
+
+  @protected
+  RepairStream
+  sse_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerRepairStream(
+    SseDeserializer deserializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return RepairStreamImpl.frbInternalSseDecode(
+      sse_decode_usize(deserializer),
+      sse_decode_i_32(deserializer),
+    );
+  }
+
+  @protected
   VerificationStatus
   sse_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerVerificationStatus(
     SseDeserializer deserializer,
@@ -2151,6 +3054,15 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       sse_decode_usize(deserializer),
       sse_decode_i_32(deserializer),
     );
+  }
+
+  @protected
+  RustStreamSink<RepairStream>
+  sse_decode_StreamSink_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerRepairStream_Sse(
+    SseDeserializer deserializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    throw UnimplementedError('Unreachable ()');
   }
 
   @protected
@@ -2356,6 +3268,32 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
 
   @protected
   void
+  sse_encode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerRepairStatus(
+    RepairStatus self,
+    SseSerializer serializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_usize(
+      (self as RepairStatusImpl).frbInternalSseEncode(move: true),
+      serializer,
+    );
+  }
+
+  @protected
+  void
+  sse_encode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerRepairStream(
+    RepairStream self,
+    SseSerializer serializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_usize(
+      (self as RepairStreamImpl).frbInternalSseEncode(move: true),
+      serializer,
+    );
+  }
+
+  @protected
+  void
   sse_encode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerVerificationStatus(
     VerificationStatus self,
     SseSerializer serializer,
@@ -2408,6 +3346,19 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
 
   @protected
   void
+  sse_encode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerRepairStream(
+    RepairStream self,
+    SseSerializer serializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_usize(
+      (self as RepairStreamImpl).frbInternalSseEncode(move: false),
+      serializer,
+    );
+  }
+
+  @protected
+  void
   sse_encode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerVerificationStream(
     VerificationStream self,
     SseSerializer serializer,
@@ -2454,6 +3405,32 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     // Codec=Sse (Serialization based), see doc to use other codecs
     sse_encode_usize(
       (self as GogImpl).frbInternalSseEncode(move: false),
+      serializer,
+    );
+  }
+
+  @protected
+  void
+  sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerRepairStatus(
+    RepairStatus self,
+    SseSerializer serializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_usize(
+      (self as RepairStatusImpl).frbInternalSseEncode(move: false),
+      serializer,
+    );
+  }
+
+  @protected
+  void
+  sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerRepairStream(
+    RepairStream self,
+    SseSerializer serializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_usize(
+      (self as RepairStreamImpl).frbInternalSseEncode(move: false),
       serializer,
     );
   }
@@ -2539,6 +3516,32 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
 
   @protected
   void
+  sse_encode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerRepairStatus(
+    RepairStatus self,
+    SseSerializer serializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_usize(
+      (self as RepairStatusImpl).frbInternalSseEncode(move: null),
+      serializer,
+    );
+  }
+
+  @protected
+  void
+  sse_encode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerRepairStream(
+    RepairStream self,
+    SseSerializer serializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_usize(
+      (self as RepairStreamImpl).frbInternalSseEncode(move: null),
+      serializer,
+    );
+  }
+
+  @protected
+  void
   sse_encode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerVerificationStatus(
     VerificationStatus self,
     SseSerializer serializer,
@@ -2559,6 +3562,25 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     // Codec=Sse (Serialization based), see doc to use other codecs
     sse_encode_usize(
       (self as VerificationStreamImpl).frbInternalSseEncode(move: null),
+      serializer,
+    );
+  }
+
+  @protected
+  void
+  sse_encode_StreamSink_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerRepairStream_Sse(
+    RustStreamSink<RepairStream> self,
+    SseSerializer serializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_String(
+      self.setupAndSerialize(
+        codec: SseCodec(
+          decodeSuccessData:
+              sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerRepairStream,
+          decodeErrorData: sse_decode_AnyhowException,
+        ),
+      ),
       serializer,
     );
   }
@@ -2907,6 +3929,19 @@ class GogImpl extends RustOpaque implements Gog {
     callback: callback,
   );
 
+  Stream<RepairStream> repairDownload({
+    required String path,
+    required String buildName,
+    required List<String> selectedProducts,
+    required int gameId,
+  }) => RustLib.instance.api.crateApiGogdlGogdlGogRepairDownload(
+    that: this,
+    path: path,
+    buildName: buildName,
+    selectedProducts: selectedProducts,
+    gameId: gameId,
+  );
+
   Future<void> restoreAuthFromString({required String token}) => RustLib
       .instance
       .api
@@ -2924,6 +3959,123 @@ class GogImpl extends RustOpaque implements Gog {
     selectedProducts: selectedProducts,
     gameId: gameId,
   );
+}
+
+@sealed
+class RepairStatusImpl extends RustOpaque implements RepairStatus {
+  // Not to be used by end users
+  RepairStatusImpl.frbInternalDcoDecode(List<dynamic> wire)
+    : super.frbInternalDcoDecode(wire, _kStaticData);
+
+  // Not to be used by end users
+  RepairStatusImpl.frbInternalSseDecode(BigInt ptr, int externalSizeOnNative)
+    : super.frbInternalSseDecode(ptr, externalSizeOnNative, _kStaticData);
+
+  static final _kStaticData = RustArcStaticData(
+    rustArcIncrementStrongCount:
+        RustLib.instance.api.rust_arc_increment_strong_count_RepairStatus,
+    rustArcDecrementStrongCount:
+        RustLib.instance.api.rust_arc_decrement_strong_count_RepairStatus,
+    rustArcDecrementStrongCountPtr:
+        RustLib.instance.api.rust_arc_decrement_strong_count_RepairStatusPtr,
+  );
+
+  String name() =>
+      RustLib.instance.api.crateApiGogdlGogdlRepairStatusName(that: this);
+}
+
+@sealed
+class RepairStreamImpl extends RustOpaque implements RepairStream {
+  // Not to be used by end users
+  RepairStreamImpl.frbInternalDcoDecode(List<dynamic> wire)
+    : super.frbInternalDcoDecode(wire, _kStaticData);
+
+  // Not to be used by end users
+  RepairStreamImpl.frbInternalSseDecode(BigInt ptr, int externalSizeOnNative)
+    : super.frbInternalSseDecode(ptr, externalSizeOnNative, _kStaticData);
+
+  static final _kStaticData = RustArcStaticData(
+    rustArcIncrementStrongCount:
+        RustLib.instance.api.rust_arc_increment_strong_count_RepairStream,
+    rustArcDecrementStrongCount:
+        RustLib.instance.api.rust_arc_decrement_strong_count_RepairStream,
+    rustArcDecrementStrongCountPtr:
+        RustLib.instance.api.rust_arc_decrement_strong_count_RepairStreamPtr,
+  );
+
+  BigInt get downloadedBytes => RustLib.instance.api
+      .crateApiGogdlGogdlRepairStreamAutoAccessorGetDownloadedBytes(that: this);
+
+  BigInt get downloadedChunks => RustLib.instance.api
+      .crateApiGogdlGogdlRepairStreamAutoAccessorGetDownloadedChunks(
+        that: this,
+      );
+
+  List<String> get errorFiles => RustLib.instance.api
+      .crateApiGogdlGogdlRepairStreamAutoAccessorGetErrorFiles(that: this);
+
+  BigInt get processedFiles => RustLib.instance.api
+      .crateApiGogdlGogdlRepairStreamAutoAccessorGetProcessedFiles(that: this);
+
+  RepairStatus get status => RustLib.instance.api
+      .crateApiGogdlGogdlRepairStreamAutoAccessorGetStatus(that: this);
+
+  BigInt get totalBytes => RustLib.instance.api
+      .crateApiGogdlGogdlRepairStreamAutoAccessorGetTotalBytes(that: this);
+
+  BigInt get totalChunks => RustLib.instance.api
+      .crateApiGogdlGogdlRepairStreamAutoAccessorGetTotalChunks(that: this);
+
+  BigInt get totalFiles => RustLib.instance.api
+      .crateApiGogdlGogdlRepairStreamAutoAccessorGetTotalFiles(that: this);
+
+  set downloadedBytes(BigInt downloadedBytes) => RustLib.instance.api
+      .crateApiGogdlGogdlRepairStreamAutoAccessorSetDownloadedBytes(
+        that: this,
+        downloadedBytes: downloadedBytes,
+      );
+
+  set downloadedChunks(BigInt downloadedChunks) => RustLib.instance.api
+      .crateApiGogdlGogdlRepairStreamAutoAccessorSetDownloadedChunks(
+        that: this,
+        downloadedChunks: downloadedChunks,
+      );
+
+  set errorFiles(List<String> errorFiles) => RustLib.instance.api
+      .crateApiGogdlGogdlRepairStreamAutoAccessorSetErrorFiles(
+        that: this,
+        errorFiles: errorFiles,
+      );
+
+  set processedFiles(BigInt processedFiles) => RustLib.instance.api
+      .crateApiGogdlGogdlRepairStreamAutoAccessorSetProcessedFiles(
+        that: this,
+        processedFiles: processedFiles,
+      );
+
+  set status(RepairStatus status) =>
+      RustLib.instance.api.crateApiGogdlGogdlRepairStreamAutoAccessorSetStatus(
+        that: this,
+        status: status,
+      );
+
+  set totalBytes(BigInt totalBytes) => RustLib.instance.api
+      .crateApiGogdlGogdlRepairStreamAutoAccessorSetTotalBytes(
+        that: this,
+        totalBytes: totalBytes,
+      );
+
+  set totalChunks(BigInt totalChunks) => RustLib.instance.api
+      .crateApiGogdlGogdlRepairStreamAutoAccessorSetTotalChunks(
+        that: this,
+        totalChunks: totalChunks,
+      );
+
+  set totalFiles(BigInt totalFiles) => RustLib.instance.api
+      .crateApiGogdlGogdlRepairStreamAutoAccessorSetTotalFiles(
+        that: this,
+        totalFiles: totalFiles,
+      );
 }
 
 @sealed

@@ -9,7 +9,7 @@ import 'package:freezed_annotation/freezed_annotation.dart' hide protected;
 part 'gogdl.freezed.dart';
 
 // These functions are ignored because they are not marked as `pub`: `get_downloadable_files`
-// These function are ignored because they are on traits that is not defined in current crate (put an empty `#[frb]` on it to unignore): `clone`, `clone`, `clone`, `fmt`, `fmt`, `from`
+// These function are ignored because they are on traits that is not defined in current crate (put an empty `#[frb]` on it to unignore): `clone`, `clone`, `clone`, `clone`, `clone`, `eq`, `fmt`, `fmt`, `from`
 
 // Rust type: RustOpaqueMoi<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<DownloadableProduct>>
 abstract class DownloadableProduct implements RustOpaqueInterface {
@@ -76,6 +76,13 @@ abstract class Gog implements RustOpaqueInterface {
     required FutureOr<void> Function(String) callback,
   });
 
+  Stream<RepairStream> repairDownload({
+    required String path,
+    required String buildName,
+    required List<String> selectedProducts,
+    required int gameId,
+  });
+
   Future<void> restoreAuthFromString({required String token});
 
   Stream<VerificationStream> verifyDownload({
@@ -84,6 +91,46 @@ abstract class Gog implements RustOpaqueInterface {
     required List<String> selectedProducts,
     required int gameId,
   });
+}
+
+// Rust type: RustOpaqueMoi<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<RepairStatus>>
+abstract class RepairStatus implements RustOpaqueInterface {
+  String name();
+}
+
+// Rust type: RustOpaqueMoi<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<RepairStream>>
+abstract class RepairStream implements RustOpaqueInterface {
+  BigInt get downloadedBytes;
+
+  BigInt get downloadedChunks;
+
+  List<String> get errorFiles;
+
+  BigInt get processedFiles;
+
+  RepairStatus get status;
+
+  BigInt get totalBytes;
+
+  BigInt get totalChunks;
+
+  BigInt get totalFiles;
+
+  set downloadedBytes(BigInt downloadedBytes);
+
+  set downloadedChunks(BigInt downloadedChunks);
+
+  set errorFiles(List<String> errorFiles);
+
+  set processedFiles(BigInt processedFiles);
+
+  set status(RepairStatus status);
+
+  set totalBytes(BigInt totalBytes);
+
+  set totalChunks(BigInt totalChunks);
+
+  set totalFiles(BigInt totalFiles);
 }
 
 // Rust type: RustOpaqueMoi<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<VerificationStatus>>
