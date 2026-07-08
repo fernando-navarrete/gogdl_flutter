@@ -8,8 +8,48 @@ import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 import 'package:freezed_annotation/freezed_annotation.dart' hide protected;
 part 'gogdl.freezed.dart';
 
-// These functions are ignored because they are not marked as `pub`: `get_downloadable_files`
-// These function are ignored because they are on traits that is not defined in current crate (put an empty `#[frb]` on it to unignore): `clone`, `clone`, `clone`, `clone`, `clone`, `eq`, `fmt`, `fmt`, `from`
+// These functions are ignored because they are not marked as `pub`: `get_downloadable_files`, `unresolved_files`
+// These function are ignored because they are on traits that is not defined in current crate (put an empty `#[frb]` on it to unignore): `clone`, `clone`, `clone`, `clone`, `clone`, `clone`, `clone`, `eq`, `eq`, `fmt`, `fmt`, `from`
+
+// Rust type: RustOpaqueMoi<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<DownloadStatus>>
+abstract class DownloadStatus implements RustOpaqueInterface {
+  String name();
+}
+
+// Rust type: RustOpaqueMoi<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<DownloadStream>>
+abstract class DownloadStream implements RustOpaqueInterface {
+  BigInt get allocatedFiles;
+
+  BigInt get downloadedBytes;
+
+  BigInt get downloadedChunks;
+
+  List<String> get errorFiles;
+
+  DownloadStatus get status;
+
+  BigInt get totalBytes;
+
+  BigInt get totalChunks;
+
+  BigInt get totalFiles;
+
+  set allocatedFiles(BigInt allocatedFiles);
+
+  set downloadedBytes(BigInt downloadedBytes);
+
+  set downloadedChunks(BigInt downloadedChunks);
+
+  set errorFiles(List<String> errorFiles);
+
+  set status(DownloadStatus status);
+
+  set totalBytes(BigInt totalBytes);
+
+  set totalChunks(BigInt totalChunks);
+
+  set totalFiles(BigInt totalFiles);
+}
 
 // Rust type: RustOpaqueMoi<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<DownloadableProduct>>
 abstract class DownloadableProduct implements RustOpaqueInterface {
@@ -47,6 +87,13 @@ abstract class GameBuild implements RustOpaqueInterface {
 
 // Rust type: RustOpaqueMoi<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<Gog>>
 abstract class Gog implements RustOpaqueInterface {
+  Stream<DownloadStream> downloadGame({
+    required String path,
+    required String buildName,
+    required List<String> selectedProducts,
+    required int gameId,
+  });
+
   Future<String> getBackgroundImageLink({required int gameId});
 
   Future<List<DownloadableProduct>> getDownloadableProducts({

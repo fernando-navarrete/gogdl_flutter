@@ -1,8 +1,9 @@
 use flutter_rust_bridge::{frb, DartFnFuture};
 use futures::stream::{self, StreamExt};
 use gogdl_lib2::{
-    Client, DownloadEvent, DownloadableFiles, FileAllocationEvent, FileVerifyEvent, GogDl,
-    GogDlError, RepairDetail, RepairEvent, RepairStage, VerifyChunksEvent, VerifyEvent,
+    Client, DownloadDetail, DownloadEvent, DownloadJobEvent, DownloadStage, DownloadableFiles,
+    FileAllocationEvent, FileVerifyEvent, GogDl, GogDlError, RepairDetail, RepairEvent,
+    RepairStage, VerifyChunksEvent, VerifyEvent,
 };
 use std::collections::HashSet;
 use std::sync::Arc;
@@ -91,6 +92,47 @@ pub struct RepairStream {
     pub total_bytes: u64,
     pub downloaded_bytes: u64,
     // paths still broken as of this snapshot -- see `unresolved_files`
+    pub error_files: Vec<String>,
+}
+
+#[frb(opaque)]
+#[derive(Clone, Copy, PartialEq)]
+pub enum DownloadStatus {
+    FetchingFiles,
+    Allocating,
+    Downloading,
+    Downloaded,
+}
+
+impl DownloadStatus {
+    // Opaque enums expose no variant info to Dart, so this accessor is what
+    // lets a client tell which stage a `DownloadStream` snapshot came from,
+    // e.g. `switch (event.status.name()) { case "downloading": ... }`.
+    #[frb(sync)]
+    pub fn name(&self) -> String {
+        match self {
+            DownloadStatus::FetchingFiles => "fetchingFiles",
+            DownloadStatus::Allocating => "allocating",
+            DownloadStatus::Downloading => "downloading",
+            DownloadStatus::Downloaded => "downloaded",
+        }
+        .to_string()
+    }
+}
+
+#[frb(opaque)]
+#[derive(Clone)]
+pub struct DownloadStream {
+    pub status: DownloadStatus,
+    // allocation-stage progress
+    pub total_files: u64,
+    pub allocated_files: u64,
+    // download-stage progress
+    pub total_chunks: u64,
+    pub downloaded_chunks: u64,
+    pub total_bytes: u64,
+    pub downloaded_bytes: u64,
+    // files that hit an allocation or download error
     pub error_files: Vec<String>,
 }
 
@@ -616,6 +658,130 @@ impl Gog {
                 total_bytes,
                 downloaded_bytes,
                 error_files: unresolved_files(&flagged, &download_errors, &download_successes),
+            })
+            .ok();
+
+        Ok(())
+    }
+
+    pub async fn download_game(
+        &self,
+        path: &str,
+        build_name: &str,
+        selected_products: &[String],
+        game_id: i32,
+        stream: StreamSink<DownloadStream>,
+    ) -> Result<(), GogError> {
+        stream
+            .add(DownloadStream {
+                status: DownloadStatus::FetchingFiles,
+                total_files: 0,
+                allocated_files: 0,
+                total_chunks: 0,
+                downloaded_chunks: 0,
+                total_bytes: 0,
+                downloaded_bytes: 0,
+                error_files: Vec::new(),
+            })
+            .ok();
+        let files = self
+            .get_downloadable_files(game_id, build_name, selected_products)
+            .await?;
+
+        let total_files = files
+            .iter()
+            .map(|file| file.product_files.len() as u64)
+            .sum::<u64>();
+
+        stream
+            .add(DownloadStream {
+                status: DownloadStatus::Allocating,
+                total_files,
+                allocated_files: 0,
+                total_chunks: 0,
+                downloaded_chunks: 0,
+                total_bytes: 0,
+                downloaded_bytes: 0,
+                error_files: Vec::new(),
+            })
+            .ok();
+
+        let (tx, mut rx) = mpsc::unbounded_channel::<DownloadJobEvent>();
+
+        let mut allocated_files: u64 = 0;
+        let mut total_chunks: u64 = 0;
+        let mut downloaded_chunks: u64 = 0;
+        let mut total_bytes: u64 = 0;
+        let mut downloaded_bytes: u64 = 0;
+        let mut error_files: HashSet<String> = HashSet::new();
+
+        let download_future = self.inner.download_files(files, path, tx);
+        let drain_future = async {
+            while let Some(DownloadJobEvent { stage, detail }) = rx.recv().await {
+                let status = match stage {
+                    DownloadStage::Allocating => DownloadStatus::Allocating,
+                    DownloadStage::Downloading => DownloadStatus::Downloading,
+                };
+                match detail {
+                    DownloadDetail::Allocation(event) => {
+                        allocated_files += 1;
+                        match event {
+                            FileAllocationEvent::FileOk | FileAllocationEvent::FileAllocated(_) => {
+                            }
+                            FileAllocationEvent::PathResolveError(path)
+                            | FileAllocationEvent::AllocationError(path)
+                            | FileAllocationEvent::FileSizeError(path) => {
+                                error_files.insert(path);
+                            }
+                        }
+                    }
+                    DownloadDetail::Download(event) => match event {
+                        DownloadEvent::Total { bytes, chunks } => {
+                            total_bytes = bytes;
+                            total_chunks = chunks as u64;
+                        }
+                        DownloadEvent::Progress { bytes } => {
+                            downloaded_bytes += bytes;
+                        }
+                        DownloadEvent::ChunkDownloaded { path: _ } => {
+                            downloaded_chunks += 1;
+                        }
+                        DownloadEvent::SecureLinkError(path)
+                        | DownloadEvent::DownloadError(path)
+                        | DownloadEvent::WriteError(path)
+                        | DownloadEvent::PathResolveError(path) => {
+                            error_files.insert(path);
+                        }
+                    },
+                }
+                stream
+                    .add(DownloadStream {
+                        status,
+                        total_files,
+                        allocated_files,
+                        total_chunks,
+                        downloaded_chunks,
+                        total_bytes,
+                        downloaded_bytes,
+                        error_files: error_files.iter().cloned().collect(),
+                    })
+                    .ok();
+            }
+        };
+
+        let (download_result, ()) = tokio::join!(download_future, drain_future);
+        download_result?;
+
+        stream
+            .add(DownloadStream {
+                status: DownloadStatus::Downloaded,
+                total_files,
+                allocated_files,
+                total_chunks,
+                downloaded_chunks,
+                total_bytes,
+                downloaded_bytes,
+                error_files: error_files.into_iter().collect(),
             })
             .ok();
 
