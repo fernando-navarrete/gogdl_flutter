@@ -4,6 +4,7 @@ use gogdl_lib2::{
     Client, DownloadEvent, DownloadableFiles, FileAllocationEvent, FileVerifyEvent, GogDl,
     GogDlError, RepairDetail, RepairEvent, RepairStage, VerifyChunksEvent, VerifyEvent,
 };
+use std::collections::HashSet;
 use std::sync::Arc;
 use thiserror::Error;
 use tokio::sync::mpsc;
@@ -89,8 +90,107 @@ pub struct RepairStream {
     pub downloaded_chunks: u64,
     pub total_bytes: u64,
     pub downloaded_bytes: u64,
-    // accumulated problem paths across all stages
+    // paths still broken as of this snapshot -- see `unresolved_files`
     pub error_files: Vec<String>,
+}
+
+/// Reconciles paths flagged broken during the verify/allocate/chunk-verify
+/// stages against download-stage outcomes, so callers only see paths that
+/// are still broken -- not every path that was found broken and then fixed
+/// by the repair's own download stage (the common case). A path counts as
+/// still broken if the download stage never confirmed a chunk for it, or if
+/// it hit a hard download error -- the latter sticks regardless of event
+/// arrival order, since one path's chunks can succeed and fail in any order.
+fn unresolved_files(
+    flagged: &HashSet<String>,
+    download_errors: &HashSet<String>,
+    download_successes: &HashSet<String>,
+) -> Vec<String> {
+    flagged
+        .difference(download_successes)
+        .chain(download_errors.iter())
+        .cloned()
+        .collect::<HashSet<_>>()
+        .into_iter()
+        .collect()
+}
+
+#[cfg(test)]
+mod unresolved_files_tests {
+    use super::unresolved_files;
+    use std::collections::HashSet;
+
+    fn set(items: &[&str]) -> HashSet<String> {
+        items.iter().map(|s| s.to_string()).collect()
+    }
+
+    #[test]
+    fn flagged_file_fully_downloaded_is_resolved() {
+        let flagged = set(&["a.bin"]);
+        let download_errors = HashSet::new();
+        let download_successes = set(&["a.bin"]);
+        assert!(unresolved_files(&flagged, &download_errors, &download_successes).is_empty());
+    }
+
+    #[test]
+    fn flagged_file_never_downloaded_stays_unresolved() {
+        let flagged = set(&["a.bin"]);
+        let download_errors = HashSet::new();
+        let download_successes = HashSet::new();
+        assert_eq!(
+            unresolved_files(&flagged, &download_errors, &download_successes),
+            vec!["a.bin".to_string()]
+        );
+    }
+
+    #[test]
+    fn one_failed_chunk_keeps_file_unresolved_despite_other_successes() {
+        // Same path can have multiple chunks; one failing keeps it broken
+        // even though other chunks for that path succeeded.
+        let flagged = set(&["a.bin"]);
+        let download_errors = set(&["a.bin"]);
+        let download_successes = set(&["a.bin"]);
+        assert_eq!(
+            unresolved_files(&flagged, &download_errors, &download_successes),
+            vec!["a.bin".to_string()]
+        );
+    }
+
+    #[test]
+    fn error_before_success_still_marks_unresolved() {
+        // Order independence: a download error recorded before a later
+        // success for the same path must not be forgotten.
+        let flagged = set(&["a.bin"]);
+        let mut download_errors = HashSet::new();
+        download_errors.insert("a.bin".to_string());
+        let download_successes = set(&["a.bin"]);
+        assert_eq!(
+            unresolved_files(&flagged, &download_errors, &download_successes),
+            vec!["a.bin".to_string()]
+        );
+    }
+
+    #[test]
+    fn unflagged_download_error_is_reported() {
+        // A hard download error can occur without the path ever being
+        // flagged broken up front (e.g. a redownload triggered by a sibling
+        // chunk verify failure elsewhere in the same file).
+        let flagged = HashSet::new();
+        let download_errors = set(&["b.bin"]);
+        let download_successes = HashSet::new();
+        assert_eq!(
+            unresolved_files(&flagged, &download_errors, &download_successes),
+            vec!["b.bin".to_string()]
+        );
+    }
+
+    #[test]
+    fn no_flags_and_no_errors_is_resolved() {
+        let flagged = HashSet::new();
+        let download_errors = HashSet::new();
+        let download_successes = HashSet::new();
+        assert!(unresolved_files(&flagged, &download_errors, &download_successes).is_empty());
+    }
 }
 
 #[derive(Error, Debug)]
@@ -412,7 +512,18 @@ impl Gog {
         let mut downloaded_chunks: u64 = 0;
         let mut total_bytes: u64 = 0;
         let mut downloaded_bytes: u64 = 0;
-        let mut error_files: Vec<String> = Vec::new();
+
+        // FileVerify/Allocation/ChunkVerify errors flag a path as needing
+        // repair; that's the point of the exercise, not a failure. A path is
+        // only genuinely still broken once the drain loop finishes if the
+        // download stage never confirmed a chunk for it (`flagged` minus
+        // `download_successes`) or it hit a hard download-stage error
+        // (`download_errors`, sticky regardless of event arrival order since
+        // downloads for one path can be a mix of successful and failed
+        // chunks arriving in any order).
+        let mut flagged: HashSet<String> = HashSet::new();
+        let mut download_errors: HashSet<String> = HashSet::new();
+        let mut download_successes: HashSet<String> = HashSet::new();
 
         let repair_future = self.inner.repair_files(files, path, tx);
         let drain_future = async {
@@ -433,7 +544,7 @@ impl Gog {
                             | FileVerifyEvent::CouldNotReadFileSize(path)
                             | FileVerifyEvent::ChecksumMismatch(path)
                             | FileVerifyEvent::SizeMismatch(path, _, _) => {
-                                error_files.push(path);
+                                flagged.insert(path);
                             }
                         }
                     }
@@ -442,7 +553,7 @@ impl Gog {
                         FileAllocationEvent::PathResolveError(path)
                         | FileAllocationEvent::AllocationError(path)
                         | FileAllocationEvent::FileSizeError(path) => {
-                            error_files.push(path);
+                            flagged.insert(path);
                         }
                     },
                     RepairDetail::ChunkVerify(event) => match event {
@@ -450,7 +561,7 @@ impl Gog {
                         | VerifyChunksEvent::FileNotFound(path)
                         | VerifyChunksEvent::ChecksumCalculationError(path)
                         | VerifyChunksEvent::ChunkChecksumMismatch(path) => {
-                            error_files.push(path);
+                            flagged.insert(path);
                         }
                     },
                     RepairDetail::Download(event) => match event {
@@ -461,14 +572,15 @@ impl Gog {
                         DownloadEvent::Progress { bytes } => {
                             downloaded_bytes += bytes;
                         }
-                        DownloadEvent::ChunkDownloaded { .. } => {
+                        DownloadEvent::ChunkDownloaded { path } => {
                             downloaded_chunks += 1;
+                            download_successes.insert(path);
                         }
                         DownloadEvent::SecureLinkError(path)
                         | DownloadEvent::DownloadError(path)
                         | DownloadEvent::WriteError(path)
                         | DownloadEvent::PathResolveError(path) => {
-                            error_files.push(path);
+                            download_errors.insert(path);
                         }
                     },
                 }
@@ -481,7 +593,11 @@ impl Gog {
                         downloaded_chunks,
                         total_bytes,
                         downloaded_bytes,
-                        error_files: error_files.clone(),
+                        error_files: unresolved_files(
+                            &flagged,
+                            &download_errors,
+                            &download_successes,
+                        ),
                     })
                     .ok();
             }
@@ -499,7 +615,7 @@ impl Gog {
                 downloaded_chunks,
                 total_bytes,
                 downloaded_bytes,
-                error_files: error_files.clone(),
+                error_files: unresolved_files(&flagged, &download_errors, &download_successes),
             })
             .ok();
 
