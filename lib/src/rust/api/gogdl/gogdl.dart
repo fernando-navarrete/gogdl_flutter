@@ -9,7 +9,19 @@ import 'package:freezed_annotation/freezed_annotation.dart' hide protected;
 part 'gogdl.freezed.dart';
 
 // These functions are ignored because they are not marked as `pub`: `get_downloadable_files`, `unresolved_files`
-// These function are ignored because they are on traits that is not defined in current crate (put an empty `#[frb]` on it to unignore): `clone`, `clone`, `clone`, `clone`, `clone`, `clone`, `clone`, `eq`, `eq`, `fmt`, `fmt`, `from`
+// These function are ignored because they are on traits that is not defined in current crate (put an empty `#[frb]` on it to unignore): `clone`, `clone`, `clone`, `clone`, `clone`, `clone`, `clone`, `clone`, `clone`, `clone`, `clone`, `clone`, `clone`, `clone`, `eq`, `eq`, `eq`, `eq`, `fmt`, `fmt`, `from`
+
+// Rust type: RustOpaqueMoi<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<CloudSaveConfig>>
+abstract class CloudSaveConfig implements RustOpaqueInterface {
+  bool isSupported();
+
+  (String, String) localPath();
+}
+
+// Rust type: RustOpaqueMoi<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<CloudSaveFile>>
+abstract class CloudSaveFile implements RustOpaqueInterface {
+  String path();
+}
 
 // Rust type: RustOpaqueMoi<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<DownloadStatus>>
 abstract class DownloadStatus implements RustOpaqueInterface {
@@ -87,11 +99,24 @@ abstract class GameBuild implements RustOpaqueInterface {
 
 // Rust type: RustOpaqueMoi<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<Gog>>
 abstract class Gog implements RustOpaqueInterface {
+  Future<void> deleteSave({
+    required CloudSaveFile saveFile,
+    required String clientId,
+    required String clientSecret,
+  });
+
   Stream<DownloadStream> downloadGame({
     required String path,
     required String buildName,
     required List<String> selectedProducts,
     required int gameId,
+  });
+
+  Stream<SaveDownloadStream> downloadSave({
+    required CloudSaveFile saveFile,
+    required String clientId,
+    required String clientSecret,
+    required String path,
   });
 
   Future<String> getBackgroundImageLink({required int gameId});
@@ -115,6 +140,15 @@ abstract class Gog implements RustOpaqueInterface {
 
   Future<Int32List> getOwnedGames();
 
+  Future<SaveAuthIds> getSaveAuthIds({required int gameId});
+
+  Future<List<CloudSaveFile>> getSaveFileList({
+    required String clientId,
+    required String clientSecret,
+  });
+
+  Future<CloudSaveConfig> getSaveRemoteConfig({required String clientId});
+
   Future<String> loginWithCode({required String code});
 
   factory Gog() => RustLib.instance.api.crateApiGogdlGogdlGogNew();
@@ -131,6 +165,13 @@ abstract class Gog implements RustOpaqueInterface {
   });
 
   Future<void> restoreAuthFromString({required String token});
+
+  Stream<SaveUploadStream> uploadSave({
+    required String clientId,
+    required String clientSecret,
+    required String path,
+    required String urlPath,
+  });
 
   Stream<VerificationStream> verifyDownload({
     required String path,
@@ -180,6 +221,57 @@ abstract class RepairStream implements RustOpaqueInterface {
   set totalFiles(BigInt totalFiles);
 }
 
+// Rust type: RustOpaqueMoi<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<SaveAuthIds>>
+abstract class SaveAuthIds implements RustOpaqueInterface {
+  String get clientId;
+
+  String get clientSecret;
+
+  set clientId(String clientId);
+
+  set clientSecret(String clientSecret);
+}
+
+// Rust type: RustOpaqueMoi<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<SaveDownloadStatus>>
+abstract class SaveDownloadStatus implements RustOpaqueInterface {
+  String name();
+}
+
+// Rust type: RustOpaqueMoi<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<SaveDownloadStream>>
+abstract class SaveDownloadStream implements RustOpaqueInterface {
+  SaveDownloadStatus get status;
+
+  BigInt get total;
+
+  BigInt get transferred;
+
+  set status(SaveDownloadStatus status);
+
+  set total(BigInt total);
+
+  set transferred(BigInt transferred);
+}
+
+// Rust type: RustOpaqueMoi<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<SaveUploadStatus>>
+abstract class SaveUploadStatus implements RustOpaqueInterface {
+  String name();
+}
+
+// Rust type: RustOpaqueMoi<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<SaveUploadStream>>
+abstract class SaveUploadStream implements RustOpaqueInterface {
+  SaveUploadStatus get status;
+
+  BigInt get total;
+
+  BigInt get transferred;
+
+  set status(SaveUploadStatus status);
+
+  set total(BigInt total);
+
+  set transferred(BigInt transferred);
+}
+
 // Rust type: RustOpaqueMoi<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<VerificationStatus>>
 abstract class VerificationStatus implements RustOpaqueInterface {}
 
@@ -216,4 +308,6 @@ sealed class GogError with _$GogError implements FrbException {
       GogError_SecureLinksError;
   const factory GogError.downloadError({required String message}) =
       GogError_DownloadError;
+  const factory GogError.savesError({required String message}) =
+      GogError_SavesError;
 }

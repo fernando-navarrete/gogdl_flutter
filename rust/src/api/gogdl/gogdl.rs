@@ -2,10 +2,11 @@ use flutter_rust_bridge::{frb, DartFnFuture};
 use futures::stream::{self, StreamExt};
 use gogdl_lib2::{
     Client, DownloadDetail, DownloadEvent, DownloadJobEvent, DownloadStage, DownloadableFiles,
-    FileAllocationEvent, FileVerifyEvent, GogDl, GogDlError, RepairDetail, RepairEvent,
-    RepairStage, VerifyChunksEvent, VerifyEvent,
+    FileAllocationEvent, FileVerifyEvent, GogDl, GogDlError, RemoteConfig, RepairDetail,
+    RepairEvent, RepairStage, SaveFile, SaveProgress, VerifyChunksEvent, VerifyEvent,
 };
 use std::collections::HashSet;
+use std::path::Path;
 use std::sync::Arc;
 use thiserror::Error;
 use tokio::sync::mpsc;
@@ -136,6 +137,100 @@ pub struct DownloadStream {
     pub error_files: Vec<String>,
 }
 
+#[frb(opaque)]
+#[derive(Clone)]
+pub struct CloudSaveFile {
+    inner: SaveFile,
+}
+
+impl CloudSaveFile {
+    // The lib's `SaveFile` wraps a private raw listing line; this is the
+    // only way a client can read a display path for it.
+    #[frb(sync)]
+    pub fn path(&self) -> String {
+        self.inner.get_path()
+    }
+}
+
+#[frb(opaque)]
+#[derive(Clone)]
+pub struct CloudSaveConfig {
+    inner: RemoteConfig,
+}
+
+impl CloudSaveConfig {
+    #[frb(sync)]
+    pub fn is_supported(&self) -> bool {
+        self.inner.is_supported()
+    }
+    // Returns (known_folder, relative_path), e.g. ("Saved Games", "MyGame/saves").
+    #[frb(sync)]
+    pub fn local_path(&self) -> Result<(String, String), GogError> {
+        self.inner.get_path().map_err(|e| GogError::SavesError {
+            message: e.to_string(),
+        })
+    }
+}
+
+#[frb(opaque)]
+#[derive(Clone)]
+pub struct SaveAuthIds {
+    pub client_id: String,
+    pub client_secret: String,
+}
+
+#[frb(opaque)]
+#[derive(Clone, Copy, PartialEq)]
+pub enum SaveDownloadStatus {
+    Downloading,
+    Downloaded,
+}
+
+impl SaveDownloadStatus {
+    #[frb(sync)]
+    pub fn name(&self) -> String {
+        match self {
+            SaveDownloadStatus::Downloading => "downloading",
+            SaveDownloadStatus::Downloaded => "downloaded",
+        }
+        .to_string()
+    }
+}
+
+#[frb(opaque)]
+#[derive(Clone)]
+pub struct SaveDownloadStream {
+    pub status: SaveDownloadStatus,
+    pub transferred: u64,
+    pub total: u64,
+}
+
+#[frb(opaque)]
+#[derive(Clone, Copy, PartialEq)]
+pub enum SaveUploadStatus {
+    Uploading,
+    Uploaded,
+}
+
+impl SaveUploadStatus {
+    #[frb(sync)]
+    pub fn name(&self) -> String {
+        match self {
+            SaveUploadStatus::Uploading => "uploading",
+            SaveUploadStatus::Uploaded => "uploaded",
+        }
+        .to_string()
+    }
+}
+
+#[frb(opaque)]
+#[derive(Clone)]
+pub struct SaveUploadStream {
+    pub status: SaveUploadStatus,
+    pub transferred: u64,
+    pub total: u64,
+}
+
 /// Reconciles paths flagged broken during the verify/allocate/chunk-verify
 /// stages against download-stage outcomes, so callers only see paths that
 /// are still broken -- not every path that was found broken and then fixed
@@ -247,6 +342,8 @@ pub enum GogError {
     SecureLinksError { message: String },
     #[error("DownloadError: {message}")]
     DownloadError { message: String },
+    #[error("SavesError: {message}")]
+    SavesError { message: String },
 }
 
 impl From<GogDlError> for GogError {
@@ -266,6 +363,9 @@ impl From<GogDlError> for GogError {
             },
             GogDlError::DownloadError(download_error) => GogError::DownloadError {
                 message: download_error.to_string(),
+            },
+            GogDlError::SavesError(saves_error) => GogError::SavesError {
+                message: saves_error.to_string(),
             },
         }
     }
@@ -782,6 +882,167 @@ impl Gog {
                 total_bytes,
                 downloaded_bytes,
                 error_files: error_files.into_iter().collect(),
+            })
+            .ok();
+
+        Ok(())
+    }
+
+    pub async fn get_save_auth_ids(&self, game_id: i32) -> Result<SaveAuthIds, GogError> {
+        let (client_id, client_secret) = self.inner.get_save_auth_ids(game_id).await?;
+        Ok(SaveAuthIds {
+            client_id,
+            client_secret,
+        })
+    }
+
+    pub async fn get_save_remote_config(
+        &self,
+        client_id: &str,
+    ) -> Result<CloudSaveConfig, GogError> {
+        let remote_config = self.inner.get_remote_config(client_id).await?;
+        Ok(CloudSaveConfig {
+            inner: remote_config,
+        })
+    }
+
+    pub async fn get_save_file_list(
+        &self,
+        client_id: &str,
+        client_secret: &str,
+    ) -> Result<Vec<CloudSaveFile>, GogError> {
+        let save_files = self
+            .inner
+            .get_save_file_list(client_id, client_secret)
+            .await?;
+        Ok(save_files
+            .into_iter()
+            .map(|inner| CloudSaveFile { inner })
+            .collect())
+    }
+
+    pub async fn delete_save(
+        &self,
+        save_file: &CloudSaveFile,
+        client_id: &str,
+        client_secret: &str,
+    ) -> Result<(), GogError> {
+        self.inner
+            .delete_save_file(&save_file.inner, client_id, client_secret)
+            .await?;
+        Ok(())
+    }
+
+    pub async fn download_save(
+        &self,
+        save_file: &CloudSaveFile,
+        client_id: &str,
+        client_secret: &str,
+        path: String,
+        stream: StreamSink<SaveDownloadStream>,
+    ) -> Result<(), GogError> {
+        stream
+            .add(SaveDownloadStream {
+                status: SaveDownloadStatus::Downloading,
+                transferred: 0,
+                total: 0,
+            })
+            .ok();
+
+        let (tx, mut rx) = mpsc::unbounded_channel::<SaveProgress>();
+
+        let mut transferred: u64 = 0;
+        let mut total: u64 = 0;
+
+        let download_future = self.inner.download_save_file(
+            &save_file.inner,
+            client_id,
+            client_secret,
+            Path::new(&path),
+            tx,
+        );
+        let drain_future = async {
+            while let Some(SaveProgress {
+                transferred: event_transferred,
+                total: event_total,
+            }) = rx.recv().await
+            {
+                transferred = event_transferred;
+                total = event_total;
+                stream
+                    .add(SaveDownloadStream {
+                        status: SaveDownloadStatus::Downloading,
+                        transferred,
+                        total,
+                    })
+                    .ok();
+            }
+        };
+
+        let (download_result, ()) = tokio::join!(download_future, drain_future);
+        download_result?;
+
+        stream
+            .add(SaveDownloadStream {
+                status: SaveDownloadStatus::Downloaded,
+                transferred,
+                total,
+            })
+            .ok();
+
+        Ok(())
+    }
+
+    pub async fn upload_save(
+        &self,
+        client_id: &str,
+        client_secret: &str,
+        path: String,
+        url_path: String,
+        stream: StreamSink<SaveUploadStream>,
+    ) -> Result<(), GogError> {
+        stream
+            .add(SaveUploadStream {
+                status: SaveUploadStatus::Uploading,
+                transferred: 0,
+                total: 0,
+            })
+            .ok();
+
+        let (tx, mut rx) = mpsc::unbounded_channel::<SaveProgress>();
+
+        let mut transferred: u64 = 0;
+        let mut total: u64 = 0;
+
+        let upload_future =
+            self.inner
+                .upload_save_file(client_id, client_secret, Path::new(&path), &url_path, tx);
+        let drain_future = async {
+            while let Some(SaveProgress {
+                transferred: event_transferred,
+                total: event_total,
+            }) = rx.recv().await
+            {
+                transferred = event_transferred;
+                total = event_total;
+                stream
+                    .add(SaveUploadStream {
+                        status: SaveUploadStatus::Uploading,
+                        transferred,
+                        total,
+                    })
+                    .ok();
+            }
+        };
+
+        let (upload_result, ()) = tokio::join!(upload_future, drain_future);
+        upload_result?;
+
+        stream
+            .add(SaveUploadStream {
+                status: SaveUploadStatus::Uploaded,
+                transferred,
+                total,
             })
             .ok();
 
