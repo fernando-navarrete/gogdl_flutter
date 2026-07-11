@@ -12,3 +12,5 @@ export 'src/rust/api/gogdl/gogdl.dart' show CloudSaveConfig;
 export 'src/rust/api/gogdl/gogdl.dart' show SaveAuthIds;
 export 'src/rust/api/gogdl/gogdl.dart' show SaveDownloadStream, SaveDownloadStatus;
 export 'src/rust/api/gogdl/gogdl.dart' show SaveUploadStream, SaveUploadStatus;
+export 'src/rust/api/gogdl/gogdl.dart' show ProtonRelease;
+export 'src/rust/api/gogdl/gogdl.dart' show ProtonDownloadStream, ProtonDownloadStatus;

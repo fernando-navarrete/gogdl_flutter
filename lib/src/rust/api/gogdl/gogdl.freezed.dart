@@ -87,7 +87,7 @@ extension GogErrorPatterns on GogError {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( GogError_AuthError value)?  authError,TResult Function( GogError_GameError value)?  gameError,TResult Function( GogError_DepotError value)?  depotError,TResult Function( GogError_SecureLinksError value)?  secureLinksError,TResult Function( GogError_DownloadError value)?  downloadError,TResult Function( GogError_SavesError value)?  savesError,required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( GogError_AuthError value)?  authError,TResult Function( GogError_GameError value)?  gameError,TResult Function( GogError_DepotError value)?  depotError,TResult Function( GogError_SecureLinksError value)?  secureLinksError,TResult Function( GogError_DownloadError value)?  downloadError,TResult Function( GogError_SavesError value)?  savesError,TResult Function( GogError_ProtonError value)?  protonError,required TResult orElse(),}){
 final _that = this;
 switch (_that) {
 case GogError_AuthError() when authError != null:
@@ -96,7 +96,8 @@ return gameError(_that);case GogError_DepotError() when depotError != null:
 return depotError(_that);case GogError_SecureLinksError() when secureLinksError != null:
 return secureLinksError(_that);case GogError_DownloadError() when downloadError != null:
 return downloadError(_that);case GogError_SavesError() when savesError != null:
-return savesError(_that);case _:
+return savesError(_that);case GogError_ProtonError() when protonError != null:
+return protonError(_that);case _:
   return orElse();
 
 }
@@ -114,7 +115,7 @@ return savesError(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( GogError_AuthError value)  authError,required TResult Function( GogError_GameError value)  gameError,required TResult Function( GogError_DepotError value)  depotError,required TResult Function( GogError_SecureLinksError value)  secureLinksError,required TResult Function( GogError_DownloadError value)  downloadError,required TResult Function( GogError_SavesError value)  savesError,}){
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( GogError_AuthError value)  authError,required TResult Function( GogError_GameError value)  gameError,required TResult Function( GogError_DepotError value)  depotError,required TResult Function( GogError_SecureLinksError value)  secureLinksError,required TResult Function( GogError_DownloadError value)  downloadError,required TResult Function( GogError_SavesError value)  savesError,required TResult Function( GogError_ProtonError value)  protonError,}){
 final _that = this;
 switch (_that) {
 case GogError_AuthError():
@@ -123,7 +124,8 @@ return gameError(_that);case GogError_DepotError():
 return depotError(_that);case GogError_SecureLinksError():
 return secureLinksError(_that);case GogError_DownloadError():
 return downloadError(_that);case GogError_SavesError():
-return savesError(_that);}
+return savesError(_that);case GogError_ProtonError():
+return protonError(_that);}
 }
 /// A variant of `map` that fallback to returning `null`.
 ///
@@ -137,7 +139,7 @@ return savesError(_that);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( GogError_AuthError value)?  authError,TResult? Function( GogError_GameError value)?  gameError,TResult? Function( GogError_DepotError value)?  depotError,TResult? Function( GogError_SecureLinksError value)?  secureLinksError,TResult? Function( GogError_DownloadError value)?  downloadError,TResult? Function( GogError_SavesError value)?  savesError,}){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( GogError_AuthError value)?  authError,TResult? Function( GogError_GameError value)?  gameError,TResult? Function( GogError_DepotError value)?  depotError,TResult? Function( GogError_SecureLinksError value)?  secureLinksError,TResult? Function( GogError_DownloadError value)?  downloadError,TResult? Function( GogError_SavesError value)?  savesError,TResult? Function( GogError_ProtonError value)?  protonError,}){
 final _that = this;
 switch (_that) {
 case GogError_AuthError() when authError != null:
@@ -146,7 +148,8 @@ return gameError(_that);case GogError_DepotError() when depotError != null:
 return depotError(_that);case GogError_SecureLinksError() when secureLinksError != null:
 return secureLinksError(_that);case GogError_DownloadError() when downloadError != null:
 return downloadError(_that);case GogError_SavesError() when savesError != null:
-return savesError(_that);case _:
+return savesError(_that);case GogError_ProtonError() when protonError != null:
+return protonError(_that);case _:
   return null;
 
 }
@@ -163,7 +166,7 @@ return savesError(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( String message)?  authError,TResult Function( String message)?  gameError,TResult Function( String message)?  depotError,TResult Function( String message)?  secureLinksError,TResult Function( String message)?  downloadError,TResult Function( String message)?  savesError,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( String message)?  authError,TResult Function( String message)?  gameError,TResult Function( String message)?  depotError,TResult Function( String message)?  secureLinksError,TResult Function( String message)?  downloadError,TResult Function( String message)?  savesError,TResult Function( String message)?  protonError,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case GogError_AuthError() when authError != null:
 return authError(_that.message);case GogError_GameError() when gameError != null:
@@ -171,7 +174,8 @@ return gameError(_that.message);case GogError_DepotError() when depotError != nu
 return depotError(_that.message);case GogError_SecureLinksError() when secureLinksError != null:
 return secureLinksError(_that.message);case GogError_DownloadError() when downloadError != null:
 return downloadError(_that.message);case GogError_SavesError() when savesError != null:
-return savesError(_that.message);case _:
+return savesError(_that.message);case GogError_ProtonError() when protonError != null:
+return protonError(_that.message);case _:
   return orElse();
 
 }
@@ -189,7 +193,7 @@ return savesError(_that.message);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( String message)  authError,required TResult Function( String message)  gameError,required TResult Function( String message)  depotError,required TResult Function( String message)  secureLinksError,required TResult Function( String message)  downloadError,required TResult Function( String message)  savesError,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( String message)  authError,required TResult Function( String message)  gameError,required TResult Function( String message)  depotError,required TResult Function( String message)  secureLinksError,required TResult Function( String message)  downloadError,required TResult Function( String message)  savesError,required TResult Function( String message)  protonError,}) {final _that = this;
 switch (_that) {
 case GogError_AuthError():
 return authError(_that.message);case GogError_GameError():
@@ -197,7 +201,8 @@ return gameError(_that.message);case GogError_DepotError():
 return depotError(_that.message);case GogError_SecureLinksError():
 return secureLinksError(_that.message);case GogError_DownloadError():
 return downloadError(_that.message);case GogError_SavesError():
-return savesError(_that.message);}
+return savesError(_that.message);case GogError_ProtonError():
+return protonError(_that.message);}
 }
 /// A variant of `when` that fallback to returning `null`
 ///
@@ -211,7 +216,7 @@ return savesError(_that.message);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( String message)?  authError,TResult? Function( String message)?  gameError,TResult? Function( String message)?  depotError,TResult? Function( String message)?  secureLinksError,TResult? Function( String message)?  downloadError,TResult? Function( String message)?  savesError,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( String message)?  authError,TResult? Function( String message)?  gameError,TResult? Function( String message)?  depotError,TResult? Function( String message)?  secureLinksError,TResult? Function( String message)?  downloadError,TResult? Function( String message)?  savesError,TResult? Function( String message)?  protonError,}) {final _that = this;
 switch (_that) {
 case GogError_AuthError() when authError != null:
 return authError(_that.message);case GogError_GameError() when gameError != null:
@@ -219,7 +224,8 @@ return gameError(_that.message);case GogError_DepotError() when depotError != nu
 return depotError(_that.message);case GogError_SecureLinksError() when secureLinksError != null:
 return secureLinksError(_that.message);case GogError_DownloadError() when downloadError != null:
 return downloadError(_that.message);case GogError_SavesError() when savesError != null:
-return savesError(_that.message);case _:
+return savesError(_that.message);case GogError_ProtonError() when protonError != null:
+return protonError(_that.message);case _:
   return null;
 
 }
@@ -615,6 +621,72 @@ class _$GogError_SavesErrorCopyWithImpl<$Res>
 /// with the given fields replaced by the non-null parameter values.
 @override @pragma('vm:prefer-inline') $Res call({Object? message = null,}) {
   return _then(GogError_SavesError(
+message: null == message ? _self.message : message // ignore: cast_nullable_to_non_nullable
+as String,
+  ));
+}
+
+
+}
+
+/// @nodoc
+
+
+class GogError_ProtonError extends GogError {
+  const GogError_ProtonError({required this.message}): super._();
+
+
+@override final  String message;
+
+/// Create a copy of GogError
+/// with the given fields replaced by the non-null parameter values.
+@override @JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$GogError_ProtonErrorCopyWith<GogError_ProtonError> get copyWith => _$GogError_ProtonErrorCopyWithImpl<GogError_ProtonError>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is GogError_ProtonError&&(identical(other.message, message) || other.message == message));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,message);
+
+@override
+String toString() {
+  return 'GogError.protonError(message: $message)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class $GogError_ProtonErrorCopyWith<$Res> implements $GogErrorCopyWith<$Res> {
+  factory $GogError_ProtonErrorCopyWith(GogError_ProtonError value, $Res Function(GogError_ProtonError) _then) = _$GogError_ProtonErrorCopyWithImpl;
+@override @useResult
+$Res call({
+ String message
+});
+
+
+
+
+}
+/// @nodoc
+class _$GogError_ProtonErrorCopyWithImpl<$Res>
+    implements $GogError_ProtonErrorCopyWith<$Res> {
+  _$GogError_ProtonErrorCopyWithImpl(this._self, this._then);
+
+  final GogError_ProtonError _self;
+  final $Res Function(GogError_ProtonError) _then;
+
+/// Create a copy of GogError
+/// with the given fields replaced by the non-null parameter values.
+@override @pragma('vm:prefer-inline') $Res call({Object? message = null,}) {
+  return _then(GogError_ProtonError(
 message: null == message ? _self.message : message // ignore: cast_nullable_to_non_nullable
 as String,
   ));

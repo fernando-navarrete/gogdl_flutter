@@ -9,7 +9,7 @@ import 'package:freezed_annotation/freezed_annotation.dart' hide protected;
 part 'gogdl.freezed.dart';
 
 // These functions are ignored because they are not marked as `pub`: `get_downloadable_files`, `unresolved_files`
-// These function are ignored because they are on traits that is not defined in current crate (put an empty `#[frb]` on it to unignore): `clone`, `clone`, `clone`, `clone`, `clone`, `clone`, `clone`, `clone`, `clone`, `clone`, `clone`, `clone`, `clone`, `clone`, `eq`, `eq`, `eq`, `eq`, `fmt`, `fmt`, `from`
+// These function are ignored because they are on traits that is not defined in current crate (put an empty `#[frb]` on it to unignore): `clone`, `clone`, `clone`, `clone`, `clone`, `clone`, `clone`, `clone`, `clone`, `clone`, `clone`, `clone`, `clone`, `clone`, `clone`, `clone`, `clone`, `eq`, `eq`, `eq`, `eq`, `eq`, `fmt`, `fmt`, `from`
 
 // Rust type: RustOpaqueMoi<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<CloudSaveConfig>>
 abstract class CloudSaveConfig implements RustOpaqueInterface {
@@ -112,6 +112,11 @@ abstract class Gog implements RustOpaqueInterface {
     required int gameId,
   });
 
+  Stream<ProtonDownloadStream> downloadProtonRelease({
+    required ProtonRelease release,
+    required String path,
+  });
+
   Stream<SaveDownloadStream> downloadSave({
     required CloudSaveFile saveFile,
     required String clientId,
@@ -139,6 +144,8 @@ abstract class Gog implements RustOpaqueInterface {
   String getLoginUrl();
 
   Future<Int32List> getOwnedGames();
+
+  Future<List<ProtonRelease>> getProtonReleases({required int page});
 
   Future<SaveAuthIds> getSaveAuthIds({required int gameId});
 
@@ -179,6 +186,33 @@ abstract class Gog implements RustOpaqueInterface {
     required List<String> selectedProducts,
     required int gameId,
   });
+}
+
+// Rust type: RustOpaqueMoi<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<ProtonDownloadStatus>>
+abstract class ProtonDownloadStatus implements RustOpaqueInterface {
+  String name();
+}
+
+// Rust type: RustOpaqueMoi<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<ProtonDownloadStream>>
+abstract class ProtonDownloadStream implements RustOpaqueInterface {
+  ProtonDownloadStatus get status;
+
+  BigInt get total;
+
+  BigInt get transferred;
+
+  set status(ProtonDownloadStatus status);
+
+  set total(BigInt total);
+
+  set transferred(BigInt transferred);
+}
+
+// Rust type: RustOpaqueMoi<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<ProtonRelease>>
+abstract class ProtonRelease implements RustOpaqueInterface {
+  BigInt downloadSize();
+
+  String tagName();
 }
 
 // Rust type: RustOpaqueMoi<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<RepairStatus>>
@@ -310,4 +344,6 @@ sealed class GogError with _$GogError implements FrbException {
       GogError_DownloadError;
   const factory GogError.savesError({required String message}) =
       GogError_SavesError;
+  const factory GogError.protonError({required String message}) =
+      GogError_ProtonError;
 }

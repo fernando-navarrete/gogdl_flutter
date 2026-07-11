@@ -2,8 +2,8 @@ use flutter_rust_bridge::{frb, DartFnFuture};
 use futures::stream::{self, StreamExt};
 use gogdl_lib2::{
     Client, DownloadDetail, DownloadEvent, DownloadJobEvent, DownloadStage, DownloadableFiles,
-    FileAllocationEvent, FileVerifyEvent, GogDl, GogDlError, RemoteConfig, RepairDetail,
-    RepairEvent, RepairStage, SaveFile, SaveProgress, VerifyChunksEvent, VerifyEvent,
+    FileAllocationEvent, FileVerifyEvent, GogDl, GogDlError, ProtonProgress, Release, RemoteConfig,
+    RepairDetail, RepairEvent, RepairStage, SaveFile, SaveProgress, VerifyChunksEvent, VerifyEvent,
 };
 use std::collections::HashSet;
 use std::path::Path;
@@ -231,6 +231,51 @@ pub struct SaveUploadStream {
     pub total: u64,
 }
 
+#[frb(opaque)]
+#[derive(Clone)]
+pub struct ProtonRelease {
+    inner: Release,
+}
+
+impl ProtonRelease {
+    #[frb(sync)]
+    pub fn tag_name(&self) -> String {
+        self.inner.tag_name.clone()
+    }
+    #[frb(sync)]
+    pub fn download_size(&self) -> u64 {
+        self.inner.get_download_size().unwrap_or(0)
+    }
+}
+
+#[frb(opaque)]
+#[derive(Clone, Copy, PartialEq)]
+pub enum ProtonDownloadStatus {
+    Downloading,
+    Extracting,
+    Downloaded,
+}
+
+impl ProtonDownloadStatus {
+    #[frb(sync)]
+    pub fn name(&self) -> String {
+        match self {
+            ProtonDownloadStatus::Downloading => "downloading",
+            ProtonDownloadStatus::Extracting => "extracting",
+            ProtonDownloadStatus::Downloaded => "downloaded",
+        }
+        .to_string()
+    }
+}
+
+#[frb(opaque)]
+#[derive(Clone)]
+pub struct ProtonDownloadStream {
+    pub status: ProtonDownloadStatus,
+    pub transferred: u64,
+    pub total: u64,
+}
+
 /// Reconciles paths flagged broken during the verify/allocate/chunk-verify
 /// stages against download-stage outcomes, so callers only see paths that
 /// are still broken -- not every path that was found broken and then fixed
@@ -344,6 +389,8 @@ pub enum GogError {
     DownloadError { message: String },
     #[error("SavesError: {message}")]
     SavesError { message: String },
+    #[error("ProtonError: {message}")]
+    ProtonError { message: String },
 }
 
 impl From<GogDlError> for GogError {
@@ -366,6 +413,9 @@ impl From<GogDlError> for GogError {
             },
             GogDlError::SavesError(saves_error) => GogError::SavesError {
                 message: saves_error.to_string(),
+            },
+            GogDlError::ProtonError(proton_error) => GogError::ProtonError {
+                message: proton_error.to_string(),
             },
         }
     }
@@ -1041,6 +1091,78 @@ impl Gog {
         stream
             .add(SaveUploadStream {
                 status: SaveUploadStatus::Uploaded,
+                transferred,
+                total,
+            })
+            .ok();
+
+        Ok(())
+    }
+
+    pub async fn get_proton_releases(&self, page: i32) -> Result<Vec<ProtonRelease>, GogError> {
+        let releases = self.inner.get_proton_releases(page).await?;
+        Ok(releases
+            .into_iter()
+            .map(|inner| ProtonRelease { inner })
+            .collect())
+    }
+
+    pub async fn download_proton_release(
+        &self,
+        release: &ProtonRelease,
+        path: String,
+        stream: StreamSink<ProtonDownloadStream>,
+    ) -> Result<(), GogError> {
+        stream
+            .add(ProtonDownloadStream {
+                status: ProtonDownloadStatus::Downloading,
+                transferred: 0,
+                total: 0,
+            })
+            .ok();
+
+        let (tx, mut rx) = mpsc::unbounded_channel::<ProtonProgress>();
+
+        let download_future =
+            self.inner
+                .download_proton_release(&release.inner, Path::new(&path), tx);
+        let drain_future = async {
+            let mut transferred: u64 = 0;
+            let mut total: u64 = 0;
+            while let Some(ProtonProgress {
+                transferred: event_transferred,
+                total: event_total,
+            }) = rx.recv().await
+            {
+                transferred = event_transferred;
+                total = event_total;
+                stream
+                    .add(ProtonDownloadStream {
+                        status: ProtonDownloadStatus::Downloading,
+                        transferred,
+                        total,
+                    })
+                    .ok();
+            }
+            // The progress channel only covers the byte-transfer stage; once
+            // it closes, checksum verification and tarball extraction are
+            // still running on the download future.
+            stream
+                .add(ProtonDownloadStream {
+                    status: ProtonDownloadStatus::Extracting,
+                    transferred,
+                    total,
+                })
+                .ok();
+            (transferred, total)
+        };
+
+        let (download_result, (transferred, total)) = tokio::join!(download_future, drain_future);
+        download_result?;
+
+        stream
+            .add(ProtonDownloadStream {
+                status: ProtonDownloadStatus::Downloaded,
                 transferred,
                 total,
             })

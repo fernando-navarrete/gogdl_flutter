@@ -39,7 +39,7 @@ flutter_rust_bridge::frb_generated_boilerplate!(
     default_rust_auto_opaque = RustAutoOpaqueMoi,
 );
 pub(crate) const FLUTTER_RUST_BRIDGE_CODEGEN_VERSION: &str = "2.12.0";
-pub(crate) const FLUTTER_RUST_BRIDGE_CODEGEN_CONTENT_HASH: i32 = 924257982;
+pub(crate) const FLUTTER_RUST_BRIDGE_CODEGEN_CONTENT_HASH: i32 = -1445661369;
 
 // Section: executor
 
@@ -1843,6 +1843,88 @@ fn wire__crate__api__gogdl__gogdl__Gog_download_game_impl(
         },
     )
 }
+fn wire__crate__api__gogdl__gogdl__Gog_download_proton_release_impl(
+    port_: flutter_rust_bridge::for_generated::MessagePort,
+    ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
+    rust_vec_len_: i32,
+    data_len_: i32,
+) {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap_async::<flutter_rust_bridge::for_generated::SseCodec, _, _, _>(
+        flutter_rust_bridge::for_generated::TaskInfo {
+            debug_name: "Gog_download_proton_release",
+            port: Some(port_),
+            mode: flutter_rust_bridge::for_generated::FfiCallMode::Normal,
+        },
+        move || {
+            let message = unsafe {
+                flutter_rust_bridge::for_generated::Dart2RustMessageSse::from_wire(
+                    ptr_,
+                    rust_vec_len_,
+                    data_len_,
+                )
+            };
+            let mut deserializer =
+                flutter_rust_bridge::for_generated::SseDeserializer::new(message);
+            let api_that = <RustOpaqueMoi<
+                flutter_rust_bridge::for_generated::RustAutoOpaqueInner<Gog>,
+            >>::sse_decode(&mut deserializer);
+            let api_release = <RustOpaqueMoi<
+                flutter_rust_bridge::for_generated::RustAutoOpaqueInner<ProtonRelease>,
+            >>::sse_decode(&mut deserializer);
+            let api_path = <String>::sse_decode(&mut deserializer);
+            let api_stream = <StreamSink<
+                ProtonDownloadStream,
+                flutter_rust_bridge::for_generated::SseCodec,
+            >>::sse_decode(&mut deserializer);
+            deserializer.end();
+            move |context| async move {
+                transform_result_sse::<_, crate::api::gogdl::gogdl::GogError>(
+                    (move || async move {
+                        let mut api_that_guard = None;
+                        let mut api_release_guard = None;
+                        let decode_indices_ =
+                            flutter_rust_bridge::for_generated::lockable_compute_decode_order(
+                                vec![
+                                    flutter_rust_bridge::for_generated::LockableOrderInfo::new(
+                                        &api_that, 0, false,
+                                    ),
+                                    flutter_rust_bridge::for_generated::LockableOrderInfo::new(
+                                        &api_release,
+                                        1,
+                                        false,
+                                    ),
+                                ],
+                            );
+                        for i in decode_indices_ {
+                            match i {
+                                0 => {
+                                    api_that_guard =
+                                        Some(api_that.lockable_decode_async_ref().await)
+                                }
+                                1 => {
+                                    api_release_guard =
+                                        Some(api_release.lockable_decode_async_ref().await)
+                                }
+                                _ => unreachable!(),
+                            }
+                        }
+                        let api_that_guard = api_that_guard.unwrap();
+                        let api_release_guard = api_release_guard.unwrap();
+                        let output_ok = crate::api::gogdl::gogdl::Gog::download_proton_release(
+                            &*api_that_guard,
+                            &*api_release_guard,
+                            api_path,
+                            api_stream,
+                        )
+                        .await?;
+                        Ok(output_ok)
+                    })()
+                    .await,
+                )
+            }
+        },
+    )
+}
 fn wire__crate__api__gogdl__gogdl__Gog_download_save_impl(
     port_: flutter_rust_bridge::for_generated::MessagePort,
     ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
@@ -2456,6 +2538,66 @@ fn wire__crate__api__gogdl__gogdl__Gog_get_owned_games_impl(
         },
     )
 }
+fn wire__crate__api__gogdl__gogdl__Gog_get_proton_releases_impl(
+    port_: flutter_rust_bridge::for_generated::MessagePort,
+    ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
+    rust_vec_len_: i32,
+    data_len_: i32,
+) {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap_async::<flutter_rust_bridge::for_generated::SseCodec, _, _, _>(
+        flutter_rust_bridge::for_generated::TaskInfo {
+            debug_name: "Gog_get_proton_releases",
+            port: Some(port_),
+            mode: flutter_rust_bridge::for_generated::FfiCallMode::Normal,
+        },
+        move || {
+            let message = unsafe {
+                flutter_rust_bridge::for_generated::Dart2RustMessageSse::from_wire(
+                    ptr_,
+                    rust_vec_len_,
+                    data_len_,
+                )
+            };
+            let mut deserializer =
+                flutter_rust_bridge::for_generated::SseDeserializer::new(message);
+            let api_that = <RustOpaqueMoi<
+                flutter_rust_bridge::for_generated::RustAutoOpaqueInner<Gog>,
+            >>::sse_decode(&mut deserializer);
+            let api_page = <i32>::sse_decode(&mut deserializer);
+            deserializer.end();
+            move |context| async move {
+                transform_result_sse::<_, crate::api::gogdl::gogdl::GogError>(
+                    (move || async move {
+                        let mut api_that_guard = None;
+                        let decode_indices_ =
+                            flutter_rust_bridge::for_generated::lockable_compute_decode_order(
+                                vec![flutter_rust_bridge::for_generated::LockableOrderInfo::new(
+                                    &api_that, 0, false,
+                                )],
+                            );
+                        for i in decode_indices_ {
+                            match i {
+                                0 => {
+                                    api_that_guard =
+                                        Some(api_that.lockable_decode_async_ref().await)
+                                }
+                                _ => unreachable!(),
+                            }
+                        }
+                        let api_that_guard = api_that_guard.unwrap();
+                        let output_ok = crate::api::gogdl::gogdl::Gog::get_proton_releases(
+                            &*api_that_guard,
+                            api_page,
+                        )
+                        .await?;
+                        Ok(output_ok)
+                    })()
+                    .await,
+                )
+            }
+        },
+    )
+}
 fn wire__crate__api__gogdl__gogdl__Gog_get_save_auth_ids_impl(
     port_: flutter_rust_bridge::for_generated::MessagePort,
     ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
@@ -3017,6 +3159,441 @@ fn wire__crate__api__gogdl__gogdl__Gog_verify_download_impl(
                     .await,
                 )
             }
+        },
+    )
+}
+fn wire__crate__api__gogdl__gogdl__ProtonDownloadStatus_name_impl(
+    ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
+    rust_vec_len_: i32,
+    data_len_: i32,
+) -> flutter_rust_bridge::for_generated::WireSyncRust2DartSse {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap_sync::<flutter_rust_bridge::for_generated::SseCodec, _>(
+        flutter_rust_bridge::for_generated::TaskInfo {
+            debug_name: "ProtonDownloadStatus_name",
+            port: None,
+            mode: flutter_rust_bridge::for_generated::FfiCallMode::Sync,
+        },
+        move || {
+            let message = unsafe {
+                flutter_rust_bridge::for_generated::Dart2RustMessageSse::from_wire(
+                    ptr_,
+                    rust_vec_len_,
+                    data_len_,
+                )
+            };
+            let mut deserializer =
+                flutter_rust_bridge::for_generated::SseDeserializer::new(message);
+            let api_that = <RustOpaqueMoi<
+                flutter_rust_bridge::for_generated::RustAutoOpaqueInner<ProtonDownloadStatus>,
+            >>::sse_decode(&mut deserializer);
+            deserializer.end();
+            transform_result_sse::<_, ()>((move || {
+                let mut api_that_guard = None;
+                let decode_indices_ =
+                    flutter_rust_bridge::for_generated::lockable_compute_decode_order(vec![
+                        flutter_rust_bridge::for_generated::LockableOrderInfo::new(
+                            &api_that, 0, false,
+                        ),
+                    ]);
+                for i in decode_indices_ {
+                    match i {
+                        0 => api_that_guard = Some(api_that.lockable_decode_sync_ref()),
+                        _ => unreachable!(),
+                    }
+                }
+                let api_that_guard = api_that_guard.unwrap();
+                let output_ok = Result::<_, ()>::Ok(
+                    crate::api::gogdl::gogdl::ProtonDownloadStatus::name(&*api_that_guard),
+                )?;
+                Ok(output_ok)
+            })())
+        },
+    )
+}
+fn wire__crate__api__gogdl__gogdl__ProtonDownloadStream_auto_accessor_get_status_impl(
+    ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
+    rust_vec_len_: i32,
+    data_len_: i32,
+) -> flutter_rust_bridge::for_generated::WireSyncRust2DartSse {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap_sync::<flutter_rust_bridge::for_generated::SseCodec, _>(
+        flutter_rust_bridge::for_generated::TaskInfo {
+            debug_name: "ProtonDownloadStream_auto_accessor_get_status",
+            port: None,
+            mode: flutter_rust_bridge::for_generated::FfiCallMode::Sync,
+        },
+        move || {
+            let message = unsafe {
+                flutter_rust_bridge::for_generated::Dart2RustMessageSse::from_wire(
+                    ptr_,
+                    rust_vec_len_,
+                    data_len_,
+                )
+            };
+            let mut deserializer =
+                flutter_rust_bridge::for_generated::SseDeserializer::new(message);
+            let api_that = <RustOpaqueMoi<
+                flutter_rust_bridge::for_generated::RustAutoOpaqueInner<ProtonDownloadStream>,
+            >>::sse_decode(&mut deserializer);
+            deserializer.end();
+            transform_result_sse::<_, ()>((move || {
+                let mut api_that_guard = None;
+                let decode_indices_ =
+                    flutter_rust_bridge::for_generated::lockable_compute_decode_order(vec![
+                        flutter_rust_bridge::for_generated::LockableOrderInfo::new(
+                            &api_that, 0, false,
+                        ),
+                    ]);
+                for i in decode_indices_ {
+                    match i {
+                        0 => api_that_guard = Some(api_that.lockable_decode_sync_ref()),
+                        _ => unreachable!(),
+                    }
+                }
+                let api_that_guard = api_that_guard.unwrap();
+                let output_ok = Result::<_, ()>::Ok(api_that_guard.status.clone())?;
+                Ok(output_ok)
+            })())
+        },
+    )
+}
+fn wire__crate__api__gogdl__gogdl__ProtonDownloadStream_auto_accessor_get_total_impl(
+    ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
+    rust_vec_len_: i32,
+    data_len_: i32,
+) -> flutter_rust_bridge::for_generated::WireSyncRust2DartSse {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap_sync::<flutter_rust_bridge::for_generated::SseCodec, _>(
+        flutter_rust_bridge::for_generated::TaskInfo {
+            debug_name: "ProtonDownloadStream_auto_accessor_get_total",
+            port: None,
+            mode: flutter_rust_bridge::for_generated::FfiCallMode::Sync,
+        },
+        move || {
+            let message = unsafe {
+                flutter_rust_bridge::for_generated::Dart2RustMessageSse::from_wire(
+                    ptr_,
+                    rust_vec_len_,
+                    data_len_,
+                )
+            };
+            let mut deserializer =
+                flutter_rust_bridge::for_generated::SseDeserializer::new(message);
+            let api_that = <RustOpaqueMoi<
+                flutter_rust_bridge::for_generated::RustAutoOpaqueInner<ProtonDownloadStream>,
+            >>::sse_decode(&mut deserializer);
+            deserializer.end();
+            transform_result_sse::<_, ()>((move || {
+                let mut api_that_guard = None;
+                let decode_indices_ =
+                    flutter_rust_bridge::for_generated::lockable_compute_decode_order(vec![
+                        flutter_rust_bridge::for_generated::LockableOrderInfo::new(
+                            &api_that, 0, false,
+                        ),
+                    ]);
+                for i in decode_indices_ {
+                    match i {
+                        0 => api_that_guard = Some(api_that.lockable_decode_sync_ref()),
+                        _ => unreachable!(),
+                    }
+                }
+                let api_that_guard = api_that_guard.unwrap();
+                let output_ok = Result::<_, ()>::Ok(api_that_guard.total.clone())?;
+                Ok(output_ok)
+            })())
+        },
+    )
+}
+fn wire__crate__api__gogdl__gogdl__ProtonDownloadStream_auto_accessor_get_transferred_impl(
+    ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
+    rust_vec_len_: i32,
+    data_len_: i32,
+) -> flutter_rust_bridge::for_generated::WireSyncRust2DartSse {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap_sync::<flutter_rust_bridge::for_generated::SseCodec, _>(
+        flutter_rust_bridge::for_generated::TaskInfo {
+            debug_name: "ProtonDownloadStream_auto_accessor_get_transferred",
+            port: None,
+            mode: flutter_rust_bridge::for_generated::FfiCallMode::Sync,
+        },
+        move || {
+            let message = unsafe {
+                flutter_rust_bridge::for_generated::Dart2RustMessageSse::from_wire(
+                    ptr_,
+                    rust_vec_len_,
+                    data_len_,
+                )
+            };
+            let mut deserializer =
+                flutter_rust_bridge::for_generated::SseDeserializer::new(message);
+            let api_that = <RustOpaqueMoi<
+                flutter_rust_bridge::for_generated::RustAutoOpaqueInner<ProtonDownloadStream>,
+            >>::sse_decode(&mut deserializer);
+            deserializer.end();
+            transform_result_sse::<_, ()>((move || {
+                let mut api_that_guard = None;
+                let decode_indices_ =
+                    flutter_rust_bridge::for_generated::lockable_compute_decode_order(vec![
+                        flutter_rust_bridge::for_generated::LockableOrderInfo::new(
+                            &api_that, 0, false,
+                        ),
+                    ]);
+                for i in decode_indices_ {
+                    match i {
+                        0 => api_that_guard = Some(api_that.lockable_decode_sync_ref()),
+                        _ => unreachable!(),
+                    }
+                }
+                let api_that_guard = api_that_guard.unwrap();
+                let output_ok = Result::<_, ()>::Ok(api_that_guard.transferred.clone())?;
+                Ok(output_ok)
+            })())
+        },
+    )
+}
+fn wire__crate__api__gogdl__gogdl__ProtonDownloadStream_auto_accessor_set_status_impl(
+    ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
+    rust_vec_len_: i32,
+    data_len_: i32,
+) -> flutter_rust_bridge::for_generated::WireSyncRust2DartSse {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap_sync::<flutter_rust_bridge::for_generated::SseCodec, _>(
+        flutter_rust_bridge::for_generated::TaskInfo {
+            debug_name: "ProtonDownloadStream_auto_accessor_set_status",
+            port: None,
+            mode: flutter_rust_bridge::for_generated::FfiCallMode::Sync,
+        },
+        move || {
+            let message = unsafe {
+                flutter_rust_bridge::for_generated::Dart2RustMessageSse::from_wire(
+                    ptr_,
+                    rust_vec_len_,
+                    data_len_,
+                )
+            };
+            let mut deserializer =
+                flutter_rust_bridge::for_generated::SseDeserializer::new(message);
+            let api_that = <RustOpaqueMoi<
+                flutter_rust_bridge::for_generated::RustAutoOpaqueInner<ProtonDownloadStream>,
+            >>::sse_decode(&mut deserializer);
+            let api_status = <ProtonDownloadStatus>::sse_decode(&mut deserializer);
+            deserializer.end();
+            transform_result_sse::<_, ()>((move || {
+                let mut api_that_guard = None;
+                let decode_indices_ =
+                    flutter_rust_bridge::for_generated::lockable_compute_decode_order(vec![
+                        flutter_rust_bridge::for_generated::LockableOrderInfo::new(
+                            &api_that, 0, true,
+                        ),
+                    ]);
+                for i in decode_indices_ {
+                    match i {
+                        0 => api_that_guard = Some(api_that.lockable_decode_sync_ref_mut()),
+                        _ => unreachable!(),
+                    }
+                }
+                let mut api_that_guard = api_that_guard.unwrap();
+                let output_ok = Result::<_, ()>::Ok({
+                    {
+                        api_that_guard.status = api_status;
+                    };
+                })?;
+                Ok(output_ok)
+            })())
+        },
+    )
+}
+fn wire__crate__api__gogdl__gogdl__ProtonDownloadStream_auto_accessor_set_total_impl(
+    ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
+    rust_vec_len_: i32,
+    data_len_: i32,
+) -> flutter_rust_bridge::for_generated::WireSyncRust2DartSse {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap_sync::<flutter_rust_bridge::for_generated::SseCodec, _>(
+        flutter_rust_bridge::for_generated::TaskInfo {
+            debug_name: "ProtonDownloadStream_auto_accessor_set_total",
+            port: None,
+            mode: flutter_rust_bridge::for_generated::FfiCallMode::Sync,
+        },
+        move || {
+            let message = unsafe {
+                flutter_rust_bridge::for_generated::Dart2RustMessageSse::from_wire(
+                    ptr_,
+                    rust_vec_len_,
+                    data_len_,
+                )
+            };
+            let mut deserializer =
+                flutter_rust_bridge::for_generated::SseDeserializer::new(message);
+            let api_that = <RustOpaqueMoi<
+                flutter_rust_bridge::for_generated::RustAutoOpaqueInner<ProtonDownloadStream>,
+            >>::sse_decode(&mut deserializer);
+            let api_total = <u64>::sse_decode(&mut deserializer);
+            deserializer.end();
+            transform_result_sse::<_, ()>((move || {
+                let mut api_that_guard = None;
+                let decode_indices_ =
+                    flutter_rust_bridge::for_generated::lockable_compute_decode_order(vec![
+                        flutter_rust_bridge::for_generated::LockableOrderInfo::new(
+                            &api_that, 0, true,
+                        ),
+                    ]);
+                for i in decode_indices_ {
+                    match i {
+                        0 => api_that_guard = Some(api_that.lockable_decode_sync_ref_mut()),
+                        _ => unreachable!(),
+                    }
+                }
+                let mut api_that_guard = api_that_guard.unwrap();
+                let output_ok = Result::<_, ()>::Ok({
+                    {
+                        api_that_guard.total = api_total;
+                    };
+                })?;
+                Ok(output_ok)
+            })())
+        },
+    )
+}
+fn wire__crate__api__gogdl__gogdl__ProtonDownloadStream_auto_accessor_set_transferred_impl(
+    ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
+    rust_vec_len_: i32,
+    data_len_: i32,
+) -> flutter_rust_bridge::for_generated::WireSyncRust2DartSse {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap_sync::<flutter_rust_bridge::for_generated::SseCodec, _>(
+        flutter_rust_bridge::for_generated::TaskInfo {
+            debug_name: "ProtonDownloadStream_auto_accessor_set_transferred",
+            port: None,
+            mode: flutter_rust_bridge::for_generated::FfiCallMode::Sync,
+        },
+        move || {
+            let message = unsafe {
+                flutter_rust_bridge::for_generated::Dart2RustMessageSse::from_wire(
+                    ptr_,
+                    rust_vec_len_,
+                    data_len_,
+                )
+            };
+            let mut deserializer =
+                flutter_rust_bridge::for_generated::SseDeserializer::new(message);
+            let api_that = <RustOpaqueMoi<
+                flutter_rust_bridge::for_generated::RustAutoOpaqueInner<ProtonDownloadStream>,
+            >>::sse_decode(&mut deserializer);
+            let api_transferred = <u64>::sse_decode(&mut deserializer);
+            deserializer.end();
+            transform_result_sse::<_, ()>((move || {
+                let mut api_that_guard = None;
+                let decode_indices_ =
+                    flutter_rust_bridge::for_generated::lockable_compute_decode_order(vec![
+                        flutter_rust_bridge::for_generated::LockableOrderInfo::new(
+                            &api_that, 0, true,
+                        ),
+                    ]);
+                for i in decode_indices_ {
+                    match i {
+                        0 => api_that_guard = Some(api_that.lockable_decode_sync_ref_mut()),
+                        _ => unreachable!(),
+                    }
+                }
+                let mut api_that_guard = api_that_guard.unwrap();
+                let output_ok = Result::<_, ()>::Ok({
+                    {
+                        api_that_guard.transferred = api_transferred;
+                    };
+                })?;
+                Ok(output_ok)
+            })())
+        },
+    )
+}
+fn wire__crate__api__gogdl__gogdl__ProtonRelease_download_size_impl(
+    ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
+    rust_vec_len_: i32,
+    data_len_: i32,
+) -> flutter_rust_bridge::for_generated::WireSyncRust2DartSse {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap_sync::<flutter_rust_bridge::for_generated::SseCodec, _>(
+        flutter_rust_bridge::for_generated::TaskInfo {
+            debug_name: "ProtonRelease_download_size",
+            port: None,
+            mode: flutter_rust_bridge::for_generated::FfiCallMode::Sync,
+        },
+        move || {
+            let message = unsafe {
+                flutter_rust_bridge::for_generated::Dart2RustMessageSse::from_wire(
+                    ptr_,
+                    rust_vec_len_,
+                    data_len_,
+                )
+            };
+            let mut deserializer =
+                flutter_rust_bridge::for_generated::SseDeserializer::new(message);
+            let api_that = <RustOpaqueMoi<
+                flutter_rust_bridge::for_generated::RustAutoOpaqueInner<ProtonRelease>,
+            >>::sse_decode(&mut deserializer);
+            deserializer.end();
+            transform_result_sse::<_, ()>((move || {
+                let mut api_that_guard = None;
+                let decode_indices_ =
+                    flutter_rust_bridge::for_generated::lockable_compute_decode_order(vec![
+                        flutter_rust_bridge::for_generated::LockableOrderInfo::new(
+                            &api_that, 0, false,
+                        ),
+                    ]);
+                for i in decode_indices_ {
+                    match i {
+                        0 => api_that_guard = Some(api_that.lockable_decode_sync_ref()),
+                        _ => unreachable!(),
+                    }
+                }
+                let api_that_guard = api_that_guard.unwrap();
+                let output_ok = Result::<_, ()>::Ok(
+                    crate::api::gogdl::gogdl::ProtonRelease::download_size(&*api_that_guard),
+                )?;
+                Ok(output_ok)
+            })())
+        },
+    )
+}
+fn wire__crate__api__gogdl__gogdl__ProtonRelease_tag_name_impl(
+    ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
+    rust_vec_len_: i32,
+    data_len_: i32,
+) -> flutter_rust_bridge::for_generated::WireSyncRust2DartSse {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap_sync::<flutter_rust_bridge::for_generated::SseCodec, _>(
+        flutter_rust_bridge::for_generated::TaskInfo {
+            debug_name: "ProtonRelease_tag_name",
+            port: None,
+            mode: flutter_rust_bridge::for_generated::FfiCallMode::Sync,
+        },
+        move || {
+            let message = unsafe {
+                flutter_rust_bridge::for_generated::Dart2RustMessageSse::from_wire(
+                    ptr_,
+                    rust_vec_len_,
+                    data_len_,
+                )
+            };
+            let mut deserializer =
+                flutter_rust_bridge::for_generated::SseDeserializer::new(message);
+            let api_that = <RustOpaqueMoi<
+                flutter_rust_bridge::for_generated::RustAutoOpaqueInner<ProtonRelease>,
+            >>::sse_decode(&mut deserializer);
+            deserializer.end();
+            transform_result_sse::<_, ()>((move || {
+                let mut api_that_guard = None;
+                let decode_indices_ =
+                    flutter_rust_bridge::for_generated::lockable_compute_decode_order(vec![
+                        flutter_rust_bridge::for_generated::LockableOrderInfo::new(
+                            &api_that, 0, false,
+                        ),
+                    ]);
+                for i in decode_indices_ {
+                    match i {
+                        0 => api_that_guard = Some(api_that.lockable_decode_sync_ref()),
+                        _ => unreachable!(),
+                    }
+                }
+                let api_that_guard = api_that_guard.unwrap();
+                let output_ok = Result::<_, ()>::Ok(
+                    crate::api::gogdl::gogdl::ProtonRelease::tag_name(&*api_that_guard),
+                )?;
+                Ok(output_ok)
+            })())
         },
     )
 }
@@ -5161,6 +5738,15 @@ flutter_rust_bridge::frb_generated_moi_arc_impl_value!(
     flutter_rust_bridge::for_generated::RustAutoOpaqueInner<Gog>
 );
 flutter_rust_bridge::frb_generated_moi_arc_impl_value!(
+    flutter_rust_bridge::for_generated::RustAutoOpaqueInner<ProtonDownloadStatus>
+);
+flutter_rust_bridge::frb_generated_moi_arc_impl_value!(
+    flutter_rust_bridge::for_generated::RustAutoOpaqueInner<ProtonDownloadStream>
+);
+flutter_rust_bridge::frb_generated_moi_arc_impl_value!(
+    flutter_rust_bridge::for_generated::RustAutoOpaqueInner<ProtonRelease>
+);
+flutter_rust_bridge::frb_generated_moi_arc_impl_value!(
     flutter_rust_bridge::for_generated::RustAutoOpaqueInner<RepairStatus>
 );
 flutter_rust_bridge::frb_generated_moi_arc_impl_value!(
@@ -5262,6 +5848,36 @@ impl SseDecode for Gog {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
         let mut inner = <RustOpaqueMoi<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<Gog>>>::sse_decode(deserializer);
+        return flutter_rust_bridge::for_generated::rust_auto_opaque_decode_owned(inner);
+    }
+}
+
+impl SseDecode for ProtonDownloadStatus {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut inner = <RustOpaqueMoi<
+            flutter_rust_bridge::for_generated::RustAutoOpaqueInner<ProtonDownloadStatus>,
+        >>::sse_decode(deserializer);
+        return flutter_rust_bridge::for_generated::rust_auto_opaque_decode_owned(inner);
+    }
+}
+
+impl SseDecode for ProtonDownloadStream {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut inner = <RustOpaqueMoi<
+            flutter_rust_bridge::for_generated::RustAutoOpaqueInner<ProtonDownloadStream>,
+        >>::sse_decode(deserializer);
+        return flutter_rust_bridge::for_generated::rust_auto_opaque_decode_owned(inner);
+    }
+}
+
+impl SseDecode for ProtonRelease {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut inner = <RustOpaqueMoi<
+            flutter_rust_bridge::for_generated::RustAutoOpaqueInner<ProtonRelease>,
+        >>::sse_decode(deserializer);
         return flutter_rust_bridge::for_generated::rust_auto_opaque_decode_owned(inner);
     }
 }
@@ -5433,6 +6049,36 @@ impl SseDecode for RustOpaqueMoi<flutter_rust_bridge::for_generated::RustAutoOpa
 }
 
 impl SseDecode
+    for RustOpaqueMoi<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<ProtonDownloadStatus>>
+{
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut inner = <usize>::sse_decode(deserializer);
+        return decode_rust_opaque_moi(inner);
+    }
+}
+
+impl SseDecode
+    for RustOpaqueMoi<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<ProtonDownloadStream>>
+{
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut inner = <usize>::sse_decode(deserializer);
+        return decode_rust_opaque_moi(inner);
+    }
+}
+
+impl SseDecode
+    for RustOpaqueMoi<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<ProtonRelease>>
+{
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut inner = <usize>::sse_decode(deserializer);
+        return decode_rust_opaque_moi(inner);
+    }
+}
+
+impl SseDecode
     for RustOpaqueMoi<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<RepairStatus>>
 {
     // Codec=Sse (Serialization based), see doc to use other codecs
@@ -5530,6 +6176,14 @@ impl SseDecode for StreamSink<DownloadStream, flutter_rust_bridge::for_generated
     }
 }
 
+impl SseDecode for StreamSink<ProtonDownloadStream, flutter_rust_bridge::for_generated::SseCodec> {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut inner = <String>::sse_decode(deserializer);
+        return StreamSink::deserialize(inner);
+    }
+}
+
 impl SseDecode for StreamSink<RepairStream, flutter_rust_bridge::for_generated::SseCodec> {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
@@ -5618,6 +6272,12 @@ impl SseDecode for crate::api::gogdl::gogdl::GogError {
                     message: var_message,
                 };
             }
+            6 => {
+                let mut var_message = <String>::sse_decode(deserializer);
+                return crate::api::gogdl::gogdl::GogError::ProtonError {
+                    message: var_message,
+                };
+            }
             _ => {
                 unimplemented!("");
             }
@@ -5677,6 +6337,18 @@ impl SseDecode for Vec<GameBuild> {
         let mut ans_ = Vec::with_capacity(len_ as usize);
         for idx_ in 0..len_ {
             ans_.push(<GameBuild>::sse_decode(deserializer));
+        }
+        return ans_;
+    }
+}
+
+impl SseDecode for Vec<ProtonRelease> {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut len_ = <i32>::sse_decode(deserializer);
+        let mut ans_ = Vec::with_capacity(len_ as usize);
+        for idx_ in 0..len_ {
+            ans_.push(<ProtonRelease>::sse_decode(deserializer));
         }
         return ans_;
     }
@@ -5771,106 +6443,118 @@ fn pde_ffi_dispatcher_primary_impl(
             rust_vec_len,
             data_len,
         ),
-        37 => wire__crate__api__gogdl__gogdl__Gog_download_save_impl(
+        37 => wire__crate__api__gogdl__gogdl__Gog_download_proton_release_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        38 => wire__crate__api__gogdl__gogdl__Gog_get_background_image_link_impl(
+        38 => wire__crate__api__gogdl__gogdl__Gog_download_save_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        39 => wire__crate__api__gogdl__gogdl__Gog_get_downloadable_products_impl(
+        39 => wire__crate__api__gogdl__gogdl__Gog_get_background_image_link_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        40 => wire__crate__api__gogdl__gogdl__Gog_get_game_boxart_link_impl(
+        40 => wire__crate__api__gogdl__gogdl__Gog_get_downloadable_products_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        41 => wire__crate__api__gogdl__gogdl__Gog_get_game_builds_impl(
+        41 => wire__crate__api__gogdl__gogdl__Gog_get_game_boxart_link_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        42 => wire__crate__api__gogdl__gogdl__Gog_get_game_screenshots_impl(
+        42 => wire__crate__api__gogdl__gogdl__Gog_get_game_builds_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        43 => wire__crate__api__gogdl__gogdl__Gog_get_game_summary_impl(
+        43 => wire__crate__api__gogdl__gogdl__Gog_get_game_screenshots_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        44 => wire__crate__api__gogdl__gogdl__Gog_get_game_title_impl(
+        44 => wire__crate__api__gogdl__gogdl__Gog_get_game_summary_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        46 => wire__crate__api__gogdl__gogdl__Gog_get_owned_games_impl(
+        45 => wire__crate__api__gogdl__gogdl__Gog_get_game_title_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        47 => wire__crate__api__gogdl__gogdl__Gog_get_save_auth_ids_impl(
+        47 => wire__crate__api__gogdl__gogdl__Gog_get_owned_games_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        48 => wire__crate__api__gogdl__gogdl__Gog_get_save_file_list_impl(
+        48 => wire__crate__api__gogdl__gogdl__Gog_get_proton_releases_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        49 => wire__crate__api__gogdl__gogdl__Gog_get_save_remote_config_impl(
+        49 => wire__crate__api__gogdl__gogdl__Gog_get_save_auth_ids_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        50 => wire__crate__api__gogdl__gogdl__Gog_login_with_code_impl(
+        50 => wire__crate__api__gogdl__gogdl__Gog_get_save_file_list_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        52 => wire__crate__api__gogdl__gogdl__Gog_refresh_auth_with_callback_impl(
+        51 => wire__crate__api__gogdl__gogdl__Gog_get_save_remote_config_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        53 => wire__crate__api__gogdl__gogdl__Gog_repair_download_impl(
+        52 => wire__crate__api__gogdl__gogdl__Gog_login_with_code_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        54 => wire__crate__api__gogdl__gogdl__Gog_restore_auth_from_string_impl(
+        54 => wire__crate__api__gogdl__gogdl__Gog_refresh_auth_with_callback_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        55 => {
+        55 => wire__crate__api__gogdl__gogdl__Gog_repair_download_impl(
+            port,
+            ptr,
+            rust_vec_len,
+            data_len,
+        ),
+        56 => wire__crate__api__gogdl__gogdl__Gog_restore_auth_from_string_impl(
+            port,
+            ptr,
+            rust_vec_len,
+            data_len,
+        ),
+        57 => {
             wire__crate__api__gogdl__gogdl__Gog_upload_save_impl(port, ptr, rust_vec_len, data_len)
         }
-        56 => wire__crate__api__gogdl__gogdl__Gog_verify_download_impl(
+        58 => wire__crate__api__gogdl__gogdl__Gog_verify_download_impl(
             port,
             ptr,
             rust_vec_len,
@@ -5922,51 +6606,60 @@ fn pde_ffi_dispatcher_sync_impl(
 32 => wire__crate__api__gogdl__gogdl__GameBuild_auto_accessor_set_release_date_impl(ptr, rust_vec_len, data_len),
 33 => wire__crate__api__gogdl__gogdl__GameBuild_auto_accessor_set_release_date_timestamp_impl(ptr, rust_vec_len, data_len),
 34 => wire__crate__api__gogdl__gogdl__GameBuild_auto_accessor_set_version_name_impl(ptr, rust_vec_len, data_len),
-45 => wire__crate__api__gogdl__gogdl__Gog_get_login_url_impl(ptr, rust_vec_len, data_len),
-51 => wire__crate__api__gogdl__gogdl__Gog_new_impl(ptr, rust_vec_len, data_len),
-57 => wire__crate__api__gogdl__gogdl__RepairStatus_name_impl(ptr, rust_vec_len, data_len),
-58 => wire__crate__api__gogdl__gogdl__RepairStream_auto_accessor_get_downloaded_bytes_impl(ptr, rust_vec_len, data_len),
-59 => wire__crate__api__gogdl__gogdl__RepairStream_auto_accessor_get_downloaded_chunks_impl(ptr, rust_vec_len, data_len),
-60 => wire__crate__api__gogdl__gogdl__RepairStream_auto_accessor_get_error_files_impl(ptr, rust_vec_len, data_len),
-61 => wire__crate__api__gogdl__gogdl__RepairStream_auto_accessor_get_processed_files_impl(ptr, rust_vec_len, data_len),
-62 => wire__crate__api__gogdl__gogdl__RepairStream_auto_accessor_get_status_impl(ptr, rust_vec_len, data_len),
-63 => wire__crate__api__gogdl__gogdl__RepairStream_auto_accessor_get_total_bytes_impl(ptr, rust_vec_len, data_len),
-64 => wire__crate__api__gogdl__gogdl__RepairStream_auto_accessor_get_total_chunks_impl(ptr, rust_vec_len, data_len),
-65 => wire__crate__api__gogdl__gogdl__RepairStream_auto_accessor_get_total_files_impl(ptr, rust_vec_len, data_len),
-66 => wire__crate__api__gogdl__gogdl__RepairStream_auto_accessor_set_downloaded_bytes_impl(ptr, rust_vec_len, data_len),
-67 => wire__crate__api__gogdl__gogdl__RepairStream_auto_accessor_set_downloaded_chunks_impl(ptr, rust_vec_len, data_len),
-68 => wire__crate__api__gogdl__gogdl__RepairStream_auto_accessor_set_error_files_impl(ptr, rust_vec_len, data_len),
-69 => wire__crate__api__gogdl__gogdl__RepairStream_auto_accessor_set_processed_files_impl(ptr, rust_vec_len, data_len),
-70 => wire__crate__api__gogdl__gogdl__RepairStream_auto_accessor_set_status_impl(ptr, rust_vec_len, data_len),
-71 => wire__crate__api__gogdl__gogdl__RepairStream_auto_accessor_set_total_bytes_impl(ptr, rust_vec_len, data_len),
-72 => wire__crate__api__gogdl__gogdl__RepairStream_auto_accessor_set_total_chunks_impl(ptr, rust_vec_len, data_len),
-73 => wire__crate__api__gogdl__gogdl__RepairStream_auto_accessor_set_total_files_impl(ptr, rust_vec_len, data_len),
-74 => wire__crate__api__gogdl__gogdl__SaveAuthIds_auto_accessor_get_client_id_impl(ptr, rust_vec_len, data_len),
-75 => wire__crate__api__gogdl__gogdl__SaveAuthIds_auto_accessor_get_client_secret_impl(ptr, rust_vec_len, data_len),
-76 => wire__crate__api__gogdl__gogdl__SaveAuthIds_auto_accessor_set_client_id_impl(ptr, rust_vec_len, data_len),
-77 => wire__crate__api__gogdl__gogdl__SaveAuthIds_auto_accessor_set_client_secret_impl(ptr, rust_vec_len, data_len),
-78 => wire__crate__api__gogdl__gogdl__SaveDownloadStatus_name_impl(ptr, rust_vec_len, data_len),
-79 => wire__crate__api__gogdl__gogdl__SaveDownloadStream_auto_accessor_get_status_impl(ptr, rust_vec_len, data_len),
-80 => wire__crate__api__gogdl__gogdl__SaveDownloadStream_auto_accessor_get_total_impl(ptr, rust_vec_len, data_len),
-81 => wire__crate__api__gogdl__gogdl__SaveDownloadStream_auto_accessor_get_transferred_impl(ptr, rust_vec_len, data_len),
-82 => wire__crate__api__gogdl__gogdl__SaveDownloadStream_auto_accessor_set_status_impl(ptr, rust_vec_len, data_len),
-83 => wire__crate__api__gogdl__gogdl__SaveDownloadStream_auto_accessor_set_total_impl(ptr, rust_vec_len, data_len),
-84 => wire__crate__api__gogdl__gogdl__SaveDownloadStream_auto_accessor_set_transferred_impl(ptr, rust_vec_len, data_len),
-85 => wire__crate__api__gogdl__gogdl__SaveUploadStatus_name_impl(ptr, rust_vec_len, data_len),
-86 => wire__crate__api__gogdl__gogdl__SaveUploadStream_auto_accessor_get_status_impl(ptr, rust_vec_len, data_len),
-87 => wire__crate__api__gogdl__gogdl__SaveUploadStream_auto_accessor_get_total_impl(ptr, rust_vec_len, data_len),
-88 => wire__crate__api__gogdl__gogdl__SaveUploadStream_auto_accessor_get_transferred_impl(ptr, rust_vec_len, data_len),
-89 => wire__crate__api__gogdl__gogdl__SaveUploadStream_auto_accessor_set_status_impl(ptr, rust_vec_len, data_len),
-90 => wire__crate__api__gogdl__gogdl__SaveUploadStream_auto_accessor_set_total_impl(ptr, rust_vec_len, data_len),
-91 => wire__crate__api__gogdl__gogdl__SaveUploadStream_auto_accessor_set_transferred_impl(ptr, rust_vec_len, data_len),
-92 => wire__crate__api__gogdl__gogdl__VerificationStream_auto_accessor_get_error_chunks_impl(ptr, rust_vec_len, data_len),
-93 => wire__crate__api__gogdl__gogdl__VerificationStream_auto_accessor_get_status_impl(ptr, rust_vec_len, data_len),
-94 => wire__crate__api__gogdl__gogdl__VerificationStream_auto_accessor_get_total_chunks_impl(ptr, rust_vec_len, data_len),
-95 => wire__crate__api__gogdl__gogdl__VerificationStream_auto_accessor_get_verified_chunks_impl(ptr, rust_vec_len, data_len),
-96 => wire__crate__api__gogdl__gogdl__VerificationStream_auto_accessor_set_error_chunks_impl(ptr, rust_vec_len, data_len),
-97 => wire__crate__api__gogdl__gogdl__VerificationStream_auto_accessor_set_status_impl(ptr, rust_vec_len, data_len),
-98 => wire__crate__api__gogdl__gogdl__VerificationStream_auto_accessor_set_total_chunks_impl(ptr, rust_vec_len, data_len),
-99 => wire__crate__api__gogdl__gogdl__VerificationStream_auto_accessor_set_verified_chunks_impl(ptr, rust_vec_len, data_len),
+46 => wire__crate__api__gogdl__gogdl__Gog_get_login_url_impl(ptr, rust_vec_len, data_len),
+53 => wire__crate__api__gogdl__gogdl__Gog_new_impl(ptr, rust_vec_len, data_len),
+59 => wire__crate__api__gogdl__gogdl__ProtonDownloadStatus_name_impl(ptr, rust_vec_len, data_len),
+60 => wire__crate__api__gogdl__gogdl__ProtonDownloadStream_auto_accessor_get_status_impl(ptr, rust_vec_len, data_len),
+61 => wire__crate__api__gogdl__gogdl__ProtonDownloadStream_auto_accessor_get_total_impl(ptr, rust_vec_len, data_len),
+62 => wire__crate__api__gogdl__gogdl__ProtonDownloadStream_auto_accessor_get_transferred_impl(ptr, rust_vec_len, data_len),
+63 => wire__crate__api__gogdl__gogdl__ProtonDownloadStream_auto_accessor_set_status_impl(ptr, rust_vec_len, data_len),
+64 => wire__crate__api__gogdl__gogdl__ProtonDownloadStream_auto_accessor_set_total_impl(ptr, rust_vec_len, data_len),
+65 => wire__crate__api__gogdl__gogdl__ProtonDownloadStream_auto_accessor_set_transferred_impl(ptr, rust_vec_len, data_len),
+66 => wire__crate__api__gogdl__gogdl__ProtonRelease_download_size_impl(ptr, rust_vec_len, data_len),
+67 => wire__crate__api__gogdl__gogdl__ProtonRelease_tag_name_impl(ptr, rust_vec_len, data_len),
+68 => wire__crate__api__gogdl__gogdl__RepairStatus_name_impl(ptr, rust_vec_len, data_len),
+69 => wire__crate__api__gogdl__gogdl__RepairStream_auto_accessor_get_downloaded_bytes_impl(ptr, rust_vec_len, data_len),
+70 => wire__crate__api__gogdl__gogdl__RepairStream_auto_accessor_get_downloaded_chunks_impl(ptr, rust_vec_len, data_len),
+71 => wire__crate__api__gogdl__gogdl__RepairStream_auto_accessor_get_error_files_impl(ptr, rust_vec_len, data_len),
+72 => wire__crate__api__gogdl__gogdl__RepairStream_auto_accessor_get_processed_files_impl(ptr, rust_vec_len, data_len),
+73 => wire__crate__api__gogdl__gogdl__RepairStream_auto_accessor_get_status_impl(ptr, rust_vec_len, data_len),
+74 => wire__crate__api__gogdl__gogdl__RepairStream_auto_accessor_get_total_bytes_impl(ptr, rust_vec_len, data_len),
+75 => wire__crate__api__gogdl__gogdl__RepairStream_auto_accessor_get_total_chunks_impl(ptr, rust_vec_len, data_len),
+76 => wire__crate__api__gogdl__gogdl__RepairStream_auto_accessor_get_total_files_impl(ptr, rust_vec_len, data_len),
+77 => wire__crate__api__gogdl__gogdl__RepairStream_auto_accessor_set_downloaded_bytes_impl(ptr, rust_vec_len, data_len),
+78 => wire__crate__api__gogdl__gogdl__RepairStream_auto_accessor_set_downloaded_chunks_impl(ptr, rust_vec_len, data_len),
+79 => wire__crate__api__gogdl__gogdl__RepairStream_auto_accessor_set_error_files_impl(ptr, rust_vec_len, data_len),
+80 => wire__crate__api__gogdl__gogdl__RepairStream_auto_accessor_set_processed_files_impl(ptr, rust_vec_len, data_len),
+81 => wire__crate__api__gogdl__gogdl__RepairStream_auto_accessor_set_status_impl(ptr, rust_vec_len, data_len),
+82 => wire__crate__api__gogdl__gogdl__RepairStream_auto_accessor_set_total_bytes_impl(ptr, rust_vec_len, data_len),
+83 => wire__crate__api__gogdl__gogdl__RepairStream_auto_accessor_set_total_chunks_impl(ptr, rust_vec_len, data_len),
+84 => wire__crate__api__gogdl__gogdl__RepairStream_auto_accessor_set_total_files_impl(ptr, rust_vec_len, data_len),
+85 => wire__crate__api__gogdl__gogdl__SaveAuthIds_auto_accessor_get_client_id_impl(ptr, rust_vec_len, data_len),
+86 => wire__crate__api__gogdl__gogdl__SaveAuthIds_auto_accessor_get_client_secret_impl(ptr, rust_vec_len, data_len),
+87 => wire__crate__api__gogdl__gogdl__SaveAuthIds_auto_accessor_set_client_id_impl(ptr, rust_vec_len, data_len),
+88 => wire__crate__api__gogdl__gogdl__SaveAuthIds_auto_accessor_set_client_secret_impl(ptr, rust_vec_len, data_len),
+89 => wire__crate__api__gogdl__gogdl__SaveDownloadStatus_name_impl(ptr, rust_vec_len, data_len),
+90 => wire__crate__api__gogdl__gogdl__SaveDownloadStream_auto_accessor_get_status_impl(ptr, rust_vec_len, data_len),
+91 => wire__crate__api__gogdl__gogdl__SaveDownloadStream_auto_accessor_get_total_impl(ptr, rust_vec_len, data_len),
+92 => wire__crate__api__gogdl__gogdl__SaveDownloadStream_auto_accessor_get_transferred_impl(ptr, rust_vec_len, data_len),
+93 => wire__crate__api__gogdl__gogdl__SaveDownloadStream_auto_accessor_set_status_impl(ptr, rust_vec_len, data_len),
+94 => wire__crate__api__gogdl__gogdl__SaveDownloadStream_auto_accessor_set_total_impl(ptr, rust_vec_len, data_len),
+95 => wire__crate__api__gogdl__gogdl__SaveDownloadStream_auto_accessor_set_transferred_impl(ptr, rust_vec_len, data_len),
+96 => wire__crate__api__gogdl__gogdl__SaveUploadStatus_name_impl(ptr, rust_vec_len, data_len),
+97 => wire__crate__api__gogdl__gogdl__SaveUploadStream_auto_accessor_get_status_impl(ptr, rust_vec_len, data_len),
+98 => wire__crate__api__gogdl__gogdl__SaveUploadStream_auto_accessor_get_total_impl(ptr, rust_vec_len, data_len),
+99 => wire__crate__api__gogdl__gogdl__SaveUploadStream_auto_accessor_get_transferred_impl(ptr, rust_vec_len, data_len),
+100 => wire__crate__api__gogdl__gogdl__SaveUploadStream_auto_accessor_set_status_impl(ptr, rust_vec_len, data_len),
+101 => wire__crate__api__gogdl__gogdl__SaveUploadStream_auto_accessor_set_total_impl(ptr, rust_vec_len, data_len),
+102 => wire__crate__api__gogdl__gogdl__SaveUploadStream_auto_accessor_set_transferred_impl(ptr, rust_vec_len, data_len),
+103 => wire__crate__api__gogdl__gogdl__VerificationStream_auto_accessor_get_error_chunks_impl(ptr, rust_vec_len, data_len),
+104 => wire__crate__api__gogdl__gogdl__VerificationStream_auto_accessor_get_status_impl(ptr, rust_vec_len, data_len),
+105 => wire__crate__api__gogdl__gogdl__VerificationStream_auto_accessor_get_total_chunks_impl(ptr, rust_vec_len, data_len),
+106 => wire__crate__api__gogdl__gogdl__VerificationStream_auto_accessor_get_verified_chunks_impl(ptr, rust_vec_len, data_len),
+107 => wire__crate__api__gogdl__gogdl__VerificationStream_auto_accessor_set_error_chunks_impl(ptr, rust_vec_len, data_len),
+108 => wire__crate__api__gogdl__gogdl__VerificationStream_auto_accessor_set_status_impl(ptr, rust_vec_len, data_len),
+109 => wire__crate__api__gogdl__gogdl__VerificationStream_auto_accessor_set_total_chunks_impl(ptr, rust_vec_len, data_len),
+110 => wire__crate__api__gogdl__gogdl__VerificationStream_auto_accessor_set_verified_chunks_impl(ptr, rust_vec_len, data_len),
                         _ => unreachable!(),
                     }
 }
@@ -6077,6 +6770,57 @@ impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive for FrbWrapper<
 
 impl flutter_rust_bridge::IntoIntoDart<FrbWrapper<Gog>> for Gog {
     fn into_into_dart(self) -> FrbWrapper<Gog> {
+        self.into()
+    }
+}
+
+// Codec=Dco (DartCObject based), see doc to use other codecs
+impl flutter_rust_bridge::IntoDart for FrbWrapper<ProtonDownloadStatus> {
+    fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
+        flutter_rust_bridge::for_generated::rust_auto_opaque_encode::<_, MoiArc<_>>(self.0)
+            .into_dart()
+    }
+}
+impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive
+    for FrbWrapper<ProtonDownloadStatus>
+{
+}
+
+impl flutter_rust_bridge::IntoIntoDart<FrbWrapper<ProtonDownloadStatus>> for ProtonDownloadStatus {
+    fn into_into_dart(self) -> FrbWrapper<ProtonDownloadStatus> {
+        self.into()
+    }
+}
+
+// Codec=Dco (DartCObject based), see doc to use other codecs
+impl flutter_rust_bridge::IntoDart for FrbWrapper<ProtonDownloadStream> {
+    fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
+        flutter_rust_bridge::for_generated::rust_auto_opaque_encode::<_, MoiArc<_>>(self.0)
+            .into_dart()
+    }
+}
+impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive
+    for FrbWrapper<ProtonDownloadStream>
+{
+}
+
+impl flutter_rust_bridge::IntoIntoDart<FrbWrapper<ProtonDownloadStream>> for ProtonDownloadStream {
+    fn into_into_dart(self) -> FrbWrapper<ProtonDownloadStream> {
+        self.into()
+    }
+}
+
+// Codec=Dco (DartCObject based), see doc to use other codecs
+impl flutter_rust_bridge::IntoDart for FrbWrapper<ProtonRelease> {
+    fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
+        flutter_rust_bridge::for_generated::rust_auto_opaque_encode::<_, MoiArc<_>>(self.0)
+            .into_dart()
+    }
+}
+impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive for FrbWrapper<ProtonRelease> {}
+
+impl flutter_rust_bridge::IntoIntoDart<FrbWrapper<ProtonRelease>> for ProtonRelease {
+    fn into_into_dart(self) -> FrbWrapper<ProtonRelease> {
         self.into()
     }
 }
@@ -6250,6 +6994,9 @@ impl flutter_rust_bridge::IntoDart for crate::api::gogdl::gogdl::GogError {
             crate::api::gogdl::gogdl::GogError::SavesError { message } => {
                 [5.into_dart(), message.into_into_dart().into_dart()].into_dart()
             }
+            crate::api::gogdl::gogdl::GogError::ProtonError { message } => {
+                [6.into_dart(), message.into_into_dart().into_dart()].into_dart()
+            }
             _ => {
                 unimplemented!("");
             }
@@ -6324,6 +7071,37 @@ impl SseEncode for Gog {
             flutter_rust_bridge::for_generated::rust_auto_opaque_encode::<_, MoiArc<_>>(self),
             serializer,
         );
+    }
+}
+
+impl SseEncode for ProtonDownloadStatus {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <RustOpaqueMoi<
+            flutter_rust_bridge::for_generated::RustAutoOpaqueInner<ProtonDownloadStatus>,
+        >>::sse_encode(
+            flutter_rust_bridge::for_generated::rust_auto_opaque_encode::<_, MoiArc<_>>(self),
+            serializer,
+        );
+    }
+}
+
+impl SseEncode for ProtonDownloadStream {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <RustOpaqueMoi<
+            flutter_rust_bridge::for_generated::RustAutoOpaqueInner<ProtonDownloadStream>,
+        >>::sse_encode(
+            flutter_rust_bridge::for_generated::rust_auto_opaque_encode::<_, MoiArc<_>>(self),
+            serializer,
+        );
+    }
+}
+
+impl SseEncode for ProtonRelease {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <RustOpaqueMoi<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<ProtonRelease>>>::sse_encode(flutter_rust_bridge::for_generated::rust_auto_opaque_encode::<_, MoiArc<_>>(self), serializer);
     }
 }
 
@@ -6473,6 +7251,39 @@ impl SseEncode for RustOpaqueMoi<flutter_rust_bridge::for_generated::RustAutoOpa
 }
 
 impl SseEncode
+    for RustOpaqueMoi<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<ProtonDownloadStatus>>
+{
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        let (ptr, size) = self.sse_encode_raw();
+        <usize>::sse_encode(ptr, serializer);
+        <i32>::sse_encode(size, serializer);
+    }
+}
+
+impl SseEncode
+    for RustOpaqueMoi<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<ProtonDownloadStream>>
+{
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        let (ptr, size) = self.sse_encode_raw();
+        <usize>::sse_encode(ptr, serializer);
+        <i32>::sse_encode(size, serializer);
+    }
+}
+
+impl SseEncode
+    for RustOpaqueMoi<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<ProtonRelease>>
+{
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        let (ptr, size) = self.sse_encode_raw();
+        <usize>::sse_encode(ptr, serializer);
+        <i32>::sse_encode(size, serializer);
+    }
+}
+
+impl SseEncode
     for RustOpaqueMoi<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<RepairStatus>>
 {
     // Codec=Sse (Serialization based), see doc to use other codecs
@@ -6578,6 +7389,13 @@ impl SseEncode for StreamSink<DownloadStream, flutter_rust_bridge::for_generated
     }
 }
 
+impl SseEncode for StreamSink<ProtonDownloadStream, flutter_rust_bridge::for_generated::SseCodec> {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        unimplemented!("")
+    }
+}
+
 impl SseEncode for StreamSink<RepairStream, flutter_rust_bridge::for_generated::SseCodec> {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
@@ -6648,6 +7466,10 @@ impl SseEncode for crate::api::gogdl::gogdl::GogError {
                 <i32>::sse_encode(5, serializer);
                 <String>::sse_encode(message, serializer);
             }
+            crate::api::gogdl::gogdl::GogError::ProtonError { message } => {
+                <i32>::sse_encode(6, serializer);
+                <String>::sse_encode(message, serializer);
+            }
             _ => {
                 unimplemented!("");
             }
@@ -6705,6 +7527,16 @@ impl SseEncode for Vec<GameBuild> {
         <i32>::sse_encode(self.len() as _, serializer);
         for item in self {
             <GameBuild>::sse_encode(item, serializer);
+        }
+    }
+}
+
+impl SseEncode for Vec<ProtonRelease> {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <i32>::sse_encode(self.len() as _, serializer);
+        for item in self {
+            <ProtonRelease>::sse_encode(item, serializer);
         }
     }
 }
@@ -6891,6 +7723,48 @@ mod io {
         ptr: *const std::ffi::c_void,
     ) {
         MoiArc::<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<Gog>>::decrement_strong_count(ptr as _);
+    }
+
+    #[unsafe(no_mangle)]
+    pub extern "C" fn frbgen_gogdl2_flutter_bridge_rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerProtonDownloadStatus(
+        ptr: *const std::ffi::c_void,
+    ) {
+        MoiArc::<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<ProtonDownloadStatus>>::increment_strong_count(ptr as _);
+    }
+
+    #[unsafe(no_mangle)]
+    pub extern "C" fn frbgen_gogdl2_flutter_bridge_rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerProtonDownloadStatus(
+        ptr: *const std::ffi::c_void,
+    ) {
+        MoiArc::<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<ProtonDownloadStatus>>::decrement_strong_count(ptr as _);
+    }
+
+    #[unsafe(no_mangle)]
+    pub extern "C" fn frbgen_gogdl2_flutter_bridge_rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerProtonDownloadStream(
+        ptr: *const std::ffi::c_void,
+    ) {
+        MoiArc::<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<ProtonDownloadStream>>::increment_strong_count(ptr as _);
+    }
+
+    #[unsafe(no_mangle)]
+    pub extern "C" fn frbgen_gogdl2_flutter_bridge_rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerProtonDownloadStream(
+        ptr: *const std::ffi::c_void,
+    ) {
+        MoiArc::<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<ProtonDownloadStream>>::decrement_strong_count(ptr as _);
+    }
+
+    #[unsafe(no_mangle)]
+    pub extern "C" fn frbgen_gogdl2_flutter_bridge_rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerProtonRelease(
+        ptr: *const std::ffi::c_void,
+    ) {
+        MoiArc::<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<ProtonRelease>>::increment_strong_count(ptr as _);
+    }
+
+    #[unsafe(no_mangle)]
+    pub extern "C" fn frbgen_gogdl2_flutter_bridge_rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerProtonRelease(
+        ptr: *const std::ffi::c_void,
+    ) {
+        MoiArc::<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<ProtonRelease>>::decrement_strong_count(ptr as _);
     }
 
     #[unsafe(no_mangle)]
@@ -7140,6 +8014,48 @@ mod web {
         ptr: *const std::ffi::c_void,
     ) {
         MoiArc::<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<Gog>>::decrement_strong_count(ptr as _);
+    }
+
+    #[wasm_bindgen]
+    pub fn rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerProtonDownloadStatus(
+        ptr: *const std::ffi::c_void,
+    ) {
+        MoiArc::<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<ProtonDownloadStatus>>::increment_strong_count(ptr as _);
+    }
+
+    #[wasm_bindgen]
+    pub fn rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerProtonDownloadStatus(
+        ptr: *const std::ffi::c_void,
+    ) {
+        MoiArc::<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<ProtonDownloadStatus>>::decrement_strong_count(ptr as _);
+    }
+
+    #[wasm_bindgen]
+    pub fn rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerProtonDownloadStream(
+        ptr: *const std::ffi::c_void,
+    ) {
+        MoiArc::<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<ProtonDownloadStream>>::increment_strong_count(ptr as _);
+    }
+
+    #[wasm_bindgen]
+    pub fn rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerProtonDownloadStream(
+        ptr: *const std::ffi::c_void,
+    ) {
+        MoiArc::<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<ProtonDownloadStream>>::decrement_strong_count(ptr as _);
+    }
+
+    #[wasm_bindgen]
+    pub fn rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerProtonRelease(
+        ptr: *const std::ffi::c_void,
+    ) {
+        MoiArc::<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<ProtonRelease>>::increment_strong_count(ptr as _);
+    }
+
+    #[wasm_bindgen]
+    pub fn rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerProtonRelease(
+        ptr: *const std::ffi::c_void,
+    ) {
+        MoiArc::<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<ProtonRelease>>::decrement_strong_count(ptr as _);
     }
 
     #[wasm_bindgen]
