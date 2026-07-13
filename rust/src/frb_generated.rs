@@ -39,7 +39,7 @@ flutter_rust_bridge::frb_generated_boilerplate!(
     default_rust_auto_opaque = RustAutoOpaqueMoi,
 );
 pub(crate) const FLUTTER_RUST_BRIDGE_CODEGEN_VERSION: &str = "2.12.0";
-pub(crate) const FLUTTER_RUST_BRIDGE_CODEGEN_CONTENT_HASH: i32 = -1445661369;
+pub(crate) const FLUTTER_RUST_BRIDGE_CODEGEN_CONTENT_HASH: i32 = -485614084;
 
 // Section: executor
 
@@ -3010,6 +3010,70 @@ fn wire__crate__api__gogdl__gogdl__Gog_restore_auth_from_string_impl(
                         let output_ok = crate::api::gogdl::gogdl::Gog::restore_auth_from_string(
                             &*api_that_guard,
                             api_token,
+                        )
+                        .await?;
+                        Ok(output_ok)
+                    })()
+                    .await,
+                )
+            }
+        },
+    )
+}
+fn wire__crate__api__gogdl__gogdl__Gog_set_download_config_impl(
+    port_: flutter_rust_bridge::for_generated::MessagePort,
+    ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
+    rust_vec_len_: i32,
+    data_len_: i32,
+) {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap_async::<flutter_rust_bridge::for_generated::SseCodec, _, _, _>(
+        flutter_rust_bridge::for_generated::TaskInfo {
+            debug_name: "Gog_set_download_config",
+            port: Some(port_),
+            mode: flutter_rust_bridge::for_generated::FfiCallMode::Normal,
+        },
+        move || {
+            let message = unsafe {
+                flutter_rust_bridge::for_generated::Dart2RustMessageSse::from_wire(
+                    ptr_,
+                    rust_vec_len_,
+                    data_len_,
+                )
+            };
+            let mut deserializer =
+                flutter_rust_bridge::for_generated::SseDeserializer::new(message);
+            let api_that = <RustOpaqueMoi<
+                flutter_rust_bridge::for_generated::RustAutoOpaqueInner<Gog>,
+            >>::sse_decode(&mut deserializer);
+            let api_min_concurrency = <usize>::sse_decode(&mut deserializer);
+            let api_max_concurrency = <usize>::sse_decode(&mut deserializer);
+            let api_idle_timeout = <u64>::sse_decode(&mut deserializer);
+            deserializer.end();
+            move |context| async move {
+                transform_result_sse::<_, crate::api::gogdl::gogdl::GogError>(
+                    (move || async move {
+                        let mut api_that_guard = None;
+                        let decode_indices_ =
+                            flutter_rust_bridge::for_generated::lockable_compute_decode_order(
+                                vec![flutter_rust_bridge::for_generated::LockableOrderInfo::new(
+                                    &api_that, 0, false,
+                                )],
+                            );
+                        for i in decode_indices_ {
+                            match i {
+                                0 => {
+                                    api_that_guard =
+                                        Some(api_that.lockable_decode_async_ref().await)
+                                }
+                                _ => unreachable!(),
+                            }
+                        }
+                        let api_that_guard = api_that_guard.unwrap();
+                        let output_ok = crate::api::gogdl::gogdl::Gog::set_download_config(
+                            &*api_that_guard,
+                            api_min_concurrency,
+                            api_max_concurrency,
+                            api_idle_timeout,
                         )
                         .await?;
                         Ok(output_ok)
@@ -6551,10 +6615,16 @@ fn pde_ffi_dispatcher_primary_impl(
             rust_vec_len,
             data_len,
         ),
-        57 => {
+        57 => wire__crate__api__gogdl__gogdl__Gog_set_download_config_impl(
+            port,
+            ptr,
+            rust_vec_len,
+            data_len,
+        ),
+        58 => {
             wire__crate__api__gogdl__gogdl__Gog_upload_save_impl(port, ptr, rust_vec_len, data_len)
         }
-        58 => wire__crate__api__gogdl__gogdl__Gog_verify_download_impl(
+        59 => wire__crate__api__gogdl__gogdl__Gog_verify_download_impl(
             port,
             ptr,
             rust_vec_len,
@@ -6608,58 +6678,58 @@ fn pde_ffi_dispatcher_sync_impl(
 34 => wire__crate__api__gogdl__gogdl__GameBuild_auto_accessor_set_version_name_impl(ptr, rust_vec_len, data_len),
 46 => wire__crate__api__gogdl__gogdl__Gog_get_login_url_impl(ptr, rust_vec_len, data_len),
 53 => wire__crate__api__gogdl__gogdl__Gog_new_impl(ptr, rust_vec_len, data_len),
-59 => wire__crate__api__gogdl__gogdl__ProtonDownloadStatus_name_impl(ptr, rust_vec_len, data_len),
-60 => wire__crate__api__gogdl__gogdl__ProtonDownloadStream_auto_accessor_get_status_impl(ptr, rust_vec_len, data_len),
-61 => wire__crate__api__gogdl__gogdl__ProtonDownloadStream_auto_accessor_get_total_impl(ptr, rust_vec_len, data_len),
-62 => wire__crate__api__gogdl__gogdl__ProtonDownloadStream_auto_accessor_get_transferred_impl(ptr, rust_vec_len, data_len),
-63 => wire__crate__api__gogdl__gogdl__ProtonDownloadStream_auto_accessor_set_status_impl(ptr, rust_vec_len, data_len),
-64 => wire__crate__api__gogdl__gogdl__ProtonDownloadStream_auto_accessor_set_total_impl(ptr, rust_vec_len, data_len),
-65 => wire__crate__api__gogdl__gogdl__ProtonDownloadStream_auto_accessor_set_transferred_impl(ptr, rust_vec_len, data_len),
-66 => wire__crate__api__gogdl__gogdl__ProtonRelease_download_size_impl(ptr, rust_vec_len, data_len),
-67 => wire__crate__api__gogdl__gogdl__ProtonRelease_tag_name_impl(ptr, rust_vec_len, data_len),
-68 => wire__crate__api__gogdl__gogdl__RepairStatus_name_impl(ptr, rust_vec_len, data_len),
-69 => wire__crate__api__gogdl__gogdl__RepairStream_auto_accessor_get_downloaded_bytes_impl(ptr, rust_vec_len, data_len),
-70 => wire__crate__api__gogdl__gogdl__RepairStream_auto_accessor_get_downloaded_chunks_impl(ptr, rust_vec_len, data_len),
-71 => wire__crate__api__gogdl__gogdl__RepairStream_auto_accessor_get_error_files_impl(ptr, rust_vec_len, data_len),
-72 => wire__crate__api__gogdl__gogdl__RepairStream_auto_accessor_get_processed_files_impl(ptr, rust_vec_len, data_len),
-73 => wire__crate__api__gogdl__gogdl__RepairStream_auto_accessor_get_status_impl(ptr, rust_vec_len, data_len),
-74 => wire__crate__api__gogdl__gogdl__RepairStream_auto_accessor_get_total_bytes_impl(ptr, rust_vec_len, data_len),
-75 => wire__crate__api__gogdl__gogdl__RepairStream_auto_accessor_get_total_chunks_impl(ptr, rust_vec_len, data_len),
-76 => wire__crate__api__gogdl__gogdl__RepairStream_auto_accessor_get_total_files_impl(ptr, rust_vec_len, data_len),
-77 => wire__crate__api__gogdl__gogdl__RepairStream_auto_accessor_set_downloaded_bytes_impl(ptr, rust_vec_len, data_len),
-78 => wire__crate__api__gogdl__gogdl__RepairStream_auto_accessor_set_downloaded_chunks_impl(ptr, rust_vec_len, data_len),
-79 => wire__crate__api__gogdl__gogdl__RepairStream_auto_accessor_set_error_files_impl(ptr, rust_vec_len, data_len),
-80 => wire__crate__api__gogdl__gogdl__RepairStream_auto_accessor_set_processed_files_impl(ptr, rust_vec_len, data_len),
-81 => wire__crate__api__gogdl__gogdl__RepairStream_auto_accessor_set_status_impl(ptr, rust_vec_len, data_len),
-82 => wire__crate__api__gogdl__gogdl__RepairStream_auto_accessor_set_total_bytes_impl(ptr, rust_vec_len, data_len),
-83 => wire__crate__api__gogdl__gogdl__RepairStream_auto_accessor_set_total_chunks_impl(ptr, rust_vec_len, data_len),
-84 => wire__crate__api__gogdl__gogdl__RepairStream_auto_accessor_set_total_files_impl(ptr, rust_vec_len, data_len),
-85 => wire__crate__api__gogdl__gogdl__SaveAuthIds_auto_accessor_get_client_id_impl(ptr, rust_vec_len, data_len),
-86 => wire__crate__api__gogdl__gogdl__SaveAuthIds_auto_accessor_get_client_secret_impl(ptr, rust_vec_len, data_len),
-87 => wire__crate__api__gogdl__gogdl__SaveAuthIds_auto_accessor_set_client_id_impl(ptr, rust_vec_len, data_len),
-88 => wire__crate__api__gogdl__gogdl__SaveAuthIds_auto_accessor_set_client_secret_impl(ptr, rust_vec_len, data_len),
-89 => wire__crate__api__gogdl__gogdl__SaveDownloadStatus_name_impl(ptr, rust_vec_len, data_len),
-90 => wire__crate__api__gogdl__gogdl__SaveDownloadStream_auto_accessor_get_status_impl(ptr, rust_vec_len, data_len),
-91 => wire__crate__api__gogdl__gogdl__SaveDownloadStream_auto_accessor_get_total_impl(ptr, rust_vec_len, data_len),
-92 => wire__crate__api__gogdl__gogdl__SaveDownloadStream_auto_accessor_get_transferred_impl(ptr, rust_vec_len, data_len),
-93 => wire__crate__api__gogdl__gogdl__SaveDownloadStream_auto_accessor_set_status_impl(ptr, rust_vec_len, data_len),
-94 => wire__crate__api__gogdl__gogdl__SaveDownloadStream_auto_accessor_set_total_impl(ptr, rust_vec_len, data_len),
-95 => wire__crate__api__gogdl__gogdl__SaveDownloadStream_auto_accessor_set_transferred_impl(ptr, rust_vec_len, data_len),
-96 => wire__crate__api__gogdl__gogdl__SaveUploadStatus_name_impl(ptr, rust_vec_len, data_len),
-97 => wire__crate__api__gogdl__gogdl__SaveUploadStream_auto_accessor_get_status_impl(ptr, rust_vec_len, data_len),
-98 => wire__crate__api__gogdl__gogdl__SaveUploadStream_auto_accessor_get_total_impl(ptr, rust_vec_len, data_len),
-99 => wire__crate__api__gogdl__gogdl__SaveUploadStream_auto_accessor_get_transferred_impl(ptr, rust_vec_len, data_len),
-100 => wire__crate__api__gogdl__gogdl__SaveUploadStream_auto_accessor_set_status_impl(ptr, rust_vec_len, data_len),
-101 => wire__crate__api__gogdl__gogdl__SaveUploadStream_auto_accessor_set_total_impl(ptr, rust_vec_len, data_len),
-102 => wire__crate__api__gogdl__gogdl__SaveUploadStream_auto_accessor_set_transferred_impl(ptr, rust_vec_len, data_len),
-103 => wire__crate__api__gogdl__gogdl__VerificationStream_auto_accessor_get_error_chunks_impl(ptr, rust_vec_len, data_len),
-104 => wire__crate__api__gogdl__gogdl__VerificationStream_auto_accessor_get_status_impl(ptr, rust_vec_len, data_len),
-105 => wire__crate__api__gogdl__gogdl__VerificationStream_auto_accessor_get_total_chunks_impl(ptr, rust_vec_len, data_len),
-106 => wire__crate__api__gogdl__gogdl__VerificationStream_auto_accessor_get_verified_chunks_impl(ptr, rust_vec_len, data_len),
-107 => wire__crate__api__gogdl__gogdl__VerificationStream_auto_accessor_set_error_chunks_impl(ptr, rust_vec_len, data_len),
-108 => wire__crate__api__gogdl__gogdl__VerificationStream_auto_accessor_set_status_impl(ptr, rust_vec_len, data_len),
-109 => wire__crate__api__gogdl__gogdl__VerificationStream_auto_accessor_set_total_chunks_impl(ptr, rust_vec_len, data_len),
-110 => wire__crate__api__gogdl__gogdl__VerificationStream_auto_accessor_set_verified_chunks_impl(ptr, rust_vec_len, data_len),
+60 => wire__crate__api__gogdl__gogdl__ProtonDownloadStatus_name_impl(ptr, rust_vec_len, data_len),
+61 => wire__crate__api__gogdl__gogdl__ProtonDownloadStream_auto_accessor_get_status_impl(ptr, rust_vec_len, data_len),
+62 => wire__crate__api__gogdl__gogdl__ProtonDownloadStream_auto_accessor_get_total_impl(ptr, rust_vec_len, data_len),
+63 => wire__crate__api__gogdl__gogdl__ProtonDownloadStream_auto_accessor_get_transferred_impl(ptr, rust_vec_len, data_len),
+64 => wire__crate__api__gogdl__gogdl__ProtonDownloadStream_auto_accessor_set_status_impl(ptr, rust_vec_len, data_len),
+65 => wire__crate__api__gogdl__gogdl__ProtonDownloadStream_auto_accessor_set_total_impl(ptr, rust_vec_len, data_len),
+66 => wire__crate__api__gogdl__gogdl__ProtonDownloadStream_auto_accessor_set_transferred_impl(ptr, rust_vec_len, data_len),
+67 => wire__crate__api__gogdl__gogdl__ProtonRelease_download_size_impl(ptr, rust_vec_len, data_len),
+68 => wire__crate__api__gogdl__gogdl__ProtonRelease_tag_name_impl(ptr, rust_vec_len, data_len),
+69 => wire__crate__api__gogdl__gogdl__RepairStatus_name_impl(ptr, rust_vec_len, data_len),
+70 => wire__crate__api__gogdl__gogdl__RepairStream_auto_accessor_get_downloaded_bytes_impl(ptr, rust_vec_len, data_len),
+71 => wire__crate__api__gogdl__gogdl__RepairStream_auto_accessor_get_downloaded_chunks_impl(ptr, rust_vec_len, data_len),
+72 => wire__crate__api__gogdl__gogdl__RepairStream_auto_accessor_get_error_files_impl(ptr, rust_vec_len, data_len),
+73 => wire__crate__api__gogdl__gogdl__RepairStream_auto_accessor_get_processed_files_impl(ptr, rust_vec_len, data_len),
+74 => wire__crate__api__gogdl__gogdl__RepairStream_auto_accessor_get_status_impl(ptr, rust_vec_len, data_len),
+75 => wire__crate__api__gogdl__gogdl__RepairStream_auto_accessor_get_total_bytes_impl(ptr, rust_vec_len, data_len),
+76 => wire__crate__api__gogdl__gogdl__RepairStream_auto_accessor_get_total_chunks_impl(ptr, rust_vec_len, data_len),
+77 => wire__crate__api__gogdl__gogdl__RepairStream_auto_accessor_get_total_files_impl(ptr, rust_vec_len, data_len),
+78 => wire__crate__api__gogdl__gogdl__RepairStream_auto_accessor_set_downloaded_bytes_impl(ptr, rust_vec_len, data_len),
+79 => wire__crate__api__gogdl__gogdl__RepairStream_auto_accessor_set_downloaded_chunks_impl(ptr, rust_vec_len, data_len),
+80 => wire__crate__api__gogdl__gogdl__RepairStream_auto_accessor_set_error_files_impl(ptr, rust_vec_len, data_len),
+81 => wire__crate__api__gogdl__gogdl__RepairStream_auto_accessor_set_processed_files_impl(ptr, rust_vec_len, data_len),
+82 => wire__crate__api__gogdl__gogdl__RepairStream_auto_accessor_set_status_impl(ptr, rust_vec_len, data_len),
+83 => wire__crate__api__gogdl__gogdl__RepairStream_auto_accessor_set_total_bytes_impl(ptr, rust_vec_len, data_len),
+84 => wire__crate__api__gogdl__gogdl__RepairStream_auto_accessor_set_total_chunks_impl(ptr, rust_vec_len, data_len),
+85 => wire__crate__api__gogdl__gogdl__RepairStream_auto_accessor_set_total_files_impl(ptr, rust_vec_len, data_len),
+86 => wire__crate__api__gogdl__gogdl__SaveAuthIds_auto_accessor_get_client_id_impl(ptr, rust_vec_len, data_len),
+87 => wire__crate__api__gogdl__gogdl__SaveAuthIds_auto_accessor_get_client_secret_impl(ptr, rust_vec_len, data_len),
+88 => wire__crate__api__gogdl__gogdl__SaveAuthIds_auto_accessor_set_client_id_impl(ptr, rust_vec_len, data_len),
+89 => wire__crate__api__gogdl__gogdl__SaveAuthIds_auto_accessor_set_client_secret_impl(ptr, rust_vec_len, data_len),
+90 => wire__crate__api__gogdl__gogdl__SaveDownloadStatus_name_impl(ptr, rust_vec_len, data_len),
+91 => wire__crate__api__gogdl__gogdl__SaveDownloadStream_auto_accessor_get_status_impl(ptr, rust_vec_len, data_len),
+92 => wire__crate__api__gogdl__gogdl__SaveDownloadStream_auto_accessor_get_total_impl(ptr, rust_vec_len, data_len),
+93 => wire__crate__api__gogdl__gogdl__SaveDownloadStream_auto_accessor_get_transferred_impl(ptr, rust_vec_len, data_len),
+94 => wire__crate__api__gogdl__gogdl__SaveDownloadStream_auto_accessor_set_status_impl(ptr, rust_vec_len, data_len),
+95 => wire__crate__api__gogdl__gogdl__SaveDownloadStream_auto_accessor_set_total_impl(ptr, rust_vec_len, data_len),
+96 => wire__crate__api__gogdl__gogdl__SaveDownloadStream_auto_accessor_set_transferred_impl(ptr, rust_vec_len, data_len),
+97 => wire__crate__api__gogdl__gogdl__SaveUploadStatus_name_impl(ptr, rust_vec_len, data_len),
+98 => wire__crate__api__gogdl__gogdl__SaveUploadStream_auto_accessor_get_status_impl(ptr, rust_vec_len, data_len),
+99 => wire__crate__api__gogdl__gogdl__SaveUploadStream_auto_accessor_get_total_impl(ptr, rust_vec_len, data_len),
+100 => wire__crate__api__gogdl__gogdl__SaveUploadStream_auto_accessor_get_transferred_impl(ptr, rust_vec_len, data_len),
+101 => wire__crate__api__gogdl__gogdl__SaveUploadStream_auto_accessor_set_status_impl(ptr, rust_vec_len, data_len),
+102 => wire__crate__api__gogdl__gogdl__SaveUploadStream_auto_accessor_set_total_impl(ptr, rust_vec_len, data_len),
+103 => wire__crate__api__gogdl__gogdl__SaveUploadStream_auto_accessor_set_transferred_impl(ptr, rust_vec_len, data_len),
+104 => wire__crate__api__gogdl__gogdl__VerificationStream_auto_accessor_get_error_chunks_impl(ptr, rust_vec_len, data_len),
+105 => wire__crate__api__gogdl__gogdl__VerificationStream_auto_accessor_get_status_impl(ptr, rust_vec_len, data_len),
+106 => wire__crate__api__gogdl__gogdl__VerificationStream_auto_accessor_get_total_chunks_impl(ptr, rust_vec_len, data_len),
+107 => wire__crate__api__gogdl__gogdl__VerificationStream_auto_accessor_get_verified_chunks_impl(ptr, rust_vec_len, data_len),
+108 => wire__crate__api__gogdl__gogdl__VerificationStream_auto_accessor_set_error_chunks_impl(ptr, rust_vec_len, data_len),
+109 => wire__crate__api__gogdl__gogdl__VerificationStream_auto_accessor_set_status_impl(ptr, rust_vec_len, data_len),
+110 => wire__crate__api__gogdl__gogdl__VerificationStream_auto_accessor_set_total_chunks_impl(ptr, rust_vec_len, data_len),
+111 => wire__crate__api__gogdl__gogdl__VerificationStream_auto_accessor_set_verified_chunks_impl(ptr, rust_vec_len, data_len),
                         _ => unreachable!(),
                     }
 }

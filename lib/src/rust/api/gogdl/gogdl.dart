@@ -173,6 +173,12 @@ abstract class Gog implements RustOpaqueInterface {
 
   Future<void> restoreAuthFromString({required String token});
 
+  Future<void> setDownloadConfig({
+    required BigInt minConcurrency,
+    required BigInt maxConcurrency,
+    required BigInt idleTimeout,
+  });
+
   Stream<SaveUploadStream> uploadSave({
     required String clientId,
     required String clientSecret,

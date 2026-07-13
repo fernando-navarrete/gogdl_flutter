@@ -1,13 +1,15 @@
 use flutter_rust_bridge::{frb, DartFnFuture};
 use futures::stream::{self, StreamExt};
 use gogdl_lib2::{
-    Client, DownloadDetail, DownloadEvent, DownloadJobEvent, DownloadStage, DownloadableFiles,
-    FileAllocationEvent, FileVerifyEvent, GogDl, GogDlError, ProtonProgress, Release, RemoteConfig,
-    RepairDetail, RepairEvent, RepairStage, SaveFile, SaveProgress, VerifyChunksEvent, VerifyEvent,
+    Client, DownloadConfig, DownloadDetail, DownloadEvent, DownloadJobEvent, DownloadStage,
+    DownloadableFiles, FileAllocationEvent, FileVerifyEvent, GogDl, GogDlError, ProtonProgress,
+    Release, RemoteConfig, RepairDetail, RepairEvent, RepairStage, SaveFile, SaveProgress,
+    VerifyChunksEvent, VerifyEvent,
 };
 use std::collections::HashSet;
 use std::path::Path;
 use std::sync::Arc;
+use std::time::Duration;
 use thiserror::Error;
 use tokio::sync::mpsc;
 
@@ -429,6 +431,23 @@ impl Gog {
         Gog {
             inner: Arc::new(gogdl),
         }
+    }
+
+    pub async fn set_download_config(
+        &self,
+        min_concurrency: usize,
+        max_concurrency: usize,
+        idle_timeout: u64,
+    ) -> Result<(), GogError> {
+        self.inner
+            .set_download_config(DownloadConfig {
+                min_concurrency,
+                max_concurrency,
+                idle_timeout: Duration::from_secs(idle_timeout),
+                ..Default::default()
+            })
+            .await;
+        Ok(())
     }
 
     #[frb(sync)]
