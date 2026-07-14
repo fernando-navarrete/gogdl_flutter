@@ -1,6 +1,6 @@
-// GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
+// GENERATED CODE - DO NOT MODIFY BY HAND
+// ignore_for_file: type=lint
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'gogdl.dart';
@@ -9,690 +9,1385 @@ part of 'gogdl.dart';
 // FreezedGenerator
 // **************************************************************************
 
-// GENERATED CODE - DO NOT MODIFY BY HAND
-// dart format off
 T _$identity<T>(T value) => value;
+
+final _privateConstructorUsedError = UnsupportedError(
+  'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models',
+);
+
 /// @nodoc
 mixin _$GogError {
+  String get message => throw _privateConstructorUsedError;
+  @optionalTypeArgs
+  TResult when<TResult extends Object?>({
+    required TResult Function(String message) authError,
+    required TResult Function(String message) gameError,
+    required TResult Function(String message) depotError,
+    required TResult Function(String message) secureLinksError,
+    required TResult Function(String message) downloadError,
+    required TResult Function(String message) savesError,
+    required TResult Function(String message) protonError,
+  }) => throw _privateConstructorUsedError;
+  @optionalTypeArgs
+  TResult? whenOrNull<TResult extends Object?>({
+    TResult? Function(String message)? authError,
+    TResult? Function(String message)? gameError,
+    TResult? Function(String message)? depotError,
+    TResult? Function(String message)? secureLinksError,
+    TResult? Function(String message)? downloadError,
+    TResult? Function(String message)? savesError,
+    TResult? Function(String message)? protonError,
+  }) => throw _privateConstructorUsedError;
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object?>({
+    TResult Function(String message)? authError,
+    TResult Function(String message)? gameError,
+    TResult Function(String message)? depotError,
+    TResult Function(String message)? secureLinksError,
+    TResult Function(String message)? downloadError,
+    TResult Function(String message)? savesError,
+    TResult Function(String message)? protonError,
+    required TResult orElse(),
+  }) => throw _privateConstructorUsedError;
+  @optionalTypeArgs
+  TResult map<TResult extends Object?>({
+    required TResult Function(GogError_AuthError value) authError,
+    required TResult Function(GogError_GameError value) gameError,
+    required TResult Function(GogError_DepotError value) depotError,
+    required TResult Function(GogError_SecureLinksError value) secureLinksError,
+    required TResult Function(GogError_DownloadError value) downloadError,
+    required TResult Function(GogError_SavesError value) savesError,
+    required TResult Function(GogError_ProtonError value) protonError,
+  }) => throw _privateConstructorUsedError;
+  @optionalTypeArgs
+  TResult? mapOrNull<TResult extends Object?>({
+    TResult? Function(GogError_AuthError value)? authError,
+    TResult? Function(GogError_GameError value)? gameError,
+    TResult? Function(GogError_DepotError value)? depotError,
+    TResult? Function(GogError_SecureLinksError value)? secureLinksError,
+    TResult? Function(GogError_DownloadError value)? downloadError,
+    TResult? Function(GogError_SavesError value)? savesError,
+    TResult? Function(GogError_ProtonError value)? protonError,
+  }) => throw _privateConstructorUsedError;
+  @optionalTypeArgs
+  TResult maybeMap<TResult extends Object?>({
+    TResult Function(GogError_AuthError value)? authError,
+    TResult Function(GogError_GameError value)? gameError,
+    TResult Function(GogError_DepotError value)? depotError,
+    TResult Function(GogError_SecureLinksError value)? secureLinksError,
+    TResult Function(GogError_DownloadError value)? downloadError,
+    TResult Function(GogError_SavesError value)? savesError,
+    TResult Function(GogError_ProtonError value)? protonError,
+    required TResult orElse(),
+  }) => throw _privateConstructorUsedError;
 
- String get message;
-/// Create a copy of GogError
-/// with the given fields replaced by the non-null parameter values.
-@JsonKey(includeFromJson: false, includeToJson: false)
-@pragma('vm:prefer-inline')
-$GogErrorCopyWith<GogError> get copyWith => _$GogErrorCopyWithImpl<GogError>(this as GogError, _$identity);
-
-
-
-@override
-bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is GogError&&(identical(other.message, message) || other.message == message));
-}
-
-
-@override
-int get hashCode => Object.hash(runtimeType,message);
-
-@override
-String toString() {
-  return 'GogError(message: $message)';
-}
-
-
+  /// Create a copy of GogError
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  $GogErrorCopyWith<GogError> get copyWith =>
+      throw _privateConstructorUsedError;
 }
 
 /// @nodoc
-abstract mixin class $GogErrorCopyWith<$Res>  {
-  factory $GogErrorCopyWith(GogError value, $Res Function(GogError) _then) = _$GogErrorCopyWithImpl;
-@useResult
-$Res call({
- String message
-});
-
-
-
-
+abstract class $GogErrorCopyWith<$Res> {
+  factory $GogErrorCopyWith(GogError value, $Res Function(GogError) then) =
+      _$GogErrorCopyWithImpl<$Res, GogError>;
+  @useResult
+  $Res call({String message});
 }
+
 /// @nodoc
-class _$GogErrorCopyWithImpl<$Res>
+class _$GogErrorCopyWithImpl<$Res, $Val extends GogError>
     implements $GogErrorCopyWith<$Res> {
-  _$GogErrorCopyWithImpl(this._self, this._then);
+  _$GogErrorCopyWithImpl(this._value, this._then);
 
-  final GogError _self;
-  final $Res Function(GogError) _then;
+  // ignore: unused_field
+  final $Val _value;
+  // ignore: unused_field
+  final $Res Function($Val) _then;
 
-/// Create a copy of GogError
-/// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? message = null,}) {
-  return _then(_self.copyWith(
-message: null == message ? _self.message : message // ignore: cast_nullable_to_non_nullable
-as String,
-  ));
+  /// Create a copy of GogError
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({Object? message = null}) {
+    return _then(
+      _value.copyWith(
+            message: null == message
+                ? _value.message
+                : message // ignore: cast_nullable_to_non_nullable
+                      as String,
+          )
+          as $Val,
+    );
+  }
 }
 
+/// @nodoc
+abstract class _$$GogError_AuthErrorImplCopyWith<$Res>
+    implements $GogErrorCopyWith<$Res> {
+  factory _$$GogError_AuthErrorImplCopyWith(
+    _$GogError_AuthErrorImpl value,
+    $Res Function(_$GogError_AuthErrorImpl) then,
+  ) = __$$GogError_AuthErrorImplCopyWithImpl<$Res>;
+  @override
+  @useResult
+  $Res call({String message});
 }
 
+/// @nodoc
+class __$$GogError_AuthErrorImplCopyWithImpl<$Res>
+    extends _$GogErrorCopyWithImpl<$Res, _$GogError_AuthErrorImpl>
+    implements _$$GogError_AuthErrorImplCopyWith<$Res> {
+  __$$GogError_AuthErrorImplCopyWithImpl(
+    _$GogError_AuthErrorImpl _value,
+    $Res Function(_$GogError_AuthErrorImpl) _then,
+  ) : super(_value, _then);
 
-/// Adds pattern-matching-related methods to [GogError].
-extension GogErrorPatterns on GogError {
-/// A variant of `map` that fallback to returning `orElse`.
-///
-/// It is equivalent to doing:
-/// ```dart
-/// switch (sealedClass) {
-///   case final Subclass value:
-///     return ...;
-///   case _:
-///     return orElse();
-/// }
-/// ```
-
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( GogError_AuthError value)?  authError,TResult Function( GogError_GameError value)?  gameError,TResult Function( GogError_DepotError value)?  depotError,TResult Function( GogError_SecureLinksError value)?  secureLinksError,TResult Function( GogError_DownloadError value)?  downloadError,TResult Function( GogError_SavesError value)?  savesError,TResult Function( GogError_ProtonError value)?  protonError,required TResult orElse(),}){
-final _that = this;
-switch (_that) {
-case GogError_AuthError() when authError != null:
-return authError(_that);case GogError_GameError() when gameError != null:
-return gameError(_that);case GogError_DepotError() when depotError != null:
-return depotError(_that);case GogError_SecureLinksError() when secureLinksError != null:
-return secureLinksError(_that);case GogError_DownloadError() when downloadError != null:
-return downloadError(_that);case GogError_SavesError() when savesError != null:
-return savesError(_that);case GogError_ProtonError() when protonError != null:
-return protonError(_that);case _:
-  return orElse();
-
-}
-}
-/// A `switch`-like method, using callbacks.
-///
-/// Callbacks receives the raw object, upcasted.
-/// It is equivalent to doing:
-/// ```dart
-/// switch (sealedClass) {
-///   case final Subclass value:
-///     return ...;
-///   case final Subclass2 value:
-///     return ...;
-/// }
-/// ```
-
-@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( GogError_AuthError value)  authError,required TResult Function( GogError_GameError value)  gameError,required TResult Function( GogError_DepotError value)  depotError,required TResult Function( GogError_SecureLinksError value)  secureLinksError,required TResult Function( GogError_DownloadError value)  downloadError,required TResult Function( GogError_SavesError value)  savesError,required TResult Function( GogError_ProtonError value)  protonError,}){
-final _that = this;
-switch (_that) {
-case GogError_AuthError():
-return authError(_that);case GogError_GameError():
-return gameError(_that);case GogError_DepotError():
-return depotError(_that);case GogError_SecureLinksError():
-return secureLinksError(_that);case GogError_DownloadError():
-return downloadError(_that);case GogError_SavesError():
-return savesError(_that);case GogError_ProtonError():
-return protonError(_that);}
-}
-/// A variant of `map` that fallback to returning `null`.
-///
-/// It is equivalent to doing:
-/// ```dart
-/// switch (sealedClass) {
-///   case final Subclass value:
-///     return ...;
-///   case _:
-///     return null;
-/// }
-/// ```
-
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( GogError_AuthError value)?  authError,TResult? Function( GogError_GameError value)?  gameError,TResult? Function( GogError_DepotError value)?  depotError,TResult? Function( GogError_SecureLinksError value)?  secureLinksError,TResult? Function( GogError_DownloadError value)?  downloadError,TResult? Function( GogError_SavesError value)?  savesError,TResult? Function( GogError_ProtonError value)?  protonError,}){
-final _that = this;
-switch (_that) {
-case GogError_AuthError() when authError != null:
-return authError(_that);case GogError_GameError() when gameError != null:
-return gameError(_that);case GogError_DepotError() when depotError != null:
-return depotError(_that);case GogError_SecureLinksError() when secureLinksError != null:
-return secureLinksError(_that);case GogError_DownloadError() when downloadError != null:
-return downloadError(_that);case GogError_SavesError() when savesError != null:
-return savesError(_that);case GogError_ProtonError() when protonError != null:
-return protonError(_that);case _:
-  return null;
-
-}
-}
-/// A variant of `when` that fallback to an `orElse` callback.
-///
-/// It is equivalent to doing:
-/// ```dart
-/// switch (sealedClass) {
-///   case Subclass(:final field):
-///     return ...;
-///   case _:
-///     return orElse();
-/// }
-/// ```
-
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( String message)?  authError,TResult Function( String message)?  gameError,TResult Function( String message)?  depotError,TResult Function( String message)?  secureLinksError,TResult Function( String message)?  downloadError,TResult Function( String message)?  savesError,TResult Function( String message)?  protonError,required TResult orElse(),}) {final _that = this;
-switch (_that) {
-case GogError_AuthError() when authError != null:
-return authError(_that.message);case GogError_GameError() when gameError != null:
-return gameError(_that.message);case GogError_DepotError() when depotError != null:
-return depotError(_that.message);case GogError_SecureLinksError() when secureLinksError != null:
-return secureLinksError(_that.message);case GogError_DownloadError() when downloadError != null:
-return downloadError(_that.message);case GogError_SavesError() when savesError != null:
-return savesError(_that.message);case GogError_ProtonError() when protonError != null:
-return protonError(_that.message);case _:
-  return orElse();
-
-}
-}
-/// A `switch`-like method, using callbacks.
-///
-/// As opposed to `map`, this offers destructuring.
-/// It is equivalent to doing:
-/// ```dart
-/// switch (sealedClass) {
-///   case Subclass(:final field):
-///     return ...;
-///   case Subclass2(:final field2):
-///     return ...;
-/// }
-/// ```
-
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( String message)  authError,required TResult Function( String message)  gameError,required TResult Function( String message)  depotError,required TResult Function( String message)  secureLinksError,required TResult Function( String message)  downloadError,required TResult Function( String message)  savesError,required TResult Function( String message)  protonError,}) {final _that = this;
-switch (_that) {
-case GogError_AuthError():
-return authError(_that.message);case GogError_GameError():
-return gameError(_that.message);case GogError_DepotError():
-return depotError(_that.message);case GogError_SecureLinksError():
-return secureLinksError(_that.message);case GogError_DownloadError():
-return downloadError(_that.message);case GogError_SavesError():
-return savesError(_that.message);case GogError_ProtonError():
-return protonError(_that.message);}
-}
-/// A variant of `when` that fallback to returning `null`
-///
-/// It is equivalent to doing:
-/// ```dart
-/// switch (sealedClass) {
-///   case Subclass(:final field):
-///     return ...;
-///   case _:
-///     return null;
-/// }
-/// ```
-
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( String message)?  authError,TResult? Function( String message)?  gameError,TResult? Function( String message)?  depotError,TResult? Function( String message)?  secureLinksError,TResult? Function( String message)?  downloadError,TResult? Function( String message)?  savesError,TResult? Function( String message)?  protonError,}) {final _that = this;
-switch (_that) {
-case GogError_AuthError() when authError != null:
-return authError(_that.message);case GogError_GameError() when gameError != null:
-return gameError(_that.message);case GogError_DepotError() when depotError != null:
-return depotError(_that.message);case GogError_SecureLinksError() when secureLinksError != null:
-return secureLinksError(_that.message);case GogError_DownloadError() when downloadError != null:
-return downloadError(_that.message);case GogError_SavesError() when savesError != null:
-return savesError(_that.message);case GogError_ProtonError() when protonError != null:
-return protonError(_that.message);case _:
-  return null;
-
-}
-}
-
+  /// Create a copy of GogError
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({Object? message = null}) {
+    return _then(
+      _$GogError_AuthErrorImpl(
+        message: null == message
+            ? _value.message
+            : message // ignore: cast_nullable_to_non_nullable
+                  as String,
+      ),
+    );
+  }
 }
 
 /// @nodoc
 
+class _$GogError_AuthErrorImpl extends GogError_AuthError {
+  const _$GogError_AuthErrorImpl({required this.message}) : super._();
 
-class GogError_AuthError extends GogError {
-  const GogError_AuthError({required this.message}): super._();
-  
+  @override
+  final String message;
 
-@override final  String message;
+  @override
+  String toString() {
+    return 'GogError.authError(message: $message)';
+  }
 
-/// Create a copy of GogError
-/// with the given fields replaced by the non-null parameter values.
-@override @JsonKey(includeFromJson: false, includeToJson: false)
-@pragma('vm:prefer-inline')
-$GogError_AuthErrorCopyWith<GogError_AuthError> get copyWith => _$GogError_AuthErrorCopyWithImpl<GogError_AuthError>(this, _$identity);
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$GogError_AuthErrorImpl &&
+            (identical(other.message, message) || other.message == message));
+  }
 
+  @override
+  int get hashCode => Object.hash(runtimeType, message);
 
+  /// Create a copy of GogError
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  @pragma('vm:prefer-inline')
+  _$$GogError_AuthErrorImplCopyWith<_$GogError_AuthErrorImpl> get copyWith =>
+      __$$GogError_AuthErrorImplCopyWithImpl<_$GogError_AuthErrorImpl>(
+        this,
+        _$identity,
+      );
 
-@override
-bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is GogError_AuthError&&(identical(other.message, message) || other.message == message));
+  @override
+  @optionalTypeArgs
+  TResult when<TResult extends Object?>({
+    required TResult Function(String message) authError,
+    required TResult Function(String message) gameError,
+    required TResult Function(String message) depotError,
+    required TResult Function(String message) secureLinksError,
+    required TResult Function(String message) downloadError,
+    required TResult Function(String message) savesError,
+    required TResult Function(String message) protonError,
+  }) {
+    return authError(message);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? whenOrNull<TResult extends Object?>({
+    TResult? Function(String message)? authError,
+    TResult? Function(String message)? gameError,
+    TResult? Function(String message)? depotError,
+    TResult? Function(String message)? secureLinksError,
+    TResult? Function(String message)? downloadError,
+    TResult? Function(String message)? savesError,
+    TResult? Function(String message)? protonError,
+  }) {
+    return authError?.call(message);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object?>({
+    TResult Function(String message)? authError,
+    TResult Function(String message)? gameError,
+    TResult Function(String message)? depotError,
+    TResult Function(String message)? secureLinksError,
+    TResult Function(String message)? downloadError,
+    TResult Function(String message)? savesError,
+    TResult Function(String message)? protonError,
+    required TResult orElse(),
+  }) {
+    if (authError != null) {
+      return authError(message);
+    }
+    return orElse();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult map<TResult extends Object?>({
+    required TResult Function(GogError_AuthError value) authError,
+    required TResult Function(GogError_GameError value) gameError,
+    required TResult Function(GogError_DepotError value) depotError,
+    required TResult Function(GogError_SecureLinksError value) secureLinksError,
+    required TResult Function(GogError_DownloadError value) downloadError,
+    required TResult Function(GogError_SavesError value) savesError,
+    required TResult Function(GogError_ProtonError value) protonError,
+  }) {
+    return authError(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? mapOrNull<TResult extends Object?>({
+    TResult? Function(GogError_AuthError value)? authError,
+    TResult? Function(GogError_GameError value)? gameError,
+    TResult? Function(GogError_DepotError value)? depotError,
+    TResult? Function(GogError_SecureLinksError value)? secureLinksError,
+    TResult? Function(GogError_DownloadError value)? downloadError,
+    TResult? Function(GogError_SavesError value)? savesError,
+    TResult? Function(GogError_ProtonError value)? protonError,
+  }) {
+    return authError?.call(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeMap<TResult extends Object?>({
+    TResult Function(GogError_AuthError value)? authError,
+    TResult Function(GogError_GameError value)? gameError,
+    TResult Function(GogError_DepotError value)? depotError,
+    TResult Function(GogError_SecureLinksError value)? secureLinksError,
+    TResult Function(GogError_DownloadError value)? downloadError,
+    TResult Function(GogError_SavesError value)? savesError,
+    TResult Function(GogError_ProtonError value)? protonError,
+    required TResult orElse(),
+  }) {
+    if (authError != null) {
+      return authError(this);
+    }
+    return orElse();
+  }
 }
 
+abstract class GogError_AuthError extends GogError {
+  const factory GogError_AuthError({required final String message}) =
+      _$GogError_AuthErrorImpl;
+  const GogError_AuthError._() : super._();
 
-@override
-int get hashCode => Object.hash(runtimeType,message);
+  @override
+  String get message;
 
-@override
-String toString() {
-  return 'GogError.authError(message: $message)';
-}
-
-
-}
-
-/// @nodoc
-abstract mixin class $GogError_AuthErrorCopyWith<$Res> implements $GogErrorCopyWith<$Res> {
-  factory $GogError_AuthErrorCopyWith(GogError_AuthError value, $Res Function(GogError_AuthError) _then) = _$GogError_AuthErrorCopyWithImpl;
-@override @useResult
-$Res call({
- String message
-});
-
-
-
-
-}
-/// @nodoc
-class _$GogError_AuthErrorCopyWithImpl<$Res>
-    implements $GogError_AuthErrorCopyWith<$Res> {
-  _$GogError_AuthErrorCopyWithImpl(this._self, this._then);
-
-  final GogError_AuthError _self;
-  final $Res Function(GogError_AuthError) _then;
-
-/// Create a copy of GogError
-/// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? message = null,}) {
-  return _then(GogError_AuthError(
-message: null == message ? _self.message : message // ignore: cast_nullable_to_non_nullable
-as String,
-  ));
-}
-
-
-}
-
-/// @nodoc
-
-
-class GogError_GameError extends GogError {
-  const GogError_GameError({required this.message}): super._();
-  
-
-@override final  String message;
-
-/// Create a copy of GogError
-/// with the given fields replaced by the non-null parameter values.
-@override @JsonKey(includeFromJson: false, includeToJson: false)
-@pragma('vm:prefer-inline')
-$GogError_GameErrorCopyWith<GogError_GameError> get copyWith => _$GogError_GameErrorCopyWithImpl<GogError_GameError>(this, _$identity);
-
-
-
-@override
-bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is GogError_GameError&&(identical(other.message, message) || other.message == message));
-}
-
-
-@override
-int get hashCode => Object.hash(runtimeType,message);
-
-@override
-String toString() {
-  return 'GogError.gameError(message: $message)';
-}
-
-
-}
-
-/// @nodoc
-abstract mixin class $GogError_GameErrorCopyWith<$Res> implements $GogErrorCopyWith<$Res> {
-  factory $GogError_GameErrorCopyWith(GogError_GameError value, $Res Function(GogError_GameError) _then) = _$GogError_GameErrorCopyWithImpl;
-@override @useResult
-$Res call({
- String message
-});
-
-
-
-
-}
-/// @nodoc
-class _$GogError_GameErrorCopyWithImpl<$Res>
-    implements $GogError_GameErrorCopyWith<$Res> {
-  _$GogError_GameErrorCopyWithImpl(this._self, this._then);
-
-  final GogError_GameError _self;
-  final $Res Function(GogError_GameError) _then;
-
-/// Create a copy of GogError
-/// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? message = null,}) {
-  return _then(GogError_GameError(
-message: null == message ? _self.message : message // ignore: cast_nullable_to_non_nullable
-as String,
-  ));
-}
-
-
-}
-
-/// @nodoc
-
-
-class GogError_DepotError extends GogError {
-  const GogError_DepotError({required this.message}): super._();
-  
-
-@override final  String message;
-
-/// Create a copy of GogError
-/// with the given fields replaced by the non-null parameter values.
-@override @JsonKey(includeFromJson: false, includeToJson: false)
-@pragma('vm:prefer-inline')
-$GogError_DepotErrorCopyWith<GogError_DepotError> get copyWith => _$GogError_DepotErrorCopyWithImpl<GogError_DepotError>(this, _$identity);
-
-
-
-@override
-bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is GogError_DepotError&&(identical(other.message, message) || other.message == message));
-}
-
-
-@override
-int get hashCode => Object.hash(runtimeType,message);
-
-@override
-String toString() {
-  return 'GogError.depotError(message: $message)';
-}
-
-
+  /// Create a copy of GogError
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  _$$GogError_AuthErrorImplCopyWith<_$GogError_AuthErrorImpl> get copyWith =>
+      throw _privateConstructorUsedError;
 }
 
 /// @nodoc
-abstract mixin class $GogError_DepotErrorCopyWith<$Res> implements $GogErrorCopyWith<$Res> {
-  factory $GogError_DepotErrorCopyWith(GogError_DepotError value, $Res Function(GogError_DepotError) _then) = _$GogError_DepotErrorCopyWithImpl;
-@override @useResult
-$Res call({
- String message
-});
-
-
-
-
+abstract class _$$GogError_GameErrorImplCopyWith<$Res>
+    implements $GogErrorCopyWith<$Res> {
+  factory _$$GogError_GameErrorImplCopyWith(
+    _$GogError_GameErrorImpl value,
+    $Res Function(_$GogError_GameErrorImpl) then,
+  ) = __$$GogError_GameErrorImplCopyWithImpl<$Res>;
+  @override
+  @useResult
+  $Res call({String message});
 }
+
 /// @nodoc
-class _$GogError_DepotErrorCopyWithImpl<$Res>
-    implements $GogError_DepotErrorCopyWith<$Res> {
-  _$GogError_DepotErrorCopyWithImpl(this._self, this._then);
+class __$$GogError_GameErrorImplCopyWithImpl<$Res>
+    extends _$GogErrorCopyWithImpl<$Res, _$GogError_GameErrorImpl>
+    implements _$$GogError_GameErrorImplCopyWith<$Res> {
+  __$$GogError_GameErrorImplCopyWithImpl(
+    _$GogError_GameErrorImpl _value,
+    $Res Function(_$GogError_GameErrorImpl) _then,
+  ) : super(_value, _then);
 
-  final GogError_DepotError _self;
-  final $Res Function(GogError_DepotError) _then;
-
-/// Create a copy of GogError
-/// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? message = null,}) {
-  return _then(GogError_DepotError(
-message: null == message ? _self.message : message // ignore: cast_nullable_to_non_nullable
-as String,
-  ));
-}
-
-
+  /// Create a copy of GogError
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({Object? message = null}) {
+    return _then(
+      _$GogError_GameErrorImpl(
+        message: null == message
+            ? _value.message
+            : message // ignore: cast_nullable_to_non_nullable
+                  as String,
+      ),
+    );
+  }
 }
 
 /// @nodoc
 
+class _$GogError_GameErrorImpl extends GogError_GameError {
+  const _$GogError_GameErrorImpl({required this.message}) : super._();
 
-class GogError_SecureLinksError extends GogError {
-  const GogError_SecureLinksError({required this.message}): super._();
-  
+  @override
+  final String message;
 
-@override final  String message;
+  @override
+  String toString() {
+    return 'GogError.gameError(message: $message)';
+  }
 
-/// Create a copy of GogError
-/// with the given fields replaced by the non-null parameter values.
-@override @JsonKey(includeFromJson: false, includeToJson: false)
-@pragma('vm:prefer-inline')
-$GogError_SecureLinksErrorCopyWith<GogError_SecureLinksError> get copyWith => _$GogError_SecureLinksErrorCopyWithImpl<GogError_SecureLinksError>(this, _$identity);
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$GogError_GameErrorImpl &&
+            (identical(other.message, message) || other.message == message));
+  }
 
+  @override
+  int get hashCode => Object.hash(runtimeType, message);
 
+  /// Create a copy of GogError
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  @pragma('vm:prefer-inline')
+  _$$GogError_GameErrorImplCopyWith<_$GogError_GameErrorImpl> get copyWith =>
+      __$$GogError_GameErrorImplCopyWithImpl<_$GogError_GameErrorImpl>(
+        this,
+        _$identity,
+      );
 
-@override
-bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is GogError_SecureLinksError&&(identical(other.message, message) || other.message == message));
+  @override
+  @optionalTypeArgs
+  TResult when<TResult extends Object?>({
+    required TResult Function(String message) authError,
+    required TResult Function(String message) gameError,
+    required TResult Function(String message) depotError,
+    required TResult Function(String message) secureLinksError,
+    required TResult Function(String message) downloadError,
+    required TResult Function(String message) savesError,
+    required TResult Function(String message) protonError,
+  }) {
+    return gameError(message);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? whenOrNull<TResult extends Object?>({
+    TResult? Function(String message)? authError,
+    TResult? Function(String message)? gameError,
+    TResult? Function(String message)? depotError,
+    TResult? Function(String message)? secureLinksError,
+    TResult? Function(String message)? downloadError,
+    TResult? Function(String message)? savesError,
+    TResult? Function(String message)? protonError,
+  }) {
+    return gameError?.call(message);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object?>({
+    TResult Function(String message)? authError,
+    TResult Function(String message)? gameError,
+    TResult Function(String message)? depotError,
+    TResult Function(String message)? secureLinksError,
+    TResult Function(String message)? downloadError,
+    TResult Function(String message)? savesError,
+    TResult Function(String message)? protonError,
+    required TResult orElse(),
+  }) {
+    if (gameError != null) {
+      return gameError(message);
+    }
+    return orElse();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult map<TResult extends Object?>({
+    required TResult Function(GogError_AuthError value) authError,
+    required TResult Function(GogError_GameError value) gameError,
+    required TResult Function(GogError_DepotError value) depotError,
+    required TResult Function(GogError_SecureLinksError value) secureLinksError,
+    required TResult Function(GogError_DownloadError value) downloadError,
+    required TResult Function(GogError_SavesError value) savesError,
+    required TResult Function(GogError_ProtonError value) protonError,
+  }) {
+    return gameError(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? mapOrNull<TResult extends Object?>({
+    TResult? Function(GogError_AuthError value)? authError,
+    TResult? Function(GogError_GameError value)? gameError,
+    TResult? Function(GogError_DepotError value)? depotError,
+    TResult? Function(GogError_SecureLinksError value)? secureLinksError,
+    TResult? Function(GogError_DownloadError value)? downloadError,
+    TResult? Function(GogError_SavesError value)? savesError,
+    TResult? Function(GogError_ProtonError value)? protonError,
+  }) {
+    return gameError?.call(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeMap<TResult extends Object?>({
+    TResult Function(GogError_AuthError value)? authError,
+    TResult Function(GogError_GameError value)? gameError,
+    TResult Function(GogError_DepotError value)? depotError,
+    TResult Function(GogError_SecureLinksError value)? secureLinksError,
+    TResult Function(GogError_DownloadError value)? downloadError,
+    TResult Function(GogError_SavesError value)? savesError,
+    TResult Function(GogError_ProtonError value)? protonError,
+    required TResult orElse(),
+  }) {
+    if (gameError != null) {
+      return gameError(this);
+    }
+    return orElse();
+  }
 }
 
+abstract class GogError_GameError extends GogError {
+  const factory GogError_GameError({required final String message}) =
+      _$GogError_GameErrorImpl;
+  const GogError_GameError._() : super._();
 
-@override
-int get hashCode => Object.hash(runtimeType,message);
+  @override
+  String get message;
 
-@override
-String toString() {
-  return 'GogError.secureLinksError(message: $message)';
-}
-
-
-}
-
-/// @nodoc
-abstract mixin class $GogError_SecureLinksErrorCopyWith<$Res> implements $GogErrorCopyWith<$Res> {
-  factory $GogError_SecureLinksErrorCopyWith(GogError_SecureLinksError value, $Res Function(GogError_SecureLinksError) _then) = _$GogError_SecureLinksErrorCopyWithImpl;
-@override @useResult
-$Res call({
- String message
-});
-
-
-
-
-}
-/// @nodoc
-class _$GogError_SecureLinksErrorCopyWithImpl<$Res>
-    implements $GogError_SecureLinksErrorCopyWith<$Res> {
-  _$GogError_SecureLinksErrorCopyWithImpl(this._self, this._then);
-
-  final GogError_SecureLinksError _self;
-  final $Res Function(GogError_SecureLinksError) _then;
-
-/// Create a copy of GogError
-/// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? message = null,}) {
-  return _then(GogError_SecureLinksError(
-message: null == message ? _self.message : message // ignore: cast_nullable_to_non_nullable
-as String,
-  ));
-}
-
-
-}
-
-/// @nodoc
-
-
-class GogError_DownloadError extends GogError {
-  const GogError_DownloadError({required this.message}): super._();
-  
-
-@override final  String message;
-
-/// Create a copy of GogError
-/// with the given fields replaced by the non-null parameter values.
-@override @JsonKey(includeFromJson: false, includeToJson: false)
-@pragma('vm:prefer-inline')
-$GogError_DownloadErrorCopyWith<GogError_DownloadError> get copyWith => _$GogError_DownloadErrorCopyWithImpl<GogError_DownloadError>(this, _$identity);
-
-
-
-@override
-bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is GogError_DownloadError&&(identical(other.message, message) || other.message == message));
-}
-
-
-@override
-int get hashCode => Object.hash(runtimeType,message);
-
-@override
-String toString() {
-  return 'GogError.downloadError(message: $message)';
-}
-
-
-}
-
-/// @nodoc
-abstract mixin class $GogError_DownloadErrorCopyWith<$Res> implements $GogErrorCopyWith<$Res> {
-  factory $GogError_DownloadErrorCopyWith(GogError_DownloadError value, $Res Function(GogError_DownloadError) _then) = _$GogError_DownloadErrorCopyWithImpl;
-@override @useResult
-$Res call({
- String message
-});
-
-
-
-
-}
-/// @nodoc
-class _$GogError_DownloadErrorCopyWithImpl<$Res>
-    implements $GogError_DownloadErrorCopyWith<$Res> {
-  _$GogError_DownloadErrorCopyWithImpl(this._self, this._then);
-
-  final GogError_DownloadError _self;
-  final $Res Function(GogError_DownloadError) _then;
-
-/// Create a copy of GogError
-/// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? message = null,}) {
-  return _then(GogError_DownloadError(
-message: null == message ? _self.message : message // ignore: cast_nullable_to_non_nullable
-as String,
-  ));
-}
-
-
-}
-
-/// @nodoc
-
-
-class GogError_SavesError extends GogError {
-  const GogError_SavesError({required this.message}): super._();
-
-
-@override final  String message;
-
-/// Create a copy of GogError
-/// with the given fields replaced by the non-null parameter values.
-@override @JsonKey(includeFromJson: false, includeToJson: false)
-@pragma('vm:prefer-inline')
-$GogError_SavesErrorCopyWith<GogError_SavesError> get copyWith => _$GogError_SavesErrorCopyWithImpl<GogError_SavesError>(this, _$identity);
-
-
-
-@override
-bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is GogError_SavesError&&(identical(other.message, message) || other.message == message));
-}
-
-
-@override
-int get hashCode => Object.hash(runtimeType,message);
-
-@override
-String toString() {
-  return 'GogError.savesError(message: $message)';
-}
-
-
+  /// Create a copy of GogError
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  _$$GogError_GameErrorImplCopyWith<_$GogError_GameErrorImpl> get copyWith =>
+      throw _privateConstructorUsedError;
 }
 
 /// @nodoc
-abstract mixin class $GogError_SavesErrorCopyWith<$Res> implements $GogErrorCopyWith<$Res> {
-  factory $GogError_SavesErrorCopyWith(GogError_SavesError value, $Res Function(GogError_SavesError) _then) = _$GogError_SavesErrorCopyWithImpl;
-@override @useResult
-$Res call({
- String message
-});
-
-
-
-
+abstract class _$$GogError_DepotErrorImplCopyWith<$Res>
+    implements $GogErrorCopyWith<$Res> {
+  factory _$$GogError_DepotErrorImplCopyWith(
+    _$GogError_DepotErrorImpl value,
+    $Res Function(_$GogError_DepotErrorImpl) then,
+  ) = __$$GogError_DepotErrorImplCopyWithImpl<$Res>;
+  @override
+  @useResult
+  $Res call({String message});
 }
+
 /// @nodoc
-class _$GogError_SavesErrorCopyWithImpl<$Res>
-    implements $GogError_SavesErrorCopyWith<$Res> {
-  _$GogError_SavesErrorCopyWithImpl(this._self, this._then);
+class __$$GogError_DepotErrorImplCopyWithImpl<$Res>
+    extends _$GogErrorCopyWithImpl<$Res, _$GogError_DepotErrorImpl>
+    implements _$$GogError_DepotErrorImplCopyWith<$Res> {
+  __$$GogError_DepotErrorImplCopyWithImpl(
+    _$GogError_DepotErrorImpl _value,
+    $Res Function(_$GogError_DepotErrorImpl) _then,
+  ) : super(_value, _then);
 
-  final GogError_SavesError _self;
-  final $Res Function(GogError_SavesError) _then;
-
-/// Create a copy of GogError
-/// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? message = null,}) {
-  return _then(GogError_SavesError(
-message: null == message ? _self.message : message // ignore: cast_nullable_to_non_nullable
-as String,
-  ));
-}
-
-
+  /// Create a copy of GogError
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({Object? message = null}) {
+    return _then(
+      _$GogError_DepotErrorImpl(
+        message: null == message
+            ? _value.message
+            : message // ignore: cast_nullable_to_non_nullable
+                  as String,
+      ),
+    );
+  }
 }
 
 /// @nodoc
 
+class _$GogError_DepotErrorImpl extends GogError_DepotError {
+  const _$GogError_DepotErrorImpl({required this.message}) : super._();
 
-class GogError_ProtonError extends GogError {
-  const GogError_ProtonError({required this.message}): super._();
+  @override
+  final String message;
 
+  @override
+  String toString() {
+    return 'GogError.depotError(message: $message)';
+  }
 
-@override final  String message;
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$GogError_DepotErrorImpl &&
+            (identical(other.message, message) || other.message == message));
+  }
 
-/// Create a copy of GogError
-/// with the given fields replaced by the non-null parameter values.
-@override @JsonKey(includeFromJson: false, includeToJson: false)
-@pragma('vm:prefer-inline')
-$GogError_ProtonErrorCopyWith<GogError_ProtonError> get copyWith => _$GogError_ProtonErrorCopyWithImpl<GogError_ProtonError>(this, _$identity);
+  @override
+  int get hashCode => Object.hash(runtimeType, message);
 
+  /// Create a copy of GogError
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  @pragma('vm:prefer-inline')
+  _$$GogError_DepotErrorImplCopyWith<_$GogError_DepotErrorImpl> get copyWith =>
+      __$$GogError_DepotErrorImplCopyWithImpl<_$GogError_DepotErrorImpl>(
+        this,
+        _$identity,
+      );
 
+  @override
+  @optionalTypeArgs
+  TResult when<TResult extends Object?>({
+    required TResult Function(String message) authError,
+    required TResult Function(String message) gameError,
+    required TResult Function(String message) depotError,
+    required TResult Function(String message) secureLinksError,
+    required TResult Function(String message) downloadError,
+    required TResult Function(String message) savesError,
+    required TResult Function(String message) protonError,
+  }) {
+    return depotError(message);
+  }
 
-@override
-bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is GogError_ProtonError&&(identical(other.message, message) || other.message == message));
+  @override
+  @optionalTypeArgs
+  TResult? whenOrNull<TResult extends Object?>({
+    TResult? Function(String message)? authError,
+    TResult? Function(String message)? gameError,
+    TResult? Function(String message)? depotError,
+    TResult? Function(String message)? secureLinksError,
+    TResult? Function(String message)? downloadError,
+    TResult? Function(String message)? savesError,
+    TResult? Function(String message)? protonError,
+  }) {
+    return depotError?.call(message);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object?>({
+    TResult Function(String message)? authError,
+    TResult Function(String message)? gameError,
+    TResult Function(String message)? depotError,
+    TResult Function(String message)? secureLinksError,
+    TResult Function(String message)? downloadError,
+    TResult Function(String message)? savesError,
+    TResult Function(String message)? protonError,
+    required TResult orElse(),
+  }) {
+    if (depotError != null) {
+      return depotError(message);
+    }
+    return orElse();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult map<TResult extends Object?>({
+    required TResult Function(GogError_AuthError value) authError,
+    required TResult Function(GogError_GameError value) gameError,
+    required TResult Function(GogError_DepotError value) depotError,
+    required TResult Function(GogError_SecureLinksError value) secureLinksError,
+    required TResult Function(GogError_DownloadError value) downloadError,
+    required TResult Function(GogError_SavesError value) savesError,
+    required TResult Function(GogError_ProtonError value) protonError,
+  }) {
+    return depotError(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? mapOrNull<TResult extends Object?>({
+    TResult? Function(GogError_AuthError value)? authError,
+    TResult? Function(GogError_GameError value)? gameError,
+    TResult? Function(GogError_DepotError value)? depotError,
+    TResult? Function(GogError_SecureLinksError value)? secureLinksError,
+    TResult? Function(GogError_DownloadError value)? downloadError,
+    TResult? Function(GogError_SavesError value)? savesError,
+    TResult? Function(GogError_ProtonError value)? protonError,
+  }) {
+    return depotError?.call(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeMap<TResult extends Object?>({
+    TResult Function(GogError_AuthError value)? authError,
+    TResult Function(GogError_GameError value)? gameError,
+    TResult Function(GogError_DepotError value)? depotError,
+    TResult Function(GogError_SecureLinksError value)? secureLinksError,
+    TResult Function(GogError_DownloadError value)? downloadError,
+    TResult Function(GogError_SavesError value)? savesError,
+    TResult Function(GogError_ProtonError value)? protonError,
+    required TResult orElse(),
+  }) {
+    if (depotError != null) {
+      return depotError(this);
+    }
+    return orElse();
+  }
 }
 
+abstract class GogError_DepotError extends GogError {
+  const factory GogError_DepotError({required final String message}) =
+      _$GogError_DepotErrorImpl;
+  const GogError_DepotError._() : super._();
 
-@override
-int get hashCode => Object.hash(runtimeType,message);
+  @override
+  String get message;
 
-@override
-String toString() {
-  return 'GogError.protonError(message: $message)';
-}
-
-
+  /// Create a copy of GogError
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  _$$GogError_DepotErrorImplCopyWith<_$GogError_DepotErrorImpl> get copyWith =>
+      throw _privateConstructorUsedError;
 }
 
 /// @nodoc
-abstract mixin class $GogError_ProtonErrorCopyWith<$Res> implements $GogErrorCopyWith<$Res> {
-  factory $GogError_ProtonErrorCopyWith(GogError_ProtonError value, $Res Function(GogError_ProtonError) _then) = _$GogError_ProtonErrorCopyWithImpl;
-@override @useResult
-$Res call({
- String message
-});
-
-
-
-
+abstract class _$$GogError_SecureLinksErrorImplCopyWith<$Res>
+    implements $GogErrorCopyWith<$Res> {
+  factory _$$GogError_SecureLinksErrorImplCopyWith(
+    _$GogError_SecureLinksErrorImpl value,
+    $Res Function(_$GogError_SecureLinksErrorImpl) then,
+  ) = __$$GogError_SecureLinksErrorImplCopyWithImpl<$Res>;
+  @override
+  @useResult
+  $Res call({String message});
 }
+
 /// @nodoc
-class _$GogError_ProtonErrorCopyWithImpl<$Res>
-    implements $GogError_ProtonErrorCopyWith<$Res> {
-  _$GogError_ProtonErrorCopyWithImpl(this._self, this._then);
+class __$$GogError_SecureLinksErrorImplCopyWithImpl<$Res>
+    extends _$GogErrorCopyWithImpl<$Res, _$GogError_SecureLinksErrorImpl>
+    implements _$$GogError_SecureLinksErrorImplCopyWith<$Res> {
+  __$$GogError_SecureLinksErrorImplCopyWithImpl(
+    _$GogError_SecureLinksErrorImpl _value,
+    $Res Function(_$GogError_SecureLinksErrorImpl) _then,
+  ) : super(_value, _then);
 
-  final GogError_ProtonError _self;
-  final $Res Function(GogError_ProtonError) _then;
-
-/// Create a copy of GogError
-/// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? message = null,}) {
-  return _then(GogError_ProtonError(
-message: null == message ? _self.message : message // ignore: cast_nullable_to_non_nullable
-as String,
-  ));
+  /// Create a copy of GogError
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({Object? message = null}) {
+    return _then(
+      _$GogError_SecureLinksErrorImpl(
+        message: null == message
+            ? _value.message
+            : message // ignore: cast_nullable_to_non_nullable
+                  as String,
+      ),
+    );
+  }
 }
 
+/// @nodoc
 
+class _$GogError_SecureLinksErrorImpl extends GogError_SecureLinksError {
+  const _$GogError_SecureLinksErrorImpl({required this.message}) : super._();
+
+  @override
+  final String message;
+
+  @override
+  String toString() {
+    return 'GogError.secureLinksError(message: $message)';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$GogError_SecureLinksErrorImpl &&
+            (identical(other.message, message) || other.message == message));
+  }
+
+  @override
+  int get hashCode => Object.hash(runtimeType, message);
+
+  /// Create a copy of GogError
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  @pragma('vm:prefer-inline')
+  _$$GogError_SecureLinksErrorImplCopyWith<_$GogError_SecureLinksErrorImpl>
+  get copyWith =>
+      __$$GogError_SecureLinksErrorImplCopyWithImpl<
+        _$GogError_SecureLinksErrorImpl
+      >(this, _$identity);
+
+  @override
+  @optionalTypeArgs
+  TResult when<TResult extends Object?>({
+    required TResult Function(String message) authError,
+    required TResult Function(String message) gameError,
+    required TResult Function(String message) depotError,
+    required TResult Function(String message) secureLinksError,
+    required TResult Function(String message) downloadError,
+    required TResult Function(String message) savesError,
+    required TResult Function(String message) protonError,
+  }) {
+    return secureLinksError(message);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? whenOrNull<TResult extends Object?>({
+    TResult? Function(String message)? authError,
+    TResult? Function(String message)? gameError,
+    TResult? Function(String message)? depotError,
+    TResult? Function(String message)? secureLinksError,
+    TResult? Function(String message)? downloadError,
+    TResult? Function(String message)? savesError,
+    TResult? Function(String message)? protonError,
+  }) {
+    return secureLinksError?.call(message);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object?>({
+    TResult Function(String message)? authError,
+    TResult Function(String message)? gameError,
+    TResult Function(String message)? depotError,
+    TResult Function(String message)? secureLinksError,
+    TResult Function(String message)? downloadError,
+    TResult Function(String message)? savesError,
+    TResult Function(String message)? protonError,
+    required TResult orElse(),
+  }) {
+    if (secureLinksError != null) {
+      return secureLinksError(message);
+    }
+    return orElse();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult map<TResult extends Object?>({
+    required TResult Function(GogError_AuthError value) authError,
+    required TResult Function(GogError_GameError value) gameError,
+    required TResult Function(GogError_DepotError value) depotError,
+    required TResult Function(GogError_SecureLinksError value) secureLinksError,
+    required TResult Function(GogError_DownloadError value) downloadError,
+    required TResult Function(GogError_SavesError value) savesError,
+    required TResult Function(GogError_ProtonError value) protonError,
+  }) {
+    return secureLinksError(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? mapOrNull<TResult extends Object?>({
+    TResult? Function(GogError_AuthError value)? authError,
+    TResult? Function(GogError_GameError value)? gameError,
+    TResult? Function(GogError_DepotError value)? depotError,
+    TResult? Function(GogError_SecureLinksError value)? secureLinksError,
+    TResult? Function(GogError_DownloadError value)? downloadError,
+    TResult? Function(GogError_SavesError value)? savesError,
+    TResult? Function(GogError_ProtonError value)? protonError,
+  }) {
+    return secureLinksError?.call(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeMap<TResult extends Object?>({
+    TResult Function(GogError_AuthError value)? authError,
+    TResult Function(GogError_GameError value)? gameError,
+    TResult Function(GogError_DepotError value)? depotError,
+    TResult Function(GogError_SecureLinksError value)? secureLinksError,
+    TResult Function(GogError_DownloadError value)? downloadError,
+    TResult Function(GogError_SavesError value)? savesError,
+    TResult Function(GogError_ProtonError value)? protonError,
+    required TResult orElse(),
+  }) {
+    if (secureLinksError != null) {
+      return secureLinksError(this);
+    }
+    return orElse();
+  }
 }
 
-// dart format on
+abstract class GogError_SecureLinksError extends GogError {
+  const factory GogError_SecureLinksError({required final String message}) =
+      _$GogError_SecureLinksErrorImpl;
+  const GogError_SecureLinksError._() : super._();
+
+  @override
+  String get message;
+
+  /// Create a copy of GogError
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  _$$GogError_SecureLinksErrorImplCopyWith<_$GogError_SecureLinksErrorImpl>
+  get copyWith => throw _privateConstructorUsedError;
+}
+
+/// @nodoc
+abstract class _$$GogError_DownloadErrorImplCopyWith<$Res>
+    implements $GogErrorCopyWith<$Res> {
+  factory _$$GogError_DownloadErrorImplCopyWith(
+    _$GogError_DownloadErrorImpl value,
+    $Res Function(_$GogError_DownloadErrorImpl) then,
+  ) = __$$GogError_DownloadErrorImplCopyWithImpl<$Res>;
+  @override
+  @useResult
+  $Res call({String message});
+}
+
+/// @nodoc
+class __$$GogError_DownloadErrorImplCopyWithImpl<$Res>
+    extends _$GogErrorCopyWithImpl<$Res, _$GogError_DownloadErrorImpl>
+    implements _$$GogError_DownloadErrorImplCopyWith<$Res> {
+  __$$GogError_DownloadErrorImplCopyWithImpl(
+    _$GogError_DownloadErrorImpl _value,
+    $Res Function(_$GogError_DownloadErrorImpl) _then,
+  ) : super(_value, _then);
+
+  /// Create a copy of GogError
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({Object? message = null}) {
+    return _then(
+      _$GogError_DownloadErrorImpl(
+        message: null == message
+            ? _value.message
+            : message // ignore: cast_nullable_to_non_nullable
+                  as String,
+      ),
+    );
+  }
+}
+
+/// @nodoc
+
+class _$GogError_DownloadErrorImpl extends GogError_DownloadError {
+  const _$GogError_DownloadErrorImpl({required this.message}) : super._();
+
+  @override
+  final String message;
+
+  @override
+  String toString() {
+    return 'GogError.downloadError(message: $message)';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$GogError_DownloadErrorImpl &&
+            (identical(other.message, message) || other.message == message));
+  }
+
+  @override
+  int get hashCode => Object.hash(runtimeType, message);
+
+  /// Create a copy of GogError
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  @pragma('vm:prefer-inline')
+  _$$GogError_DownloadErrorImplCopyWith<_$GogError_DownloadErrorImpl>
+  get copyWith =>
+      __$$GogError_DownloadErrorImplCopyWithImpl<_$GogError_DownloadErrorImpl>(
+        this,
+        _$identity,
+      );
+
+  @override
+  @optionalTypeArgs
+  TResult when<TResult extends Object?>({
+    required TResult Function(String message) authError,
+    required TResult Function(String message) gameError,
+    required TResult Function(String message) depotError,
+    required TResult Function(String message) secureLinksError,
+    required TResult Function(String message) downloadError,
+    required TResult Function(String message) savesError,
+    required TResult Function(String message) protonError,
+  }) {
+    return downloadError(message);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? whenOrNull<TResult extends Object?>({
+    TResult? Function(String message)? authError,
+    TResult? Function(String message)? gameError,
+    TResult? Function(String message)? depotError,
+    TResult? Function(String message)? secureLinksError,
+    TResult? Function(String message)? downloadError,
+    TResult? Function(String message)? savesError,
+    TResult? Function(String message)? protonError,
+  }) {
+    return downloadError?.call(message);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object?>({
+    TResult Function(String message)? authError,
+    TResult Function(String message)? gameError,
+    TResult Function(String message)? depotError,
+    TResult Function(String message)? secureLinksError,
+    TResult Function(String message)? downloadError,
+    TResult Function(String message)? savesError,
+    TResult Function(String message)? protonError,
+    required TResult orElse(),
+  }) {
+    if (downloadError != null) {
+      return downloadError(message);
+    }
+    return orElse();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult map<TResult extends Object?>({
+    required TResult Function(GogError_AuthError value) authError,
+    required TResult Function(GogError_GameError value) gameError,
+    required TResult Function(GogError_DepotError value) depotError,
+    required TResult Function(GogError_SecureLinksError value) secureLinksError,
+    required TResult Function(GogError_DownloadError value) downloadError,
+    required TResult Function(GogError_SavesError value) savesError,
+    required TResult Function(GogError_ProtonError value) protonError,
+  }) {
+    return downloadError(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? mapOrNull<TResult extends Object?>({
+    TResult? Function(GogError_AuthError value)? authError,
+    TResult? Function(GogError_GameError value)? gameError,
+    TResult? Function(GogError_DepotError value)? depotError,
+    TResult? Function(GogError_SecureLinksError value)? secureLinksError,
+    TResult? Function(GogError_DownloadError value)? downloadError,
+    TResult? Function(GogError_SavesError value)? savesError,
+    TResult? Function(GogError_ProtonError value)? protonError,
+  }) {
+    return downloadError?.call(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeMap<TResult extends Object?>({
+    TResult Function(GogError_AuthError value)? authError,
+    TResult Function(GogError_GameError value)? gameError,
+    TResult Function(GogError_DepotError value)? depotError,
+    TResult Function(GogError_SecureLinksError value)? secureLinksError,
+    TResult Function(GogError_DownloadError value)? downloadError,
+    TResult Function(GogError_SavesError value)? savesError,
+    TResult Function(GogError_ProtonError value)? protonError,
+    required TResult orElse(),
+  }) {
+    if (downloadError != null) {
+      return downloadError(this);
+    }
+    return orElse();
+  }
+}
+
+abstract class GogError_DownloadError extends GogError {
+  const factory GogError_DownloadError({required final String message}) =
+      _$GogError_DownloadErrorImpl;
+  const GogError_DownloadError._() : super._();
+
+  @override
+  String get message;
+
+  /// Create a copy of GogError
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  _$$GogError_DownloadErrorImplCopyWith<_$GogError_DownloadErrorImpl>
+  get copyWith => throw _privateConstructorUsedError;
+}
+
+/// @nodoc
+abstract class _$$GogError_SavesErrorImplCopyWith<$Res>
+    implements $GogErrorCopyWith<$Res> {
+  factory _$$GogError_SavesErrorImplCopyWith(
+    _$GogError_SavesErrorImpl value,
+    $Res Function(_$GogError_SavesErrorImpl) then,
+  ) = __$$GogError_SavesErrorImplCopyWithImpl<$Res>;
+  @override
+  @useResult
+  $Res call({String message});
+}
+
+/// @nodoc
+class __$$GogError_SavesErrorImplCopyWithImpl<$Res>
+    extends _$GogErrorCopyWithImpl<$Res, _$GogError_SavesErrorImpl>
+    implements _$$GogError_SavesErrorImplCopyWith<$Res> {
+  __$$GogError_SavesErrorImplCopyWithImpl(
+    _$GogError_SavesErrorImpl _value,
+    $Res Function(_$GogError_SavesErrorImpl) _then,
+  ) : super(_value, _then);
+
+  /// Create a copy of GogError
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({Object? message = null}) {
+    return _then(
+      _$GogError_SavesErrorImpl(
+        message: null == message
+            ? _value.message
+            : message // ignore: cast_nullable_to_non_nullable
+                  as String,
+      ),
+    );
+  }
+}
+
+/// @nodoc
+
+class _$GogError_SavesErrorImpl extends GogError_SavesError {
+  const _$GogError_SavesErrorImpl({required this.message}) : super._();
+
+  @override
+  final String message;
+
+  @override
+  String toString() {
+    return 'GogError.savesError(message: $message)';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$GogError_SavesErrorImpl &&
+            (identical(other.message, message) || other.message == message));
+  }
+
+  @override
+  int get hashCode => Object.hash(runtimeType, message);
+
+  /// Create a copy of GogError
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  @pragma('vm:prefer-inline')
+  _$$GogError_SavesErrorImplCopyWith<_$GogError_SavesErrorImpl> get copyWith =>
+      __$$GogError_SavesErrorImplCopyWithImpl<_$GogError_SavesErrorImpl>(
+        this,
+        _$identity,
+      );
+
+  @override
+  @optionalTypeArgs
+  TResult when<TResult extends Object?>({
+    required TResult Function(String message) authError,
+    required TResult Function(String message) gameError,
+    required TResult Function(String message) depotError,
+    required TResult Function(String message) secureLinksError,
+    required TResult Function(String message) downloadError,
+    required TResult Function(String message) savesError,
+    required TResult Function(String message) protonError,
+  }) {
+    return savesError(message);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? whenOrNull<TResult extends Object?>({
+    TResult? Function(String message)? authError,
+    TResult? Function(String message)? gameError,
+    TResult? Function(String message)? depotError,
+    TResult? Function(String message)? secureLinksError,
+    TResult? Function(String message)? downloadError,
+    TResult? Function(String message)? savesError,
+    TResult? Function(String message)? protonError,
+  }) {
+    return savesError?.call(message);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object?>({
+    TResult Function(String message)? authError,
+    TResult Function(String message)? gameError,
+    TResult Function(String message)? depotError,
+    TResult Function(String message)? secureLinksError,
+    TResult Function(String message)? downloadError,
+    TResult Function(String message)? savesError,
+    TResult Function(String message)? protonError,
+    required TResult orElse(),
+  }) {
+    if (savesError != null) {
+      return savesError(message);
+    }
+    return orElse();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult map<TResult extends Object?>({
+    required TResult Function(GogError_AuthError value) authError,
+    required TResult Function(GogError_GameError value) gameError,
+    required TResult Function(GogError_DepotError value) depotError,
+    required TResult Function(GogError_SecureLinksError value) secureLinksError,
+    required TResult Function(GogError_DownloadError value) downloadError,
+    required TResult Function(GogError_SavesError value) savesError,
+    required TResult Function(GogError_ProtonError value) protonError,
+  }) {
+    return savesError(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? mapOrNull<TResult extends Object?>({
+    TResult? Function(GogError_AuthError value)? authError,
+    TResult? Function(GogError_GameError value)? gameError,
+    TResult? Function(GogError_DepotError value)? depotError,
+    TResult? Function(GogError_SecureLinksError value)? secureLinksError,
+    TResult? Function(GogError_DownloadError value)? downloadError,
+    TResult? Function(GogError_SavesError value)? savesError,
+    TResult? Function(GogError_ProtonError value)? protonError,
+  }) {
+    return savesError?.call(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeMap<TResult extends Object?>({
+    TResult Function(GogError_AuthError value)? authError,
+    TResult Function(GogError_GameError value)? gameError,
+    TResult Function(GogError_DepotError value)? depotError,
+    TResult Function(GogError_SecureLinksError value)? secureLinksError,
+    TResult Function(GogError_DownloadError value)? downloadError,
+    TResult Function(GogError_SavesError value)? savesError,
+    TResult Function(GogError_ProtonError value)? protonError,
+    required TResult orElse(),
+  }) {
+    if (savesError != null) {
+      return savesError(this);
+    }
+    return orElse();
+  }
+}
+
+abstract class GogError_SavesError extends GogError {
+  const factory GogError_SavesError({required final String message}) =
+      _$GogError_SavesErrorImpl;
+  const GogError_SavesError._() : super._();
+
+  @override
+  String get message;
+
+  /// Create a copy of GogError
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  _$$GogError_SavesErrorImplCopyWith<_$GogError_SavesErrorImpl> get copyWith =>
+      throw _privateConstructorUsedError;
+}
+
+/// @nodoc
+abstract class _$$GogError_ProtonErrorImplCopyWith<$Res>
+    implements $GogErrorCopyWith<$Res> {
+  factory _$$GogError_ProtonErrorImplCopyWith(
+    _$GogError_ProtonErrorImpl value,
+    $Res Function(_$GogError_ProtonErrorImpl) then,
+  ) = __$$GogError_ProtonErrorImplCopyWithImpl<$Res>;
+  @override
+  @useResult
+  $Res call({String message});
+}
+
+/// @nodoc
+class __$$GogError_ProtonErrorImplCopyWithImpl<$Res>
+    extends _$GogErrorCopyWithImpl<$Res, _$GogError_ProtonErrorImpl>
+    implements _$$GogError_ProtonErrorImplCopyWith<$Res> {
+  __$$GogError_ProtonErrorImplCopyWithImpl(
+    _$GogError_ProtonErrorImpl _value,
+    $Res Function(_$GogError_ProtonErrorImpl) _then,
+  ) : super(_value, _then);
+
+  /// Create a copy of GogError
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({Object? message = null}) {
+    return _then(
+      _$GogError_ProtonErrorImpl(
+        message: null == message
+            ? _value.message
+            : message // ignore: cast_nullable_to_non_nullable
+                  as String,
+      ),
+    );
+  }
+}
+
+/// @nodoc
+
+class _$GogError_ProtonErrorImpl extends GogError_ProtonError {
+  const _$GogError_ProtonErrorImpl({required this.message}) : super._();
+
+  @override
+  final String message;
+
+  @override
+  String toString() {
+    return 'GogError.protonError(message: $message)';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$GogError_ProtonErrorImpl &&
+            (identical(other.message, message) || other.message == message));
+  }
+
+  @override
+  int get hashCode => Object.hash(runtimeType, message);
+
+  /// Create a copy of GogError
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  @pragma('vm:prefer-inline')
+  _$$GogError_ProtonErrorImplCopyWith<_$GogError_ProtonErrorImpl>
+  get copyWith =>
+      __$$GogError_ProtonErrorImplCopyWithImpl<_$GogError_ProtonErrorImpl>(
+        this,
+        _$identity,
+      );
+
+  @override
+  @optionalTypeArgs
+  TResult when<TResult extends Object?>({
+    required TResult Function(String message) authError,
+    required TResult Function(String message) gameError,
+    required TResult Function(String message) depotError,
+    required TResult Function(String message) secureLinksError,
+    required TResult Function(String message) downloadError,
+    required TResult Function(String message) savesError,
+    required TResult Function(String message) protonError,
+  }) {
+    return protonError(message);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? whenOrNull<TResult extends Object?>({
+    TResult? Function(String message)? authError,
+    TResult? Function(String message)? gameError,
+    TResult? Function(String message)? depotError,
+    TResult? Function(String message)? secureLinksError,
+    TResult? Function(String message)? downloadError,
+    TResult? Function(String message)? savesError,
+    TResult? Function(String message)? protonError,
+  }) {
+    return protonError?.call(message);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object?>({
+    TResult Function(String message)? authError,
+    TResult Function(String message)? gameError,
+    TResult Function(String message)? depotError,
+    TResult Function(String message)? secureLinksError,
+    TResult Function(String message)? downloadError,
+    TResult Function(String message)? savesError,
+    TResult Function(String message)? protonError,
+    required TResult orElse(),
+  }) {
+    if (protonError != null) {
+      return protonError(message);
+    }
+    return orElse();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult map<TResult extends Object?>({
+    required TResult Function(GogError_AuthError value) authError,
+    required TResult Function(GogError_GameError value) gameError,
+    required TResult Function(GogError_DepotError value) depotError,
+    required TResult Function(GogError_SecureLinksError value) secureLinksError,
+    required TResult Function(GogError_DownloadError value) downloadError,
+    required TResult Function(GogError_SavesError value) savesError,
+    required TResult Function(GogError_ProtonError value) protonError,
+  }) {
+    return protonError(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? mapOrNull<TResult extends Object?>({
+    TResult? Function(GogError_AuthError value)? authError,
+    TResult? Function(GogError_GameError value)? gameError,
+    TResult? Function(GogError_DepotError value)? depotError,
+    TResult? Function(GogError_SecureLinksError value)? secureLinksError,
+    TResult? Function(GogError_DownloadError value)? downloadError,
+    TResult? Function(GogError_SavesError value)? savesError,
+    TResult? Function(GogError_ProtonError value)? protonError,
+  }) {
+    return protonError?.call(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeMap<TResult extends Object?>({
+    TResult Function(GogError_AuthError value)? authError,
+    TResult Function(GogError_GameError value)? gameError,
+    TResult Function(GogError_DepotError value)? depotError,
+    TResult Function(GogError_SecureLinksError value)? secureLinksError,
+    TResult Function(GogError_DownloadError value)? downloadError,
+    TResult Function(GogError_SavesError value)? savesError,
+    TResult Function(GogError_ProtonError value)? protonError,
+    required TResult orElse(),
+  }) {
+    if (protonError != null) {
+      return protonError(this);
+    }
+    return orElse();
+  }
+}
+
+abstract class GogError_ProtonError extends GogError {
+  const factory GogError_ProtonError({required final String message}) =
+      _$GogError_ProtonErrorImpl;
+  const GogError_ProtonError._() : super._();
+
+  @override
+  String get message;
+
+  /// Create a copy of GogError
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  _$$GogError_ProtonErrorImplCopyWith<_$GogError_ProtonErrorImpl>
+  get copyWith => throw _privateConstructorUsedError;
+}

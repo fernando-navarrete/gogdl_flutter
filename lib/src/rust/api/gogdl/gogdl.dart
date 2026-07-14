@@ -8,8 +8,8 @@ import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 import 'package:freezed_annotation/freezed_annotation.dart' hide protected;
 part 'gogdl.freezed.dart';
 
-// These functions are ignored because they are not marked as `pub`: `get_downloadable_files`, `unresolved_files`
-// These function are ignored because they are on traits that is not defined in current crate (put an empty `#[frb]` on it to unignore): `clone`, `clone`, `clone`, `clone`, `clone`, `clone`, `clone`, `clone`, `clone`, `clone`, `clone`, `clone`, `clone`, `clone`, `clone`, `clone`, `clone`, `eq`, `eq`, `eq`, `eq`, `eq`, `fmt`, `fmt`, `from`
+// These functions are ignored because they are not marked as `pub`: `get_downloadable_files`, `map_job_status`, `unresolved_files`
+// These function are ignored because they are on traits that is not defined in current crate (put an empty `#[frb]` on it to unignore): `clone`, `clone`, `clone`, `clone`, `clone`, `clone`, `clone`, `clone`, `clone`, `clone`, `clone`, `clone`, `clone`, `clone`, `clone`, `clone`, `clone`, `clone`, `clone`, `eq`, `eq`, `eq`, `eq`, `eq`, `eq`, `fmt`, `fmt`, `from`
 
 // Rust type: RustOpaqueMoi<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<CloudSaveConfig>>
 abstract class CloudSaveConfig implements RustOpaqueInterface {
@@ -21,6 +21,24 @@ abstract class CloudSaveConfig implements RustOpaqueInterface {
 // Rust type: RustOpaqueMoi<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<CloudSaveFile>>
 abstract class CloudSaveFile implements RustOpaqueInterface {
   String path();
+}
+
+// Rust type: RustOpaqueMoi<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<DownloadControl>>
+abstract class DownloadControl implements RustOpaqueInterface {
+  void cancel();
+
+  bool isCancelled();
+
+  bool isPaused();
+
+  factory DownloadControl() =>
+      RustLib.instance.api.crateApiGogdlGogdlDownloadControlNew();
+
+  void pause();
+
+  void resume();
+
+  JobStatus status();
 }
 
 // Rust type: RustOpaqueMoi<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<DownloadStatus>>
@@ -38,6 +56,8 @@ abstract class DownloadStream implements RustOpaqueInterface {
 
   List<String> get errorFiles;
 
+  JobStatus get jobStatus;
+
   DownloadStatus get status;
 
   BigInt get totalBytes;
@@ -53,6 +73,8 @@ abstract class DownloadStream implements RustOpaqueInterface {
   set downloadedChunks(BigInt downloadedChunks);
 
   set errorFiles(List<String> errorFiles);
+
+  set jobStatus(JobStatus jobStatus);
 
   set status(DownloadStatus status);
 
@@ -110,6 +132,7 @@ abstract class Gog implements RustOpaqueInterface {
     required String buildName,
     required List<String> selectedProducts,
     required int gameId,
+    required DownloadControl control,
   });
 
   Stream<ProtonDownloadStream> downloadProtonRelease({
@@ -169,6 +192,7 @@ abstract class Gog implements RustOpaqueInterface {
     required String buildName,
     required List<String> selectedProducts,
     required int gameId,
+    required DownloadControl control,
   });
 
   Future<void> restoreAuthFromString({required String token});
@@ -192,6 +216,11 @@ abstract class Gog implements RustOpaqueInterface {
     required List<String> selectedProducts,
     required int gameId,
   });
+}
+
+// Rust type: RustOpaqueMoi<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<JobStatus>>
+abstract class JobStatus implements RustOpaqueInterface {
+  String name();
 }
 
 // Rust type: RustOpaqueMoi<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<ProtonDownloadStatus>>
@@ -234,6 +263,8 @@ abstract class RepairStream implements RustOpaqueInterface {
 
   List<String> get errorFiles;
 
+  JobStatus get jobStatus;
+
   BigInt get processedFiles;
 
   RepairStatus get status;
@@ -249,6 +280,8 @@ abstract class RepairStream implements RustOpaqueInterface {
   set downloadedChunks(BigInt downloadedChunks);
 
   set errorFiles(List<String> errorFiles);
+
+  set jobStatus(JobStatus jobStatus);
 
   set processedFiles(BigInt processedFiles);
 
