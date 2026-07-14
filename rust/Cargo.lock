@@ -638,7 +638,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "4271d37baee1b8c7e4b708028c57d816cf9d2434acb33a549475f78c181f6253"
 
 [[package]]
-name = "gogdl-lib2"
+name = "gogdl-lib"
 version = "0.1.0"
 dependencies = [
  "chrono",
@@ -660,12 +660,12 @@ dependencies = [
 ]
 
 [[package]]
-name = "gogdl2_flutter_bridge"
+name = "gogdl_flutter"
 version = "0.1.0"
 dependencies = [
  "flutter_rust_bridge",
  "futures",
- "gogdl-lib2",
+ "gogdl-lib",
  "thiserror",
  "tokio",
 ]

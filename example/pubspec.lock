@@ -125,7 +125,7 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
-  gogdl2_flutter_bridge:
+  gogdl_flutter:
     dependency: "direct main"
     description:
       path: ".."

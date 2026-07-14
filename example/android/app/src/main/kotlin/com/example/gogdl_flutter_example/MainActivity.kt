@@ -1,4 +1,4 @@
-package com.example.gogdl2_flutter_bridge_example
+package com.example.gogdl_flutter_example
 
 import io.flutter.embedding.android.FlutterActivity
 

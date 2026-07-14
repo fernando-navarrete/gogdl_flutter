@@ -1,5 +1,5 @@
 [package]
-name = "gogdl2_flutter_bridge"
+name = "gogdl_flutter"
 version = "0.1.0"
 edition = "2021"
 
@@ -9,7 +9,7 @@ crate-type = ["cdylib", "staticlib"]
 [dependencies]
 flutter_rust_bridge = "=2.12.0"
 futures = "0.3.32"
-gogdl-lib2 = { version = "0.1.0", path = "../../gogdl-lib2" }
+gogdl-lib2 = { version = "0.1.0", path = "../../gogdl-lib2", package = "gogdl-lib" }
 thiserror = "2.0.18"
 tokio = "1.52.3"
 

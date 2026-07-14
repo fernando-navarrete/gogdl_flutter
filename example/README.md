@@ -1,6 +1,6 @@
-# gogdl2_flutter_bridge_example
+# gogdl_flutter_example
 
-Demonstrates how to use the gogdl2_flutter_bridge plugin.
+Demonstrates how to use the gogdl_flutter plugin.
 
 ## Getting Started
 

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:gogdl2_flutter_bridge/gogdl2_flutter_bridge.dart';
+import 'package:gogdl_flutter/gogdl_flutter.dart';
 
 Future<void> main() async {
   await RustLib.init();

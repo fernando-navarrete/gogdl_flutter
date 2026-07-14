@@ -1,6 +1,6 @@
 import 'package:integration_test/integration_test.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:gogdl2_flutter_bridge/gogdl2_flutter_bridge.dart';
+import 'package:gogdl_flutter/gogdl_flutter.dart';
 
 void main() {
   IntegrationTestWidgetsFlutterBinding.ensureInitialized();

@@ -1,6 +1,6 @@
-# gogdl2_flutter_bridge API Reference
+# gogdl_flutter API Reference
 
-`gogdl2_flutter_bridge` is a Flutter plugin that exposes [`gogdl-lib2`](../gogdl-lib2)
+`gogdl_flutter` is a Flutter plugin that exposes [`gogdl-lib2`](../gogdl-lib2)
 — a Rust library for GOG's Galaxy backend (auth, catalog, downloads, repairs,
 verification, cloud saves, Proton-GE releases) — to Dart via
 [`flutter_rust_bridge`](https://pub.dev/packages/flutter_rust_bridge) 2.12.0.
@@ -96,12 +96,12 @@ for a coarse per-product listing, or extend the bridge.
 
 ```yaml
 dependencies:
-  gogdl2_flutter_bridge:
-    path: ../gogdl2_flutter_bridge  # or a git/pub dependency, per your setup
+  gogdl_flutter:
+    path: ../gogdl_flutter  # or a git/pub dependency, per your setup
 ```
 
 ```dart
-import 'package:gogdl2_flutter_bridge/gogdl2_flutter_bridge.dart';
+import 'package:gogdl_flutter/gogdl_flutter.dart';
 
 Future<void> main() async {
   await RustLib.init(); // loads the native library; call once, before using Gog
@@ -796,7 +796,7 @@ Summarized from the sections above, for quick reference when integrating:
 | `isPaused()` | `bool` (sync) | [§6.3](#63-pause--resume--cancel-downloadcontrol) |
 | `isCancelled()` | `bool` (sync) | [§6.3](#63-pause--resume--cancel-downloadcontrol) |
 
-### Full list of exported types (`package:gogdl2_flutter_bridge/gogdl2_flutter_bridge.dart`)
+### Full list of exported types (`package:gogdl_flutter/gogdl_flutter.dart`)
 
 `RustLib`, `Gog`, `GameBuild`, `DownloadableProduct`, `VerificationStream`,
 `VerificationStatus`, `RepairStream`, `RepairStatus`, `DownloadStream`,
