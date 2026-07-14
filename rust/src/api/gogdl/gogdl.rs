@@ -1,12 +1,12 @@
 use flutter_rust_bridge::{frb, DartFnFuture};
 use futures::stream::{self, StreamExt};
-use gogdl_lib2::{
+use gogdl_lib::{
     Client, DownloadConfig, DownloadDetail, DownloadEvent, DownloadJobEvent, DownloadStage,
     DownloadableFiles, FileAllocationEvent, FileVerifyEvent, GogDl, GogDlError, ProtonProgress,
     Release, RemoteConfig, RepairDetail, RepairEvent, RepairStage, SaveFile, SaveProgress,
     VerifyChunksEvent, VerifyEvent,
 };
-use gogdl_lib2::{DownloadControl as LibDownloadControl, JobStatus as LibJobStatus};
+use gogdl_lib::{DownloadControl as LibDownloadControl, JobStatus as LibJobStatus};
 use std::collections::HashSet;
 use std::path::Path;
 use std::sync::Arc;
