@@ -842,12 +842,26 @@ impl Gog {
             .inner
             .repair_files(files, path, control.inner.clone(), tx);
         let drain_future = async {
+            // The download stage can emit thousands of `DownloadEvent::Progress`
+            // per second (one per decoded network read, across up to
+            // `max_concurrency` chunks). Recomputing `unresolved_files` (an
+            // O(flagged) clone of most of the game's paths during a real
+            // repair) and pushing a `RepairStream` onto the (unbounded)
+            // `StreamSink` on every single one of those events used to flood
+            // the bridge faster than Dart could drain it -- observed as
+            // unbounded RSS growth and a frozen UI during a repair's download
+            // stage. Instead, only update local state per event and coalesce
+            // the actual emit to this interval, so the snapshot rate (and the
+            // cost of computing it) stays bounded regardless of event rate.
+            let mut flush = tokio::time::interval(Duration::from_millis(100));
+            let mut dirty = true;
             loop {
                 tokio::select! {
                     event = rx.recv() => {
                         let Some(RepairEvent { stage, detail }) = event else {
                             break;
                         };
+                        dirty = true;
                         last_status = match stage {
                             RepairStage::VerifyingFiles => RepairStatus::VerifyingFiles,
                             RepairStage::Allocating => RepairStatus::Allocating,
@@ -913,25 +927,30 @@ impl Gog {
                         if changed.is_err() {
                             status_closed = true;
                         }
+                        dirty = true;
                     }
+                    _ = flush.tick() => {}
                 }
-                stream
-                    .add(RepairStream {
-                        status: last_status,
-                        total_files,
-                        processed_files,
-                        total_chunks,
-                        downloaded_chunks,
-                        total_bytes,
-                        downloaded_bytes,
-                        error_files: unresolved_files(
-                            &flagged,
-                            &download_errors,
-                            &download_successes,
-                        ),
-                        job_status: map_job_status(control.inner.status()),
-                    })
-                    .ok();
+                if dirty {
+                    stream
+                        .add(RepairStream {
+                            status: last_status,
+                            total_files,
+                            processed_files,
+                            total_chunks,
+                            downloaded_chunks,
+                            total_bytes,
+                            downloaded_bytes,
+                            error_files: unresolved_files(
+                                &flagged,
+                                &download_errors,
+                                &download_successes,
+                            ),
+                            job_status: map_job_status(control.inner.status()),
+                        })
+                        .ok();
+                    dirty = false;
+                }
             }
         };
 
@@ -1016,12 +1035,20 @@ impl Gog {
             .inner
             .download_files(files, path, control.inner.clone(), tx);
         let drain_future = async {
+            // Same coalescing as `repair_download`'s drain loop -- see its
+            // comment. `error_files` is normally empty here (which is why
+            // this path never OOMed the way repair did), but this keeps the
+            // emit rate bounded regardless, and keeps both drain loops
+            // consistent.
+            let mut flush = tokio::time::interval(Duration::from_millis(100));
+            let mut dirty = true;
             loop {
                 tokio::select! {
                     event = rx.recv() => {
                         let Some(DownloadJobEvent { stage, detail }) = event else {
                             break;
                         };
+                        dirty = true;
                         last_status = match stage {
                             DownloadStage::Allocating => DownloadStatus::Allocating,
                             DownloadStage::Downloading => DownloadStatus::Downloading,
@@ -1067,21 +1094,26 @@ impl Gog {
                         if changed.is_err() {
                             status_closed = true;
                         }
+                        dirty = true;
                     }
+                    _ = flush.tick() => {}
                 }
-                stream
-                    .add(DownloadStream {
-                        status: last_status,
-                        total_files,
-                        allocated_files,
-                        total_chunks,
-                        downloaded_chunks,
-                        total_bytes,
-                        downloaded_bytes,
-                        error_files: error_files.iter().cloned().collect(),
-                        job_status: map_job_status(control.inner.status()),
-                    })
-                    .ok();
+                if dirty {
+                    stream
+                        .add(DownloadStream {
+                            status: last_status,
+                            total_files,
+                            allocated_files,
+                            total_chunks,
+                            downloaded_chunks,
+                            total_bytes,
+                            downloaded_bytes,
+                            error_files: error_files.iter().cloned().collect(),
+                            job_status: map_job_status(control.inner.status()),
+                        })
+                        .ok();
+                    dirty = false;
+                }
             }
         };
 
