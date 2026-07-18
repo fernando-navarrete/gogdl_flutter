@@ -390,7 +390,7 @@ abstract class DownloadControl implements RustOpaqueInterface {
 }
 
 abstract class JobStatus implements RustOpaqueInterface {
-  String name(); // "running" | "pausing" | "paused" | "cancelling" | "cancelled"
+  String name(); // "running" | "pausing" | "paused" | "cancelling" | "cancelled" | "completed"
 }
 ```
 
@@ -443,9 +443,19 @@ when you call either, the settled state appears immediately.
 **`cancel()` still lets the stream close normally** (no thrown `GogError`) —
 cancellation is a successful wind-down, not a failure. The way to tell "the
 user cancelled" apart from "the job actually finished" is the terminal
-snapshot's `jobStatus.name() == "cancelled"` (`status` on that same snapshot
-will still read `"downloaded"`/`"repaired"`, since that field only tracks
-which *stage* the pipeline was in — see the caveat in §6.2/§6.4).
+snapshot's `jobStatus.name()`: it reads `"cancelled"` if `cancel()` was
+called, or `"completed"` if the job ran to completion on its own (`status` on
+that same snapshot will still read `"downloaded"`/`"repaired"` either way,
+since that field only tracks which *stage* the pipeline was in — see the
+caveat in §6.2/§6.4).
+
+> **Behavior change from earlier versions:** a finished (non-cancelled) job's
+> terminal `jobStatus` used to stay `"running"` — the only distinguishable
+> terminal state was `"cancelled"`. As of the underlying crate's
+> `JobStatus::Completed` addition, a job that runs to completion now settles
+> to `"completed"` instead. If your app's `jobStatus.name()` switch only
+> handled `"running"`/`"pausing"`/`"paused"`/`"cancelling"`/`"cancelled"`, add
+> a `"completed"` case.
 
 **`verifyDownload` has no `DownloadControl` parameter** — it's a read-only
 checksum pass and is not pausable/cancellable (§6.5).

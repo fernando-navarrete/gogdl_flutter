@@ -646,8 +646,8 @@ checksum = "4271d37baee1b8c7e4b708028c57d816cf9d2434acb33a549475f78c181f6253"
 
 [[package]]
 name = "gogdl-lib"
-version = "0.1.1"
-source = "git+ssh://git@thinkcentre.home:2200/gogdl/gogdl-lib.git?tag=v0.1.1#fbb36e08b8edbe7fb7f3059474b938bd0d3d85dc"
+version = "0.1.2"
+source = "git+ssh://git@thinkcentre.home:2200/gogdl/gogdl-lib.git?tag=v0.1.2#711a32465a2489d40ce029be9817ae9285107c6e"
 dependencies = [
  "chrono",
  "dashmap 6.2.1",

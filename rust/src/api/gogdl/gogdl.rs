@@ -152,6 +152,7 @@ pub enum JobStatus {
     Paused,
     Cancelling,
     Cancelled,
+    Completed,
 }
 
 impl JobStatus {
@@ -166,6 +167,7 @@ impl JobStatus {
             JobStatus::Paused => "paused",
             JobStatus::Cancelling => "cancelling",
             JobStatus::Cancelled => "cancelled",
+            JobStatus::Completed => "completed",
         }
         .to_string()
     }
@@ -178,6 +180,7 @@ fn map_job_status(status: LibJobStatus) -> JobStatus {
         LibJobStatus::Paused => JobStatus::Paused,
         LibJobStatus::Cancelling => JobStatus::Cancelling,
         LibJobStatus::Cancelled => JobStatus::Cancelled,
+        LibJobStatus::Completed => JobStatus::Completed,
     }
 }
 
