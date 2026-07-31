@@ -7,7 +7,6 @@ export 'src/rust/api/gogdl/gogdl.dart' show DownloadableProduct;
 export 'src/rust/api/gogdl/gogdl.dart' show VerificationStream, VerificationStatus;
 export 'src/rust/api/gogdl/gogdl.dart' show RepairStream, RepairStatus;
 export 'src/rust/api/gogdl/gogdl.dart' show DownloadStream, DownloadStatus;
-export 'src/rust/api/gogdl/gogdl.dart' show DownloadControl, JobStatus;
 export 'src/rust/api/gogdl/gogdl.dart' show CloudSaveFile;
 export 'src/rust/api/gogdl/gogdl.dart' show CloudSaveConfig;
 export 'src/rust/api/gogdl/gogdl.dart' show SaveAuthIds;

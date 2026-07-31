@@ -12,7 +12,7 @@ class, method, field, and flow a consuming Flutter app needs.
   `Future` + separate progress channel — see [§1](#1-core-concepts) for how
   that mapping works and what it means for error handling.
 - The only entry point is the `Gog` class. You never touch the underlying
-  Rust `GogDl`/`DownloadControl` types directly; this package wraps them in
+  Rust `GogDl` types directly; this package wraps them in
   Dart-visible, `RustOpaqueInterface`-backed classes.
 - Fields on the plugin's data classes are `BigInt` for anything that maps to
   a Rust `u64`/`usize` (byte counts, chunk counts, file counts) and `int` for
@@ -28,10 +28,9 @@ class, method, field, and flow a consuming Flutter app needs.
 6. [Download flow](#6-download-flow)
    - [6.1 Discovering what to download](#61-discovering-what-to-download)
    - [6.2 Downloading (`downloadGame`)](#62-downloading-downloadgame)
-   - [6.3 Pause / resume / cancel (`DownloadControl`)](#63-pause--resume--cancel-downloadcontrol)
-   - [6.4 Repairing an install (`repairDownload`)](#64-repairing-an-install-repairdownload)
-   - [6.5 Verifying an install (`verifyDownload`)](#65-verifying-an-install-verifydownload)
-   - [6.6 Tuning network behavior (`setDownloadConfig`)](#66-tuning-network-behavior-setdownloadconfig)
+   - [6.3 Repairing an install (`repairDownload`)](#63-repairing-an-install-repairdownload)
+   - [6.4 Verifying an install (`verifyDownload`)](#64-verifying-an-install-verifydownload)
+   - [6.5 Tuning network behavior (`setDownloadConfig`)](#65-tuning-network-behavior-setdownloadconfig)
 7. [Cloud saves](#7-cloud-saves)
 8. [Proton-GE releases](#8-proton-ge-releases)
 9. [Known gaps & caveats](#9-known-gaps--caveats)
@@ -322,7 +321,6 @@ Stream<DownloadStream> downloadGame({
   required String buildName,
   required List<String> selectedProducts, // product ids from §6.1
   required int gameId,
-  required DownloadControl control,   // see §6.3 — pass DownloadControl()
 });
 ```
 
@@ -340,7 +338,6 @@ abstract class DownloadStream {
   BigInt get totalBytes;
   BigInt get downloadedBytes;
   List<String> get errorFiles;  // paths that hit an allocation or download error
-  JobStatus get jobStatus;      // pause/resume/cancel state — see §6.3
 }
 
 abstract class DownloadStatus {
@@ -372,95 +369,9 @@ next point).
 > Rust future only returns `Err` for setup-level failures (e.g. can't create
 > the install directory); a chunk that exhausts retries does not fail the
 > whole job. Check `errorFiles.isEmpty` on the final snapshot to know whether
-> everything actually downloaded, and check `jobStatus` (§6.3) to know
-> whether the job finished because it completed or because it was cancelled.
+> everything actually downloaded.
 
-### 6.3 Pause / resume / cancel (`DownloadControl`)
-
-```dart
-abstract class DownloadControl implements RustOpaqueInterface {
-  factory DownloadControl();  // fresh handle in the Running state
-
-  void pause();
-  void resume();
-  void cancel();
-  JobStatus status();
-  bool isPaused();
-  bool isCancelled();
-}
-
-abstract class JobStatus implements RustOpaqueInterface {
-  String name(); // "running" | "pausing" | "paused" | "cancelling" | "cancelled" | "completed"
-}
-```
-
-`DownloadControl` drives and observes one `downloadGame`/`repairDownload`
-job's lifecycle from outside the code awaiting/listening to its stream.
-Construct one **per job** (don't reuse a handle across two calls) and pass it
-to `control:`; keep a reference (e.g. in your download-manager state) to call
-`pause()`/`resume()`/`cancel()` from a UI button handler.
-
-```dart
-final control = DownloadControl();
-final stream = gog.downloadGame(
-  path: installDir,
-  buildName: build.versionName,
-  selectedProducts: selectedIds,
-  gameId: gameId,
-  control: control,
-);
-
-stream.listen((snapshot) {
-  updateUi(bytes: snapshot.downloadedBytes, total: snapshot.totalBytes,
-           jobStatus: snapshot.jobStatus.name());
-});
-
-// pause button:
-control.pause();
-// resume button:
-control.resume();
-// cancel button:
-control.cancel();
-```
-
-**How pause/resume/cancel surface to Dart:** unlike the raw crate (where
-`DownloadControl` state is entirely separate from the progress `mpsc`
-channel — pausing emits nothing on it), **this bridge folds `jobStatus` into
-every `DownloadStream`/`RepairStream` snapshot** so you only need to listen
-to one stream. The Rust side keeps this fresh in near-real time even while no
-chunk events are arriving (i.e. while parked) by racing the progress channel
-against `DownloadControl::subscribe()` internally — you don't need to poll
-`control.status()` yourself, though it's available (`status()`/`isPaused()`/
-`isCancelled()`) for synchronous checks (e.g. to set initial button state).
-
-**Two-phase transitions**, same as the underlying crate: `pause()` while
-chunks are mid-transfer publishes `jobStatus: pausing` immediately; once the
-last already-in-flight chunk finishes writing (chunks are never discarded
-mid-transfer — they always finish and flush), it settles to `paused`. Same
-shape for `cancel()` → `cancelling` → `cancelled`. If nothing is in flight
-when you call either, the settled state appears immediately.
-
-**`cancel()` still lets the stream close normally** (no thrown `GogError`) —
-cancellation is a successful wind-down, not a failure. The way to tell "the
-user cancelled" apart from "the job actually finished" is the terminal
-snapshot's `jobStatus.name()`: it reads `"cancelled"` if `cancel()` was
-called, or `"completed"` if the job ran to completion on its own (`status` on
-that same snapshot will still read `"downloaded"`/`"repaired"` either way,
-since that field only tracks which *stage* the pipeline was in — see the
-caveat in §6.2/§6.4).
-
-> **Behavior change from earlier versions:** a finished (non-cancelled) job's
-> terminal `jobStatus` used to stay `"running"` — the only distinguishable
-> terminal state was `"cancelled"`. As of the underlying crate's
-> `JobStatus::Completed` addition, a job that runs to completion now settles
-> to `"completed"` instead. If your app's `jobStatus.name()` switch only
-> handled `"running"`/`"pausing"`/`"paused"`/`"cancelling"`/`"cancelled"`, add
-> a `"completed"` case.
-
-**`verifyDownload` has no `DownloadControl` parameter** — it's a read-only
-checksum pass and is not pausable/cancellable (§6.5).
-
-### 6.4 Repairing an install (`repairDownload`)
+### 6.3 Repairing an install (`repairDownload`)
 
 ```dart
 Stream<RepairStream> repairDownload({
@@ -468,7 +379,6 @@ Stream<RepairStream> repairDownload({
   required String buildName,
   required List<String> selectedProducts,
   required int gameId,
-  required DownloadControl control,  // same handle semantics as §6.3
 });
 ```
 
@@ -488,7 +398,6 @@ abstract class RepairStream {
   BigInt get totalBytes;
   BigInt get downloadedBytes;
   List<String> get errorFiles;  // paths still broken as of this snapshot
-  JobStatus get jobStatus;      // pause/resume/cancel state — see §6.3
 }
 
 abstract class RepairStatus {
@@ -517,9 +426,9 @@ genuinely-unresolved paths by the time you reach the `repaired` snapshot.
 
 Same terminal-snapshot caveat as `downloadGame` applies: `status: repaired`
 means the pipeline reached the end, not that it succeeded — check
-`errorFiles.isEmpty` and `jobStatus`.
+`errorFiles.isEmpty`.
 
-### 6.5 Verifying an install (`verifyDownload`)
+### 6.4 Verifying an install (`verifyDownload`)
 
 ```dart
 Stream<VerificationStream> verifyDownload({
@@ -531,8 +440,7 @@ Stream<VerificationStream> verifyDownload({
 ```
 
 Read-only integrity check: verifies every chunk's MD5 against an existing
-install. Does not modify anything on disk. **No `DownloadControl` parameter**
-— not pausable/cancellable, matching the underlying crate (it's a fast,
+install. Does not modify anything on disk — it's a fast,
 bounded checksum pass, not a network-bound download).
 
 ```dart
@@ -553,7 +461,7 @@ snapshot onward) → `status: verified` (final).
 
 > **Caveat — `VerificationStatus` cannot be inspected from Dart.** Every
 > other status enum in this package (`DownloadStatus`, `RepairStatus`,
-> `JobStatus`, `SaveDownloadStatus`, `SaveUploadStatus`,
+> `SaveDownloadStatus`, `SaveUploadStatus`,
 > `ProtonDownloadStatus`) has a `name()` accessor and `==` support so Dart
 > code can branch on which stage a snapshot is in. `VerificationStatus` was
 > not given either (it's an empty `RustOpaqueInterface` with no exposed
@@ -565,7 +473,7 @@ snapshot onward) → `status: verified` (final).
 > the current implementation, not intentional API design — treat it as
 > something to fix if you need stage-level UI for verification specifically.
 
-### 6.6 Tuning network behavior (`setDownloadConfig`)
+### 6.5 Tuning network behavior (`setDownloadConfig`)
 
 ```dart
 Future<void> setDownloadConfig({
@@ -755,10 +663,10 @@ Summarized from the sections above, for quick reference when integrating:
 
 | Gap | Where | Impact |
 |---|---|---|
-| `VerificationStatus` has no `name()`/`==` | §6.5 | Can't distinguish verify stages from Dart; infer from chunk counts instead |
+| `VerificationStatus` has no `name()`/`==` | §6.4 | Can't distinguish verify stages from Dart; infer from chunk counts instead |
 | `getOwnedGames`/`getDownloadableProducts` silently drop entries whose detail lookup fails | §5, §6.1 | A partial-failure batch looks identical to "fewer items exist"; use the raw per-id calls if you need to detect this |
-| `setDownloadConfig` only exposes 3/8 tuning knobs | §6.6 | `sampleInterval`/`step`/`responseTimeout`/`maxRetries`/`baseBackoff` aren't reachable from Dart |
-| Terminal `status` (`downloaded`/`repaired`) doesn't imply success | §6.2, §6.4 | Always check `errorFiles`/`jobStatus` on the last snapshot, not just that the stream closed without throwing |
+| `setDownloadConfig` only exposes 3/8 tuning knobs | §6.5 | `sampleInterval`/`step`/`responseTimeout`/`maxRetries`/`baseBackoff` aren't reachable from Dart |
+| Terminal `status` (`downloaded`/`repaired`) doesn't imply success | §6.2, §6.3 | Always check `errorFiles` on the last snapshot, not just that the stream closed without throwing |
 | No depot/size/language preview before download | §1, §6.1 | This bridge collapses the raw crate's `get_downloadable_files` step; extend it if you need pre-download size estimates |
 | `deleteSave` unverified against production | §7 | Inherited caveat from `gogdl-lib2`; re-verify with `getSaveFileList` after calling it |
 
@@ -781,10 +689,10 @@ Summarized from the sections above, for quick reference when integrating:
 | `getGameSummary(gameId)` | `Future<String>` | [§5](#5-game-catalog) |
 | `getGameScreenshots(gameId)` | `Future<List<String>>` | [§5](#5-game-catalog) |
 | `getDownloadableProducts(gameId, buildName)` | `Future<List<DownloadableProduct>>` | [§6.1](#61-discovering-what-to-download) |
-| `downloadGame(path, buildName, selectedProducts, gameId, control)` | `Stream<DownloadStream>` | [§6.2](#62-downloading-downloadgame) |
-| `repairDownload(path, buildName, selectedProducts, gameId, control)` | `Stream<RepairStream>` | [§6.4](#64-repairing-an-install-repairdownload) |
-| `verifyDownload(path, buildName, selectedProducts, gameId)` | `Stream<VerificationStream>` | [§6.5](#65-verifying-an-install-verifydownload) |
-| `setDownloadConfig(minConcurrency, maxConcurrency, idleTimeout)` | `Future<void>` | [§6.6](#66-tuning-network-behavior-setdownloadconfig) |
+| `downloadGame(path, buildName, selectedProducts, gameId)` | `Stream<DownloadStream>` | [§6.2](#62-downloading-downloadgame) |
+| `repairDownload(path, buildName, selectedProducts, gameId)` | `Stream<RepairStream>` | [§6.3](#63-repairing-an-install-repairdownload) |
+| `verifyDownload(path, buildName, selectedProducts, gameId)` | `Stream<VerificationStream>` | [§6.4](#64-verifying-an-install-verifydownload) |
+| `setDownloadConfig(minConcurrency, maxConcurrency, idleTimeout)` | `Future<void>` | [§6.5](#65-tuning-network-behavior-setdownloadconfig) |
 | `getSaveAuthIds(gameId)` | `Future<SaveAuthIds>` | [§7](#7-cloud-saves) |
 | `getSaveRemoteConfig(clientId)` | `Future<CloudSaveConfig>` | [§7](#7-cloud-saves) |
 | `getSaveFileList(clientId, clientSecret)` | `Future<List<CloudSaveFile>>` | [§7](#7-cloud-saves) |
@@ -794,23 +702,11 @@ Summarized from the sections above, for quick reference when integrating:
 | `getProtonReleases(page)` | `Future<List<ProtonRelease>>` | [§8](#8-proton-ge-releases) |
 | `downloadProtonRelease(release, path)` | `Stream<ProtonDownloadStream>` | [§8](#8-proton-ge-releases) |
 
-### `DownloadControl` method index
-
-| Method | Returns | Section |
-|---|---|---|
-| `DownloadControl()` | `DownloadControl` (factory, sync) | [§6.3](#63-pause--resume--cancel-downloadcontrol) |
-| `pause()` | `void` (sync) | [§6.3](#63-pause--resume--cancel-downloadcontrol) |
-| `resume()` | `void` (sync) | [§6.3](#63-pause--resume--cancel-downloadcontrol) |
-| `cancel()` | `void` (sync) | [§6.3](#63-pause--resume--cancel-downloadcontrol) |
-| `status()` | `JobStatus` (sync) | [§6.3](#63-pause--resume--cancel-downloadcontrol) |
-| `isPaused()` | `bool` (sync) | [§6.3](#63-pause--resume--cancel-downloadcontrol) |
-| `isCancelled()` | `bool` (sync) | [§6.3](#63-pause--resume--cancel-downloadcontrol) |
-
 ### Full list of exported types (`package:gogdl_flutter/gogdl_flutter.dart`)
 
 `RustLib`, `Gog`, `GameBuild`, `DownloadableProduct`, `VerificationStream`,
 `VerificationStatus`, `RepairStream`, `RepairStatus`, `DownloadStream`,
-`DownloadStatus`, `DownloadControl`, `JobStatus`, `CloudSaveFile`,
+`DownloadStatus`, `CloudSaveFile`,
 `CloudSaveConfig`, `SaveAuthIds`, `SaveDownloadStream`, `SaveDownloadStatus`,
 `SaveUploadStream`, `SaveUploadStatus`, `ProtonRelease`,
 `ProtonDownloadStream`, `ProtonDownloadStatus`, `GogError`.

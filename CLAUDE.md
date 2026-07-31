@@ -30,7 +30,7 @@ gogdl-lib (Rust crate, external git dep)
 - `rust/src/api/gogdl/gogdl.rs` is the only Rust file meant to be hand-edited. It defines
   `#[frb(opaque)]` wrapper structs/enums around `gogdl-lib` types (e.g. `Gog`, `GameBuild`,
   `DownloadableProduct`, `DownloadStream`/`RepairStream`/`VerificationStream`,
-  `DownloadControl`, `GogError`) because flutter_rust_bridge needs its own visible types at
+  `GogError`) because flutter_rust_bridge needs its own visible types at
   the FFI boundary rather than exposing `gogdl-lib`'s types directly.
 - **Long-running operations are `Stream<T>`, not `Future`.** Each `#[frb]` method that
   downloads/repairs/verifies/transfers takes a `StreamSink<T>` parameter on the Rust side

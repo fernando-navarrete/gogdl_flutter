@@ -6,7 +6,6 @@ use gogdl_lib::{
     Release, RemoteConfig, RepairDetail, RepairEvent, RepairStage, SaveFile, SaveProgress,
     VerifyChunksEvent, VerifyEvent,
 };
-use gogdl_lib::{DownloadControl as LibDownloadControl, JobStatus as LibJobStatus};
 use std::collections::HashSet;
 use std::path::Path;
 use std::sync::Arc;
@@ -97,8 +96,6 @@ pub struct RepairStream {
     pub downloaded_bytes: u64,
     // paths still broken as of this snapshot -- see `unresolved_files`
     pub error_files: Vec<String>,
-    // pause/resume/cancel state as of this snapshot -- see `DownloadControl`
-    pub job_status: JobStatus,
 }
 
 #[frb(opaque)]
@@ -140,99 +137,6 @@ pub struct DownloadStream {
     pub downloaded_bytes: u64,
     // files that hit an allocation or download error
     pub error_files: Vec<String>,
-    // pause/resume/cancel state as of this snapshot -- see `DownloadControl`
-    pub job_status: JobStatus,
-}
-
-#[frb(opaque)]
-#[derive(Clone, Copy, PartialEq)]
-pub enum JobStatus {
-    Running,
-    Pausing,
-    Paused,
-    Cancelling,
-    Cancelled,
-    Completed,
-}
-
-impl JobStatus {
-    // Opaque enums expose no variant info to Dart, so this accessor is what
-    // lets a client tell which state a `jobStatus` snapshot is in, e.g.
-    // `switch (stream.jobStatus.name()) { case "paused": ... }`.
-    #[frb(sync)]
-    pub fn name(&self) -> String {
-        match self {
-            JobStatus::Running => "running",
-            JobStatus::Pausing => "pausing",
-            JobStatus::Paused => "paused",
-            JobStatus::Cancelling => "cancelling",
-            JobStatus::Cancelled => "cancelled",
-            JobStatus::Completed => "completed",
-        }
-        .to_string()
-    }
-}
-
-fn map_job_status(status: LibJobStatus) -> JobStatus {
-    match status {
-        LibJobStatus::Running => JobStatus::Running,
-        LibJobStatus::Pausing => JobStatus::Pausing,
-        LibJobStatus::Paused => JobStatus::Paused,
-        LibJobStatus::Cancelling => JobStatus::Cancelling,
-        LibJobStatus::Cancelled => JobStatus::Cancelled,
-        LibJobStatus::Completed => JobStatus::Completed,
-    }
-}
-
-// Cheap-to-clone handle for pausing/resuming/cancelling a `download_game` or
-// `repair_download` job from outside the task awaiting it. Entirely separate
-// from the job's progress `StreamSink` -- pausing/cancelling emits nothing on
-// the progress stream by itself; `job_status` on each snapshot is kept fresh
-// by racing the progress channel against `subscribe()` in the drain loop (see
-// `download_game`/`repair_download`).
-#[frb(opaque)]
-#[derive(Clone)]
-pub struct DownloadControl {
-    inner: LibDownloadControl,
-}
-
-impl DownloadControl {
-    #[frb(sync)]
-    pub fn new() -> Self {
-        DownloadControl {
-            inner: LibDownloadControl::new(),
-        }
-    }
-
-    #[frb(sync)]
-    pub fn pause(&self) {
-        self.inner.pause();
-    }
-
-    #[frb(sync)]
-    pub fn resume(&self) {
-        self.inner.resume();
-    }
-
-    #[frb(sync)]
-    pub fn cancel(&self) {
-        self.inner.cancel();
-    }
-
-    #[frb(sync)]
-    pub fn status(&self) -> JobStatus {
-        map_job_status(self.inner.status())
-    }
-
-    #[frb(sync)]
-    pub fn is_paused(&self) -> bool {
-        self.inner.is_paused()
-    }
-
-    #[frb(sync)]
-    pub fn is_cancelled(&self) -> bool {
-        self.inner.is_cancelled()
-    }
 }
 
 #[frb(opaque)]
@@ -776,7 +680,6 @@ impl Gog {
         build_name: &str,
         selected_products: &[String],
         game_id: i32,
-        control: &DownloadControl,
         stream: StreamSink<RepairStream>,
     ) -> Result<(), GogError> {
         stream
@@ -789,7 +692,6 @@ impl Gog {
                 total_bytes: 0,
                 downloaded_bytes: 0,
                 error_files: Vec::new(),
-                job_status: map_job_status(control.inner.status()),
             })
             .ok();
         let files = self
@@ -811,13 +713,10 @@ impl Gog {
                 total_bytes: 0,
                 downloaded_bytes: 0,
                 error_files: Vec::new(),
-                job_status: map_job_status(control.inner.status()),
             })
             .ok();
 
         let (tx, mut rx) = mpsc::unbounded_channel::<RepairEvent>();
-        let mut status_rx = control.inner.subscribe();
-        let mut status_closed = false;
 
         let mut last_status = RepairStatus::VerifyingFiles;
         let mut processed_files: u64 = 0;
@@ -838,9 +737,7 @@ impl Gog {
         let mut download_errors: HashSet<String> = HashSet::new();
         let mut download_successes: HashSet<String> = HashSet::new();
 
-        let repair_future = self
-            .inner
-            .repair_files(files, path, control.inner.clone(), tx);
+        let repair_future = self.inner.repair_files(files, path, tx);
         let drain_future = async {
             // The download stage can emit thousands of `DownloadEvent::Progress`
             // per second (one per decoded network read, across up to
@@ -919,16 +816,6 @@ impl Gog {
                             },
                         }
                     }
-                    // Pause/resume/cancel never emit on `rx` (see `DownloadControl`),
-                    // so this branch is what keeps `job_status` fresh in near
-                    // real time while a chunk drain is in progress or the job
-                    // is parked, instead of only updating on the next event.
-                    changed = status_rx.changed(), if !status_closed => {
-                        if changed.is_err() {
-                            status_closed = true;
-                        }
-                        dirty = true;
-                    }
                     _ = flush.tick() => {}
                 }
                 if dirty {
@@ -946,7 +833,6 @@ impl Gog {
                                 &download_errors,
                                 &download_successes,
                             ),
-                            job_status: map_job_status(control.inner.status()),
                         })
                         .ok();
                     dirty = false;
@@ -967,7 +853,6 @@ impl Gog {
                 total_bytes,
                 downloaded_bytes,
                 error_files: unresolved_files(&flagged, &download_errors, &download_successes),
-                job_status: map_job_status(control.inner.status()),
             })
             .ok();
 
@@ -980,7 +865,6 @@ impl Gog {
         build_name: &str,
         selected_products: &[String],
         game_id: i32,
-        control: &DownloadControl,
         stream: StreamSink<DownloadStream>,
     ) -> Result<(), GogError> {
         stream
@@ -993,7 +877,6 @@ impl Gog {
                 total_bytes: 0,
                 downloaded_bytes: 0,
                 error_files: Vec::new(),
-                job_status: map_job_status(control.inner.status()),
             })
             .ok();
         let files = self
@@ -1015,13 +898,10 @@ impl Gog {
                 total_bytes: 0,
                 downloaded_bytes: 0,
                 error_files: Vec::new(),
-                job_status: map_job_status(control.inner.status()),
             })
             .ok();
 
         let (tx, mut rx) = mpsc::unbounded_channel::<DownloadJobEvent>();
-        let mut status_rx = control.inner.subscribe();
-        let mut status_closed = false;
 
         let mut last_status = DownloadStatus::Allocating;
         let mut allocated_files: u64 = 0;
@@ -1033,7 +913,7 @@ impl Gog {
 
         let download_future = self
             .inner
-            .download_files(files, path, control.inner.clone(), tx);
+            .download_files(files, path, tx);
         let drain_future = async {
             // Same coalescing as `repair_download`'s drain loop -- see its
             // comment. `error_files` is normally empty here (which is why
@@ -1086,16 +966,6 @@ impl Gog {
                             },
                         }
                     }
-                    // Pause/resume/cancel never emit on `rx` (see `DownloadControl`),
-                    // so this branch is what keeps `job_status` fresh in near
-                    // real time while a chunk drain is in progress or the job
-                    // is parked, instead of only updating on the next event.
-                    changed = status_rx.changed(), if !status_closed => {
-                        if changed.is_err() {
-                            status_closed = true;
-                        }
-                        dirty = true;
-                    }
                     _ = flush.tick() => {}
                 }
                 if dirty {
@@ -1109,7 +979,6 @@ impl Gog {
                             total_bytes,
                             downloaded_bytes,
                             error_files: error_files.iter().cloned().collect(),
-                            job_status: map_job_status(control.inner.status()),
                         })
                         .ok();
                     dirty = false;
@@ -1130,7 +999,6 @@ impl Gog {
                 total_bytes,
                 downloaded_bytes,
                 error_files: error_files.into_iter().collect(),
-                job_status: map_job_status(control.inner.status()),
             })
             .ok();
 
