@@ -377,6 +377,110 @@ mod unresolved_files_tests {
     }
 }
 
+/// Regression test for the shape shared by all three drain loops above
+/// (`repair_download`, `download_game`, `verify_download`): the emit must
+/// live inside the `flush.tick()` arm of the `select!`, coalescing however
+/// many events arrive between ticks into one snapshot. Moving the emit back
+/// outside the `select!` (as `bb76f21` originally did) makes it fire once
+/// per event regardless of the interval, which flooded the bridge's
+/// unbounded `StreamSink` fast enough to OOM the process during a real
+/// repair -- see the "Why the existing fix doesn't fix it" note in the repo
+/// history for the full story.
+#[cfg(test)]
+mod drain_loop_coalescing_tests {
+    use std::sync::atomic::{AtomicU64, Ordering};
+    use std::time::Duration;
+    use tokio::sync::mpsc;
+
+    /// Transcribes the fixed shape: `dirty` is only inspected, and the emit
+    /// only happens, inside the `flush.tick()` arm.
+    async fn drain_fixed_shape(mut rx: mpsc::UnboundedReceiver<()>, emits: &AtomicU64) {
+        let mut flush = tokio::time::interval(Duration::from_millis(100));
+        flush.set_missed_tick_behavior(tokio::time::MissedTickBehavior::Delay);
+        let mut dirty = false;
+        loop {
+            tokio::select! {
+                event = rx.recv() => {
+                    if event.is_none() { break; }
+                    dirty = true;
+                }
+                _ = flush.tick() => {
+                    if dirty {
+                        emits.fetch_add(1, Ordering::Relaxed);
+                        dirty = false;
+                    }
+                }
+            }
+        }
+    }
+
+    /// Transcribes the shape `bb76f21` actually shipped: `dirty` is set in
+    /// the event arm but tested right after the `select!`, so the emit still
+    /// fires per event and the interval only adds no-op wakeups.
+    async fn drain_broken_shape(mut rx: mpsc::UnboundedReceiver<()>, emits: &AtomicU64) {
+        let mut flush = tokio::time::interval(Duration::from_millis(100));
+        let mut dirty = true;
+        loop {
+            tokio::select! {
+                event = rx.recv() => {
+                    if event.is_none() { break; }
+                    dirty = true;
+                }
+                _ = flush.tick() => {}
+            }
+            if dirty {
+                emits.fetch_add(1, Ordering::Relaxed);
+                dirty = false;
+            }
+        }
+    }
+
+    /// Feeds 10_000 events spaced 100us apart under a paused virtual clock,
+    /// then closes the channel so the drain loop returns.
+    async fn trickle(tx: mpsc::UnboundedSender<()>) {
+        for _ in 0..10_000 {
+            tx.send(()).unwrap();
+            tokio::time::sleep(Duration::from_micros(100)).await;
+        }
+    }
+
+    #[tokio::test(start_paused = true)]
+    async fn fixed_shape_coalesces_far_below_event_count() {
+        let (tx, rx) = mpsc::unbounded_channel();
+        let emits = AtomicU64::new(0);
+        tokio::join!(trickle(tx), drain_fixed_shape(rx, &emits));
+
+        let emits = emits.load(Ordering::Relaxed);
+        // Bounded by elapsed virtual time (~10s at a 100ms interval), not by
+        // event count -- tokio's paused-clock timer wheel has ~1ms
+        // granularity, so this is a generous, granularity-independent bound
+        // rather than an exact tick count.
+        assert!(
+            emits * 20 < 10_000,
+            "fixed shape should coalesce far below 1 emit/event, got {emits} emits for 10_000 events"
+        );
+    }
+
+    #[tokio::test(start_paused = true)]
+    async fn broken_shape_emits_once_per_event() {
+        let (tx, rx) = mpsc::unbounded_channel();
+        let emits = AtomicU64::new(0);
+        tokio::join!(trickle(tx), drain_broken_shape(rx, &emits));
+
+        // 10_000 or 10_001: `dirty` starts `true` (as `bb76f21` shipped it),
+        // so whether the very first `select!` iteration races the tick arm
+        // before any event is read (an extra, spurious emit) depends on task
+        // poll order under the paused clock. Either way, the defect this
+        // test guards against is the one-emit-per-event pattern for the
+        // 10_000 real events, not this +-1 startup artifact.
+        let emits = emits.load(Ordering::Relaxed);
+        assert!(
+            emits == 10_000 || emits == 10_001,
+            "broken shape's dirty flag is tested right after select!, so it should emit once per event, got {emits}"
+        );
+    }
+}
+
 #[derive(Error, Debug)]
 pub enum GogError {
     #[error("AuthError: {message}")]
@@ -630,32 +734,52 @@ impl Gog {
 
         let verify_future = self.inner.verify_files(files, path, tx);
         let drain_future = async {
-            while let Some(event) = rx.recv().await {
-                match event {
-                    VerifyEvent::ChunkOk => {
-                        verified_chunks += 1;
+            // Same coalescing as `repair_download`'s drain loop -- see its
+            // comment. This loop used to emit a `VerificationStream` (with an
+            // `error_chunks.clone()` of an ever-growing `Vec`, i.e. quadratic
+            // allocation across an import) on every single chunk event; now
+            // only local state updates per event, and the emit is coalesced
+            // to this interval.
+            let mut flush = tokio::time::interval(Duration::from_millis(100));
+            flush.set_missed_tick_behavior(tokio::time::MissedTickBehavior::Delay);
+            let mut dirty = false;
+            loop {
+                tokio::select! {
+                    event = rx.recv() => {
+                        let Some(event) = event else { break };
+                        dirty = true;
+                        match event {
+                            VerifyEvent::ChunkOk => {
+                                verified_chunks += 1;
+                            }
+                            VerifyEvent::ChunkChecksumMismatch(file) => {
+                                verified_chunks += 1;
+                                error_chunks.push(file);
+                            }
+                            VerifyEvent::FileNotFound(file) => {
+                                verified_chunks += 1;
+                                error_chunks.push(file);
+                            }
+                            VerifyEvent::CouldNotResolvePath(file) => {
+                                verified_chunks += 1;
+                                error_chunks.push(file);
+                            }
+                        }
                     }
-                    VerifyEvent::ChunkChecksumMismatch(file) => {
-                        verified_chunks += 1;
-                        error_chunks.push(file);
-                    }
-                    VerifyEvent::FileNotFound(file) => {
-                        verified_chunks += 1;
-                        error_chunks.push(file);
-                    }
-                    VerifyEvent::CouldNotResolvePath(file) => {
-                        verified_chunks += 1;
-                        error_chunks.push(file);
+                    _ = flush.tick() => {
+                        if dirty {
+                            stream
+                                .add(VerificationStream {
+                                    status: VerificationStatus::Verifying,
+                                    total_chunks,
+                                    verified_chunks,
+                                    error_chunks: error_chunks.clone(),
+                                })
+                                .ok();
+                            dirty = false;
+                        }
                     }
                 }
-                stream
-                    .add(VerificationStream {
-                        status: VerificationStatus::Verifying,
-                        total_chunks,
-                        verified_chunks,
-                        error_chunks: error_chunks.clone(),
-                    })
-                    .ok();
             }
         };
 
@@ -748,10 +872,12 @@ impl Gog {
             // the bridge faster than Dart could drain it -- observed as
             // unbounded RSS growth and a frozen UI during a repair's download
             // stage. Instead, only update local state per event and coalesce
-            // the actual emit to this interval, so the snapshot rate (and the
-            // cost of computing it) stays bounded regardless of event rate.
+            // the actual emit (including recomputing `unresolved_files`) to
+            // this interval's tick arm, so both the snapshot rate and the
+            // cost of computing it stay bounded regardless of event rate.
             let mut flush = tokio::time::interval(Duration::from_millis(100));
-            let mut dirty = true;
+            flush.set_missed_tick_behavior(tokio::time::MissedTickBehavior::Delay);
+            let mut dirty = false;
             loop {
                 tokio::select! {
                     event = rx.recv() => {
@@ -816,26 +942,27 @@ impl Gog {
                             },
                         }
                     }
-                    _ = flush.tick() => {}
-                }
-                if dirty {
-                    stream
-                        .add(RepairStream {
-                            status: last_status,
-                            total_files,
-                            processed_files,
-                            total_chunks,
-                            downloaded_chunks,
-                            total_bytes,
-                            downloaded_bytes,
-                            error_files: unresolved_files(
-                                &flagged,
-                                &download_errors,
-                                &download_successes,
-                            ),
-                        })
-                        .ok();
-                    dirty = false;
+                    _ = flush.tick() => {
+                        if dirty {
+                            stream
+                                .add(RepairStream {
+                                    status: last_status,
+                                    total_files,
+                                    processed_files,
+                                    total_chunks,
+                                    downloaded_chunks,
+                                    total_bytes,
+                                    downloaded_bytes,
+                                    error_files: unresolved_files(
+                                        &flagged,
+                                        &download_errors,
+                                        &download_successes,
+                                    ),
+                                })
+                                .ok();
+                            dirty = false;
+                        }
+                    }
                 }
             }
         };
@@ -921,7 +1048,8 @@ impl Gog {
             // emit rate bounded regardless, and keeps both drain loops
             // consistent.
             let mut flush = tokio::time::interval(Duration::from_millis(100));
-            let mut dirty = true;
+            flush.set_missed_tick_behavior(tokio::time::MissedTickBehavior::Delay);
+            let mut dirty = false;
             loop {
                 tokio::select! {
                     event = rx.recv() => {
@@ -966,22 +1094,23 @@ impl Gog {
                             },
                         }
                     }
-                    _ = flush.tick() => {}
-                }
-                if dirty {
-                    stream
-                        .add(DownloadStream {
-                            status: last_status,
-                            total_files,
-                            allocated_files,
-                            total_chunks,
-                            downloaded_chunks,
-                            total_bytes,
-                            downloaded_bytes,
-                            error_files: error_files.iter().cloned().collect(),
-                        })
-                        .ok();
-                    dirty = false;
+                    _ = flush.tick() => {
+                        if dirty {
+                            stream
+                                .add(DownloadStream {
+                                    status: last_status,
+                                    total_files,
+                                    allocated_files,
+                                    total_chunks,
+                                    downloaded_chunks,
+                                    total_bytes,
+                                    downloaded_bytes,
+                                    error_files: error_files.iter().cloned().collect(),
+                                })
+                                .ok();
+                            dirty = false;
+                        }
+                    }
                 }
             }
         };
