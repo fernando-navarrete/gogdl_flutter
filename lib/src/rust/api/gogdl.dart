@@ -11,6 +11,8 @@ abstract class GogDlError implements RustOpaqueInterface {}
 
 // Rust type: RustOpaqueMoi<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<GogdlApi>>
 abstract class GogdlApi implements RustOpaqueInterface {
+  Future<String> getGameTitle({required int gameId});
+
   String getLoginLink();
 
   Future<Int32List> getOwnedGames();

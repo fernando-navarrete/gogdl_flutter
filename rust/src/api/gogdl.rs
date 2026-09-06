@@ -30,4 +30,9 @@ impl GogdlApi {
     pub async fn restore_auth(&self, json_str: &str) -> Result<(), GogDlError> {
         self.inner.restore_auth(json_str).await
     }
+
+    pub async fn get_game_title(&self, game_id: i32) -> Result<String, GogDlError> {
+        let game_details = self.inner.get_game_details(game_id).await?;
+        Ok(game_details.title)
+    }
 }
