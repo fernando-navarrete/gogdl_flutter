@@ -4,7 +4,7 @@ use flutter_rust_bridge::frb;
 pub use gogdl_lib::GogDlError;
 use gogdl_lib::{Client, GogDl};
 
-use crate::api::models::game_build::GameBuild;
+pub use crate::api::models::game_build::GameBuild;
 
 #[frb(opaque)]
 pub struct GogdlApi {
