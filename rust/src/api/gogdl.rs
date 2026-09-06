@@ -1,8 +1,10 @@
 use std::sync::Arc;
 
 use flutter_rust_bridge::frb;
+pub use gogdl_lib::GogDlError;
 use gogdl_lib::{Client, GogDl};
-pub use gogdl_lib::{GameBuild, GogDlError};
+
+use crate::api::models::game_build::GameBuild;
 
 #[frb(opaque)]
 pub struct GogdlApi {
@@ -57,6 +59,11 @@ impl GogdlApi {
     }
     pub async fn get_game_builds(&self, game_id: i32) -> Result<Vec<GameBuild>, GogDlError> {
         let game_builds = self.inner.get_game_builds(game_id).await?;
-        Ok(game_builds.items)
+        let builds = game_builds
+            .items
+            .iter()
+            .map(|build| GameBuild::from_gogdl(build))
+            .collect::<Vec<GameBuild>>();
+        Ok(builds)
     }
 }
