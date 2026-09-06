@@ -6,9 +6,17 @@
 import '../frb_generated.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 
+// Rust type: RustOpaqueMoi<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<GogDlError>>
+abstract class GogDlError implements RustOpaqueInterface {}
+
 // Rust type: RustOpaqueMoi<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<GogdlApi>>
 abstract class GogdlApi implements RustOpaqueInterface {
   String getLoginLink();
 
+  Future<OwnedGames> getOwnedGames();
+
   factory GogdlApi() => RustLib.instance.api.crateApiGogdlGogdlApiNew();
 }
+
+// Rust type: RustOpaqueMoi<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<OwnedGames>>
+abstract class OwnedGames implements RustOpaqueInterface {}
