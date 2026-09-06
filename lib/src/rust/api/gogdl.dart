@@ -13,6 +13,8 @@ abstract class GogDlError implements RustOpaqueInterface {}
 abstract class GogdlApi implements RustOpaqueInterface {
   Future<String> getBackgroundImageLink({required int gameId});
 
+  Future<String> getGameBoxartLink({required int gameId});
+
   Future<String> getGameTitle({required int gameId});
 
   String getLoginLink();
