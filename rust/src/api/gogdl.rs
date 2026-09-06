@@ -26,4 +26,8 @@ impl GogdlApi {
         let owned_games = self.inner.get_owned_games().await?;
         Ok(owned_games.owned)
     }
+
+    pub async fn restore_auth(&self, json_str: &str) -> Result<(), GogDlError> {
+        self.inner.restore_auth(json_str).await
+    }
 }

@@ -64,7 +64,7 @@ class RustLib extends BaseEntrypoint<RustLibApi, RustLibApiImpl, RustLibWire> {
   String get codegenVersion => '2.13.0';
 
   @override
-  int get rustContentHash => -808634473;
+  int get rustContentHash => -111369381;
 
   static const kDefaultExternalLibraryLoaderConfig =
       ExternalLibraryLoaderConfig(
@@ -83,6 +83,11 @@ abstract class RustLibApi extends BaseApi {
   });
 
   GogdlApi crateApiGogdlGogdlApiNew();
+
+  Future<void> crateApiGogdlGogdlApiRestoreAuth({
+    required GogdlApi that,
+    required String jsonStr,
+  });
 
   RustArcIncrementStrongCountFnType
   get rust_arc_increment_strong_count_GogDlError;
@@ -197,6 +202,45 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
 
   TaskConstMeta get kCrateApiGogdlGogdlApiNewConstMeta =>
       const TaskConstMeta(debugName: "GogdlApi_new", argNames: []);
+
+  @override
+  Future<void> crateApiGogdlGogdlApiRestoreAuth({
+    required GogdlApi that,
+    required String jsonStr,
+  }) {
+    return handler.executeNormal(
+      NormalTask(
+        callFfi: (port_) {
+          final serializer = SseSerializer(generalizedFrbRustBinding);
+          sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerGogdlApi(
+            that,
+            serializer,
+          );
+          sse_encode_String(jsonStr, serializer);
+          pdeCallFfi(
+            generalizedFrbRustBinding,
+            serializer,
+            funcId: 4,
+            port: port_,
+          );
+        },
+        codec: SseCodec(
+          decodeSuccessData: sse_decode_unit,
+          decodeErrorData:
+              sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerGogDlError,
+        ),
+        constMeta: kCrateApiGogdlGogdlApiRestoreAuthConstMeta,
+        argValues: [that, jsonStr],
+        apiImpl: this,
+      ),
+    );
+  }
+
+  TaskConstMeta get kCrateApiGogdlGogdlApiRestoreAuthConstMeta =>
+      const TaskConstMeta(
+        debugName: "GogdlApi_restore_auth",
+        argNames: ["that", "jsonStr"],
+      );
 
   RustArcIncrementStrongCountFnType
   get rust_arc_increment_strong_count_GogDlError => wire
@@ -576,4 +620,7 @@ class GogdlApiImpl extends RustOpaque implements GogdlApi {
 
   Future<Int32List> getOwnedGames() =>
       RustLib.instance.api.crateApiGogdlGogdlApiGetOwnedGames(that: this);
+
+  Future<void> restoreAuth({required String jsonStr}) => RustLib.instance.api
+      .crateApiGogdlGogdlApiRestoreAuth(that: this, jsonStr: jsonStr);
 }

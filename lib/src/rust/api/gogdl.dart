@@ -16,4 +16,6 @@ abstract class GogdlApi implements RustOpaqueInterface {
   Future<Int32List> getOwnedGames();
 
   factory GogdlApi() => RustLib.instance.api.crateApiGogdlGogdlApiNew();
+
+  Future<void> restoreAuth({required String jsonStr});
 }
