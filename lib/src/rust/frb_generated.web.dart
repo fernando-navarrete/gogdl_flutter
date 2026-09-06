@@ -21,12 +21,22 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   });
 
   CrossPlatformFinalizerArg
+  get rust_arc_decrement_strong_count_GameBuildPtr => wire
+      .rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerGameBuild;
+
+  CrossPlatformFinalizerArg
   get rust_arc_decrement_strong_count_GogDlErrorPtr => wire
       .rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerGogDlError;
 
   CrossPlatformFinalizerArg
   get rust_arc_decrement_strong_count_GogdlApiPtr => wire
       .rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerGogdlApi;
+
+  @protected
+  GameBuild
+  dco_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerGameBuild(
+    dynamic raw,
+  );
 
   @protected
   GogDlError
@@ -43,6 +53,12 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   @protected
   GogdlApi
   dco_decode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerGogdlApi(
+    dynamic raw,
+  );
+
+  @protected
+  GameBuild
+  dco_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerGameBuild(
     dynamic raw,
   );
 
@@ -65,6 +81,12 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   int dco_decode_i_32(dynamic raw);
 
   @protected
+  List<GameBuild>
+  dco_decode_list_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerGameBuild(
+    dynamic raw,
+  );
+
+  @protected
   List<String> dco_decode_list_String(dynamic raw);
 
   @protected
@@ -81,6 +103,12 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   BigInt dco_decode_usize(dynamic raw);
+
+  @protected
+  GameBuild
+  sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerGameBuild(
+    SseDeserializer deserializer,
+  );
 
   @protected
   GogDlError
@@ -101,6 +129,12 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   );
 
   @protected
+  GameBuild
+  sse_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerGameBuild(
+    SseDeserializer deserializer,
+  );
+
+  @protected
   GogDlError
   sse_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerGogDlError(
     SseDeserializer deserializer,
@@ -117,6 +151,12 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   int sse_decode_i_32(SseDeserializer deserializer);
+
+  @protected
+  List<GameBuild>
+  sse_decode_list_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerGameBuild(
+    SseDeserializer deserializer,
+  );
 
   @protected
   List<String> sse_decode_list_String(SseDeserializer deserializer);
@@ -141,6 +181,13 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   void
+  sse_encode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerGameBuild(
+    GameBuild self,
+    SseSerializer serializer,
+  );
+
+  @protected
+  void
   sse_encode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerGogDlError(
     GogDlError self,
     SseSerializer serializer,
@@ -157,6 +204,13 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   void
   sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerGogdlApi(
     GogdlApi self,
+    SseSerializer serializer,
+  );
+
+  @protected
+  void
+  sse_encode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerGameBuild(
+    GameBuild self,
     SseSerializer serializer,
   );
 
@@ -179,6 +233,13 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   void sse_encode_i_32(int self, SseSerializer serializer);
+
+  @protected
+  void
+  sse_encode_list_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerGameBuild(
+    List<GameBuild> self,
+    SseSerializer serializer,
+  );
 
   @protected
   void sse_encode_list_String(List<String> self, SseSerializer serializer);
@@ -212,6 +273,22 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
 class RustLibWire implements BaseWire {
   RustLibWire.fromExternalLibrary(ExternalLibrary lib);
+
+  void
+  rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerGameBuild(
+    int ptr,
+  ) => wasmModule
+      .rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerGameBuild(
+        ptr,
+      );
+
+  void
+  rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerGameBuild(
+    int ptr,
+  ) => wasmModule
+      .rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerGameBuild(
+        ptr,
+      );
 
   void
   rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerGogDlError(
@@ -252,6 +329,16 @@ external RustLibWasmModule get wasmModule;
 @JS()
 @anonymous
 extension type RustLibWasmModule._(JSObject _) implements JSObject {
+  external void
+  rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerGameBuild(
+    int ptr,
+  );
+
+  external void
+  rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerGameBuild(
+    int ptr,
+  );
+
   external void
   rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerGogDlError(
     int ptr,

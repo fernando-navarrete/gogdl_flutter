@@ -6,6 +6,9 @@
 import '../frb_generated.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 
+// Rust type: RustOpaqueMoi<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<GameBuild>>
+abstract class GameBuild implements RustOpaqueInterface {}
+
 // Rust type: RustOpaqueMoi<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<GogDlError>>
 abstract class GogDlError implements RustOpaqueInterface {}
 
@@ -14,6 +17,8 @@ abstract class GogdlApi implements RustOpaqueInterface {
   Future<String> getBackgroundImageLink({required int gameId});
 
   Future<String> getGameBoxartLink({required int gameId});
+
+  Future<List<GameBuild>> getGameBuilds({required int gameId});
 
   Future<List<String>> getGameScreenshots({required int gameId});
 
