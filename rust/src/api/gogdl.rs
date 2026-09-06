@@ -35,4 +35,9 @@ impl GogdlApi {
         let game_details = self.inner.get_game_details(game_id).await?;
         Ok(game_details.title)
     }
+
+    pub async fn get_background_image_link(&self, game_id: i32) -> Result<String, GogDlError> {
+        let game_links = self.inner.get_game_links(game_id).await?;
+        Ok(game_links.links.background_image.href)
+    }
 }
