@@ -50,4 +50,9 @@ impl GogdlApi {
         let game_summary = self.inner.get_game_summary(game_id).await?;
         Ok(game_summary.summary.english)
     }
+    pub async fn get_game_screenshots(&self, game_id: i32) -> Result<Vec<String>, GogDlError> {
+        let game_screenshots = self.inner.get_game_screenshots(game_id).await?;
+        let links = game_screenshots.resolve_links()?;
+        Ok(links)
+    }
 }

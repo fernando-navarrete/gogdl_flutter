@@ -15,6 +15,8 @@ abstract class GogdlApi implements RustOpaqueInterface {
 
   Future<String> getGameBoxartLink({required int gameId});
 
+  Future<List<String>> getGameScreenshots({required int gameId});
+
   Future<String> getGameSummary({required int gameId});
 
   Future<String> getGameTitle({required int gameId});
