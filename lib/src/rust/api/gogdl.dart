@@ -8,7 +8,7 @@ import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 
 // Rust type: RustOpaqueMoi<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<GogdlApi>>
 abstract class GogdlApi implements RustOpaqueInterface {
-  // HINT: Make it `#[frb(sync)]` to let it become the default constructor of Dart class.
-  static Future<GogdlApi> newInstance() =>
-      RustLib.instance.api.crateApiGogdlGogdlApiNew();
+  String getLoginLink();
+
+  factory GogdlApi() => RustLib.instance.api.crateApiGogdlGogdlApiNew();
 }
