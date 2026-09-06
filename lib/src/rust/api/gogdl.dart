@@ -13,10 +13,7 @@ abstract class GogDlError implements RustOpaqueInterface {}
 abstract class GogdlApi implements RustOpaqueInterface {
   String getLoginLink();
 
-  Future<OwnedGames> getOwnedGames();
+  Future<Int32List> getOwnedGames();
 
   factory GogdlApi() => RustLib.instance.api.crateApiGogdlGogdlApiNew();
 }
-
-// Rust type: RustOpaqueMoi<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<OwnedGames>>
-abstract class OwnedGames implements RustOpaqueInterface {}

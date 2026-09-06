@@ -1,7 +1,8 @@
 use std::sync::Arc;
 
 use flutter_rust_bridge::frb;
-use gogdl_lib::{Client, GogDl, GogDlError, OwnedGames};
+pub use gogdl_lib::GogDlError;
+use gogdl_lib::{Client, GogDl};
 
 #[frb(opaque)]
 pub struct GogdlApi {
@@ -21,7 +22,8 @@ impl GogdlApi {
         self.inner.get_login_url().to_string()
     }
 
-    pub async fn get_owned_games(&self) -> Result<OwnedGames, GogDlError> {
-        self.inner.get_owned_games().await
+    pub async fn get_owned_games(&self) -> Result<Vec<i32>, GogDlError> {
+        let owned_games = self.inner.get_owned_games().await?;
+        Ok(owned_games.owned)
     }
 }
