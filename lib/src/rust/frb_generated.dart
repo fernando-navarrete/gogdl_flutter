@@ -64,7 +64,7 @@ class RustLib extends BaseEntrypoint<RustLibApi, RustLibApiImpl, RustLibWire> {
   String get codegenVersion => '2.13.0';
 
   @override
-  int get rustContentHash => 219070563;
+  int get rustContentHash => -1724834830;
 
   static const kDefaultExternalLibraryLoaderConfig =
       ExternalLibraryLoaderConfig(
@@ -82,6 +82,11 @@ abstract class RustLibApi extends BaseApi {
   });
 
   Future<String> crateApiGogdlGogdlApiGetGameBoxartLink({
+    required GogdlApi that,
+    required int gameId,
+  });
+
+  Future<String> crateApiGogdlGogdlApiGetGameSummary({
     required GogdlApi that,
     required int gameId,
   });
@@ -208,7 +213,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       );
 
   @override
-  Future<String> crateApiGogdlGogdlApiGetGameTitle({
+  Future<String> crateApiGogdlGogdlApiGetGameSummary({
     required GogdlApi that,
     required int gameId,
   }) {
@@ -225,6 +230,45 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
             generalizedFrbRustBinding,
             serializer,
             funcId: 3,
+            port: port_,
+          );
+        },
+        codec: SseCodec(
+          decodeSuccessData: sse_decode_String,
+          decodeErrorData:
+              sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerGogDlError,
+        ),
+        constMeta: kCrateApiGogdlGogdlApiGetGameSummaryConstMeta,
+        argValues: [that, gameId],
+        apiImpl: this,
+      ),
+    );
+  }
+
+  TaskConstMeta get kCrateApiGogdlGogdlApiGetGameSummaryConstMeta =>
+      const TaskConstMeta(
+        debugName: "GogdlApi_get_game_summary",
+        argNames: ["that", "gameId"],
+      );
+
+  @override
+  Future<String> crateApiGogdlGogdlApiGetGameTitle({
+    required GogdlApi that,
+    required int gameId,
+  }) {
+    return handler.executeNormal(
+      NormalTask(
+        callFfi: (port_) {
+          final serializer = SseSerializer(generalizedFrbRustBinding);
+          sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerGogdlApi(
+            that,
+            serializer,
+          );
+          sse_encode_i_32(gameId, serializer);
+          pdeCallFfi(
+            generalizedFrbRustBinding,
+            serializer,
+            funcId: 4,
             port: port_,
           );
         },
@@ -256,7 +300,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
             that,
             serializer,
           );
-          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 4)!;
+          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 5)!;
         },
         codec: SseCodec(
           decodeSuccessData: sse_decode_String,
@@ -290,7 +334,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 5,
+            funcId: 6,
             port: port_,
           );
         },
@@ -318,7 +362,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       SyncTask(
         callFfi: () {
           final serializer = SseSerializer(generalizedFrbRustBinding);
-          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 6)!;
+          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 7)!;
         },
         codec: SseCodec(
           decodeSuccessData:
@@ -352,7 +396,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 7,
+            funcId: 8,
             port: port_,
           );
         },
@@ -756,6 +800,9 @@ class GogdlApiImpl extends RustOpaque implements GogdlApi {
       .instance
       .api
       .crateApiGogdlGogdlApiGetGameBoxartLink(that: this, gameId: gameId);
+
+  Future<String> getGameSummary({required int gameId}) => RustLib.instance.api
+      .crateApiGogdlGogdlApiGetGameSummary(that: this, gameId: gameId);
 
   Future<String> getGameTitle({required int gameId}) => RustLib.instance.api
       .crateApiGogdlGogdlApiGetGameTitle(that: this, gameId: gameId);

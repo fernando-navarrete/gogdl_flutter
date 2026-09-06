@@ -45,4 +45,9 @@ impl GogdlApi {
         let game_links = self.inner.get_game_links(game_id).await?;
         Ok(game_links.links.box_art_image.href)
     }
+
+    pub async fn get_game_summary(&self, game_id: i32) -> Result<String, GogDlError> {
+        let game_summary = self.inner.get_game_summary(game_id).await?;
+        Ok(game_summary.summary.english)
+    }
 }
