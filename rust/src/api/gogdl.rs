@@ -174,9 +174,9 @@ impl GogdlApi {
         result?;
         Ok(())
     }
-    pub async fn login_with_code(&self, code: &str) -> Result<(), GogError> {
-        self.inner.login_with_code(code).await?;
-        Ok(())
+    pub async fn login_with_code(&self, code: &str) -> Result<String, GogError> {
+        let auth = self.inner.login_with_code(code).await?;
+        Ok(auth)
     }
     pub async fn set_token_refresh_callback(
         &self,

@@ -137,7 +137,7 @@ abstract class RustLibApi extends BaseApi {
     required int page,
   });
 
-  Future<void> crateApiGogdlGogdlApiLoginWithCode({
+  Future<String> crateApiGogdlGogdlApiLoginWithCode({
     required GogdlApi that,
     required String code,
   });
@@ -640,7 +640,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       );
 
   @override
-  Future<void> crateApiGogdlGogdlApiLoginWithCode({
+  Future<String> crateApiGogdlGogdlApiLoginWithCode({
     required GogdlApi that,
     required String code,
   }) {
@@ -661,7 +661,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           );
         },
         codec: SseCodec(
-          decodeSuccessData: sse_decode_unit,
+          decodeSuccessData: sse_decode_String,
           decodeErrorData:
               sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerGogError,
         ),
@@ -1754,7 +1754,7 @@ class GogdlApiImpl extends RustOpaque implements GogdlApi {
       .api
       .crateApiGogdlGogdlApiGetProtonReleases(that: this, page: page);
 
-  Future<void> loginWithCode({required String code}) => RustLib.instance.api
+  Future<String> loginWithCode({required String code}) => RustLib.instance.api
       .crateApiGogdlGogdlApiLoginWithCode(that: this, code: code);
 
   Future<void> removeTokenRefreshCallback() => RustLib.instance.api
