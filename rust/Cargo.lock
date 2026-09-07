@@ -694,8 +694,8 @@ checksum = "4271d37baee1b8c7e4b708028c57d816cf9d2434acb33a549475f78c181f6253"
 
 [[package]]
 name = "gogdl-lib"
-version = "0.1.5"
-source = "git+ssh://git@thinkcentre.home:2200/gogdl/gogdl-lib.git?tag=v0.1.6-restart#0acb2a2e66360916dd38e0df7c879e2658eb1a11"
+version = "0.1.8"
+source = "git+ssh://git@thinkcentre.home:2200/gogdl/gogdl-lib.git?tag=v0.1.8-restart#c8c6388a63fec07678db9c130fd4dfc9543b63fb"
 dependencies = [
  "async-compression",
  "bytes",
@@ -725,6 +725,7 @@ dependencies = [
  "futures-util",
  "gogdl-lib",
  "thiserror",
+ "tokio",
 ]
 
 [[package]]

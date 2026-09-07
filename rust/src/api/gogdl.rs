@@ -1,12 +1,18 @@
+use std::path::Path;
 use std::sync::Arc;
+use std::time::Duration;
 
 use flutter_rust_bridge::frb;
 use gogdl_lib::{Client, GogDl};
+use tokio::sync::mpsc;
+use tokio::time::interval;
 
 pub use crate::api::error::GogError;
 pub use crate::api::models::downloadable_product::DownloadableProduct;
 pub use crate::api::models::game_build::GameBuild;
 pub use crate::api::models::proton_release::ProtonRelease;
+use crate::api::progress_reporting::ProtonDownloadProgress;
+use crate::frb_generated::StreamSink;
 
 #[frb(opaque)]
 pub struct GogdlApi {
@@ -100,5 +106,71 @@ impl GogdlApi {
             .map(|release| ProtonRelease::from_gogdl(release).unwrap())
             .collect::<Vec<ProtonRelease>>();
         Ok(releases)
+    }
+    pub async fn download_proton_release(
+        &self,
+        path: &str,
+        tag_name: &str,
+        sink: StreamSink<ProtonDownloadProgress>,
+    ) -> Result<(), GogError> {
+        let release = self.inner.get_proton_release_by_tag(tag_name).await?;
+
+        let (tx, mut rx) = mpsc::unbounded_channel();
+        let download_future = self
+            .inner
+            .download_proton_release(&release, Path::new(path), tx);
+
+        let progress_reporting_future = async move {
+            let mut downloaded: u64 = 0;
+            let mut last_extracted: Option<String> = None;
+            let mut dirty = false;
+
+            let mut ticker = interval(Duration::from_millis(150));
+            ticker.tick().await; // first tick fires immediately, discard it
+
+            loop {
+                tokio::select! {
+                    event = rx.recv() => {
+                        match event {
+                            Some(gogdl_lib::ProtonDownloadEvent::Downloading { total_bytes }) => {
+                                // one-shot signal, flush immediately regardless of ticker
+                                let _ = sink.add(ProtonDownloadProgress::Started(total_bytes));
+                            }
+                            Some(gogdl_lib::ProtonDownloadEvent::Progress(delta)) => {
+                                downloaded += delta as u64;
+                                dirty = true;
+                            }
+                            Some(gogdl_lib::ProtonDownloadEvent::Extracted(path)) => {
+                                last_extracted = Some(path);
+                                dirty = true;
+                            }
+                            None => break, // sender dropped, download_future is done
+                        }
+                    }
+                    _ = ticker.tick() => {
+                        if dirty {
+                            let _ = sink.add(ProtonDownloadProgress::Progress(downloaded));
+                            if let Some(p) = last_extracted.take() {
+                                let _ = sink.add(ProtonDownloadProgress::Extracted(p));
+                            }
+                            dirty = false;
+                        }
+                    }
+                }
+            }
+
+            // final flush so the UI doesn't sit at a stale % between the last tick
+            // and the channel closing
+            if dirty {
+                let _ = sink.add(ProtonDownloadProgress::Progress(downloaded));
+                if let Some(p) = last_extracted.take() {
+                    let _ = sink.add(ProtonDownloadProgress::Extracted(p));
+                }
+            }
+        };
+
+        let (result, _) = tokio::join!(download_future, progress_reporting_future);
+        result?;
+        Ok(())
     }
 }

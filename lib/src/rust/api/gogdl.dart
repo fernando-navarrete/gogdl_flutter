@@ -9,9 +9,15 @@ import 'models/downloadable_product.dart';
 import 'models/game_build.dart';
 import 'models/proton_release.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
+import 'progress_reporting/proton_download.dart';
 
 // Rust type: RustOpaqueMoi<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<GogdlApi>>
 abstract class GogdlApi implements RustOpaqueInterface {
+  Stream<ProtonDownloadProgress> downloadProtonRelease({
+    required String path,
+    required String tagName,
+  });
+
   Future<String> getBackgroundImageLink({required int gameId});
 
   Future<List<DownloadableProduct>> getDownloadableProducts({

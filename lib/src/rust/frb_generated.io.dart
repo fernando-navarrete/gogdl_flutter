@@ -8,6 +8,7 @@ import 'api/gogdl.dart';
 import 'api/models/downloadable_product.dart';
 import 'api/models/game_build.dart';
 import 'api/models/proton_release.dart';
+import 'api/progress_reporting/proton_download.dart';
 import 'dart:async';
 import 'dart:convert';
 import 'dart:ffi' as ffi;
@@ -29,6 +30,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   CrossPlatformFinalizerArg
   get rust_arc_decrement_strong_count_GogdlApiPtr => wire
       ._rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerGogdlApiPtr;
+
+  @protected
+  AnyhowException dco_decode_AnyhowException(dynamic raw);
 
   @protected
   GogError
@@ -67,6 +71,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   );
 
   @protected
+  RustStreamSink<ProtonDownloadProgress>
+  dco_decode_StreamSink_proton_download_progress_Sse(dynamic raw);
+
+  @protected
   String dco_decode_String(dynamic raw);
 
   @protected
@@ -100,6 +108,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   List<ProtonRelease> dco_decode_list_proton_release(dynamic raw);
 
   @protected
+  ProtonDownloadProgress dco_decode_proton_download_progress(dynamic raw);
+
+  @protected
   ProtonRelease dco_decode_proton_release(dynamic raw);
 
   @protected
@@ -113,6 +124,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   BigInt dco_decode_usize(dynamic raw);
+
+  @protected
+  AnyhowException sse_decode_AnyhowException(SseDeserializer deserializer);
 
   @protected
   GogError
@@ -147,6 +161,12 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   @protected
   GogdlApi
   sse_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerGogdlApi(
+    SseDeserializer deserializer,
+  );
+
+  @protected
+  RustStreamSink<ProtonDownloadProgress>
+  sse_decode_StreamSink_proton_download_progress_Sse(
     SseDeserializer deserializer,
   );
 
@@ -190,6 +210,11 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   );
 
   @protected
+  ProtonDownloadProgress sse_decode_proton_download_progress(
+    SseDeserializer deserializer,
+  );
+
+  @protected
   ProtonRelease sse_decode_proton_release(SseDeserializer deserializer);
 
   @protected
@@ -206,6 +231,12 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   bool sse_decode_bool(SseDeserializer deserializer);
+
+  @protected
+  void sse_encode_AnyhowException(
+    AnyhowException self,
+    SseSerializer serializer,
+  );
 
   @protected
   void
@@ -246,6 +277,12 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   void
   sse_encode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerGogdlApi(
     GogdlApi self,
+    SseSerializer serializer,
+  );
+
+  @protected
+  void sse_encode_StreamSink_proton_download_progress_Sse(
+    RustStreamSink<ProtonDownloadProgress> self,
     SseSerializer serializer,
   );
 
@@ -297,6 +334,12 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   @protected
   void sse_encode_list_proton_release(
     List<ProtonRelease> self,
+    SseSerializer serializer,
+  );
+
+  @protected
+  void sse_encode_proton_download_progress(
+    ProtonDownloadProgress self,
     SseSerializer serializer,
   );
 
