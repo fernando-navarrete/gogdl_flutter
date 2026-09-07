@@ -9,6 +9,7 @@ import 'api/models/downloadable_product.dart';
 import 'api/models/game_build.dart';
 import 'api/models/proton_release.dart';
 import 'api/progress_reporting/proton_download.dart';
+import 'api/progress_reporting/verify_download.dart';
 import 'dart:async';
 import 'dart:convert';
 import 'frb_generated.dart';
@@ -69,7 +70,7 @@ class RustLib extends BaseEntrypoint<RustLibApi, RustLibApiImpl, RustLibWire> {
   String get codegenVersion => '2.13.0';
 
   @override
-  int get rustContentHash => 62115294;
+  int get rustContentHash => -295213062;
 
   static const kDefaultExternalLibraryLoaderConfig =
       ExternalLibraryLoaderConfig(
@@ -156,6 +157,14 @@ abstract class RustLibApi extends BaseApi {
   Future<void> crateApiGogdlGogdlApiSetTokenRefreshCallback({
     required GogdlApi that,
     required FutureOr<void> Function(String) callback,
+  });
+
+  Stream<VerifyDownloadProgress> crateApiGogdlGogdlApiVerifyDownload({
+    required GogdlApi that,
+    required int gameId,
+    required String path,
+    required String buildName,
+    required List<int> selectedProducts,
   });
 
   RustArcIncrementStrongCountFnType
@@ -817,6 +826,66 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         argNames: ["that", "callback"],
       );
 
+  @override
+  Stream<VerifyDownloadProgress> crateApiGogdlGogdlApiVerifyDownload({
+    required GogdlApi that,
+    required int gameId,
+    required String path,
+    required String buildName,
+    required List<int> selectedProducts,
+  }) {
+    final sink = RustStreamSink<VerifyDownloadProgress>();
+    unawaited(
+      handler.executeNormal(
+        NormalTask(
+          callFfi: (port_) {
+            final serializer = SseSerializer(generalizedFrbRustBinding);
+            sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerGogdlApi(
+              that,
+              serializer,
+            );
+            sse_encode_i_32(gameId, serializer);
+            sse_encode_String(path, serializer);
+            sse_encode_String(buildName, serializer);
+            sse_encode_list_prim_i_32_loose(selectedProducts, serializer);
+            sse_encode_StreamSink_verify_download_progress_Sse(
+              sink,
+              serializer,
+            );
+            pdeCallFfi(
+              generalizedFrbRustBinding,
+              serializer,
+              funcId: 18,
+              port: port_,
+            );
+          },
+          codec: SseCodec(
+            decodeSuccessData: sse_decode_unit,
+            decodeErrorData:
+                sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerGogError,
+          ),
+          constMeta: kCrateApiGogdlGogdlApiVerifyDownloadConstMeta,
+          argValues: [that, gameId, path, buildName, selectedProducts, sink],
+          apiImpl: this,
+        ),
+      ),
+    );
+    return sink.stream;
+  }
+
+  TaskConstMeta get kCrateApiGogdlGogdlApiVerifyDownloadConstMeta =>
+      const TaskConstMeta(
+        debugName: "GogdlApi_verify_download",
+        argNames: [
+          "that",
+          "gameId",
+          "path",
+          "buildName",
+          "selectedProducts",
+          "sink",
+        ],
+      );
+
   Future<void> Function(int, dynamic)
   encode_DartFn_Inputs_String_Output_unit_AnyhowException(
     FutureOr<void> Function(String) raw,
@@ -949,6 +1018,13 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  RustStreamSink<VerifyDownloadProgress>
+  dco_decode_StreamSink_verify_download_progress_Sse(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    throw UnimplementedError();
+  }
+
+  @protected
   String dco_decode_String(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     return raw as String;
@@ -1018,6 +1094,12 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  List<int> dco_decode_list_prim_i_32_loose(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return raw as List<int>;
+  }
+
+  @protected
   Int32List dco_decode_list_prim_i_32_strict(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     return raw as Int32List;
@@ -1084,6 +1166,36 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   BigInt dco_decode_usize(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     return dcoDecodeU64(raw);
+  }
+
+  @protected
+  VerifyDownloadProgress dco_decode_verify_download_progress(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    switch (raw[0]) {
+      case 0:
+        return VerifyDownloadProgress_Started(dco_decode_u_64(raw[1]));
+      case 1:
+        return VerifyDownloadProgress_Progress(dco_decode_u_64(raw[1]));
+      case 2:
+        return VerifyDownloadProgress_CouldNotResolvePath(
+          dco_decode_String(raw[1]),
+          dco_decode_u_64(raw[2]),
+        );
+      case 3:
+        return VerifyDownloadProgress_FileNotFound(
+          dco_decode_String(raw[1]),
+          dco_decode_u_64(raw[2]),
+        );
+      case 4:
+        return VerifyDownloadProgress_ChecksumMismatch(
+          dco_decode_String(raw[1]),
+          dco_decode_u_64(raw[2]),
+        );
+      case 5:
+        return VerifyDownloadProgress_Finished(dco_decode_u_64(raw[1]));
+      default:
+        throw Exception("unreachable");
+    }
   }
 
   @protected
@@ -1175,6 +1287,15 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   @protected
   RustStreamSink<ProtonDownloadProgress>
   sse_decode_StreamSink_proton_download_progress_Sse(
+    SseDeserializer deserializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    throw UnimplementedError('Unreachable ()');
+  }
+
+  @protected
+  RustStreamSink<VerifyDownloadProgress>
+  sse_decode_StreamSink_verify_download_progress_Sse(
     SseDeserializer deserializer,
   ) {
     // Codec=Sse (Serialization based), see doc to use other codecs
@@ -1275,6 +1396,13 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  List<int> sse_decode_list_prim_i_32_loose(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    var len_ = sse_decode_i_32(deserializer);
+    return deserializer.buffer.getInt32List(len_);
+  }
+
+  @protected
   Int32List sse_decode_list_prim_i_32_strict(SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     var len_ = sse_decode_i_32(deserializer);
@@ -1353,6 +1481,43 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   BigInt sse_decode_usize(SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     return deserializer.buffer.getBigUint64();
+  }
+
+  @protected
+  VerifyDownloadProgress sse_decode_verify_download_progress(
+    SseDeserializer deserializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+
+    var tag_ = sse_decode_i_32(deserializer);
+    switch (tag_) {
+      case 0:
+        var var_field0 = sse_decode_u_64(deserializer);
+        return VerifyDownloadProgress_Started(var_field0);
+      case 1:
+        var var_field0 = sse_decode_u_64(deserializer);
+        return VerifyDownloadProgress_Progress(var_field0);
+      case 2:
+        var var_field0 = sse_decode_String(deserializer);
+        var var_field1 = sse_decode_u_64(deserializer);
+        return VerifyDownloadProgress_CouldNotResolvePath(
+          var_field0,
+          var_field1,
+        );
+      case 3:
+        var var_field0 = sse_decode_String(deserializer);
+        var var_field1 = sse_decode_u_64(deserializer);
+        return VerifyDownloadProgress_FileNotFound(var_field0, var_field1);
+      case 4:
+        var var_field0 = sse_decode_String(deserializer);
+        var var_field1 = sse_decode_u_64(deserializer);
+        return VerifyDownloadProgress_ChecksumMismatch(var_field0, var_field1);
+      case 5:
+        var var_field0 = sse_decode_u_64(deserializer);
+        return VerifyDownloadProgress_Finished(var_field0);
+      default:
+        throw UnimplementedError('');
+    }
   }
 
   @protected
@@ -1493,6 +1658,23 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  void sse_encode_StreamSink_verify_download_progress_Sse(
+    RustStreamSink<VerifyDownloadProgress> self,
+    SseSerializer serializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_String(
+      self.setupAndSerialize(
+        codec: SseCodec(
+          decodeSuccessData: sse_decode_verify_download_progress,
+          decodeErrorData: sse_decode_AnyhowException,
+        ),
+      ),
+      serializer,
+    );
+  }
+
+  @protected
   void sse_encode_String(String self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     sse_encode_list_prim_u_8_strict(utf8.encoder.convert(self), serializer);
@@ -1567,6 +1749,18 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     for (final item in self) {
       sse_encode_game_build(item, serializer);
     }
+  }
+
+  @protected
+  void sse_encode_list_prim_i_32_loose(
+    List<int> self,
+    SseSerializer serializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_i_32(self.length, serializer);
+    serializer.buffer.putInt32List(
+      self is Int32List ? self : Int32List.fromList(self),
+    );
   }
 
   @protected
@@ -1648,6 +1842,46 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   void sse_encode_usize(BigInt self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     serializer.buffer.putBigUint64(self);
+  }
+
+  @protected
+  void sse_encode_verify_download_progress(
+    VerifyDownloadProgress self,
+    SseSerializer serializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    switch (self) {
+      case VerifyDownloadProgress_Started(field0: final field0):
+        sse_encode_i_32(0, serializer);
+        sse_encode_u_64(field0, serializer);
+      case VerifyDownloadProgress_Progress(field0: final field0):
+        sse_encode_i_32(1, serializer);
+        sse_encode_u_64(field0, serializer);
+      case VerifyDownloadProgress_CouldNotResolvePath(
+        field0: final field0,
+        field1: final field1,
+      ):
+        sse_encode_i_32(2, serializer);
+        sse_encode_String(field0, serializer);
+        sse_encode_u_64(field1, serializer);
+      case VerifyDownloadProgress_FileNotFound(
+        field0: final field0,
+        field1: final field1,
+      ):
+        sse_encode_i_32(3, serializer);
+        sse_encode_String(field0, serializer);
+        sse_encode_u_64(field1, serializer);
+      case VerifyDownloadProgress_ChecksumMismatch(
+        field0: final field0,
+        field1: final field1,
+      ):
+        sse_encode_i_32(4, serializer);
+        sse_encode_String(field0, serializer);
+        sse_encode_u_64(field1, serializer);
+      case VerifyDownloadProgress_Finished(field0: final field0):
+        sse_encode_i_32(5, serializer);
+        sse_encode_u_64(field0, serializer);
+    }
   }
 
   @protected
@@ -1768,5 +2002,18 @@ class GogdlApiImpl extends RustOpaque implements GogdlApi {
   }) => RustLib.instance.api.crateApiGogdlGogdlApiSetTokenRefreshCallback(
     that: this,
     callback: callback,
+  );
+
+  Stream<VerifyDownloadProgress> verifyDownload({
+    required int gameId,
+    required String path,
+    required String buildName,
+    required List<int> selectedProducts,
+  }) => RustLib.instance.api.crateApiGogdlGogdlApiVerifyDownload(
+    that: this,
+    gameId: gameId,
+    path: path,
+    buildName: buildName,
+    selectedProducts: selectedProducts,
   );
 }

@@ -10,6 +10,7 @@ import 'models/game_build.dart';
 import 'models/proton_release.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 import 'progress_reporting/proton_download.dart';
+import 'progress_reporting/verify_download.dart';
 
 // Rust type: RustOpaqueMoi<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<GogdlApi>>
 abstract class GogdlApi implements RustOpaqueInterface {
@@ -51,5 +52,12 @@ abstract class GogdlApi implements RustOpaqueInterface {
 
   Future<void> setTokenRefreshCallback({
     required FutureOr<void> Function(String) callback,
+  });
+
+  Stream<VerifyDownloadProgress> verifyDownload({
+    required int gameId,
+    required String path,
+    required String buildName,
+    required List<int> selectedProducts,
   });
 }

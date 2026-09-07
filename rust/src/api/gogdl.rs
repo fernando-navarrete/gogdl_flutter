@@ -1,3 +1,4 @@
+use std::collections::HashSet;
 use std::path::Path;
 use std::sync::Arc;
 use std::time::Duration;
@@ -12,7 +13,7 @@ pub use crate::api::error::GogError;
 pub use crate::api::models::downloadable_product::DownloadableProduct;
 pub use crate::api::models::game_build::GameBuild;
 pub use crate::api::models::proton_release::ProtonRelease;
-use crate::api::progress_reporting::ProtonDownloadProgress;
+use crate::api::progress_reporting::{ProtonDownloadProgress, VerifyDownloadProgress};
 use crate::frb_generated::StreamSink;
 
 #[frb(opaque)]
@@ -199,5 +200,110 @@ impl GogdlApi {
 
     pub async fn remove_token_refresh_callback(&self) {
         self.inner.remove_token_observer().await;
+    }
+
+    pub async fn verify_download(
+        &self,
+        game_id: i32,
+        path: &str,
+        build_name: &str,
+        selected_products: &[i32],
+        sink: StreamSink<VerifyDownloadProgress>,
+    ) -> Result<(), GogError> {
+        let bundles = self
+            .inner
+            .get_product_bundles(game_id, build_name, selected_products)
+            .await?;
+
+        let total_bytes: u64 = bundles
+            .iter()
+            .flat_map(|bundle| bundle.product_files.iter())
+            .filter_map(|file| file.size())
+            .sum();
+
+        let (tx, mut rx) = mpsc::unbounded_channel();
+        let verify_future = self.inner.verify_files(bundles, path, tx);
+
+        let progress_sink = sink.clone();
+        let progress_reporting_future = async move {
+            let _ = progress_sink.add(VerifyDownloadProgress::Started(total_bytes));
+
+            let mut checked: u64 = 0;
+            let mut dirty = false;
+            // Each broken file reports every one of its chunks; only forward
+            // the first failure per path so the UI sees one event per file.
+            let mut reported: HashSet<String> = HashSet::new();
+
+            let mut ticker = interval(Duration::from_millis(150));
+            ticker.tick().await; // first tick fires immediately, discard it
+
+            loop {
+                tokio::select! {
+                    event = rx.recv() => {
+                        match event {
+                            Some(gogdl_lib::VerificationEvent::Verified(_, size)) => {
+                                checked += size;
+                                dirty = true;
+                            }
+                            Some(gogdl_lib::VerificationEvent::CouldNotResolvePath(path, size)) => {
+                                checked += size;
+                                dirty = true;
+                                if reported.insert(path.clone()) {
+                                    // one-shot signal, flush immediately regardless of ticker
+                                    let _ = progress_sink
+                                        .add(VerifyDownloadProgress::CouldNotResolvePath(path, size));
+                                }
+                            }
+                            Some(gogdl_lib::VerificationEvent::FileNotFound(path, size)) => {
+                                checked += size;
+                                dirty = true;
+                                if reported.insert(path.clone()) {
+                                    // one-shot signal, flush immediately regardless of ticker
+                                    let _ = progress_sink
+                                        .add(VerifyDownloadProgress::FileNotFound(path, size));
+                                }
+                            }
+                            Some(gogdl_lib::VerificationEvent::ChecksumMismatch(path, size)) => {
+                                checked += size;
+                                dirty = true;
+                                if reported.insert(path.clone()) {
+                                    // one-shot signal, flush immediately regardless of ticker
+                                    let _ = progress_sink
+                                        .add(VerifyDownloadProgress::ChecksumMismatch(path, size));
+                                }
+                            }
+                            None => break, // sender dropped, verify_future is done
+                        }
+                    }
+                    _ = ticker.tick() => {
+                        if dirty {
+                            let _ = progress_sink.add(VerifyDownloadProgress::Progress(checked));
+                            dirty = false;
+                        }
+                    }
+                }
+            }
+
+            // final flush so the UI doesn't sit at a stale % between the last tick
+            // and the channel closing
+            if dirty {
+                let _ = progress_sink.add(VerifyDownloadProgress::Progress(checked));
+            }
+        };
+
+        let (result, _) = tokio::join!(verify_future, progress_reporting_future);
+
+        match result {
+            Ok(()) => {
+                let _ = sink.add(VerifyDownloadProgress::Finished(0));
+            }
+            Err(gogdl_lib::GogDlError::DownloadError(
+                gogdl_lib::DownloadError::ChunkIntegrityCheckFailed(failed),
+            )) => {
+                let _ = sink.add(VerifyDownloadProgress::Finished(failed as u64));
+            }
+            Err(e) => return Err(e.into()),
+        }
+        Ok(())
     }
 }

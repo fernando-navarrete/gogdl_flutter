@@ -13,3 +13,13 @@ export 'src/rust/api/progress_reporting/proton_download.dart'
         ProtonDownloadProgress_Progress,
         ProtonDownloadProgress_Extracted,
         ProtonDownloadProgressPatterns;
+export 'src/rust/api/progress_reporting/verify_download.dart'
+    show
+        VerifyDownloadProgress,
+        VerifyDownloadProgress_Started,
+        VerifyDownloadProgress_Progress,
+        VerifyDownloadProgress_CouldNotResolvePath,
+        VerifyDownloadProgress_FileNotFound,
+        VerifyDownloadProgress_ChecksumMismatch,
+        VerifyDownloadProgress_Finished,
+        VerifyDownloadProgressPatterns;
