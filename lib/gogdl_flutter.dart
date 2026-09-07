@@ -7,4 +7,9 @@ export 'src/rust/api/models/downloadable_product.dart' show DownloadableProduct;
 export 'src/rust/api/models/proton_release.dart' show ProtonRelease;
 export 'src/rust/api/error.dart' show GogError;
 export 'src/rust/api/progress_reporting/proton_download.dart'
-    show ProtonDownloadProgress;
+    show
+        ProtonDownloadProgress,
+        ProtonDownloadProgress_Started,
+        ProtonDownloadProgress_Progress,
+        ProtonDownloadProgress_Extracted,
+        ProtonDownloadProgressPatterns;
