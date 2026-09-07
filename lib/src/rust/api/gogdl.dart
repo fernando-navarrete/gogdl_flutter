@@ -41,7 +41,15 @@ abstract class GogdlApi implements RustOpaqueInterface {
 
   Future<List<ProtonRelease>> getProtonReleases({required int page});
 
+  Future<void> loginWithCode({required String code});
+
   factory GogdlApi() => RustLib.instance.api.crateApiGogdlGogdlApiNew();
 
+  Future<void> removeTokenRefreshCallback();
+
   Future<void> restoreAuth({required String jsonStr});
+
+  Future<void> setTokenRefreshCallback({
+    required FutureOr<void> Function(String) callback,
+  });
 }

@@ -2,11 +2,12 @@ use std::path::Path;
 use std::sync::Arc;
 use std::time::Duration;
 
-use flutter_rust_bridge::frb;
+use flutter_rust_bridge::{frb, DartFnFuture};
 use gogdl_lib::{Client, GogDl};
 use tokio::sync::mpsc;
 use tokio::time::interval;
 
+use crate::api::auth_refresh_observer::AuthRefreshObserver;
 pub use crate::api::error::GogError;
 pub use crate::api::models::downloadable_product::DownloadableProduct;
 pub use crate::api::models::game_build::GameBuild;
@@ -172,5 +173,31 @@ impl GogdlApi {
         let (result, _) = tokio::join!(download_future, progress_reporting_future);
         result?;
         Ok(())
+    }
+    pub async fn login_with_code(&self, code: &str) -> Result<(), GogError> {
+        self.inner.login_with_code(code).await?;
+        Ok(())
+    }
+    pub async fn set_token_refresh_callback(
+        &self,
+        callback: impl Fn(String) -> DartFnFuture<()> + Send + Sync + 'static,
+    ) {
+        let (tx, mut rx) = mpsc::unbounded_channel::<String>();
+        self.inner
+            .set_token_observer(Arc::new(AuthRefreshObserver::new(tx)))
+            .await;
+
+        // Runs on flutter_rust_bridge's tokio runtime; ends when the observer
+        // is replaced or removed and the sender drops, which also releases
+        // the Dart handle held by `callback`.
+        flutter_rust_bridge::spawn(async move {
+            while let Some(auth_json) = rx.recv().await {
+                callback(auth_json).await;
+            }
+        });
+    }
+
+    pub async fn remove_token_refresh_callback(&self) {
+        self.inner.remove_token_observer().await;
     }
 }
