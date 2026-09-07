@@ -27,6 +27,7 @@
 
 // Section: imports
 
+use crate::api::error::*;
 use crate::api::gogdl::*;
 use flutter_rust_bridge::for_generated::byteorder::{NativeEndian, ReadBytesExt, WriteBytesExt};
 use flutter_rust_bridge::for_generated::{transform_result_dco, Lifetimeable, Lockable};
@@ -76,7 +77,7 @@ fn wire__crate__api__gogdl__GogdlApi_get_background_image_link_impl(
             let api_game_id = <i32>::sse_decode(&mut deserializer);
             deserializer.end();
             move |context| async move {
-                transform_result_sse::<_, GogDlError>(
+                transform_result_sse::<_, GogError>(
                     (move || async move {
                         let mut api_that_guard = None;
                         let decode_indices_ =
@@ -137,7 +138,7 @@ fn wire__crate__api__gogdl__GogdlApi_get_downloadable_products_impl(
             let api_build_name = <String>::sse_decode(&mut deserializer);
             deserializer.end();
             move |context| async move {
-                transform_result_sse::<_, GogDlError>(
+                transform_result_sse::<_, GogError>(
                     (move || async move {
                         let mut api_that_guard = None;
                         let decode_indices_ =
@@ -198,7 +199,7 @@ fn wire__crate__api__gogdl__GogdlApi_get_game_boxart_link_impl(
             let api_game_id = <i32>::sse_decode(&mut deserializer);
             deserializer.end();
             move |context| async move {
-                transform_result_sse::<_, GogDlError>(
+                transform_result_sse::<_, GogError>(
                     (move || async move {
                         let mut api_that_guard = None;
                         let decode_indices_ =
@@ -258,7 +259,7 @@ fn wire__crate__api__gogdl__GogdlApi_get_game_builds_impl(
             let api_game_id = <i32>::sse_decode(&mut deserializer);
             deserializer.end();
             move |context| async move {
-                transform_result_sse::<_, GogDlError>(
+                transform_result_sse::<_, GogError>(
                     (move || async move {
                         let mut api_that_guard = None;
                         let decode_indices_ =
@@ -318,7 +319,7 @@ fn wire__crate__api__gogdl__GogdlApi_get_game_screenshots_impl(
             let api_game_id = <i32>::sse_decode(&mut deserializer);
             deserializer.end();
             move |context| async move {
-                transform_result_sse::<_, GogDlError>(
+                transform_result_sse::<_, GogError>(
                     (move || async move {
                         let mut api_that_guard = None;
                         let decode_indices_ =
@@ -378,7 +379,7 @@ fn wire__crate__api__gogdl__GogdlApi_get_game_summary_impl(
             let api_game_id = <i32>::sse_decode(&mut deserializer);
             deserializer.end();
             move |context| async move {
-                transform_result_sse::<_, GogDlError>(
+                transform_result_sse::<_, GogError>(
                     (move || async move {
                         let mut api_that_guard = None;
                         let decode_indices_ =
@@ -438,7 +439,7 @@ fn wire__crate__api__gogdl__GogdlApi_get_game_title_impl(
             let api_game_id = <i32>::sse_decode(&mut deserializer);
             deserializer.end();
             move |context| async move {
-                transform_result_sse::<_, GogDlError>(
+                transform_result_sse::<_, GogError>(
                     (move || async move {
                         let mut api_that_guard = None;
                         let decode_indices_ =
@@ -545,7 +546,7 @@ fn wire__crate__api__gogdl__GogdlApi_get_owned_games_impl(
             >>::sse_decode(&mut deserializer);
             deserializer.end();
             move |context| async move {
-                transform_result_sse::<_, GogDlError>(
+                transform_result_sse::<_, GogError>(
                     (move || async move {
                         let mut api_that_guard = None;
                         let decode_indices_ =
@@ -602,7 +603,7 @@ fn wire__crate__api__gogdl__GogdlApi_get_proton_releases_impl(
             let api_page = <i32>::sse_decode(&mut deserializer);
             deserializer.end();
             move |context| async move {
-                transform_result_sse::<_, GogDlError>(
+                transform_result_sse::<_, GogError>(
                     (move || async move {
                         let mut api_that_guard = None;
                         let decode_indices_ =
@@ -691,7 +692,7 @@ fn wire__crate__api__gogdl__GogdlApi_restore_auth_impl(
             let api_json_str = <String>::sse_decode(&mut deserializer);
             deserializer.end();
             move |context| async move {
-                transform_result_sse::<_, GogDlError>(
+                transform_result_sse::<_, GogError>(
                     (move || async move {
                         let mut api_that_guard = None;
                         let decode_indices_ =
@@ -727,7 +728,7 @@ fn wire__crate__api__gogdl__GogdlApi_restore_auth_impl(
 // Section: related_funcs
 
 flutter_rust_bridge::frb_generated_moi_arc_impl_value!(
-    flutter_rust_bridge::for_generated::RustAutoOpaqueInner<GogDlError>
+    flutter_rust_bridge::for_generated::RustAutoOpaqueInner<GogError>
 );
 flutter_rust_bridge::frb_generated_moi_arc_impl_value!(
     flutter_rust_bridge::for_generated::RustAutoOpaqueInner<GogdlApi>
@@ -735,11 +736,11 @@ flutter_rust_bridge::frb_generated_moi_arc_impl_value!(
 
 // Section: dart2rust
 
-impl SseDecode for GogDlError {
+impl SseDecode for GogError {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
         let mut inner = <RustOpaqueMoi<
-            flutter_rust_bridge::for_generated::RustAutoOpaqueInner<GogDlError>,
+            flutter_rust_bridge::for_generated::RustAutoOpaqueInner<GogError>,
         >>::sse_decode(deserializer);
         return flutter_rust_bridge::for_generated::rust_auto_opaque_decode_owned(inner);
     }
@@ -756,7 +757,7 @@ impl SseDecode for GogdlApi {
 }
 
 impl SseDecode
-    for RustOpaqueMoi<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<GogDlError>>
+    for RustOpaqueMoi<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<GogError>>
 {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
@@ -1036,16 +1037,16 @@ fn pde_ffi_dispatcher_sync_impl(
 // Section: rust2dart
 
 // Codec=Dco (DartCObject based), see doc to use other codecs
-impl flutter_rust_bridge::IntoDart for FrbWrapper<GogDlError> {
+impl flutter_rust_bridge::IntoDart for FrbWrapper<GogError> {
     fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
         flutter_rust_bridge::for_generated::rust_auto_opaque_encode::<_, MoiArc<_>>(self.0)
             .into_dart()
     }
 }
-impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive for FrbWrapper<GogDlError> {}
+impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive for FrbWrapper<GogError> {}
 
-impl flutter_rust_bridge::IntoIntoDart<FrbWrapper<GogDlError>> for GogDlError {
-    fn into_into_dart(self) -> FrbWrapper<GogDlError> {
+impl flutter_rust_bridge::IntoIntoDart<FrbWrapper<GogError>> for GogError {
+    fn into_into_dart(self) -> FrbWrapper<GogError> {
         self.into()
     }
 }
@@ -1135,10 +1136,10 @@ impl flutter_rust_bridge::IntoIntoDart<crate::api::models::proton_release::Proto
     }
 }
 
-impl SseEncode for GogDlError {
+impl SseEncode for GogError {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
-        <RustOpaqueMoi<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<GogDlError>>>::sse_encode(flutter_rust_bridge::for_generated::rust_auto_opaque_encode::<_, MoiArc<_>>(self), serializer);
+        <RustOpaqueMoi<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<GogError>>>::sse_encode(flutter_rust_bridge::for_generated::rust_auto_opaque_encode::<_, MoiArc<_>>(self), serializer);
     }
 }
 
@@ -1150,7 +1151,7 @@ impl SseEncode for GogdlApi {
 }
 
 impl SseEncode
-    for RustOpaqueMoi<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<GogDlError>>
+    for RustOpaqueMoi<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<GogError>>
 {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
@@ -1325,6 +1326,7 @@ mod io {
     // Section: imports
 
     use super::*;
+    use crate::api::error::*;
     use crate::api::gogdl::*;
     use flutter_rust_bridge::for_generated::byteorder::{
         NativeEndian, ReadBytesExt, WriteBytesExt,
@@ -1337,17 +1339,17 @@ mod io {
     flutter_rust_bridge::frb_generated_boilerplate_io!();
 
     #[unsafe(no_mangle)]
-    pub extern "C" fn frbgen_gogdl_flutter_rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerGogDlError(
+    pub extern "C" fn frbgen_gogdl_flutter_rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerGogError(
         ptr: *const std::ffi::c_void,
     ) {
-        MoiArc::<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<GogDlError>>::increment_strong_count(ptr as _);
+        MoiArc::<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<GogError>>::increment_strong_count(ptr as _);
     }
 
     #[unsafe(no_mangle)]
-    pub extern "C" fn frbgen_gogdl_flutter_rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerGogDlError(
+    pub extern "C" fn frbgen_gogdl_flutter_rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerGogError(
         ptr: *const std::ffi::c_void,
     ) {
-        MoiArc::<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<GogDlError>>::decrement_strong_count(ptr as _);
+        MoiArc::<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<GogError>>::decrement_strong_count(ptr as _);
     }
 
     #[unsafe(no_mangle)]
@@ -1376,6 +1378,7 @@ mod web {
     // Section: imports
 
     use super::*;
+    use crate::api::error::*;
     use crate::api::gogdl::*;
     use flutter_rust_bridge::for_generated::byteorder::{
         NativeEndian, ReadBytesExt, WriteBytesExt,
@@ -1390,17 +1393,17 @@ mod web {
     flutter_rust_bridge::frb_generated_boilerplate_web!();
 
     #[wasm_bindgen]
-    pub fn rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerGogDlError(
+    pub fn rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerGogError(
         ptr: *const std::ffi::c_void,
     ) {
-        MoiArc::<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<GogDlError>>::increment_strong_count(ptr as _);
+        MoiArc::<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<GogError>>::increment_strong_count(ptr as _);
     }
 
     #[wasm_bindgen]
-    pub fn rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerGogDlError(
+    pub fn rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerGogError(
         ptr: *const std::ffi::c_void,
     ) {
-        MoiArc::<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<GogDlError>>::decrement_strong_count(ptr as _);
+        MoiArc::<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<GogError>>::decrement_strong_count(ptr as _);
     }
 
     #[wasm_bindgen]

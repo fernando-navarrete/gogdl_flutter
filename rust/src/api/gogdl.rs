@@ -1,9 +1,9 @@
 use std::sync::Arc;
 
 use flutter_rust_bridge::frb;
-pub use gogdl_lib::GogDlError;
 use gogdl_lib::{Client, GogDl};
 
+pub use crate::api::error::GogError;
 pub use crate::api::models::downloadable_product::DownloadableProduct;
 pub use crate::api::models::game_build::GameBuild;
 pub use crate::api::models::proton_release::ProtonRelease;
@@ -26,40 +26,44 @@ impl GogdlApi {
         self.inner.get_login_url().to_string()
     }
 
-    pub async fn get_owned_games(&self) -> Result<Vec<i32>, GogDlError> {
+    pub async fn get_owned_games(&self) -> Result<Vec<i32>, GogError> {
         let owned_games = self.inner.get_owned_games().await?;
         Ok(owned_games.owned)
     }
 
-    pub async fn restore_auth(&self, json_str: &str) -> Result<(), GogDlError> {
-        self.inner.restore_auth(json_str).await
+    pub async fn restore_auth(&self, json_str: &str) -> Result<(), GogError> {
+        self.inner.restore_auth(json_str).await?;
+        Ok(())
     }
 
-    pub async fn get_game_title(&self, game_id: i32) -> Result<String, GogDlError> {
+    pub async fn get_game_title(&self, game_id: i32) -> Result<String, GogError> {
         let game_details = self.inner.get_game_details(game_id).await?;
         Ok(game_details.title)
     }
 
-    pub async fn get_background_image_link(&self, game_id: i32) -> Result<String, GogDlError> {
+    pub async fn get_background_image_link(&self, game_id: i32) -> Result<String, GogError> {
         let game_links = self.inner.get_game_links(game_id).await?;
         Ok(game_links.links.background_image.href)
     }
 
-    pub async fn get_game_boxart_link(&self, game_id: i32) -> Result<String, GogDlError> {
+    pub async fn get_game_boxart_link(&self, game_id: i32) -> Result<String, GogError> {
         let game_links = self.inner.get_game_links(game_id).await?;
         Ok(game_links.links.box_art_image.href)
     }
 
-    pub async fn get_game_summary(&self, game_id: i32) -> Result<String, GogDlError> {
+    pub async fn get_game_summary(&self, game_id: i32) -> Result<String, GogError> {
         let game_summary = self.inner.get_game_summary(game_id).await?;
         Ok(game_summary.summary.english)
     }
-    pub async fn get_game_screenshots(&self, game_id: i32) -> Result<Vec<String>, GogDlError> {
+    pub async fn get_game_screenshots(&self, game_id: i32) -> Result<Vec<String>, GogError> {
         let game_screenshots = self.inner.get_game_screenshots(game_id).await?;
-        let links = game_screenshots.resolve_links()?;
+        let links = match game_screenshots.resolve_links() {
+            Ok(links) => links,
+            Err(e) => return Err(GogError::GogdlError(gogdl_lib::GogDlError::GameError(e))),
+        };
         Ok(links)
     }
-    pub async fn get_game_builds(&self, game_id: i32) -> Result<Vec<GameBuild>, GogDlError> {
+    pub async fn get_game_builds(&self, game_id: i32) -> Result<Vec<GameBuild>, GogError> {
         let game_builds = self.inner.get_game_builds(game_id).await?;
         let builds = game_builds
             .items
@@ -72,7 +76,7 @@ impl GogdlApi {
         &self,
         game_id: i32,
         build_name: &str,
-    ) -> Result<Vec<DownloadableProduct>, GogDlError> {
+    ) -> Result<Vec<DownloadableProduct>, GogError> {
         let downloadable_products = self
             .inner
             .get_downloadable_products(game_id, build_name)
@@ -86,7 +90,7 @@ impl GogdlApi {
 
         Ok(products)
     }
-    pub async fn get_proton_releases(&self, page: i32) -> Result<Vec<ProtonRelease>, GogDlError> {
+    pub async fn get_proton_releases(&self, page: i32) -> Result<Vec<ProtonRelease>, GogError> {
         let proton_releases = self.inner.get_proton_releases(page as u32, 5).await?;
         let releases = proton_releases
             .releases()

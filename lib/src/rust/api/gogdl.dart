@@ -4,13 +4,11 @@
 // ignore_for_file: invalid_use_of_internal_member, unused_import, unnecessary_import
 
 import '../frb_generated.dart';
+import 'error.dart';
 import 'models/downloadable_product.dart';
 import 'models/game_build.dart';
 import 'models/proton_release.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
-
-// Rust type: RustOpaqueMoi<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<GogDlError>>
-abstract class GogDlError implements RustOpaqueInterface {}
 
 // Rust type: RustOpaqueMoi<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<GogdlApi>>
 abstract class GogdlApi implements RustOpaqueInterface {

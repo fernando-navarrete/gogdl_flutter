@@ -3,6 +3,7 @@
 
 // ignore_for_file: unused_import, unused_element, unnecessary_import, duplicate_ignore, invalid_use_of_internal_member, annotate_overrides, non_constant_identifier_names, curly_braces_in_flow_control_structures, prefer_const_literals_to_create_immutables, unused_field
 
+import 'api/error.dart';
 import 'api/gogdl.dart';
 import 'api/models/downloadable_product.dart';
 import 'api/models/game_build.dart';
@@ -135,12 +136,12 @@ abstract class RustLibApi extends BaseApi {
   });
 
   RustArcIncrementStrongCountFnType
-  get rust_arc_increment_strong_count_GogDlError;
+  get rust_arc_increment_strong_count_GogError;
 
   RustArcDecrementStrongCountFnType
-  get rust_arc_decrement_strong_count_GogDlError;
+  get rust_arc_decrement_strong_count_GogError;
 
-  CrossPlatformFinalizerArg get rust_arc_decrement_strong_count_GogDlErrorPtr;
+  CrossPlatformFinalizerArg get rust_arc_decrement_strong_count_GogErrorPtr;
 
   RustArcIncrementStrongCountFnType
   get rust_arc_increment_strong_count_GogdlApi;
@@ -183,7 +184,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         codec: SseCodec(
           decodeSuccessData: sse_decode_String,
           decodeErrorData:
-              sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerGogDlError,
+              sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerGogError,
         ),
         constMeta: kCrateApiGogdlGogdlApiGetBackgroundImageLinkConstMeta,
         argValues: [that, gameId],
@@ -225,7 +226,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         codec: SseCodec(
           decodeSuccessData: sse_decode_list_downloadable_product,
           decodeErrorData:
-              sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerGogDlError,
+              sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerGogError,
         ),
         constMeta: kCrateApiGogdlGogdlApiGetDownloadableProductsConstMeta,
         argValues: [that, gameId, buildName],
@@ -264,7 +265,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         codec: SseCodec(
           decodeSuccessData: sse_decode_String,
           decodeErrorData:
-              sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerGogDlError,
+              sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerGogError,
         ),
         constMeta: kCrateApiGogdlGogdlApiGetGameBoxartLinkConstMeta,
         argValues: [that, gameId],
@@ -303,7 +304,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         codec: SseCodec(
           decodeSuccessData: sse_decode_list_game_build,
           decodeErrorData:
-              sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerGogDlError,
+              sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerGogError,
         ),
         constMeta: kCrateApiGogdlGogdlApiGetGameBuildsConstMeta,
         argValues: [that, gameId],
@@ -342,7 +343,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         codec: SseCodec(
           decodeSuccessData: sse_decode_list_String,
           decodeErrorData:
-              sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerGogDlError,
+              sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerGogError,
         ),
         constMeta: kCrateApiGogdlGogdlApiGetGameScreenshotsConstMeta,
         argValues: [that, gameId],
@@ -381,7 +382,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         codec: SseCodec(
           decodeSuccessData: sse_decode_String,
           decodeErrorData:
-              sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerGogDlError,
+              sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerGogError,
         ),
         constMeta: kCrateApiGogdlGogdlApiGetGameSummaryConstMeta,
         argValues: [that, gameId],
@@ -420,7 +421,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         codec: SseCodec(
           decodeSuccessData: sse_decode_String,
           decodeErrorData:
-              sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerGogDlError,
+              sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerGogError,
         ),
         constMeta: kCrateApiGogdlGogdlApiGetGameTitleConstMeta,
         argValues: [that, gameId],
@@ -486,7 +487,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         codec: SseCodec(
           decodeSuccessData: sse_decode_list_prim_i_32_strict,
           decodeErrorData:
-              sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerGogDlError,
+              sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerGogError,
         ),
         constMeta: kCrateApiGogdlGogdlApiGetOwnedGamesConstMeta,
         argValues: [that],
@@ -525,7 +526,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         codec: SseCodec(
           decodeSuccessData: sse_decode_list_proton_release,
           decodeErrorData:
-              sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerGogDlError,
+              sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerGogError,
         ),
         constMeta: kCrateApiGogdlGogdlApiGetProtonReleasesConstMeta,
         argValues: [that, page],
@@ -587,7 +588,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         codec: SseCodec(
           decodeSuccessData: sse_decode_unit,
           decodeErrorData:
-              sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerGogDlError,
+              sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerGogError,
         ),
         constMeta: kCrateApiGogdlGogdlApiRestoreAuthConstMeta,
         argValues: [that, jsonStr],
@@ -603,12 +604,12 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       );
 
   RustArcIncrementStrongCountFnType
-  get rust_arc_increment_strong_count_GogDlError => wire
-      .rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerGogDlError;
+  get rust_arc_increment_strong_count_GogError => wire
+      .rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerGogError;
 
   RustArcDecrementStrongCountFnType
-  get rust_arc_decrement_strong_count_GogDlError => wire
-      .rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerGogDlError;
+  get rust_arc_decrement_strong_count_GogError => wire
+      .rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerGogError;
 
   RustArcIncrementStrongCountFnType
   get rust_arc_increment_strong_count_GogdlApi => wire
@@ -619,12 +620,12 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       .rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerGogdlApi;
 
   @protected
-  GogDlError
-  dco_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerGogDlError(
+  GogError
+  dco_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerGogError(
     dynamic raw,
   ) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
-    return GogDlErrorImpl.frbInternalDcoDecode(raw as List<dynamic>);
+    return GogErrorImpl.frbInternalDcoDecode(raw as List<dynamic>);
   }
 
   @protected
@@ -646,12 +647,12 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
-  GogDlError
-  dco_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerGogDlError(
+  GogError
+  dco_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerGogError(
     dynamic raw,
   ) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
-    return GogDlErrorImpl.frbInternalDcoDecode(raw as List<dynamic>);
+    return GogErrorImpl.frbInternalDcoDecode(raw as List<dynamic>);
   }
 
   @protected
@@ -781,12 +782,12 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
-  GogDlError
-  sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerGogDlError(
+  GogError
+  sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerGogError(
     SseDeserializer deserializer,
   ) {
     // Codec=Sse (Serialization based), see doc to use other codecs
-    return GogDlErrorImpl.frbInternalSseDecode(
+    return GogErrorImpl.frbInternalSseDecode(
       sse_decode_usize(deserializer),
       sse_decode_i_32(deserializer),
     );
@@ -817,12 +818,12 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
-  GogDlError
-  sse_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerGogDlError(
+  GogError
+  sse_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerGogError(
     SseDeserializer deserializer,
   ) {
     // Codec=Sse (Serialization based), see doc to use other codecs
-    return GogDlErrorImpl.frbInternalSseDecode(
+    return GogErrorImpl.frbInternalSseDecode(
       sse_decode_usize(deserializer),
       sse_decode_i_32(deserializer),
     );
@@ -994,13 +995,13 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
 
   @protected
   void
-  sse_encode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerGogDlError(
-    GogDlError self,
+  sse_encode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerGogError(
+    GogError self,
     SseSerializer serializer,
   ) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     sse_encode_usize(
-      (self as GogDlErrorImpl).frbInternalSseEncode(move: true),
+      (self as GogErrorImpl).frbInternalSseEncode(move: true),
       serializer,
     );
   }
@@ -1033,13 +1034,13 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
 
   @protected
   void
-  sse_encode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerGogDlError(
-    GogDlError self,
+  sse_encode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerGogError(
+    GogError self,
     SseSerializer serializer,
   ) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     sse_encode_usize(
-      (self as GogDlErrorImpl).frbInternalSseEncode(move: null),
+      (self as GogErrorImpl).frbInternalSseEncode(move: null),
       serializer,
     );
   }
@@ -1198,22 +1199,22 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
 }
 
 @sealed
-class GogDlErrorImpl extends RustOpaque implements GogDlError {
+class GogErrorImpl extends RustOpaque implements GogError {
   // Not to be used by end users
-  GogDlErrorImpl.frbInternalDcoDecode(List<dynamic> wire)
+  GogErrorImpl.frbInternalDcoDecode(List<dynamic> wire)
     : super.frbInternalDcoDecode(wire, _kStaticData);
 
   // Not to be used by end users
-  GogDlErrorImpl.frbInternalSseDecode(BigInt ptr, int externalSizeOnNative)
+  GogErrorImpl.frbInternalSseDecode(BigInt ptr, int externalSizeOnNative)
     : super.frbInternalSseDecode(ptr, externalSizeOnNative, _kStaticData);
 
   static final _kStaticData = RustArcStaticData(
     rustArcIncrementStrongCount:
-        RustLib.instance.api.rust_arc_increment_strong_count_GogDlError,
+        RustLib.instance.api.rust_arc_increment_strong_count_GogError,
     rustArcDecrementStrongCount:
-        RustLib.instance.api.rust_arc_decrement_strong_count_GogDlError,
+        RustLib.instance.api.rust_arc_decrement_strong_count_GogError,
     rustArcDecrementStrongCountPtr:
-        RustLib.instance.api.rust_arc_decrement_strong_count_GogDlErrorPtr,
+        RustLib.instance.api.rust_arc_decrement_strong_count_GogErrorPtr,
   );
 }
 

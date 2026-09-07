@@ -10,6 +10,7 @@ crate-type = ["cdylib", "staticlib"]
 flutter_rust_bridge = "=2.13.0"
 gogdl-lib = { git = "ssh://git@thinkcentre.home:2200/gogdl/gogdl-lib.git", tag = "v0.1.4-restart-debug2", version = "0.1.4" }
 futures-util = "0.3.34"
+thiserror = "2.0.20"
 
 [lints.rust]
 unexpected_cfgs = { level = "warn", check-cfg = ['cfg(frb_expand)'] }
