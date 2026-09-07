@@ -4,6 +4,7 @@ use flutter_rust_bridge::frb;
 pub use gogdl_lib::GogDlError;
 use gogdl_lib::{Client, GogDl};
 
+pub use crate::api::models::downloadable_product::DownloadableProduct;
 pub use crate::api::models::game_build::GameBuild;
 
 #[frb(opaque)]
@@ -65,5 +66,23 @@ impl GogdlApi {
             .map(|build| GameBuild::from_gogdl(build))
             .collect::<Vec<GameBuild>>();
         Ok(builds)
+    }
+    pub async fn get_downloadable_products(
+        &self,
+        game_id: i32,
+        build_name: &str,
+    ) -> Result<Vec<DownloadableProduct>, GogDlError> {
+        let downloadable_products = self
+            .inner
+            .get_downloadable_products(game_id, build_name)
+            .await?;
+
+        let mut products = Vec::new();
+        for product in &downloadable_products {
+            let product_details = self.inner.get_product_details(&product.product_id).await?;
+            products.push(DownloadableProduct::from_gogdl(&product_details));
+        }
+
+        Ok(products)
     }
 }
