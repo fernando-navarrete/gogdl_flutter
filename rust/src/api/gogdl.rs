@@ -6,6 +6,7 @@ use gogdl_lib::{Client, GogDl};
 
 pub use crate::api::models::downloadable_product::DownloadableProduct;
 pub use crate::api::models::game_build::GameBuild;
+pub use crate::api::models::proton_release::ProtonRelease;
 
 #[frb(opaque)]
 pub struct GogdlApi {
@@ -84,5 +85,16 @@ impl GogdlApi {
         }
 
         Ok(products)
+    }
+    pub async fn get_proton_releases(&self, page: i32) -> Result<Vec<ProtonRelease>, GogDlError> {
+        let proton_releases = self.inner.get_proton_releases(page as u32, 5).await?;
+        let releases = proton_releases
+            .releases()
+            .iter()
+            .filter(|release| release.get_release_size().is_ok())
+            // Unwrap is safe here because we filtered out releases with an invalid size above
+            .map(|release| ProtonRelease::from_gogdl(release).unwrap())
+            .collect::<Vec<ProtonRelease>>();
+        Ok(releases)
     }
 }

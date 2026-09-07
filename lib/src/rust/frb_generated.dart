@@ -6,6 +6,7 @@
 import 'api/gogdl.dart';
 import 'api/models/downloadable_product.dart';
 import 'api/models/game_build.dart';
+import 'api/models/proton_release.dart';
 import 'dart:async';
 import 'dart:convert';
 import 'frb_generated.dart';
@@ -66,7 +67,7 @@ class RustLib extends BaseEntrypoint<RustLibApi, RustLibApiImpl, RustLibWire> {
   String get codegenVersion => '2.13.0';
 
   @override
-  int get rustContentHash => -799973306;
+  int get rustContentHash => -498360420;
 
   static const kDefaultExternalLibraryLoaderConfig =
       ExternalLibraryLoaderConfig(
@@ -119,6 +120,11 @@ abstract class RustLibApi extends BaseApi {
 
   Future<Int32List> crateApiGogdlGogdlApiGetOwnedGames({
     required GogdlApi that,
+  });
+
+  Future<List<ProtonRelease>> crateApiGogdlGogdlApiGetProtonReleases({
+    required GogdlApi that,
+    required int page,
   });
 
   GogdlApi crateApiGogdlGogdlApiNew();
@@ -496,12 +502,51 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       );
 
   @override
+  Future<List<ProtonRelease>> crateApiGogdlGogdlApiGetProtonReleases({
+    required GogdlApi that,
+    required int page,
+  }) {
+    return handler.executeNormal(
+      NormalTask(
+        callFfi: (port_) {
+          final serializer = SseSerializer(generalizedFrbRustBinding);
+          sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerGogdlApi(
+            that,
+            serializer,
+          );
+          sse_encode_i_32(page, serializer);
+          pdeCallFfi(
+            generalizedFrbRustBinding,
+            serializer,
+            funcId: 10,
+            port: port_,
+          );
+        },
+        codec: SseCodec(
+          decodeSuccessData: sse_decode_list_proton_release,
+          decodeErrorData:
+              sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerGogDlError,
+        ),
+        constMeta: kCrateApiGogdlGogdlApiGetProtonReleasesConstMeta,
+        argValues: [that, page],
+        apiImpl: this,
+      ),
+    );
+  }
+
+  TaskConstMeta get kCrateApiGogdlGogdlApiGetProtonReleasesConstMeta =>
+      const TaskConstMeta(
+        debugName: "GogdlApi_get_proton_releases",
+        argNames: ["that", "page"],
+      );
+
+  @override
   GogdlApi crateApiGogdlGogdlApiNew() {
     return handler.executeSync(
       SyncTask(
         callFfi: () {
           final serializer = SseSerializer(generalizedFrbRustBinding);
-          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 10)!;
+          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 11)!;
         },
         codec: SseCodec(
           decodeSuccessData:
@@ -535,7 +580,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 11,
+            funcId: 12,
             port: port_,
           );
         },
@@ -691,6 +736,30 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   Uint8List dco_decode_list_prim_u_8_strict(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     return raw as Uint8List;
+  }
+
+  @protected
+  List<ProtonRelease> dco_decode_list_proton_release(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return (raw as List<dynamic>).map(dco_decode_proton_release).toList();
+  }
+
+  @protected
+  ProtonRelease dco_decode_proton_release(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    final arr = raw as List<dynamic>;
+    if (arr.length != 2)
+      throw Exception('unexpected arr length: expect 2 but see ${arr.length}');
+    return ProtonRelease(
+      tagName: dco_decode_String(arr[0]),
+      downloadSize: dco_decode_u_64(arr[1]),
+    );
+  }
+
+  @protected
+  BigInt dco_decode_u_64(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return dcoDecodeU64(raw);
   }
 
   @protected
@@ -873,6 +942,34 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  List<ProtonRelease> sse_decode_list_proton_release(
+    SseDeserializer deserializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+
+    var len_ = sse_decode_i_32(deserializer);
+    var ans_ = <ProtonRelease>[];
+    for (var idx_ = 0; idx_ < len_; ++idx_) {
+      ans_.add(sse_decode_proton_release(deserializer));
+    }
+    return ans_;
+  }
+
+  @protected
+  ProtonRelease sse_decode_proton_release(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    var var_tagName = sse_decode_String(deserializer);
+    var var_downloadSize = sse_decode_u_64(deserializer);
+    return ProtonRelease(tagName: var_tagName, downloadSize: var_downloadSize);
+  }
+
+  @protected
+  BigInt sse_decode_u_64(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return deserializer.buffer.getBigUint64();
+  }
+
+  @protected
   int sse_decode_u_8(SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     return deserializer.buffer.getUint8();
@@ -1052,6 +1149,31 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  void sse_encode_list_proton_release(
+    List<ProtonRelease> self,
+    SseSerializer serializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_i_32(self.length, serializer);
+    for (final item in self) {
+      sse_encode_proton_release(item, serializer);
+    }
+  }
+
+  @protected
+  void sse_encode_proton_release(ProtonRelease self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_String(self.tagName, serializer);
+    sse_encode_u_64(self.downloadSize, serializer);
+  }
+
+  @protected
+  void sse_encode_u_64(BigInt self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    serializer.buffer.putBigUint64(self);
+  }
+
+  @protected
   void sse_encode_u_8(int self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     serializer.buffer.putUint8(self);
@@ -1154,6 +1276,11 @@ class GogdlApiImpl extends RustOpaque implements GogdlApi {
 
   Future<Int32List> getOwnedGames() =>
       RustLib.instance.api.crateApiGogdlGogdlApiGetOwnedGames(that: this);
+
+  Future<List<ProtonRelease>> getProtonReleases({required int page}) => RustLib
+      .instance
+      .api
+      .crateApiGogdlGogdlApiGetProtonReleases(that: this, page: page);
 
   Future<void> restoreAuth({required String jsonStr}) => RustLib.instance.api
       .crateApiGogdlGogdlApiRestoreAuth(that: this, jsonStr: jsonStr);

@@ -6,6 +6,7 @@
 import '../frb_generated.dart';
 import 'models/downloadable_product.dart';
 import 'models/game_build.dart';
+import 'models/proton_release.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 
 // Rust type: RustOpaqueMoi<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<GogDlError>>
@@ -33,6 +34,8 @@ abstract class GogdlApi implements RustOpaqueInterface {
   String getLoginLink();
 
   Future<Int32List> getOwnedGames();
+
+  Future<List<ProtonRelease>> getProtonReleases({required int page});
 
   factory GogdlApi() => RustLib.instance.api.crateApiGogdlGogdlApiNew();
 
