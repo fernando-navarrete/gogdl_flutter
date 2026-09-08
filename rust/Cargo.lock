@@ -694,8 +694,8 @@ checksum = "4271d37baee1b8c7e4b708028c57d816cf9d2434acb33a549475f78c181f6253"
 
 [[package]]
 name = "gogdl-lib"
-version = "0.1.9"
-source = "git+ssh://git@thinkcentre.home:2200/gogdl/gogdl-lib.git?tag=v0.1.10-restart#e577fa083cedd93c97f5d1ddbf7c5b15ef9d6ad9"
+version = "0.1.11"
+source = "git+ssh://git@thinkcentre.home:2200/gogdl/gogdl-lib.git?tag=v0.1.11-restart#88d3f5fe2645f3553e29432dc0ba5eba90a82fe9"
 dependencies = [
  "async-compression",
  "bytes",

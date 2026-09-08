@@ -8,6 +8,7 @@ import 'api/gogdl.dart';
 import 'api/models/downloadable_product.dart';
 import 'api/models/game_build.dart';
 import 'api/models/proton_release.dart';
+import 'api/progress_reporting/game_download.dart';
 import 'api/progress_reporting/proton_download.dart';
 import 'api/progress_reporting/verify_download.dart';
 import 'dart:async';
@@ -79,6 +80,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   );
 
   @protected
+  RustStreamSink<DownloadGameProgress>
+  dco_decode_StreamSink_download_game_progress_Sse(dynamic raw);
+
+  @protected
   RustStreamSink<ProtonDownloadProgress>
   dco_decode_StreamSink_proton_download_progress_Sse(dynamic raw);
 
@@ -88,6 +93,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   String dco_decode_String(dynamic raw);
+
+  @protected
+  DownloadGameProgress dco_decode_download_game_progress(dynamic raw);
 
   @protected
   DownloadableProduct dco_decode_downloadable_product(dynamic raw);
@@ -189,6 +197,12 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   );
 
   @protected
+  RustStreamSink<DownloadGameProgress>
+  sse_decode_StreamSink_download_game_progress_Sse(
+    SseDeserializer deserializer,
+  );
+
+  @protected
   RustStreamSink<ProtonDownloadProgress>
   sse_decode_StreamSink_proton_download_progress_Sse(
     SseDeserializer deserializer,
@@ -202,6 +216,11 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   String sse_decode_String(SseDeserializer deserializer);
+
+  @protected
+  DownloadGameProgress sse_decode_download_game_progress(
+    SseDeserializer deserializer,
+  );
 
   @protected
   DownloadableProduct sse_decode_downloadable_product(
@@ -331,6 +350,12 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   );
 
   @protected
+  void sse_encode_StreamSink_download_game_progress_Sse(
+    RustStreamSink<DownloadGameProgress> self,
+    SseSerializer serializer,
+  );
+
+  @protected
   void sse_encode_StreamSink_proton_download_progress_Sse(
     RustStreamSink<ProtonDownloadProgress> self,
     SseSerializer serializer,
@@ -344,6 +369,12 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   void sse_encode_String(String self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_download_game_progress(
+    DownloadGameProgress self,
+    SseSerializer serializer,
+  );
 
   @protected
   void sse_encode_downloadable_product(

@@ -4,7 +4,7 @@ use std::sync::Arc;
 use std::time::Duration;
 
 use flutter_rust_bridge::{frb, DartFnFuture};
-use gogdl_lib::{Client, GogDl};
+use gogdl_lib::{Client, DownloadEvent, GogDl};
 use tokio::sync::mpsc;
 use tokio::time::interval;
 
@@ -13,7 +13,9 @@ pub use crate::api::error::GogError;
 pub use crate::api::models::downloadable_product::DownloadableProduct;
 pub use crate::api::models::game_build::GameBuild;
 pub use crate::api::models::proton_release::ProtonRelease;
-use crate::api::progress_reporting::{ProtonDownloadProgress, VerifyDownloadProgress};
+use crate::api::progress_reporting::{
+    DownloadGameProgress, ProtonDownloadProgress, VerifyDownloadProgress,
+};
 use crate::frb_generated::StreamSink;
 
 #[frb(opaque)]
@@ -301,6 +303,88 @@ impl GogdlApi {
                 gogdl_lib::DownloadError::ChunkIntegrityCheckFailed(failed),
             )) => {
                 let _ = sink.add(VerifyDownloadProgress::Finished(failed as u64));
+            }
+            Err(e) => return Err(e.into()),
+        }
+        Ok(())
+    }
+    pub async fn download_game(
+        &self,
+        game_id: i32,
+        path: &str,
+        build_name: &str,
+        selected_products: &[i32],
+        sink: StreamSink<DownloadGameProgress>,
+    ) -> Result<(), GogError> {
+        let bundles = self
+            .inner
+            .get_product_bundles(game_id, build_name, selected_products)
+            .await?;
+
+        let total_bytes: u64 = bundles
+            .iter()
+            .flat_map(|bundle| bundle.product_files.iter())
+            .filter_map(|file| file.size())
+            .sum();
+
+        let (tx, mut rx) = mpsc::unbounded_channel();
+        let download_future = self.inner.download_game(bundles, path, tx);
+
+        let progress_sink = sink.clone();
+        let progress_reporting_future = async move {
+            let _ = progress_sink.add(DownloadGameProgress::Started(total_bytes));
+
+            let mut downloaded: u64 = 0;
+            let mut dirty = false;
+            // Each broken file reports every one of its chunks; only forward
+            // the first failure per path so the UI sees one event per file.
+            let mut reported: HashSet<String> = HashSet::new();
+
+            let mut ticker = interval(Duration::from_millis(150));
+            ticker.tick().await; // first tick fires immediately, discard it
+
+            loop {
+                tokio::select! {
+                    event = rx.recv() => {
+                        match event {
+                            Some(gogdl_lib::DownloadStageEvent::FileSizeVerificationStage(_event)) => {}
+                            Some(gogdl_lib::DownloadStageEvent::FileAllocationStage(_event)) => {}
+                            Some(gogdl_lib::DownloadStageEvent::VerificationStage(_event)) => {}
+                            Some(gogdl_lib::DownloadStageEvent::FileAllocationError()) => {}
+                            Some(gogdl_lib::DownloadStageEvent::DownloadStage(DownloadEvent::Preparing)) => {}
+                            Some(gogdl_lib::DownloadStageEvent::DownloadStage(DownloadEvent::Prepared)) => {}
+                            Some(gogdl_lib::DownloadStageEvent::DownloadStage(DownloadEvent::Downloading)) => {}
+                            Some(gogdl_lib::DownloadStageEvent::DownloadStage(DownloadEvent::Progress(downloaded))) => {}
+                            Some(gogdl_lib::DownloadStageEvent::DownloadStage(DownloadEvent::ProgressRegression(downloaded))) => {}
+                            None => break, // sender dropped, verify_future is done
+                        }
+                    }
+                    _ = ticker.tick() => {
+                        if dirty {
+                            let _ = progress_sink.add(DownloadGameProgress::DownloadProgress(downloaded));
+                            dirty = false;
+                        }
+                    }
+                }
+            }
+
+            // final flush so the UI doesn't sit at a stale % between the last tick
+            // and the channel closing
+            if dirty {
+                let _ = progress_sink.add(DownloadGameProgress::DownloadProgress(downloaded));
+            }
+        };
+
+        let (result, _) = tokio::join!(download_future, progress_reporting_future);
+
+        match result {
+            Ok(()) => {
+                let _ = sink.add(DownloadGameProgress::Finished(0));
+            }
+            Err(gogdl_lib::GogDlError::DownloadError(
+                gogdl_lib::DownloadError::ChunkIntegrityCheckFailed(failed),
+            )) => {
+                let _ = sink.add(DownloadGameProgress::Finished(failed as u64));
             }
             Err(e) => return Err(e.into()),
         }
