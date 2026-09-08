@@ -23,3 +23,14 @@ export 'src/rust/api/progress_reporting/verify_download.dart'
         VerifyDownloadProgress_ChecksumMismatch,
         VerifyDownloadProgress_Finished,
         VerifyDownloadProgressPatterns;
+export 'src/rust/api/progress_reporting/game_download.dart'
+    show
+        DownloadGameProgress,
+        DownloadGameProgress_Started,
+        DownloadGameProgress_FileSizeVerification,
+        DownloadGameProgress_FileAllocationStarted,
+        DownloadGameProgress_FileAllocation,
+        DownloadGameProgress_AllocationError,
+        DownloadGameProgress_DownloadProgress,
+        DownloadGameProgress_Finished,
+        DownloadGameProgressPatterns;
