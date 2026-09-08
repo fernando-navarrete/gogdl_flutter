@@ -543,7 +543,10 @@ impl GogdlApi {
         // is how each failing (path, uncompressed size) is resolved back to
         // the compressed size to sum for `DownloadStarted`'s total.
         let mut compressed_sizes: HashMap<(String, u64), Vec<u64>> = HashMap::new();
-        for file in bundles.iter().flat_map(|bundle| bundle.product_files.iter()) {
+        for file in bundles
+            .iter()
+            .flat_map(|bundle| bundle.product_files.iter())
+        {
             for chunk in file.chunks.iter().flatten() {
                 compressed_sizes
                     .entry((file.path.clone(), chunk.size))
@@ -789,7 +792,8 @@ impl GogdlApi {
                         });
                     }
                     Stage::Verification => {
-                        let _ = progress_sink.add(RepairGameProgress::Verification { checked_bytes });
+                        let _ =
+                            progress_sink.add(RepairGameProgress::Verification { checked_bytes });
                     }
                     Stage::Download => {
                         let _ = progress_sink.add(RepairGameProgress::DownloadProgress {
