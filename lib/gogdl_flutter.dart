@@ -34,3 +34,19 @@ export 'src/rust/api/progress_reporting/game_download.dart'
         DownloadGameProgress_DownloadProgress,
         DownloadGameProgress_Finished,
         DownloadGameProgressPatterns;
+export 'src/rust/api/progress_reporting/game_repair.dart'
+    show
+        RepairGameProgress,
+        RepairGameProgress_Started,
+        RepairGameProgress_FileSizeVerification,
+        RepairGameProgress_FileAllocationStarted,
+        RepairGameProgress_FileAllocation,
+        RepairGameProgress_AllocationError,
+        RepairGameProgress_Verification,
+        RepairGameProgress_CouldNotResolvePath,
+        RepairGameProgress_FileNotFound,
+        RepairGameProgress_ChecksumMismatch,
+        RepairGameProgress_DownloadStarted,
+        RepairGameProgress_DownloadProgress,
+        RepairGameProgress_Finished,
+        RepairGameProgressPatterns;

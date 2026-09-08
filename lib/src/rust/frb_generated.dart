@@ -9,6 +9,7 @@ import 'api/models/downloadable_product.dart';
 import 'api/models/game_build.dart';
 import 'api/models/proton_release.dart';
 import 'api/progress_reporting/game_download.dart';
+import 'api/progress_reporting/game_repair.dart';
 import 'api/progress_reporting/proton_download.dart';
 import 'api/progress_reporting/verify_download.dart';
 import 'dart:async';
@@ -71,7 +72,7 @@ class RustLib extends BaseEntrypoint<RustLibApi, RustLibApiImpl, RustLibWire> {
   String get codegenVersion => '2.13.0';
 
   @override
-  int get rustContentHash => 2125364609;
+  int get rustContentHash => -170248770;
 
   static const kDefaultExternalLibraryLoaderConfig =
       ExternalLibraryLoaderConfig(
@@ -156,6 +157,14 @@ abstract class RustLibApi extends BaseApi {
 
   Future<void> crateApiGogdlGogdlApiRemoveTokenRefreshCallback({
     required GogdlApi that,
+  });
+
+  Stream<RepairGameProgress> crateApiGogdlGogdlApiRepairGame({
+    required GogdlApi that,
+    required int gameId,
+    required String path,
+    required String buildName,
+    required List<int> selectedProducts,
   });
 
   Future<void> crateApiGogdlGogdlApiRestoreAuth({
@@ -813,6 +822,63 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       );
 
   @override
+  Stream<RepairGameProgress> crateApiGogdlGogdlApiRepairGame({
+    required GogdlApi that,
+    required int gameId,
+    required String path,
+    required String buildName,
+    required List<int> selectedProducts,
+  }) {
+    final sink = RustStreamSink<RepairGameProgress>();
+    unawaited(
+      handler.executeNormal(
+        NormalTask(
+          callFfi: (port_) {
+            final serializer = SseSerializer(generalizedFrbRustBinding);
+            sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerGogdlApi(
+              that,
+              serializer,
+            );
+            sse_encode_i_32(gameId, serializer);
+            sse_encode_String(path, serializer);
+            sse_encode_String(buildName, serializer);
+            sse_encode_list_prim_i_32_loose(selectedProducts, serializer);
+            sse_encode_StreamSink_repair_game_progress_Sse(sink, serializer);
+            pdeCallFfi(
+              generalizedFrbRustBinding,
+              serializer,
+              funcId: 17,
+              port: port_,
+            );
+          },
+          codec: SseCodec(
+            decodeSuccessData: sse_decode_unit,
+            decodeErrorData:
+                sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerGogError,
+          ),
+          constMeta: kCrateApiGogdlGogdlApiRepairGameConstMeta,
+          argValues: [that, gameId, path, buildName, selectedProducts, sink],
+          apiImpl: this,
+        ),
+      ),
+    );
+    return sink.stream;
+  }
+
+  TaskConstMeta get kCrateApiGogdlGogdlApiRepairGameConstMeta =>
+      const TaskConstMeta(
+        debugName: "GogdlApi_repair_game",
+        argNames: [
+          "that",
+          "gameId",
+          "path",
+          "buildName",
+          "selectedProducts",
+          "sink",
+        ],
+      );
+
+  @override
   Future<void> crateApiGogdlGogdlApiRestoreAuth({
     required GogdlApi that,
     required String jsonStr,
@@ -829,7 +895,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 17,
+            funcId: 18,
             port: port_,
           );
         },
@@ -871,7 +937,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 18,
+            funcId: 19,
             port: port_,
           );
         },
@@ -921,7 +987,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
             pdeCallFfi(
               generalizedFrbRustBinding,
               serializer,
-              funcId: 19,
+              funcId: 20,
               port: port_,
             );
           },
@@ -1091,6 +1157,13 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  RustStreamSink<RepairGameProgress>
+  dco_decode_StreamSink_repair_game_progress_Sse(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    throw UnimplementedError();
+  }
+
+  @protected
   RustStreamSink<VerifyDownloadProgress>
   dco_decode_StreamSink_verify_download_progress_Sse(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
@@ -1254,6 +1327,65 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  RepairGameProgress dco_decode_repair_game_progress(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    switch (raw[0]) {
+      case 0:
+        return RepairGameProgress_Started(
+          totalFiles: dco_decode_u_64(raw[1]),
+          totalBytes: dco_decode_u_64(raw[2]),
+        );
+      case 1:
+        return RepairGameProgress_FileSizeVerification(
+          checkedFiles: dco_decode_u_64(raw[1]),
+        );
+      case 2:
+        return RepairGameProgress_FileAllocationStarted(
+          totalFiles: dco_decode_u_64(raw[1]),
+          totalBytes: dco_decode_u_64(raw[2]),
+        );
+      case 3:
+        return RepairGameProgress_FileAllocation(
+          allocatedFiles: dco_decode_u_64(raw[1]),
+          allocatedBytes: dco_decode_u_64(raw[2]),
+        );
+      case 4:
+        return RepairGameProgress_AllocationError(dco_decode_String(raw[1]));
+      case 5:
+        return RepairGameProgress_Verification(
+          checkedBytes: dco_decode_u_64(raw[1]),
+        );
+      case 6:
+        return RepairGameProgress_CouldNotResolvePath(
+          dco_decode_String(raw[1]),
+          dco_decode_u_64(raw[2]),
+        );
+      case 7:
+        return RepairGameProgress_FileNotFound(
+          dco_decode_String(raw[1]),
+          dco_decode_u_64(raw[2]),
+        );
+      case 8:
+        return RepairGameProgress_ChecksumMismatch(
+          dco_decode_String(raw[1]),
+          dco_decode_u_64(raw[2]),
+        );
+      case 9:
+        return RepairGameProgress_DownloadStarted(
+          totalBytes: dco_decode_u_64(raw[1]),
+        );
+      case 10:
+        return RepairGameProgress_DownloadProgress(
+          downloadedBytes: dco_decode_u_64(raw[1]),
+        );
+      case 11:
+        return RepairGameProgress_Finished();
+      default:
+        throw Exception("unreachable");
+    }
+  }
+
+  @protected
   BigInt dco_decode_u_64(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     return dcoDecodeU64(raw);
@@ -1407,6 +1539,13 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   sse_decode_StreamSink_proton_download_progress_Sse(
     SseDeserializer deserializer,
   ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    throw UnimplementedError('Unreachable ()');
+  }
+
+  @protected
+  RustStreamSink<RepairGameProgress>
+  sse_decode_StreamSink_repair_game_progress_Sse(SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     throw UnimplementedError('Unreachable ()');
   }
@@ -1628,6 +1767,73 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  RepairGameProgress sse_decode_repair_game_progress(
+    SseDeserializer deserializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+
+    var tag_ = sse_decode_i_32(deserializer);
+    switch (tag_) {
+      case 0:
+        var var_totalFiles = sse_decode_u_64(deserializer);
+        var var_totalBytes = sse_decode_u_64(deserializer);
+        return RepairGameProgress_Started(
+          totalFiles: var_totalFiles,
+          totalBytes: var_totalBytes,
+        );
+      case 1:
+        var var_checkedFiles = sse_decode_u_64(deserializer);
+        return RepairGameProgress_FileSizeVerification(
+          checkedFiles: var_checkedFiles,
+        );
+      case 2:
+        var var_totalFiles = sse_decode_u_64(deserializer);
+        var var_totalBytes = sse_decode_u_64(deserializer);
+        return RepairGameProgress_FileAllocationStarted(
+          totalFiles: var_totalFiles,
+          totalBytes: var_totalBytes,
+        );
+      case 3:
+        var var_allocatedFiles = sse_decode_u_64(deserializer);
+        var var_allocatedBytes = sse_decode_u_64(deserializer);
+        return RepairGameProgress_FileAllocation(
+          allocatedFiles: var_allocatedFiles,
+          allocatedBytes: var_allocatedBytes,
+        );
+      case 4:
+        var var_field0 = sse_decode_String(deserializer);
+        return RepairGameProgress_AllocationError(var_field0);
+      case 5:
+        var var_checkedBytes = sse_decode_u_64(deserializer);
+        return RepairGameProgress_Verification(checkedBytes: var_checkedBytes);
+      case 6:
+        var var_field0 = sse_decode_String(deserializer);
+        var var_field1 = sse_decode_u_64(deserializer);
+        return RepairGameProgress_CouldNotResolvePath(var_field0, var_field1);
+      case 7:
+        var var_field0 = sse_decode_String(deserializer);
+        var var_field1 = sse_decode_u_64(deserializer);
+        return RepairGameProgress_FileNotFound(var_field0, var_field1);
+      case 8:
+        var var_field0 = sse_decode_String(deserializer);
+        var var_field1 = sse_decode_u_64(deserializer);
+        return RepairGameProgress_ChecksumMismatch(var_field0, var_field1);
+      case 9:
+        var var_totalBytes = sse_decode_u_64(deserializer);
+        return RepairGameProgress_DownloadStarted(totalBytes: var_totalBytes);
+      case 10:
+        var var_downloadedBytes = sse_decode_u_64(deserializer);
+        return RepairGameProgress_DownloadProgress(
+          downloadedBytes: var_downloadedBytes,
+        );
+      case 11:
+        return RepairGameProgress_Finished();
+      default:
+        throw UnimplementedError('');
+    }
+  }
+
+  @protected
   BigInt sse_decode_u_64(SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     return deserializer.buffer.getBigUint64();
@@ -1834,6 +2040,23 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       self.setupAndSerialize(
         codec: SseCodec(
           decodeSuccessData: sse_decode_proton_download_progress,
+          decodeErrorData: sse_decode_AnyhowException,
+        ),
+      ),
+      serializer,
+    );
+  }
+
+  @protected
+  void sse_encode_StreamSink_repair_game_progress_Sse(
+    RustStreamSink<RepairGameProgress> self,
+    SseSerializer serializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_String(
+      self.setupAndSerialize(
+        codec: SseCodec(
+          decodeSuccessData: sse_decode_repair_game_progress,
           decodeErrorData: sse_decode_AnyhowException,
         ),
       ),
@@ -2052,6 +2275,79 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  void sse_encode_repair_game_progress(
+    RepairGameProgress self,
+    SseSerializer serializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    switch (self) {
+      case RepairGameProgress_Started(
+        totalFiles: final totalFiles,
+        totalBytes: final totalBytes,
+      ):
+        sse_encode_i_32(0, serializer);
+        sse_encode_u_64(totalFiles, serializer);
+        sse_encode_u_64(totalBytes, serializer);
+      case RepairGameProgress_FileSizeVerification(
+        checkedFiles: final checkedFiles,
+      ):
+        sse_encode_i_32(1, serializer);
+        sse_encode_u_64(checkedFiles, serializer);
+      case RepairGameProgress_FileAllocationStarted(
+        totalFiles: final totalFiles,
+        totalBytes: final totalBytes,
+      ):
+        sse_encode_i_32(2, serializer);
+        sse_encode_u_64(totalFiles, serializer);
+        sse_encode_u_64(totalBytes, serializer);
+      case RepairGameProgress_FileAllocation(
+        allocatedFiles: final allocatedFiles,
+        allocatedBytes: final allocatedBytes,
+      ):
+        sse_encode_i_32(3, serializer);
+        sse_encode_u_64(allocatedFiles, serializer);
+        sse_encode_u_64(allocatedBytes, serializer);
+      case RepairGameProgress_AllocationError(field0: final field0):
+        sse_encode_i_32(4, serializer);
+        sse_encode_String(field0, serializer);
+      case RepairGameProgress_Verification(checkedBytes: final checkedBytes):
+        sse_encode_i_32(5, serializer);
+        sse_encode_u_64(checkedBytes, serializer);
+      case RepairGameProgress_CouldNotResolvePath(
+        field0: final field0,
+        field1: final field1,
+      ):
+        sse_encode_i_32(6, serializer);
+        sse_encode_String(field0, serializer);
+        sse_encode_u_64(field1, serializer);
+      case RepairGameProgress_FileNotFound(
+        field0: final field0,
+        field1: final field1,
+      ):
+        sse_encode_i_32(7, serializer);
+        sse_encode_String(field0, serializer);
+        sse_encode_u_64(field1, serializer);
+      case RepairGameProgress_ChecksumMismatch(
+        field0: final field0,
+        field1: final field1,
+      ):
+        sse_encode_i_32(8, serializer);
+        sse_encode_String(field0, serializer);
+        sse_encode_u_64(field1, serializer);
+      case RepairGameProgress_DownloadStarted(totalBytes: final totalBytes):
+        sse_encode_i_32(9, serializer);
+        sse_encode_u_64(totalBytes, serializer);
+      case RepairGameProgress_DownloadProgress(
+        downloadedBytes: final downloadedBytes,
+      ):
+        sse_encode_i_32(10, serializer);
+        sse_encode_u_64(downloadedBytes, serializer);
+      case RepairGameProgress_Finished():
+        sse_encode_i_32(11, serializer);
+    }
+  }
+
+  @protected
   void sse_encode_u_64(BigInt self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     serializer.buffer.putBigUint64(self);
@@ -2236,6 +2532,19 @@ class GogdlApiImpl extends RustOpaque implements GogdlApi {
 
   Future<void> removeTokenRefreshCallback() => RustLib.instance.api
       .crateApiGogdlGogdlApiRemoveTokenRefreshCallback(that: this);
+
+  Stream<RepairGameProgress> repairGame({
+    required int gameId,
+    required String path,
+    required String buildName,
+    required List<int> selectedProducts,
+  }) => RustLib.instance.api.crateApiGogdlGogdlApiRepairGame(
+    that: this,
+    gameId: gameId,
+    path: path,
+    buildName: buildName,
+    selectedProducts: selectedProducts,
+  );
 
   Future<void> restoreAuth({required String jsonStr}) => RustLib.instance.api
       .crateApiGogdlGogdlApiRestoreAuth(that: this, jsonStr: jsonStr);

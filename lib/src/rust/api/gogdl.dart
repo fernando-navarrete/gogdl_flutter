@@ -10,6 +10,7 @@ import 'models/game_build.dart';
 import 'models/proton_release.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 import 'progress_reporting/game_download.dart';
+import 'progress_reporting/game_repair.dart';
 import 'progress_reporting/proton_download.dart';
 import 'progress_reporting/verify_download.dart';
 
@@ -55,6 +56,13 @@ abstract class GogdlApi implements RustOpaqueInterface {
   factory GogdlApi() => RustLib.instance.api.crateApiGogdlGogdlApiNew();
 
   Future<void> removeTokenRefreshCallback();
+
+  Stream<RepairGameProgress> repairGame({
+    required int gameId,
+    required String path,
+    required String buildName,
+    required List<int> selectedProducts,
+  });
 
   Future<void> restoreAuth({required String jsonStr});
 
