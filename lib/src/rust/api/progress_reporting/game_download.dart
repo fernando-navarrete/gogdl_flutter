@@ -14,20 +14,48 @@ part 'game_download.freezed.dart';
 sealed class DownloadGameProgress with _$DownloadGameProgress {
   const DownloadGameProgress._();
 
-  const factory DownloadGameProgress.started(BigInt field0) =
-      DownloadGameProgress_Started;
-  const factory DownloadGameProgress.fileSizeVerification() =
-      DownloadGameProgress_FileSizeVerification;
-  const factory DownloadGameProgress.fileAllocation() =
-      DownloadGameProgress_FileAllocation;
-  const factory DownloadGameProgress.verification() =
-      DownloadGameProgress_Verification;
-  const factory DownloadGameProgress.allocationError() =
+  /// Totals known before any work starts. `total_bytes` counts *compressed*
+  /// bytes as they arrive off the wire — it is the denominator for
+  /// `DownloadProgress` and is smaller than the install's size on disk.
+  const factory DownloadGameProgress.started({
+    required BigInt totalFiles,
+    required BigInt totalBytes,
+  }) = DownloadGameProgress_Started;
+
+  /// Files whose on-disk size has been checked, out of `Started.total_files`.
+  /// Coalesced on a 150ms ticker.
+  const factory DownloadGameProgress.fileSizeVerification({
+    required BigInt checkedFiles,
+  }) = DownloadGameProgress_FileSizeVerification;
+
+  /// The allocation pass is starting, with its own denominators: only files
+  /// that failed size verification are allocated, so these are smaller than
+  /// `Started`'s. `total_bytes` here is *uncompressed*. Sent once, and
+  /// skipped entirely when every file already had the right size.
+  const factory DownloadGameProgress.fileAllocationStarted({
+    required BigInt totalFiles,
+    required BigInt totalBytes,
+  }) = DownloadGameProgress_FileAllocationStarted;
+
+  /// Files pre-allocated so far, against `FileAllocationStarted`'s totals.
+  /// Coalesced on a 150ms ticker.
+  const factory DownloadGameProgress.fileAllocation({
+    required BigInt allocatedFiles,
+    required BigInt allocatedBytes,
+  }) = DownloadGameProgress_FileAllocation;
+
+  /// A file's path could not be resolved on disk; the download is aborting
+  /// with a file-allocation error. Sent once per path, immediately.
+  const factory DownloadGameProgress.allocationError(String field0) =
       DownloadGameProgress_AllocationError;
-  const factory DownloadGameProgress.downloadProgress(BigInt field0) =
-      DownloadGameProgress_DownloadProgress;
-  const factory DownloadGameProgress.downloadProgressRegression(BigInt field0) =
-      DownloadGameProgress_DownloadProgressRegression;
-  const factory DownloadGameProgress.finished(BigInt field0) =
-      DownloadGameProgress_Finished;
+
+  /// Compressed bytes received so far, out of `Started.total_bytes`. Failed
+  /// attempts are already subtracted, so this can stall or move backwards.
+  /// Coalesced on a 150ms ticker.
+  const factory DownloadGameProgress.downloadProgress({
+    required BigInt downloadedBytes,
+  }) = DownloadGameProgress_DownloadProgress;
+
+  /// Every chunk transferred and checksummed. Terminal.
+  const factory DownloadGameProgress.finished() = DownloadGameProgress_Finished;
 }

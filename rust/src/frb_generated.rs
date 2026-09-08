@@ -1317,32 +1317,34 @@ impl SseDecode for crate::api::progress_reporting::game_download::DownloadGamePr
         let mut tag_ = <i32>::sse_decode(deserializer);
         match tag_ {
             0 => {
-                let mut var_field0 = <u64>::sse_decode(deserializer);
-                return crate::api::progress_reporting::game_download::DownloadGameProgress::Started(var_field0);
+                let mut var_totalFiles = <u64>::sse_decode(deserializer);
+                let mut var_totalBytes = <u64>::sse_decode(deserializer);
+                return crate::api::progress_reporting::game_download::DownloadGameProgress::Started{total_files: var_totalFiles, total_bytes: var_totalBytes};
             }
             1 => {
-                return crate::api::progress_reporting::game_download::DownloadGameProgress::FileSizeVerification;
+                let mut var_checkedFiles = <u64>::sse_decode(deserializer);
+                return crate::api::progress_reporting::game_download::DownloadGameProgress::FileSizeVerification{checked_files: var_checkedFiles};
             }
             2 => {
-                return crate::api::progress_reporting::game_download::DownloadGameProgress::FileAllocation;
+                let mut var_totalFiles = <u64>::sse_decode(deserializer);
+                let mut var_totalBytes = <u64>::sse_decode(deserializer);
+                return crate::api::progress_reporting::game_download::DownloadGameProgress::FileAllocationStarted{total_files: var_totalFiles, total_bytes: var_totalBytes};
             }
             3 => {
-                return crate::api::progress_reporting::game_download::DownloadGameProgress::Verification;
+                let mut var_allocatedFiles = <u64>::sse_decode(deserializer);
+                let mut var_allocatedBytes = <u64>::sse_decode(deserializer);
+                return crate::api::progress_reporting::game_download::DownloadGameProgress::FileAllocation{allocated_files: var_allocatedFiles, allocated_bytes: var_allocatedBytes};
             }
             4 => {
-                return crate::api::progress_reporting::game_download::DownloadGameProgress::AllocationError;
+                let mut var_field0 = <String>::sse_decode(deserializer);
+                return crate::api::progress_reporting::game_download::DownloadGameProgress::AllocationError(var_field0);
             }
             5 => {
-                let mut var_field0 = <u64>::sse_decode(deserializer);
-                return crate::api::progress_reporting::game_download::DownloadGameProgress::DownloadProgress(var_field0);
+                let mut var_downloadedBytes = <u64>::sse_decode(deserializer);
+                return crate::api::progress_reporting::game_download::DownloadGameProgress::DownloadProgress{downloaded_bytes: var_downloadedBytes};
             }
             6 => {
-                let mut var_field0 = <u64>::sse_decode(deserializer);
-                return crate::api::progress_reporting::game_download::DownloadGameProgress::DownloadProgressRegression(var_field0);
-            }
-            7 => {
-                let mut var_field0 = <u64>::sse_decode(deserializer);
-                return crate::api::progress_reporting::game_download::DownloadGameProgress::Finished(var_field0);
+                return crate::api::progress_reporting::game_download::DownloadGameProgress::Finished;
             }
             _ => {
                 unimplemented!("");
@@ -1742,18 +1744,22 @@ impl flutter_rust_bridge::IntoDart
     for crate::api::progress_reporting::game_download::DownloadGameProgress
 {
     fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
-        match self {crate::api::progress_reporting::game_download::DownloadGameProgress::Started(field0) => { [0.into_dart(),
+        match self {crate::api::progress_reporting::game_download::DownloadGameProgress::Started{total_files,total_bytes} => { [0.into_dart(),
+total_files.into_into_dart().into_dart(),
+total_bytes.into_into_dart().into_dart()].into_dart() }
+crate::api::progress_reporting::game_download::DownloadGameProgress::FileSizeVerification{checked_files} => { [1.into_dart(),
+checked_files.into_into_dart().into_dart()].into_dart() }
+crate::api::progress_reporting::game_download::DownloadGameProgress::FileAllocationStarted{total_files,total_bytes} => { [2.into_dart(),
+total_files.into_into_dart().into_dart(),
+total_bytes.into_into_dart().into_dart()].into_dart() }
+crate::api::progress_reporting::game_download::DownloadGameProgress::FileAllocation{allocated_files,allocated_bytes} => { [3.into_dart(),
+allocated_files.into_into_dart().into_dart(),
+allocated_bytes.into_into_dart().into_dart()].into_dart() }
+crate::api::progress_reporting::game_download::DownloadGameProgress::AllocationError(field0) => { [4.into_dart(),
 field0.into_into_dart().into_dart()].into_dart() }
-crate::api::progress_reporting::game_download::DownloadGameProgress::FileSizeVerification => { [1.into_dart()].into_dart() }
-crate::api::progress_reporting::game_download::DownloadGameProgress::FileAllocation => { [2.into_dart()].into_dart() }
-crate::api::progress_reporting::game_download::DownloadGameProgress::Verification => { [3.into_dart()].into_dart() }
-crate::api::progress_reporting::game_download::DownloadGameProgress::AllocationError => { [4.into_dart()].into_dart() }
-crate::api::progress_reporting::game_download::DownloadGameProgress::DownloadProgress(field0) => { [5.into_dart(),
-field0.into_into_dart().into_dart()].into_dart() }
-crate::api::progress_reporting::game_download::DownloadGameProgress::DownloadProgressRegression(field0) => { [6.into_dart(),
-field0.into_into_dart().into_dart()].into_dart() }
-crate::api::progress_reporting::game_download::DownloadGameProgress::Finished(field0) => { [7.into_dart(),
-field0.into_into_dart().into_dart()].into_dart() }
+crate::api::progress_reporting::game_download::DownloadGameProgress::DownloadProgress{downloaded_bytes} => { [5.into_dart(),
+downloaded_bytes.into_into_dart().into_dart()].into_dart() }
+crate::api::progress_reporting::game_download::DownloadGameProgress::Finished => { [6.into_dart()].into_dart() }
  _ => { unimplemented!(""); }}
     }
 }
@@ -2010,18 +2016,22 @@ impl SseEncode for String {
 impl SseEncode for crate::api::progress_reporting::game_download::DownloadGameProgress {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
-        match self {crate::api::progress_reporting::game_download::DownloadGameProgress::Started(field0) => { <i32>::sse_encode(0, serializer); <u64>::sse_encode(field0, serializer);
+        match self {crate::api::progress_reporting::game_download::DownloadGameProgress::Started{total_files,total_bytes} => { <i32>::sse_encode(0, serializer); <u64>::sse_encode(total_files, serializer);
+<u64>::sse_encode(total_bytes, serializer);
  }
-crate::api::progress_reporting::game_download::DownloadGameProgress::FileSizeVerification => { <i32>::sse_encode(1, serializer);  }
-crate::api::progress_reporting::game_download::DownloadGameProgress::FileAllocation => { <i32>::sse_encode(2, serializer);  }
-crate::api::progress_reporting::game_download::DownloadGameProgress::Verification => { <i32>::sse_encode(3, serializer);  }
-crate::api::progress_reporting::game_download::DownloadGameProgress::AllocationError => { <i32>::sse_encode(4, serializer);  }
-crate::api::progress_reporting::game_download::DownloadGameProgress::DownloadProgress(field0) => { <i32>::sse_encode(5, serializer); <u64>::sse_encode(field0, serializer);
+crate::api::progress_reporting::game_download::DownloadGameProgress::FileSizeVerification{checked_files} => { <i32>::sse_encode(1, serializer); <u64>::sse_encode(checked_files, serializer);
  }
-crate::api::progress_reporting::game_download::DownloadGameProgress::DownloadProgressRegression(field0) => { <i32>::sse_encode(6, serializer); <u64>::sse_encode(field0, serializer);
+crate::api::progress_reporting::game_download::DownloadGameProgress::FileAllocationStarted{total_files,total_bytes} => { <i32>::sse_encode(2, serializer); <u64>::sse_encode(total_files, serializer);
+<u64>::sse_encode(total_bytes, serializer);
  }
-crate::api::progress_reporting::game_download::DownloadGameProgress::Finished(field0) => { <i32>::sse_encode(7, serializer); <u64>::sse_encode(field0, serializer);
+crate::api::progress_reporting::game_download::DownloadGameProgress::FileAllocation{allocated_files,allocated_bytes} => { <i32>::sse_encode(3, serializer); <u64>::sse_encode(allocated_files, serializer);
+<u64>::sse_encode(allocated_bytes, serializer);
  }
+crate::api::progress_reporting::game_download::DownloadGameProgress::AllocationError(field0) => { <i32>::sse_encode(4, serializer); <String>::sse_encode(field0, serializer);
+ }
+crate::api::progress_reporting::game_download::DownloadGameProgress::DownloadProgress{downloaded_bytes} => { <i32>::sse_encode(5, serializer); <u64>::sse_encode(downloaded_bytes, serializer);
+ }
+crate::api::progress_reporting::game_download::DownloadGameProgress::Finished => { <i32>::sse_encode(6, serializer);  }
  _ => { unimplemented!(""); }}
     }
 }

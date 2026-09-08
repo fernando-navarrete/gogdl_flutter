@@ -1108,23 +1108,32 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     switch (raw[0]) {
       case 0:
-        return DownloadGameProgress_Started(dco_decode_u_64(raw[1]));
-      case 1:
-        return DownloadGameProgress_FileSizeVerification();
-      case 2:
-        return DownloadGameProgress_FileAllocation();
-      case 3:
-        return DownloadGameProgress_Verification();
-      case 4:
-        return DownloadGameProgress_AllocationError();
-      case 5:
-        return DownloadGameProgress_DownloadProgress(dco_decode_u_64(raw[1]));
-      case 6:
-        return DownloadGameProgress_DownloadProgressRegression(
-          dco_decode_u_64(raw[1]),
+        return DownloadGameProgress_Started(
+          totalFiles: dco_decode_u_64(raw[1]),
+          totalBytes: dco_decode_u_64(raw[2]),
         );
-      case 7:
-        return DownloadGameProgress_Finished(dco_decode_u_64(raw[1]));
+      case 1:
+        return DownloadGameProgress_FileSizeVerification(
+          checkedFiles: dco_decode_u_64(raw[1]),
+        );
+      case 2:
+        return DownloadGameProgress_FileAllocationStarted(
+          totalFiles: dco_decode_u_64(raw[1]),
+          totalBytes: dco_decode_u_64(raw[2]),
+        );
+      case 3:
+        return DownloadGameProgress_FileAllocation(
+          allocatedFiles: dco_decode_u_64(raw[1]),
+          allocatedBytes: dco_decode_u_64(raw[2]),
+        );
+      case 4:
+        return DownloadGameProgress_AllocationError(dco_decode_String(raw[1]));
+      case 5:
+        return DownloadGameProgress_DownloadProgress(
+          downloadedBytes: dco_decode_u_64(raw[1]),
+        );
+      case 6:
+        return DownloadGameProgress_Finished();
       default:
         throw Exception("unreachable");
     }
@@ -1427,25 +1436,41 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     var tag_ = sse_decode_i_32(deserializer);
     switch (tag_) {
       case 0:
-        var var_field0 = sse_decode_u_64(deserializer);
-        return DownloadGameProgress_Started(var_field0);
+        var var_totalFiles = sse_decode_u_64(deserializer);
+        var var_totalBytes = sse_decode_u_64(deserializer);
+        return DownloadGameProgress_Started(
+          totalFiles: var_totalFiles,
+          totalBytes: var_totalBytes,
+        );
       case 1:
-        return DownloadGameProgress_FileSizeVerification();
+        var var_checkedFiles = sse_decode_u_64(deserializer);
+        return DownloadGameProgress_FileSizeVerification(
+          checkedFiles: var_checkedFiles,
+        );
       case 2:
-        return DownloadGameProgress_FileAllocation();
+        var var_totalFiles = sse_decode_u_64(deserializer);
+        var var_totalBytes = sse_decode_u_64(deserializer);
+        return DownloadGameProgress_FileAllocationStarted(
+          totalFiles: var_totalFiles,
+          totalBytes: var_totalBytes,
+        );
       case 3:
-        return DownloadGameProgress_Verification();
+        var var_allocatedFiles = sse_decode_u_64(deserializer);
+        var var_allocatedBytes = sse_decode_u_64(deserializer);
+        return DownloadGameProgress_FileAllocation(
+          allocatedFiles: var_allocatedFiles,
+          allocatedBytes: var_allocatedBytes,
+        );
       case 4:
-        return DownloadGameProgress_AllocationError();
+        var var_field0 = sse_decode_String(deserializer);
+        return DownloadGameProgress_AllocationError(var_field0);
       case 5:
-        var var_field0 = sse_decode_u_64(deserializer);
-        return DownloadGameProgress_DownloadProgress(var_field0);
+        var var_downloadedBytes = sse_decode_u_64(deserializer);
+        return DownloadGameProgress_DownloadProgress(
+          downloadedBytes: var_downloadedBytes,
+        );
       case 6:
-        var var_field0 = sse_decode_u_64(deserializer);
-        return DownloadGameProgress_DownloadProgressRegression(var_field0);
-      case 7:
-        var var_field0 = sse_decode_u_64(deserializer);
-        return DownloadGameProgress_Finished(var_field0);
+        return DownloadGameProgress_Finished();
       default:
         throw UnimplementedError('');
     }
@@ -1846,28 +1871,42 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   ) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     switch (self) {
-      case DownloadGameProgress_Started(field0: final field0):
-        sse_encode_i_32(0, serializer);
-        sse_encode_u_64(field0, serializer);
-      case DownloadGameProgress_FileSizeVerification():
-        sse_encode_i_32(1, serializer);
-      case DownloadGameProgress_FileAllocation():
-        sse_encode_i_32(2, serializer);
-      case DownloadGameProgress_Verification():
-        sse_encode_i_32(3, serializer);
-      case DownloadGameProgress_AllocationError():
-        sse_encode_i_32(4, serializer);
-      case DownloadGameProgress_DownloadProgress(field0: final field0):
-        sse_encode_i_32(5, serializer);
-        sse_encode_u_64(field0, serializer);
-      case DownloadGameProgress_DownloadProgressRegression(
-        field0: final field0,
+      case DownloadGameProgress_Started(
+        totalFiles: final totalFiles,
+        totalBytes: final totalBytes,
       ):
+        sse_encode_i_32(0, serializer);
+        sse_encode_u_64(totalFiles, serializer);
+        sse_encode_u_64(totalBytes, serializer);
+      case DownloadGameProgress_FileSizeVerification(
+        checkedFiles: final checkedFiles,
+      ):
+        sse_encode_i_32(1, serializer);
+        sse_encode_u_64(checkedFiles, serializer);
+      case DownloadGameProgress_FileAllocationStarted(
+        totalFiles: final totalFiles,
+        totalBytes: final totalBytes,
+      ):
+        sse_encode_i_32(2, serializer);
+        sse_encode_u_64(totalFiles, serializer);
+        sse_encode_u_64(totalBytes, serializer);
+      case DownloadGameProgress_FileAllocation(
+        allocatedFiles: final allocatedFiles,
+        allocatedBytes: final allocatedBytes,
+      ):
+        sse_encode_i_32(3, serializer);
+        sse_encode_u_64(allocatedFiles, serializer);
+        sse_encode_u_64(allocatedBytes, serializer);
+      case DownloadGameProgress_AllocationError(field0: final field0):
+        sse_encode_i_32(4, serializer);
+        sse_encode_String(field0, serializer);
+      case DownloadGameProgress_DownloadProgress(
+        downloadedBytes: final downloadedBytes,
+      ):
+        sse_encode_i_32(5, serializer);
+        sse_encode_u_64(downloadedBytes, serializer);
+      case DownloadGameProgress_Finished():
         sse_encode_i_32(6, serializer);
-        sse_encode_u_64(field0, serializer);
-      case DownloadGameProgress_Finished(field0: final field0):
-        sse_encode_i_32(7, serializer);
-        sse_encode_u_64(field0, serializer);
     }
   }
 
