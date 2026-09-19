@@ -261,7 +261,8 @@ fn wire__crate__api__gogdl__GogdlApi_download_save_files_impl(
             >>::sse_decode(&mut deserializer);
             let api_game_id = <i32>::sse_decode(&mut deserializer);
             let api_build_name = <String>::sse_decode(&mut deserializer);
-            let api_path = <String>::sse_decode(&mut deserializer);
+            let api_prefix = <String>::sse_decode(&mut deserializer);
+            let api_install_path = <String>::sse_decode(&mut deserializer);
             let api_sink = <StreamSink<
                 crate::api::progress_reporting::saves_download::DownloadSavesProgress,
                 flutter_rust_bridge::for_generated::SseCodec,
@@ -291,7 +292,8 @@ fn wire__crate__api__gogdl__GogdlApi_download_save_files_impl(
                             &*api_that_guard,
                             api_game_id,
                             &api_build_name,
-                            &api_path,
+                            &api_prefix,
+                            &api_install_path,
                             api_sink,
                         )
                         .await?;
@@ -1260,7 +1262,8 @@ fn wire__crate__api__gogdl__GogdlApi_upload_save_files_impl(
             >>::sse_decode(&mut deserializer);
             let api_game_id = <i32>::sse_decode(&mut deserializer);
             let api_build_name = <String>::sse_decode(&mut deserializer);
-            let api_path = <String>::sse_decode(&mut deserializer);
+            let api_prefix = <String>::sse_decode(&mut deserializer);
+            let api_install_path = <String>::sse_decode(&mut deserializer);
             let api_sink = <StreamSink<
                 crate::api::progress_reporting::saves_upload::UploadSavesProgress,
                 flutter_rust_bridge::for_generated::SseCodec,
@@ -1290,7 +1293,8 @@ fn wire__crate__api__gogdl__GogdlApi_upload_save_files_impl(
                             &*api_that_guard,
                             api_game_id,
                             &api_build_name,
-                            &api_path,
+                            &api_prefix,
+                            &api_install_path,
                             api_sink,
                         )
                         .await?;

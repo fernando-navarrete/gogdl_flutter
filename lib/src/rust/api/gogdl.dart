@@ -33,7 +33,8 @@ abstract class GogdlApi implements RustOpaqueInterface {
   Stream<DownloadSavesProgress> downloadSaveFiles({
     required int gameId,
     required String buildName,
-    required String path,
+    required String prefix,
+    required String installPath,
   });
 
   Future<String> getBackgroundImageLink({required int gameId});
@@ -81,7 +82,8 @@ abstract class GogdlApi implements RustOpaqueInterface {
   Stream<UploadSavesProgress> uploadSaveFiles({
     required int gameId,
     required String buildName,
-    required String path,
+    required String prefix,
+    required String installPath,
   });
 
   Stream<VerifyDownloadProgress> verifyDownload({

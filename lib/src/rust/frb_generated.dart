@@ -106,7 +106,8 @@ abstract class RustLibApi extends BaseApi {
     required GogdlApi that,
     required int gameId,
     required String buildName,
-    required String path,
+    required String prefix,
+    required String installPath,
   });
 
   Future<String> crateApiGogdlGogdlApiGetBackgroundImageLink({
@@ -190,7 +191,8 @@ abstract class RustLibApi extends BaseApi {
     required GogdlApi that,
     required int gameId,
     required String buildName,
-    required String path,
+    required String prefix,
+    required String installPath,
   });
 
   Stream<VerifyDownloadProgress> crateApiGogdlGogdlApiVerifyDownload({
@@ -363,7 +365,8 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     required GogdlApi that,
     required int gameId,
     required String buildName,
-    required String path,
+    required String prefix,
+    required String installPath,
   }) {
     final sink = RustStreamSink<DownloadSavesProgress>();
     unawaited(
@@ -377,7 +380,8 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
             );
             sse_encode_i_32(gameId, serializer);
             sse_encode_String(buildName, serializer);
-            sse_encode_String(path, serializer);
+            sse_encode_String(prefix, serializer);
+            sse_encode_String(installPath, serializer);
             sse_encode_StreamSink_download_saves_progress_Sse(sink, serializer);
             pdeCallFfi(
               generalizedFrbRustBinding,
@@ -392,7 +396,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
                 sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerGogError,
           ),
           constMeta: kCrateApiGogdlGogdlApiDownloadSaveFilesConstMeta,
-          argValues: [that, gameId, buildName, path, sink],
+          argValues: [that, gameId, buildName, prefix, installPath, sink],
           apiImpl: this,
         ),
       ),
@@ -403,7 +407,14 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   TaskConstMeta get kCrateApiGogdlGogdlApiDownloadSaveFilesConstMeta =>
       const TaskConstMeta(
         debugName: "GogdlApi_download_save_files",
-        argNames: ["that", "gameId", "buildName", "path", "sink"],
+        argNames: [
+          "that",
+          "gameId",
+          "buildName",
+          "prefix",
+          "installPath",
+          "sink",
+        ],
       );
 
   @override
@@ -1027,7 +1038,8 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     required GogdlApi that,
     required int gameId,
     required String buildName,
-    required String path,
+    required String prefix,
+    required String installPath,
   }) {
     final sink = RustStreamSink<UploadSavesProgress>();
     unawaited(
@@ -1041,7 +1053,8 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
             );
             sse_encode_i_32(gameId, serializer);
             sse_encode_String(buildName, serializer);
-            sse_encode_String(path, serializer);
+            sse_encode_String(prefix, serializer);
+            sse_encode_String(installPath, serializer);
             sse_encode_StreamSink_upload_saves_progress_Sse(sink, serializer);
             pdeCallFfi(
               generalizedFrbRustBinding,
@@ -1056,7 +1069,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
                 sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerGogError,
           ),
           constMeta: kCrateApiGogdlGogdlApiUploadSaveFilesConstMeta,
-          argValues: [that, gameId, buildName, path, sink],
+          argValues: [that, gameId, buildName, prefix, installPath, sink],
           apiImpl: this,
         ),
       ),
@@ -1067,7 +1080,14 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   TaskConstMeta get kCrateApiGogdlGogdlApiUploadSaveFilesConstMeta =>
       const TaskConstMeta(
         debugName: "GogdlApi_upload_save_files",
-        argNames: ["that", "gameId", "buildName", "path", "sink"],
+        argNames: [
+          "that",
+          "gameId",
+          "buildName",
+          "prefix",
+          "installPath",
+          "sink",
+        ],
       );
 
   @override
@@ -2871,12 +2891,14 @@ class GogdlApiImpl extends RustOpaque implements GogdlApi {
   Stream<DownloadSavesProgress> downloadSaveFiles({
     required int gameId,
     required String buildName,
-    required String path,
+    required String prefix,
+    required String installPath,
   }) => RustLib.instance.api.crateApiGogdlGogdlApiDownloadSaveFiles(
     that: this,
     gameId: gameId,
     buildName: buildName,
-    path: path,
+    prefix: prefix,
+    installPath: installPath,
   );
 
   Future<String> getBackgroundImageLink({required int gameId}) => RustLib
@@ -2957,12 +2979,14 @@ class GogdlApiImpl extends RustOpaque implements GogdlApi {
   Stream<UploadSavesProgress> uploadSaveFiles({
     required int gameId,
     required String buildName,
-    required String path,
+    required String prefix,
+    required String installPath,
   }) => RustLib.instance.api.crateApiGogdlGogdlApiUploadSaveFiles(
     that: this,
     gameId: gameId,
     buildName: buildName,
-    path: path,
+    prefix: prefix,
+    installPath: installPath,
   );
 
   Stream<VerifyDownloadProgress> verifyDownload({

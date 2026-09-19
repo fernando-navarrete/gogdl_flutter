@@ -814,13 +814,18 @@ impl GogdlApi {
         &self,
         game_id: i32,
         build_name: &str,
-        path: &str,
+        prefix: &str,
+        install_path: &str,
         sink: StreamSink<DownloadSavesProgress>,
     ) -> Result<(), GogError> {
         let (tx, mut rx) = mpsc::unbounded_channel();
-        let download_future =
-            self.inner
-                .download_save_files(game_id, build_name, Path::new(path), tx);
+        let download_future = self.inner.download_save_files(
+            game_id,
+            build_name,
+            Path::new(prefix),
+            Path::new(install_path),
+            tx,
+        );
 
         let progress_sink = sink.clone();
         let progress_reporting_future = async move {
@@ -905,13 +910,18 @@ impl GogdlApi {
         &self,
         game_id: i32,
         build_name: &str,
-        path: &str,
+        prefix: &str,
+        install_path: &str,
         sink: StreamSink<UploadSavesProgress>,
     ) -> Result<(), GogError> {
         let (tx, mut rx) = mpsc::unbounded_channel();
-        let upload_future =
-            self.inner
-                .upload_save_files(game_id, build_name, Path::new(path), tx);
+        let upload_future = self.inner.upload_save_files(
+            game_id,
+            build_name,
+            Path::new(prefix),
+            Path::new(install_path),
+            tx,
+        );
 
         let progress_sink = sink.clone();
         let progress_reporting_future = async move {
