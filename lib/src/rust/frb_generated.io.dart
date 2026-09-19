@@ -11,6 +11,8 @@ import 'api/models/proton_release.dart';
 import 'api/progress_reporting/game_download.dart';
 import 'api/progress_reporting/game_repair.dart';
 import 'api/progress_reporting/proton_download.dart';
+import 'api/progress_reporting/saves_download.dart';
+import 'api/progress_reporting/saves_upload.dart';
 import 'api/progress_reporting/verify_download.dart';
 import 'dart:async';
 import 'dart:convert';
@@ -85,12 +87,20 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   dco_decode_StreamSink_download_game_progress_Sse(dynamic raw);
 
   @protected
+  RustStreamSink<DownloadSavesProgress>
+  dco_decode_StreamSink_download_saves_progress_Sse(dynamic raw);
+
+  @protected
   RustStreamSink<ProtonDownloadProgress>
   dco_decode_StreamSink_proton_download_progress_Sse(dynamic raw);
 
   @protected
   RustStreamSink<RepairGameProgress>
   dco_decode_StreamSink_repair_game_progress_Sse(dynamic raw);
+
+  @protected
+  RustStreamSink<UploadSavesProgress>
+  dco_decode_StreamSink_upload_saves_progress_Sse(dynamic raw);
 
   @protected
   RustStreamSink<VerifyDownloadProgress>
@@ -101,6 +111,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   DownloadGameProgress dco_decode_download_game_progress(dynamic raw);
+
+  @protected
+  DownloadSavesProgress dco_decode_download_saves_progress(dynamic raw);
 
   @protected
   DownloadableProduct dco_decode_downloadable_product(dynamic raw);
@@ -157,6 +170,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   void dco_decode_unit(dynamic raw);
 
   @protected
+  UploadSavesProgress dco_decode_upload_saves_progress(dynamic raw);
+
+  @protected
   BigInt dco_decode_usize(dynamic raw);
 
   @protected
@@ -211,6 +227,12 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   );
 
   @protected
+  RustStreamSink<DownloadSavesProgress>
+  sse_decode_StreamSink_download_saves_progress_Sse(
+    SseDeserializer deserializer,
+  );
+
+  @protected
   RustStreamSink<ProtonDownloadProgress>
   sse_decode_StreamSink_proton_download_progress_Sse(
     SseDeserializer deserializer,
@@ -219,6 +241,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   @protected
   RustStreamSink<RepairGameProgress>
   sse_decode_StreamSink_repair_game_progress_Sse(SseDeserializer deserializer);
+
+  @protected
+  RustStreamSink<UploadSavesProgress>
+  sse_decode_StreamSink_upload_saves_progress_Sse(SseDeserializer deserializer);
 
   @protected
   RustStreamSink<VerifyDownloadProgress>
@@ -231,6 +257,11 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   DownloadGameProgress sse_decode_download_game_progress(
+    SseDeserializer deserializer,
+  );
+
+  @protected
+  DownloadSavesProgress sse_decode_download_saves_progress(
     SseDeserializer deserializer,
   );
 
@@ -297,6 +328,11 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   void sse_decode_unit(SseDeserializer deserializer);
+
+  @protected
+  UploadSavesProgress sse_decode_upload_saves_progress(
+    SseDeserializer deserializer,
+  );
 
   @protected
   BigInt sse_decode_usize(SseDeserializer deserializer);
@@ -373,6 +409,12 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   );
 
   @protected
+  void sse_encode_StreamSink_download_saves_progress_Sse(
+    RustStreamSink<DownloadSavesProgress> self,
+    SseSerializer serializer,
+  );
+
+  @protected
   void sse_encode_StreamSink_proton_download_progress_Sse(
     RustStreamSink<ProtonDownloadProgress> self,
     SseSerializer serializer,
@@ -381,6 +423,12 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   @protected
   void sse_encode_StreamSink_repair_game_progress_Sse(
     RustStreamSink<RepairGameProgress> self,
+    SseSerializer serializer,
+  );
+
+  @protected
+  void sse_encode_StreamSink_upload_saves_progress_Sse(
+    RustStreamSink<UploadSavesProgress> self,
     SseSerializer serializer,
   );
 
@@ -396,6 +444,12 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   @protected
   void sse_encode_download_game_progress(
     DownloadGameProgress self,
+    SseSerializer serializer,
+  );
+
+  @protected
+  void sse_encode_download_saves_progress(
+    DownloadSavesProgress self,
     SseSerializer serializer,
   );
 
@@ -479,6 +533,12 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   void sse_encode_unit(void self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_upload_saves_progress(
+    UploadSavesProgress self,
+    SseSerializer serializer,
+  );
 
   @protected
   void sse_encode_usize(BigInt self, SseSerializer serializer);

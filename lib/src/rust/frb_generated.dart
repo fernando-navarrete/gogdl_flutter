@@ -11,6 +11,8 @@ import 'api/models/proton_release.dart';
 import 'api/progress_reporting/game_download.dart';
 import 'api/progress_reporting/game_repair.dart';
 import 'api/progress_reporting/proton_download.dart';
+import 'api/progress_reporting/saves_download.dart';
+import 'api/progress_reporting/saves_upload.dart';
 import 'api/progress_reporting/verify_download.dart';
 import 'dart:async';
 import 'dart:convert';
@@ -72,7 +74,7 @@ class RustLib extends BaseEntrypoint<RustLibApi, RustLibApiImpl, RustLibWire> {
   String get codegenVersion => '2.13.0';
 
   @override
-  int get rustContentHash => -170248770;
+  int get rustContentHash => 227585415;
 
   static const kDefaultExternalLibraryLoaderConfig =
       ExternalLibraryLoaderConfig(
@@ -98,6 +100,13 @@ abstract class RustLibApi extends BaseApi {
     required GogdlApi that,
     required String path,
     required String tagName,
+  });
+
+  Stream<DownloadSavesProgress> crateApiGogdlGogdlApiDownloadSaveFiles({
+    required GogdlApi that,
+    required int gameId,
+    required String buildName,
+    required String path,
   });
 
   Future<String> crateApiGogdlGogdlApiGetBackgroundImageLink({
@@ -175,6 +184,13 @@ abstract class RustLibApi extends BaseApi {
   Future<void> crateApiGogdlGogdlApiSetTokenRefreshCallback({
     required GogdlApi that,
     required FutureOr<void> Function(String) callback,
+  });
+
+  Stream<UploadSavesProgress> crateApiGogdlGogdlApiUploadSaveFiles({
+    required GogdlApi that,
+    required int gameId,
+    required String buildName,
+    required String path,
   });
 
   Stream<VerifyDownloadProgress> crateApiGogdlGogdlApiVerifyDownload({
@@ -343,6 +359,54 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       );
 
   @override
+  Stream<DownloadSavesProgress> crateApiGogdlGogdlApiDownloadSaveFiles({
+    required GogdlApi that,
+    required int gameId,
+    required String buildName,
+    required String path,
+  }) {
+    final sink = RustStreamSink<DownloadSavesProgress>();
+    unawaited(
+      handler.executeNormal(
+        NormalTask(
+          callFfi: (port_) {
+            final serializer = SseSerializer(generalizedFrbRustBinding);
+            sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerGogdlApi(
+              that,
+              serializer,
+            );
+            sse_encode_i_32(gameId, serializer);
+            sse_encode_String(buildName, serializer);
+            sse_encode_String(path, serializer);
+            sse_encode_StreamSink_download_saves_progress_Sse(sink, serializer);
+            pdeCallFfi(
+              generalizedFrbRustBinding,
+              serializer,
+              funcId: 4,
+              port: port_,
+            );
+          },
+          codec: SseCodec(
+            decodeSuccessData: sse_decode_unit,
+            decodeErrorData:
+                sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerGogError,
+          ),
+          constMeta: kCrateApiGogdlGogdlApiDownloadSaveFilesConstMeta,
+          argValues: [that, gameId, buildName, path, sink],
+          apiImpl: this,
+        ),
+      ),
+    );
+    return sink.stream;
+  }
+
+  TaskConstMeta get kCrateApiGogdlGogdlApiDownloadSaveFilesConstMeta =>
+      const TaskConstMeta(
+        debugName: "GogdlApi_download_save_files",
+        argNames: ["that", "gameId", "buildName", "path", "sink"],
+      );
+
+  @override
   Future<String> crateApiGogdlGogdlApiGetBackgroundImageLink({
     required GogdlApi that,
     required int gameId,
@@ -359,7 +423,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 4,
+            funcId: 5,
             port: port_,
           );
         },
@@ -401,7 +465,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 5,
+            funcId: 6,
             port: port_,
           );
         },
@@ -440,7 +504,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 6,
+            funcId: 7,
             port: port_,
           );
         },
@@ -479,7 +543,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 7,
+            funcId: 8,
             port: port_,
           );
         },
@@ -518,7 +582,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 8,
+            funcId: 9,
             port: port_,
           );
         },
@@ -557,7 +621,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 9,
+            funcId: 10,
             port: port_,
           );
         },
@@ -596,7 +660,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 10,
+            funcId: 11,
             port: port_,
           );
         },
@@ -628,7 +692,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
             that,
             serializer,
           );
-          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 11)!;
+          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 12)!;
         },
         codec: SseCodec(
           decodeSuccessData: sse_decode_String,
@@ -662,7 +726,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 12,
+            funcId: 13,
             port: port_,
           );
         },
@@ -701,7 +765,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 13,
+            funcId: 14,
             port: port_,
           );
         },
@@ -740,7 +804,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 14,
+            funcId: 15,
             port: port_,
           );
         },
@@ -768,7 +832,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       SyncTask(
         callFfi: () {
           final serializer = SseSerializer(generalizedFrbRustBinding);
-          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 15)!;
+          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 16)!;
         },
         codec: SseCodec(
           decodeSuccessData:
@@ -800,7 +864,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 16,
+            funcId: 17,
             port: port_,
           );
         },
@@ -847,7 +911,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
             pdeCallFfi(
               generalizedFrbRustBinding,
               serializer,
-              funcId: 17,
+              funcId: 18,
               port: port_,
             );
           },
@@ -895,7 +959,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 18,
+            funcId: 19,
             port: port_,
           );
         },
@@ -937,7 +1001,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 19,
+            funcId: 20,
             port: port_,
           );
         },
@@ -956,6 +1020,54 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       const TaskConstMeta(
         debugName: "GogdlApi_set_token_refresh_callback",
         argNames: ["that", "callback"],
+      );
+
+  @override
+  Stream<UploadSavesProgress> crateApiGogdlGogdlApiUploadSaveFiles({
+    required GogdlApi that,
+    required int gameId,
+    required String buildName,
+    required String path,
+  }) {
+    final sink = RustStreamSink<UploadSavesProgress>();
+    unawaited(
+      handler.executeNormal(
+        NormalTask(
+          callFfi: (port_) {
+            final serializer = SseSerializer(generalizedFrbRustBinding);
+            sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerGogdlApi(
+              that,
+              serializer,
+            );
+            sse_encode_i_32(gameId, serializer);
+            sse_encode_String(buildName, serializer);
+            sse_encode_String(path, serializer);
+            sse_encode_StreamSink_upload_saves_progress_Sse(sink, serializer);
+            pdeCallFfi(
+              generalizedFrbRustBinding,
+              serializer,
+              funcId: 21,
+              port: port_,
+            );
+          },
+          codec: SseCodec(
+            decodeSuccessData: sse_decode_unit,
+            decodeErrorData:
+                sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerGogError,
+          ),
+          constMeta: kCrateApiGogdlGogdlApiUploadSaveFilesConstMeta,
+          argValues: [that, gameId, buildName, path, sink],
+          apiImpl: this,
+        ),
+      ),
+    );
+    return sink.stream;
+  }
+
+  TaskConstMeta get kCrateApiGogdlGogdlApiUploadSaveFilesConstMeta =>
+      const TaskConstMeta(
+        debugName: "GogdlApi_upload_save_files",
+        argNames: ["that", "gameId", "buildName", "path", "sink"],
       );
 
   @override
@@ -987,7 +1099,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
             pdeCallFfi(
               generalizedFrbRustBinding,
               serializer,
-              funcId: 20,
+              funcId: 22,
               port: port_,
             );
           },
@@ -1150,6 +1262,13 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  RustStreamSink<DownloadSavesProgress>
+  dco_decode_StreamSink_download_saves_progress_Sse(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    throw UnimplementedError();
+  }
+
+  @protected
   RustStreamSink<ProtonDownloadProgress>
   dco_decode_StreamSink_proton_download_progress_Sse(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
@@ -1159,6 +1278,13 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   @protected
   RustStreamSink<RepairGameProgress>
   dco_decode_StreamSink_repair_game_progress_Sse(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    throw UnimplementedError();
+  }
+
+  @protected
+  RustStreamSink<UploadSavesProgress>
+  dco_decode_StreamSink_upload_saves_progress_Sse(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     throw UnimplementedError();
   }
@@ -1207,6 +1333,37 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         );
       case 6:
         return DownloadGameProgress_Finished();
+      default:
+        throw Exception("unreachable");
+    }
+  }
+
+  @protected
+  DownloadSavesProgress dco_decode_download_saves_progress(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    switch (raw[0]) {
+      case 0:
+        return DownloadSavesProgress_Started(
+          totalFiles: dco_decode_u_64(raw[1]),
+          totalBytes: dco_decode_u_64(raw[2]),
+        );
+      case 1:
+        return DownloadSavesProgress_FileStarted(
+          name: dco_decode_String(raw[1]),
+          destination: dco_decode_String(raw[2]),
+          totalBytes: dco_decode_u_64(raw[3]),
+        );
+      case 2:
+        return DownloadSavesProgress_Progress(
+          downloadedBytes: dco_decode_u_64(raw[1]),
+          fileDownloadedBytes: dco_decode_u_64(raw[2]),
+        );
+      case 3:
+        return DownloadSavesProgress_FileFinished(
+          name: dco_decode_String(raw[1]),
+        );
+      case 4:
+        return DownloadSavesProgress_Finished();
       default:
         throw Exception("unreachable");
     }
@@ -1404,6 +1561,34 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  UploadSavesProgress dco_decode_upload_saves_progress(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    switch (raw[0]) {
+      case 0:
+        return UploadSavesProgress_Started(totalFiles: dco_decode_u_64(raw[1]));
+      case 1:
+        return UploadSavesProgress_FileStarted(
+          name: dco_decode_String(raw[1]),
+          source: dco_decode_String(raw[2]),
+          totalBytes: dco_decode_u_64(raw[3]),
+        );
+      case 2:
+        return UploadSavesProgress_Progress(
+          uploadedBytes: dco_decode_u_64(raw[1]),
+          fileUploadedBytes: dco_decode_u_64(raw[2]),
+        );
+      case 3:
+        return UploadSavesProgress_FileFinished(
+          name: dco_decode_String(raw[1]),
+        );
+      case 4:
+        return UploadSavesProgress_Finished();
+      default:
+        throw Exception("unreachable");
+    }
+  }
+
+  @protected
   BigInt dco_decode_usize(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     return dcoDecodeU64(raw);
@@ -1535,6 +1720,15 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  RustStreamSink<DownloadSavesProgress>
+  sse_decode_StreamSink_download_saves_progress_Sse(
+    SseDeserializer deserializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    throw UnimplementedError('Unreachable ()');
+  }
+
+  @protected
   RustStreamSink<ProtonDownloadProgress>
   sse_decode_StreamSink_proton_download_progress_Sse(
     SseDeserializer deserializer,
@@ -1546,6 +1740,15 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   @protected
   RustStreamSink<RepairGameProgress>
   sse_decode_StreamSink_repair_game_progress_Sse(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    throw UnimplementedError('Unreachable ()');
+  }
+
+  @protected
+  RustStreamSink<UploadSavesProgress>
+  sse_decode_StreamSink_upload_saves_progress_Sse(
+    SseDeserializer deserializer,
+  ) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     throw UnimplementedError('Unreachable ()');
   }
@@ -1610,6 +1813,47 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         );
       case 6:
         return DownloadGameProgress_Finished();
+      default:
+        throw UnimplementedError('');
+    }
+  }
+
+  @protected
+  DownloadSavesProgress sse_decode_download_saves_progress(
+    SseDeserializer deserializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+
+    var tag_ = sse_decode_i_32(deserializer);
+    switch (tag_) {
+      case 0:
+        var var_totalFiles = sse_decode_u_64(deserializer);
+        var var_totalBytes = sse_decode_u_64(deserializer);
+        return DownloadSavesProgress_Started(
+          totalFiles: var_totalFiles,
+          totalBytes: var_totalBytes,
+        );
+      case 1:
+        var var_name = sse_decode_String(deserializer);
+        var var_destination = sse_decode_String(deserializer);
+        var var_totalBytes = sse_decode_u_64(deserializer);
+        return DownloadSavesProgress_FileStarted(
+          name: var_name,
+          destination: var_destination,
+          totalBytes: var_totalBytes,
+        );
+      case 2:
+        var var_downloadedBytes = sse_decode_u_64(deserializer);
+        var var_fileDownloadedBytes = sse_decode_u_64(deserializer);
+        return DownloadSavesProgress_Progress(
+          downloadedBytes: var_downloadedBytes,
+          fileDownloadedBytes: var_fileDownloadedBytes,
+        );
+      case 3:
+        var var_name = sse_decode_String(deserializer);
+        return DownloadSavesProgress_FileFinished(name: var_name);
+      case 4:
+        return DownloadSavesProgress_Finished();
       default:
         throw UnimplementedError('');
     }
@@ -1851,6 +2095,43 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  UploadSavesProgress sse_decode_upload_saves_progress(
+    SseDeserializer deserializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+
+    var tag_ = sse_decode_i_32(deserializer);
+    switch (tag_) {
+      case 0:
+        var var_totalFiles = sse_decode_u_64(deserializer);
+        return UploadSavesProgress_Started(totalFiles: var_totalFiles);
+      case 1:
+        var var_name = sse_decode_String(deserializer);
+        var var_source = sse_decode_String(deserializer);
+        var var_totalBytes = sse_decode_u_64(deserializer);
+        return UploadSavesProgress_FileStarted(
+          name: var_name,
+          source: var_source,
+          totalBytes: var_totalBytes,
+        );
+      case 2:
+        var var_uploadedBytes = sse_decode_u_64(deserializer);
+        var var_fileUploadedBytes = sse_decode_u_64(deserializer);
+        return UploadSavesProgress_Progress(
+          uploadedBytes: var_uploadedBytes,
+          fileUploadedBytes: var_fileUploadedBytes,
+        );
+      case 3:
+        var var_name = sse_decode_String(deserializer);
+        return UploadSavesProgress_FileFinished(name: var_name);
+      case 4:
+        return UploadSavesProgress_Finished();
+      default:
+        throw UnimplementedError('');
+    }
+  }
+
+  @protected
   BigInt sse_decode_usize(SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     return deserializer.buffer.getBigUint64();
@@ -2031,6 +2312,23 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  void sse_encode_StreamSink_download_saves_progress_Sse(
+    RustStreamSink<DownloadSavesProgress> self,
+    SseSerializer serializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_String(
+      self.setupAndSerialize(
+        codec: SseCodec(
+          decodeSuccessData: sse_decode_download_saves_progress,
+          decodeErrorData: sse_decode_AnyhowException,
+        ),
+      ),
+      serializer,
+    );
+  }
+
+  @protected
   void sse_encode_StreamSink_proton_download_progress_Sse(
     RustStreamSink<ProtonDownloadProgress> self,
     SseSerializer serializer,
@@ -2057,6 +2355,23 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       self.setupAndSerialize(
         codec: SseCodec(
           decodeSuccessData: sse_decode_repair_game_progress,
+          decodeErrorData: sse_decode_AnyhowException,
+        ),
+      ),
+      serializer,
+    );
+  }
+
+  @protected
+  void sse_encode_StreamSink_upload_saves_progress_Sse(
+    RustStreamSink<UploadSavesProgress> self,
+    SseSerializer serializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_String(
+      self.setupAndSerialize(
+        codec: SseCodec(
+          decodeSuccessData: sse_decode_upload_saves_progress,
           decodeErrorData: sse_decode_AnyhowException,
         ),
       ),
@@ -2130,6 +2445,44 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         sse_encode_u_64(downloadedBytes, serializer);
       case DownloadGameProgress_Finished():
         sse_encode_i_32(6, serializer);
+    }
+  }
+
+  @protected
+  void sse_encode_download_saves_progress(
+    DownloadSavesProgress self,
+    SseSerializer serializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    switch (self) {
+      case DownloadSavesProgress_Started(
+        totalFiles: final totalFiles,
+        totalBytes: final totalBytes,
+      ):
+        sse_encode_i_32(0, serializer);
+        sse_encode_u_64(totalFiles, serializer);
+        sse_encode_u_64(totalBytes, serializer);
+      case DownloadSavesProgress_FileStarted(
+        name: final name,
+        destination: final destination,
+        totalBytes: final totalBytes,
+      ):
+        sse_encode_i_32(1, serializer);
+        sse_encode_String(name, serializer);
+        sse_encode_String(destination, serializer);
+        sse_encode_u_64(totalBytes, serializer);
+      case DownloadSavesProgress_Progress(
+        downloadedBytes: final downloadedBytes,
+        fileDownloadedBytes: final fileDownloadedBytes,
+      ):
+        sse_encode_i_32(2, serializer);
+        sse_encode_u_64(downloadedBytes, serializer);
+        sse_encode_u_64(fileDownloadedBytes, serializer);
+      case DownloadSavesProgress_FileFinished(name: final name):
+        sse_encode_i_32(3, serializer);
+        sse_encode_String(name, serializer);
+      case DownloadSavesProgress_Finished():
+        sse_encode_i_32(4, serializer);
     }
   }
 
@@ -2365,6 +2718,40 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  void sse_encode_upload_saves_progress(
+    UploadSavesProgress self,
+    SseSerializer serializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    switch (self) {
+      case UploadSavesProgress_Started(totalFiles: final totalFiles):
+        sse_encode_i_32(0, serializer);
+        sse_encode_u_64(totalFiles, serializer);
+      case UploadSavesProgress_FileStarted(
+        name: final name,
+        source: final source,
+        totalBytes: final totalBytes,
+      ):
+        sse_encode_i_32(1, serializer);
+        sse_encode_String(name, serializer);
+        sse_encode_String(source, serializer);
+        sse_encode_u_64(totalBytes, serializer);
+      case UploadSavesProgress_Progress(
+        uploadedBytes: final uploadedBytes,
+        fileUploadedBytes: final fileUploadedBytes,
+      ):
+        sse_encode_i_32(2, serializer);
+        sse_encode_u_64(uploadedBytes, serializer);
+        sse_encode_u_64(fileUploadedBytes, serializer);
+      case UploadSavesProgress_FileFinished(name: final name):
+        sse_encode_i_32(3, serializer);
+        sse_encode_String(name, serializer);
+      case UploadSavesProgress_Finished():
+        sse_encode_i_32(4, serializer);
+    }
+  }
+
+  @protected
   void sse_encode_usize(BigInt self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     serializer.buffer.putBigUint64(self);
@@ -2481,6 +2868,17 @@ class GogdlApiImpl extends RustOpaque implements GogdlApi {
     tagName: tagName,
   );
 
+  Stream<DownloadSavesProgress> downloadSaveFiles({
+    required int gameId,
+    required String buildName,
+    required String path,
+  }) => RustLib.instance.api.crateApiGogdlGogdlApiDownloadSaveFiles(
+    that: this,
+    gameId: gameId,
+    buildName: buildName,
+    path: path,
+  );
+
   Future<String> getBackgroundImageLink({required int gameId}) => RustLib
       .instance
       .api
@@ -2554,6 +2952,17 @@ class GogdlApiImpl extends RustOpaque implements GogdlApi {
   }) => RustLib.instance.api.crateApiGogdlGogdlApiSetTokenRefreshCallback(
     that: this,
     callback: callback,
+  );
+
+  Stream<UploadSavesProgress> uploadSaveFiles({
+    required int gameId,
+    required String buildName,
+    required String path,
+  }) => RustLib.instance.api.crateApiGogdlGogdlApiUploadSaveFiles(
+    that: this,
+    gameId: gameId,
+    buildName: buildName,
+    path: path,
   );
 
   Stream<VerifyDownloadProgress> verifyDownload({

@@ -50,3 +50,21 @@ export 'src/rust/api/progress_reporting/game_repair.dart'
         RepairGameProgress_DownloadProgress,
         RepairGameProgress_Finished,
         RepairGameProgressPatterns;
+export 'src/rust/api/progress_reporting/saves_download.dart'
+    show
+        DownloadSavesProgress,
+        DownloadSavesProgress_Started,
+        DownloadSavesProgress_FileStarted,
+        DownloadSavesProgress_Progress,
+        DownloadSavesProgress_FileFinished,
+        DownloadSavesProgress_Finished,
+        DownloadSavesProgressPatterns;
+export 'src/rust/api/progress_reporting/saves_upload.dart'
+    show
+        UploadSavesProgress,
+        UploadSavesProgress_Started,
+        UploadSavesProgress_FileStarted,
+        UploadSavesProgress_Progress,
+        UploadSavesProgress_FileFinished,
+        UploadSavesProgress_Finished,
+        UploadSavesProgressPatterns;

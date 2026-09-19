@@ -12,6 +12,8 @@ import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 import 'progress_reporting/game_download.dart';
 import 'progress_reporting/game_repair.dart';
 import 'progress_reporting/proton_download.dart';
+import 'progress_reporting/saves_download.dart';
+import 'progress_reporting/saves_upload.dart';
 import 'progress_reporting/verify_download.dart';
 
 // Rust type: RustOpaqueMoi<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<GogdlApi>>
@@ -26,6 +28,12 @@ abstract class GogdlApi implements RustOpaqueInterface {
   Stream<ProtonDownloadProgress> downloadProtonRelease({
     required String path,
     required String tagName,
+  });
+
+  Stream<DownloadSavesProgress> downloadSaveFiles({
+    required int gameId,
+    required String buildName,
+    required String path,
   });
 
   Future<String> getBackgroundImageLink({required int gameId});
@@ -68,6 +76,12 @@ abstract class GogdlApi implements RustOpaqueInterface {
 
   Future<void> setTokenRefreshCallback({
     required FutureOr<void> Function(String) callback,
+  });
+
+  Stream<UploadSavesProgress> uploadSaveFiles({
+    required int gameId,
+    required String buildName,
+    required String path,
   });
 
   Stream<VerifyDownloadProgress> verifyDownload({
