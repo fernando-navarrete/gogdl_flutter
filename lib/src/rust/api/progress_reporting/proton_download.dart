@@ -8,6 +8,8 @@ import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 import 'package:freezed_annotation/freezed_annotation.dart' hide protected;
 part 'proton_download.freezed.dart';
 
+// These function are ignored because they are on traits that is not defined in current crate (put an empty `#[frb]` on it to unignore): `clone`
+
 @freezed
 sealed class ProtonDownloadProgress with _$ProtonDownloadProgress {
   const ProtonDownloadProgress._();
@@ -18,4 +20,11 @@ sealed class ProtonDownloadProgress with _$ProtonDownloadProgress {
       ProtonDownloadProgress_Progress;
   const factory ProtonDownloadProgress.extracted(String field0) =
       ProtonDownloadProgress_Extracted;
+
+  /// Absolute path of the extracted release directory, `path/<tag_name>`
+  /// with the tag sanitized for the filesystem. Not necessarily the
+  /// directory name inside the tarball — see `Extracted`, whose paths
+  /// reflect the archive's own layout, before the rename.
+  const factory ProtonDownloadProgress.finished(String field0) =
+      ProtonDownloadProgress_Finished;
 }

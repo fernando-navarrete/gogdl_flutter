@@ -12,6 +12,7 @@ export 'src/rust/api/progress_reporting/proton_download.dart'
         ProtonDownloadProgress_Started,
         ProtonDownloadProgress_Progress,
         ProtonDownloadProgress_Extracted,
+        ProtonDownloadProgress_Finished,
         ProtonDownloadProgressPatterns;
 export 'src/rust/api/progress_reporting/verify_download.dart'
     show

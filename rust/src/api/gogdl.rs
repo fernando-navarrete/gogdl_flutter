@@ -125,6 +125,7 @@ impl GogdlApi {
             .inner
             .download_proton_release(&release, Path::new(path), tx);
 
+        let progress_sink = sink.clone();
         let progress_reporting_future = async move {
             let mut downloaded: u64 = 0;
             let mut last_extracted: Option<String> = None;
@@ -139,7 +140,7 @@ impl GogdlApi {
                         match event {
                             Some(gogdl_lib::ProtonDownloadEvent::Downloading { total_bytes }) => {
                                 // one-shot signal, flush immediately regardless of ticker
-                                let _ = sink.add(ProtonDownloadProgress::Started(total_bytes));
+                                let _ = progress_sink.add(ProtonDownloadProgress::Started(total_bytes));
                             }
                             Some(gogdl_lib::ProtonDownloadEvent::Progress(delta)) => {
                                 downloaded += delta as u64;
@@ -154,9 +155,9 @@ impl GogdlApi {
                     }
                     _ = ticker.tick() => {
                         if dirty {
-                            let _ = sink.add(ProtonDownloadProgress::Progress(downloaded));
+                            let _ = progress_sink.add(ProtonDownloadProgress::Progress(downloaded));
                             if let Some(p) = last_extracted.take() {
-                                let _ = sink.add(ProtonDownloadProgress::Extracted(p));
+                                let _ = progress_sink.add(ProtonDownloadProgress::Extracted(p));
                             }
                             dirty = false;
                         }
@@ -167,15 +168,18 @@ impl GogdlApi {
             // final flush so the UI doesn't sit at a stale % between the last tick
             // and the channel closing
             if dirty {
-                let _ = sink.add(ProtonDownloadProgress::Progress(downloaded));
+                let _ = progress_sink.add(ProtonDownloadProgress::Progress(downloaded));
                 if let Some(p) = last_extracted.take() {
-                    let _ = sink.add(ProtonDownloadProgress::Extracted(p));
+                    let _ = progress_sink.add(ProtonDownloadProgress::Extracted(p));
                 }
             }
         };
 
         let (result, _) = tokio::join!(download_future, progress_reporting_future);
-        result?;
+        let extracted_path = result?;
+        let _ = sink.add(ProtonDownloadProgress::Finished(
+            extracted_path.to_string_lossy().into_owned(),
+        ));
         Ok(())
     }
     pub async fn login_with_code(&self, code: &str) -> Result<String, GogError> {

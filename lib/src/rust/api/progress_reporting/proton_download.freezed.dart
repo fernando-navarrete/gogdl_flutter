@@ -61,13 +61,14 @@ extension ProtonDownloadProgressPatterns on ProtonDownloadProgress {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( ProtonDownloadProgress_Started value)?  started,TResult Function( ProtonDownloadProgress_Progress value)?  progress,TResult Function( ProtonDownloadProgress_Extracted value)?  extracted,required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( ProtonDownloadProgress_Started value)?  started,TResult Function( ProtonDownloadProgress_Progress value)?  progress,TResult Function( ProtonDownloadProgress_Extracted value)?  extracted,TResult Function( ProtonDownloadProgress_Finished value)?  finished,required TResult orElse(),}){
 final _that = this;
 switch (_that) {
 case ProtonDownloadProgress_Started() when started != null:
 return started(_that);case ProtonDownloadProgress_Progress() when progress != null:
 return progress(_that);case ProtonDownloadProgress_Extracted() when extracted != null:
-return extracted(_that);case _:
+return extracted(_that);case ProtonDownloadProgress_Finished() when finished != null:
+return finished(_that);case _:
   return orElse();
 
 }
@@ -85,13 +86,14 @@ return extracted(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( ProtonDownloadProgress_Started value)  started,required TResult Function( ProtonDownloadProgress_Progress value)  progress,required TResult Function( ProtonDownloadProgress_Extracted value)  extracted,}){
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( ProtonDownloadProgress_Started value)  started,required TResult Function( ProtonDownloadProgress_Progress value)  progress,required TResult Function( ProtonDownloadProgress_Extracted value)  extracted,required TResult Function( ProtonDownloadProgress_Finished value)  finished,}){
 final _that = this;
 switch (_that) {
 case ProtonDownloadProgress_Started():
 return started(_that);case ProtonDownloadProgress_Progress():
 return progress(_that);case ProtonDownloadProgress_Extracted():
-return extracted(_that);}
+return extracted(_that);case ProtonDownloadProgress_Finished():
+return finished(_that);}
 }
 /// A variant of `map` that fallback to returning `null`.
 ///
@@ -105,13 +107,14 @@ return extracted(_that);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( ProtonDownloadProgress_Started value)?  started,TResult? Function( ProtonDownloadProgress_Progress value)?  progress,TResult? Function( ProtonDownloadProgress_Extracted value)?  extracted,}){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( ProtonDownloadProgress_Started value)?  started,TResult? Function( ProtonDownloadProgress_Progress value)?  progress,TResult? Function( ProtonDownloadProgress_Extracted value)?  extracted,TResult? Function( ProtonDownloadProgress_Finished value)?  finished,}){
 final _that = this;
 switch (_that) {
 case ProtonDownloadProgress_Started() when started != null:
 return started(_that);case ProtonDownloadProgress_Progress() when progress != null:
 return progress(_that);case ProtonDownloadProgress_Extracted() when extracted != null:
-return extracted(_that);case _:
+return extracted(_that);case ProtonDownloadProgress_Finished() when finished != null:
+return finished(_that);case _:
   return null;
 
 }
@@ -128,12 +131,13 @@ return extracted(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( BigInt field0)?  started,TResult Function( BigInt field0)?  progress,TResult Function( String field0)?  extracted,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( BigInt field0)?  started,TResult Function( BigInt field0)?  progress,TResult Function( String field0)?  extracted,TResult Function( String field0)?  finished,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case ProtonDownloadProgress_Started() when started != null:
 return started(_that.field0);case ProtonDownloadProgress_Progress() when progress != null:
 return progress(_that.field0);case ProtonDownloadProgress_Extracted() when extracted != null:
-return extracted(_that.field0);case _:
+return extracted(_that.field0);case ProtonDownloadProgress_Finished() when finished != null:
+return finished(_that.field0);case _:
   return orElse();
 
 }
@@ -151,12 +155,13 @@ return extracted(_that.field0);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( BigInt field0)  started,required TResult Function( BigInt field0)  progress,required TResult Function( String field0)  extracted,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( BigInt field0)  started,required TResult Function( BigInt field0)  progress,required TResult Function( String field0)  extracted,required TResult Function( String field0)  finished,}) {final _that = this;
 switch (_that) {
 case ProtonDownloadProgress_Started():
 return started(_that.field0);case ProtonDownloadProgress_Progress():
 return progress(_that.field0);case ProtonDownloadProgress_Extracted():
-return extracted(_that.field0);}
+return extracted(_that.field0);case ProtonDownloadProgress_Finished():
+return finished(_that.field0);}
 }
 /// A variant of `when` that fallback to returning `null`
 ///
@@ -170,12 +175,13 @@ return extracted(_that.field0);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( BigInt field0)?  started,TResult? Function( BigInt field0)?  progress,TResult? Function( String field0)?  extracted,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( BigInt field0)?  started,TResult? Function( BigInt field0)?  progress,TResult? Function( String field0)?  extracted,TResult? Function( String field0)?  finished,}) {final _that = this;
 switch (_that) {
 case ProtonDownloadProgress_Started() when started != null:
 return started(_that.field0);case ProtonDownloadProgress_Progress() when progress != null:
 return progress(_that.field0);case ProtonDownloadProgress_Extracted() when extracted != null:
-return extracted(_that.field0);case _:
+return extracted(_that.field0);case ProtonDownloadProgress_Finished() when finished != null:
+return finished(_that.field0);case _:
   return null;
 
 }
@@ -379,6 +385,74 @@ class _$ProtonDownloadProgress_ExtractedCopyWithImpl<$Res>
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') $Res call({Object? field0 = null,}) {
   return _then(ProtonDownloadProgress_Extracted(
+null == field0 ? _self.field0 : field0 // ignore: cast_nullable_to_non_nullable
+as String,
+  ));
+}
+
+
+}
+
+/// @nodoc
+
+
+class ProtonDownloadProgress_Finished extends ProtonDownloadProgress {
+  const ProtonDownloadProgress_Finished(this.field0): super._();
+  
+
+@override final  String field0;
+
+/// Create a copy of ProtonDownloadProgress
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$ProtonDownloadProgress_FinishedCopyWith<ProtonDownloadProgress_Finished> get copyWith => _$ProtonDownloadProgress_FinishedCopyWithImpl<ProtonDownloadProgress_Finished>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is ProtonDownloadProgress_Finished&&(identical(other.field0, field0) || other.field0 == field0));
+}
+
+
+@override
+int get hashCode {
+    return Object.hash(runtimeType,field0);
+}
+
+@override
+String toString() {
+    return 'ProtonDownloadProgress.finished(field0: $field0)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class $ProtonDownloadProgress_FinishedCopyWith<$Res> implements $ProtonDownloadProgressCopyWith<$Res> {
+  factory $ProtonDownloadProgress_FinishedCopyWith(ProtonDownloadProgress_Finished value, $Res Function(ProtonDownloadProgress_Finished) _then) = _$ProtonDownloadProgress_FinishedCopyWithImpl;
+@useResult
+$Res call({
+ String field0
+});
+
+
+
+
+}
+/// @nodoc
+class _$ProtonDownloadProgress_FinishedCopyWithImpl<$Res>
+    implements $ProtonDownloadProgress_FinishedCopyWith<$Res> {
+  _$ProtonDownloadProgress_FinishedCopyWithImpl(this._self, this._then);
+
+  final ProtonDownloadProgress_Finished _self;
+  final $Res Function(ProtonDownloadProgress_Finished) _then;
+
+/// Create a copy of ProtonDownloadProgress
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') $Res call({Object? field0 = null,}) {
+  return _then(ProtonDownloadProgress_Finished(
 null == field0 ? _self.field0 : field0 // ignore: cast_nullable_to_non_nullable
 as String,
   ));

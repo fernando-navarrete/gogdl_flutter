@@ -1486,6 +1486,8 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         return ProtonDownloadProgress_Progress(dco_decode_u_64(raw[1]));
       case 2:
         return ProtonDownloadProgress_Extracted(dco_decode_String(raw[1]));
+      case 3:
+        return ProtonDownloadProgress_Finished(dco_decode_String(raw[1]));
       default:
         throw Exception("unreachable");
     }
@@ -2017,6 +2019,9 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       case 2:
         var var_field0 = sse_decode_String(deserializer);
         return ProtonDownloadProgress_Extracted(var_field0);
+      case 3:
+        var var_field0 = sse_decode_String(deserializer);
+        return ProtonDownloadProgress_Finished(var_field0);
       default:
         throw UnimplementedError('');
     }
@@ -2636,6 +2641,9 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         sse_encode_u_64(field0, serializer);
       case ProtonDownloadProgress_Extracted(field0: final field0):
         sse_encode_i_32(2, serializer);
+        sse_encode_String(field0, serializer);
+      case ProtonDownloadProgress_Finished(field0: final field0):
+        sse_encode_i_32(3, serializer);
         sse_encode_String(field0, serializer);
     }
   }

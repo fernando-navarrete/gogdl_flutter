@@ -1788,6 +1788,10 @@ impl SseDecode for crate::api::progress_reporting::proton_download::ProtonDownlo
                 let mut var_field0 = <String>::sse_decode(deserializer);
                 return crate::api::progress_reporting::proton_download::ProtonDownloadProgress::Extracted(var_field0);
             }
+            3 => {
+                let mut var_field0 = <String>::sse_decode(deserializer);
+                return crate::api::progress_reporting::proton_download::ProtonDownloadProgress::Finished(var_field0);
+            }
             _ => {
                 unimplemented!("");
             }
@@ -2277,6 +2281,9 @@ impl flutter_rust_bridge::IntoDart
             crate::api::progress_reporting::proton_download::ProtonDownloadProgress::Extracted(
                 field0,
             ) => [2.into_dart(), field0.into_into_dart().into_dart()].into_dart(),
+            crate::api::progress_reporting::proton_download::ProtonDownloadProgress::Finished(
+                field0,
+            ) => [3.into_dart(), field0.into_into_dart().into_dart()].into_dart(),
             _ => {
                 unimplemented!("");
             }
@@ -2759,6 +2766,12 @@ impl SseEncode for crate::api::progress_reporting::proton_download::ProtonDownlo
                 field0,
             ) => {
                 <i32>::sse_encode(2, serializer);
+                <String>::sse_encode(field0, serializer);
+            }
+            crate::api::progress_reporting::proton_download::ProtonDownloadProgress::Finished(
+                field0,
+            ) => {
+                <i32>::sse_encode(3, serializer);
                 <String>::sse_encode(field0, serializer);
             }
             _ => {
