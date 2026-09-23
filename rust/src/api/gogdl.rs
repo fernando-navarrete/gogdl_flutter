@@ -3,7 +3,7 @@ use std::path::Path;
 use std::sync::Arc;
 use std::time::Duration;
 
-use flutter_rust_bridge::{frb, DartFnFuture};
+use flutter_rust_bridge::{DartFnFuture, frb};
 use gogdl_lib::{Client, DownloadEvent, GogDl};
 use tokio::sync::mpsc;
 use tokio::time::interval;
