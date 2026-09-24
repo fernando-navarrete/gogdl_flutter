@@ -18,7 +18,7 @@ use crate::api::progress_reporting::{
     UploadSavesProgress, VerifyDownloadProgress,
 };
 use crate::frb_generated::StreamSink;
-use crate::progress::{self, verify::VerifyTranslator};
+use crate::progress::{self, proton::ProtonTranslator, verify::VerifyTranslator};
 
 #[frb(opaque)]
 pub struct GogdlApi {
@@ -121,60 +121,14 @@ impl GogdlApi {
     ) -> Result<(), GogError> {
         let release = self.inner.get_proton_release_by_tag(tag_name).await?;
 
-        let (tx, mut rx) = mpsc::unbounded_channel();
+        let (tx, rx) = mpsc::unbounded_channel();
         let download_future = self
             .inner
             .download_proton_release(&release, Path::new(path), tx);
 
-        let progress_sink = sink.clone();
-        let progress_reporting_future = async move {
-            let mut downloaded: u64 = 0;
-            let mut last_extracted: Option<String> = None;
-            let mut dirty = false;
-
-            let mut ticker = interval(Duration::from_millis(150));
-            ticker.tick().await; // first tick fires immediately, discard it
-
-            loop {
-                tokio::select! {
-                    event = rx.recv() => {
-                        match event {
-                            Some(gogdl_lib::ProtonDownloadEvent::Downloading { total_bytes }) => {
-                                // one-shot signal, flush immediately regardless of ticker
-                                let _ = progress_sink.add(ProtonDownloadProgress::Started(total_bytes));
-                            }
-                            Some(gogdl_lib::ProtonDownloadEvent::Progress(delta)) => {
-                                downloaded += delta as u64;
-                                dirty = true;
-                            }
-                            Some(gogdl_lib::ProtonDownloadEvent::Extracted(path)) => {
-                                last_extracted = Some(path);
-                                dirty = true;
-                            }
-                            None => break, // sender dropped, download_future is done
-                        }
-                    }
-                    _ = ticker.tick() => {
-                        if dirty {
-                            let _ = progress_sink.add(ProtonDownloadProgress::Progress(downloaded));
-                            if let Some(p) = last_extracted.take() {
-                                let _ = progress_sink.add(ProtonDownloadProgress::Extracted(p));
-                            }
-                            dirty = false;
-                        }
-                    }
-                }
-            }
-
-            // final flush so the UI doesn't sit at a stale % between the last tick
-            // and the channel closing
-            if dirty {
-                let _ = progress_sink.add(ProtonDownloadProgress::Progress(downloaded));
-                if let Some(p) = last_extracted.take() {
-                    let _ = progress_sink.add(ProtonDownloadProgress::Extracted(p));
-                }
-            }
-        };
+        let progress_reporting_future = progress::drive(ProtonTranslator::new(), rx, |p| {
+            let _ = sink.add(p);
+        });
 
         let (result, _) = tokio::join!(download_future, progress_reporting_future);
         let extracted_path = result?;
