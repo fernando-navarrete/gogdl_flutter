@@ -1,0 +1,8 @@
+# Keep build_runner (freezed, run by flutter_rust_bridge_codegen) to the package's own sources.
+# Without this it also walks the Flutter SDK cloned into the repo (.fvm, .ci) and the example's
+# plugin symlinks back to the repo root, which takes minutes and fails.
+targets:
+  $default:
+    sources:
+      - lib/**
+      - pubspec.yaml
