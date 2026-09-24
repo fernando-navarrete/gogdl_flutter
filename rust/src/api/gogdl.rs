@@ -18,6 +18,7 @@ use crate::api::progress_reporting::{
     UploadSavesProgress, VerifyDownloadProgress,
 };
 use crate::frb_generated::StreamSink;
+use crate::progress::{self, verify::VerifyTranslator};
 
 #[frb(opaque)]
 pub struct GogdlApi {
@@ -228,75 +229,13 @@ impl GogdlApi {
             .filter_map(|file| file.size())
             .sum();
 
-        let (tx, mut rx) = mpsc::unbounded_channel();
+        let (tx, rx) = mpsc::unbounded_channel();
         let verify_future = self.inner.verify_files(bundles, path, tx);
 
-        let progress_sink = sink.clone();
-        let progress_reporting_future = async move {
-            let _ = progress_sink.add(VerifyDownloadProgress::Started(total_bytes));
-
-            let mut checked: u64 = 0;
-            let mut dirty = false;
-            // Each broken file reports every one of its chunks; only forward
-            // the first failure per path so the UI sees one event per file.
-            let mut reported: HashSet<String> = HashSet::new();
-
-            let mut ticker = interval(Duration::from_millis(150));
-            ticker.tick().await; // first tick fires immediately, discard it
-
-            loop {
-                tokio::select! {
-                    event = rx.recv() => {
-                        match event {
-                            Some(gogdl_lib::VerificationEvent::Verified(_, size)) => {
-                                checked += size;
-                                dirty = true;
-                            }
-                            Some(gogdl_lib::VerificationEvent::CouldNotResolvePath(path, size)) => {
-                                checked += size;
-                                dirty = true;
-                                if reported.insert(path.clone()) {
-                                    // one-shot signal, flush immediately regardless of ticker
-                                    let _ = progress_sink
-                                        .add(VerifyDownloadProgress::CouldNotResolvePath(path, size));
-                                }
-                            }
-                            Some(gogdl_lib::VerificationEvent::FileNotFound(path, size)) => {
-                                checked += size;
-                                dirty = true;
-                                if reported.insert(path.clone()) {
-                                    // one-shot signal, flush immediately regardless of ticker
-                                    let _ = progress_sink
-                                        .add(VerifyDownloadProgress::FileNotFound(path, size));
-                                }
-                            }
-                            Some(gogdl_lib::VerificationEvent::ChecksumMismatch(path, size)) => {
-                                checked += size;
-                                dirty = true;
-                                if reported.insert(path.clone()) {
-                                    // one-shot signal, flush immediately regardless of ticker
-                                    let _ = progress_sink
-                                        .add(VerifyDownloadProgress::ChecksumMismatch(path, size));
-                                }
-                            }
-                            None => break, // sender dropped, verify_future is done
-                        }
-                    }
-                    _ = ticker.tick() => {
-                        if dirty {
-                            let _ = progress_sink.add(VerifyDownloadProgress::Progress(checked));
-                            dirty = false;
-                        }
-                    }
-                }
-            }
-
-            // final flush so the UI doesn't sit at a stale % between the last tick
-            // and the channel closing
-            if dirty {
-                let _ = progress_sink.add(VerifyDownloadProgress::Progress(checked));
-            }
-        };
+        let _ = sink.add(VerifyDownloadProgress::Started(total_bytes));
+        let progress_reporting_future = progress::drive(VerifyTranslator::new(), rx, |p| {
+            let _ = sink.add(p);
+        });
 
         let (result, _) = tokio::join!(verify_future, progress_reporting_future);
 
