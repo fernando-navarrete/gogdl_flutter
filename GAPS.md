@@ -117,7 +117,7 @@ needs it; ROADMAP.md schedules each item to land before that stage starts.
   `repair_game` share ~200 near-identical lines of stage handling. Move each translator into its own
   module as a plain state machine (`on_event(event) -> Vec<Progress>`, `on_tick()`, `finish()`) and
   share the tick loop, so the logic can be unit-tested with synthetic events and no network.
-- [ ] **P2 — One clippy warning** (redundant closure, `GameBuild::from_gogdl` in `.map`) and
+- [x] **P2 — One clippy warning** (redundant closure, `GameBuild::from_gogdl` in `.map`) and
   `cargo fmt` drift.
 
 ## 5. Performance
@@ -145,7 +145,7 @@ needs it; ROADMAP.md schedules each item to land before that stage starts.
 - [ ] **P1 — The build isn't reproducible outside the LAN.** `gogdl-lib` is a git dependency over
   `ssh://git@thinkcentre.home:2200`, the same situation Lumen documented and deferred in its
   `v1.1.0`. CI on the self-hosted runner works around it with a deploy key.
-- [ ] **P2 — `main` is behind the released tags.** `v1.1.0`–`v1.1.3` only exist on
+- [x] **P2 — `main` is behind the released tags.** `v1.1.0`–`v1.1.3` only exist on
   `feat/cloud-saves`, which is 5 commits ahead of `main`. Merge it before starting the next stage.
 - [ ] **P2 — Template leftovers.** The README describes the FFI plugin template (`src/`, `ffigen`,
   `sum`/`sumAsync`). `CHANGELOG.md` is `0.0.1 — TODO`. The `pubspec.yaml` description is "A new

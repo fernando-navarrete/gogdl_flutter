@@ -79,7 +79,7 @@ impl GogdlApi {
         let builds = game_builds
             .items
             .iter()
-            .map(|build| GameBuild::from_gogdl(build))
+            .map(GameBuild::from_gogdl)
             .collect::<Vec<GameBuild>>();
         Ok(builds)
     }
