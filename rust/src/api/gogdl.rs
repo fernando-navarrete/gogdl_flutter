@@ -18,7 +18,12 @@ use crate::api::progress_reporting::{
     UploadSavesProgress, VerifyDownloadProgress,
 };
 use crate::frb_generated::StreamSink;
-use crate::progress::{self, proton::ProtonTranslator, verify::VerifyTranslator};
+use crate::progress::{
+    self,
+    proton::ProtonTranslator,
+    saves::{SavesDownloadTranslator, SavesUploadTranslator},
+    verify::VerifyTranslator,
+};
 
 #[frb(opaque)]
 pub struct GogdlApi {
@@ -715,7 +720,7 @@ impl GogdlApi {
         install_path: &str,
         sink: StreamSink<DownloadSavesProgress>,
     ) -> Result<(), GogError> {
-        let (tx, mut rx) = mpsc::unbounded_channel();
+        let (tx, rx) = mpsc::unbounded_channel();
         let download_future = self.inner.download_save_files(
             game_id,
             build_name,
@@ -724,79 +729,9 @@ impl GogdlApi {
             tx,
         );
 
-        let progress_sink = sink.clone();
-        let progress_reporting_future = async move {
-            let mut downloaded: u64 = 0;
-            // Bytes of the file opened by the last `FileStarted`; files are
-            // transferred one at a time, so `Progress` always belongs to it.
-            let mut file_downloaded: u64 = 0;
-            let mut dirty = false;
-
-            let mut ticker = interval(Duration::from_millis(150));
-            ticker.tick().await; // first tick fires immediately, discard it
-
-            loop {
-                tokio::select! {
-                    event = rx.recv() => {
-                        match event {
-                            Some(gogdl_lib::SavesDownloadEvent::Preparing { total_files, total_bytes }) => {
-                                // one-shot signal, flush immediately regardless of ticker
-                                let _ = progress_sink.add(DownloadSavesProgress::Started {
-                                    total_files: total_files as u64,
-                                    total_bytes,
-                                });
-                            }
-                            Some(gogdl_lib::SavesDownloadEvent::FileStarted { name, destination, total_bytes }) => {
-                                file_downloaded = 0;
-                                // one-shot signal, flush immediately regardless of ticker
-                                let _ = progress_sink.add(DownloadSavesProgress::FileStarted {
-                                    name,
-                                    destination: destination.to_string_lossy().into_owned(),
-                                    total_bytes,
-                                });
-                            }
-                            Some(gogdl_lib::SavesDownloadEvent::Progress(delta)) => {
-                                downloaded += delta as u64;
-                                file_downloaded += delta as u64;
-                                dirty = true;
-                            }
-                            Some(gogdl_lib::SavesDownloadEvent::FileFinished { name }) => {
-                                // final flush of the file that just ended, so it
-                                // doesn't sit at a stale % once the next one opens
-                                if dirty {
-                                    let _ = progress_sink.add(DownloadSavesProgress::Progress {
-                                        downloaded_bytes: downloaded,
-                                        file_downloaded_bytes: file_downloaded,
-                                    });
-                                    dirty = false;
-                                }
-                                // one-shot signal, flush immediately regardless of ticker
-                                let _ = progress_sink.add(DownloadSavesProgress::FileFinished { name });
-                            }
-                            None => break, // sender dropped, download_future is done
-                        }
-                    }
-                    _ = ticker.tick() => {
-                        if dirty {
-                            let _ = progress_sink.add(DownloadSavesProgress::Progress {
-                                downloaded_bytes: downloaded,
-                                file_downloaded_bytes: file_downloaded,
-                            });
-                            dirty = false;
-                        }
-                    }
-                }
-            }
-
-            // final flush so the UI doesn't sit at a stale % between the last tick
-            // and the channel closing
-            if dirty {
-                let _ = progress_sink.add(DownloadSavesProgress::Progress {
-                    downloaded_bytes: downloaded,
-                    file_downloaded_bytes: file_downloaded,
-                });
-            }
-        };
+        let progress_reporting_future = progress::drive(SavesDownloadTranslator::new(), rx, |p| {
+            let _ = sink.add(p);
+        });
 
         let (result, _) = tokio::join!(download_future, progress_reporting_future);
         result?;
@@ -811,7 +746,7 @@ impl GogdlApi {
         install_path: &str,
         sink: StreamSink<UploadSavesProgress>,
     ) -> Result<(), GogError> {
-        let (tx, mut rx) = mpsc::unbounded_channel();
+        let (tx, rx) = mpsc::unbounded_channel();
         let upload_future = self.inner.upload_save_files(
             game_id,
             build_name,
@@ -820,78 +755,9 @@ impl GogdlApi {
             tx,
         );
 
-        let progress_sink = sink.clone();
-        let progress_reporting_future = async move {
-            let mut uploaded: u64 = 0;
-            // Bytes of the file opened by the last `FileStarted`; files are
-            // transferred one at a time, so `Progress` always belongs to it.
-            let mut file_uploaded: u64 = 0;
-            let mut dirty = false;
-
-            let mut ticker = interval(Duration::from_millis(150));
-            ticker.tick().await; // first tick fires immediately, discard it
-
-            loop {
-                tokio::select! {
-                    event = rx.recv() => {
-                        match event {
-                            Some(gogdl_lib::SavesUploadEvent::Preparing { total_files }) => {
-                                // one-shot signal, flush immediately regardless of ticker
-                                let _ = progress_sink.add(UploadSavesProgress::Started {
-                                    total_files: total_files as u64,
-                                });
-                            }
-                            Some(gogdl_lib::SavesUploadEvent::FileStarted { name, source, total_bytes }) => {
-                                file_uploaded = 0;
-                                // one-shot signal, flush immediately regardless of ticker
-                                let _ = progress_sink.add(UploadSavesProgress::FileStarted {
-                                    name,
-                                    source: source.to_string_lossy().into_owned(),
-                                    total_bytes,
-                                });
-                            }
-                            Some(gogdl_lib::SavesUploadEvent::Progress(delta)) => {
-                                uploaded += delta as u64;
-                                file_uploaded += delta as u64;
-                                dirty = true;
-                            }
-                            Some(gogdl_lib::SavesUploadEvent::FileFinished { name }) => {
-                                // final flush of the file that just ended, so it
-                                // doesn't sit at a stale % once the next one opens
-                                if dirty {
-                                    let _ = progress_sink.add(UploadSavesProgress::Progress {
-                                        uploaded_bytes: uploaded,
-                                        file_uploaded_bytes: file_uploaded,
-                                    });
-                                    dirty = false;
-                                }
-                                // one-shot signal, flush immediately regardless of ticker
-                                let _ = progress_sink.add(UploadSavesProgress::FileFinished { name });
-                            }
-                            None => break, // sender dropped, upload_future is done
-                        }
-                    }
-                    _ = ticker.tick() => {
-                        if dirty {
-                            let _ = progress_sink.add(UploadSavesProgress::Progress {
-                                uploaded_bytes: uploaded,
-                                file_uploaded_bytes: file_uploaded,
-                            });
-                            dirty = false;
-                        }
-                    }
-                }
-            }
-
-            // final flush so the UI doesn't sit at a stale % between the last tick
-            // and the channel closing
-            if dirty {
-                let _ = progress_sink.add(UploadSavesProgress::Progress {
-                    uploaded_bytes: uploaded,
-                    file_uploaded_bytes: file_uploaded,
-                });
-            }
-        };
+        let progress_reporting_future = progress::drive(SavesUploadTranslator::new(), rx, |p| {
+            let _ = sink.add(p);
+        });
 
         let (result, _) = tokio::join!(upload_future, progress_reporting_future);
         result?;

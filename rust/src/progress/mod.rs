@@ -10,6 +10,7 @@ use tokio::sync::mpsc::UnboundedReceiver;
 use tokio::time::interval;
 
 pub(crate) mod proton;
+pub(crate) mod saves;
 pub(crate) mod verify;
 
 /// How often coalesced progress (byte and file counters) is emitted.
