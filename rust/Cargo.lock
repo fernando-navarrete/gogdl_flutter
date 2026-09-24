@@ -724,6 +724,7 @@ dependencies = [
  "flutter_rust_bridge",
  "futures-util",
  "gogdl-lib",
+ "serde_json",
  "thiserror",
  "tokio",
 ]

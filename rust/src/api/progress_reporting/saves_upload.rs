@@ -1,6 +1,7 @@
 use flutter_rust_bridge::frb;
 
 #[derive(Clone)]
+#[cfg_attr(test, derive(Debug, PartialEq))]
 #[frb(non_opaque)]
 pub enum UploadSavesProgress {
     /// The number of files that will be uploaded (0 if the directory holds no

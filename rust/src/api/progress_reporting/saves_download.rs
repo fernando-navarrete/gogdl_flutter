@@ -1,6 +1,7 @@
 use flutter_rust_bridge::frb;
 
 #[derive(Clone)]
+#[cfg_attr(test, derive(Debug, PartialEq))]
 #[frb(non_opaque)]
 pub enum DownloadSavesProgress {
     /// Totals known before any file is transferred. `total_bytes` counts
