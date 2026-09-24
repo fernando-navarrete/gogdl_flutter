@@ -74,3 +74,53 @@ impl Translator for VerifyTranslator {
         self.flush()
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    fn verified(size: u64) -> VerificationEvent {
+        VerificationEvent::Verified("a".into(), size)
+    }
+
+    #[test]
+    fn counters_coalesce_until_a_tick() {
+        let mut t = VerifyTranslator::new();
+        assert!(t.on_event(verified(10)).is_empty());
+        assert!(t.on_event(verified(5)).is_empty());
+        assert_eq!(t.on_tick(), vec![VerifyDownloadProgress::Progress(15)]);
+        assert!(t.on_tick().is_empty());
+    }
+
+    #[test]
+    fn failures_count_bytes_and_report_once_per_path() {
+        let mut t = VerifyTranslator::new();
+        assert_eq!(
+            t.on_event(VerificationEvent::ChecksumMismatch("f".into(), 4)),
+            vec![VerifyDownloadProgress::ChecksumMismatch("f".into(), 4)]
+        );
+        // every chunk of a broken file reports; only the first is forwarded
+        assert!(
+            t.on_event(VerificationEvent::ChecksumMismatch("f".into(), 6))
+                .is_empty()
+        );
+        assert_eq!(
+            t.on_event(VerificationEvent::FileNotFound("g".into(), 1)),
+            vec![VerifyDownloadProgress::FileNotFound("g".into(), 1)]
+        );
+        assert_eq!(
+            t.on_event(VerificationEvent::CouldNotResolvePath("h".into(), 2)),
+            vec![VerifyDownloadProgress::CouldNotResolvePath("h".into(), 2)]
+        );
+        assert_eq!(t.on_tick(), vec![VerifyDownloadProgress::Progress(13)]);
+    }
+
+    #[test]
+    fn finish_flushes_only_when_dirty() {
+        let mut t = VerifyTranslator::new();
+        assert!(t.finish().is_empty());
+        t.on_event(verified(3));
+        assert_eq!(t.finish(), vec![VerifyDownloadProgress::Progress(3)]);
+        assert!(t.finish().is_empty());
+    }
+}

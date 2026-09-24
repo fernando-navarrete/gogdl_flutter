@@ -61,3 +61,49 @@ impl Translator for ProtonTranslator {
         self.flush()
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn started_is_immediate() {
+        let mut t = ProtonTranslator::new();
+        assert_eq!(
+            t.on_event(ProtonDownloadEvent::Downloading { total_bytes: 100 }),
+            vec![ProtonDownloadProgress::Started(100)]
+        );
+    }
+
+    #[test]
+    fn progress_sums_and_coalesces() {
+        let mut t = ProtonTranslator::new();
+        assert!(t.on_event(ProtonDownloadEvent::Progress(10)).is_empty());
+        assert!(t.on_event(ProtonDownloadEvent::Progress(5)).is_empty());
+        assert_eq!(t.on_tick(), vec![ProtonDownloadProgress::Progress(15)]);
+        assert!(t.on_tick().is_empty());
+    }
+
+    #[test]
+    fn only_the_latest_extracted_path_is_reported_after_progress() {
+        let mut t = ProtonTranslator::new();
+        t.on_event(ProtonDownloadEvent::Extracted("a".into()));
+        t.on_event(ProtonDownloadEvent::Extracted("b".into()));
+        assert_eq!(
+            t.on_tick(),
+            vec![
+                ProtonDownloadProgress::Progress(0),
+                ProtonDownloadProgress::Extracted("b".into()),
+            ]
+        );
+        assert!(t.on_tick().is_empty());
+    }
+
+    #[test]
+    fn finish_flushes_the_tail() {
+        let mut t = ProtonTranslator::new();
+        assert!(t.finish().is_empty());
+        t.on_event(ProtonDownloadEvent::Progress(7));
+        assert_eq!(t.finish(), vec![ProtonDownloadProgress::Progress(7)]);
+    }
+}
