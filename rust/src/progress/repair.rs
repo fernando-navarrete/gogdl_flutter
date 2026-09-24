@@ -120,3 +120,180 @@ impl Translator for RepairTranslator {
         self.install.flush()
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use gogdl_lib::{FileAllocationEvent, FileSizeVerificationEvent};
+
+    use super::*;
+
+    type P = RepairGameProgress;
+
+    fn sizes(entries: &[(&str, u64, &[u64])]) -> HashMap<(String, u64), Vec<u64>> {
+        entries
+            .iter()
+            .map(|(path, size, compressed)| ((path.to_string(), *size), compressed.to_vec()))
+            .collect()
+    }
+
+    fn verify(event: VerificationEvent) -> DownloadStageEvent {
+        DownloadStageEvent::VerificationStage(event)
+    }
+
+    fn verified(size: u64) -> DownloadStageEvent {
+        verify(VerificationEvent::Verified("ok".into(), size))
+    }
+
+    fn mismatch(path: &str, size: u64) -> DownloadStageEvent {
+        verify(VerificationEvent::ChecksumMismatch(path.into(), size))
+    }
+
+    fn preparing() -> DownloadStageEvent {
+        DownloadStageEvent::DownloadStage(DownloadEvent::Preparing)
+    }
+
+    #[test]
+    fn first_verification_flushes_the_pre_verification_stage() {
+        let mut t = RepairTranslator::new(HashMap::new());
+        t.on_event(DownloadStageEvent::FileSizeVerificationStage(
+            FileSizeVerificationEvent::FileSizeVerificationSuccess("a".into(), 1),
+        ));
+        assert_eq!(
+            t.on_event(verified(5)),
+            vec![P::FileSizeVerification { checked_files: 1 }]
+        );
+        // already in the verification stage: no repeat
+        assert!(t.on_event(verified(5)).is_empty());
+    }
+
+    #[test]
+    fn verification_flushes_the_allocation_stage_when_one_ran() {
+        let mut t = RepairTranslator::new(HashMap::new());
+        t.on_event(DownloadStageEvent::FileSizeVerificationStage(
+            FileSizeVerificationEvent::FileNotFound("a".into(), 7),
+        ));
+        t.on_event(DownloadStageEvent::FileAllocationStage(
+            FileAllocationEvent::FileAllocationSuccess("a".into(), 7),
+        ));
+        assert_eq!(
+            t.on_event(verified(1)),
+            vec![P::FileAllocation {
+                allocated_files: 1,
+                allocated_bytes: 7,
+            }]
+        );
+    }
+
+    #[test]
+    fn verification_counts_verified_and_failed_bytes_alike() {
+        let mut t = RepairTranslator::new(HashMap::new());
+        t.on_event(verified(10));
+        t.on_event(mismatch("a", 5));
+        // drain the stage flush before checking the counters
+        assert_eq!(t.on_tick(), vec![P::Verification { checked_bytes: 15 }]);
+        assert!(t.on_tick().is_empty());
+    }
+
+    #[test]
+    fn failures_are_reported_once_per_path() {
+        let mut t = RepairTranslator::new(HashMap::new());
+        t.on_event(verified(0)); // enter the verification stage
+        assert_eq!(
+            t.on_event(mismatch("a", 5)),
+            vec![P::ChecksumMismatch("a".into(), 5)]
+        );
+        assert!(t.on_event(mismatch("a", 6)).is_empty());
+        assert_eq!(
+            t.on_event(verify(VerificationEvent::FileNotFound("b".into(), 1))),
+            vec![P::FileNotFound("b".into(), 1)]
+        );
+        assert_eq!(
+            t.on_event(verify(VerificationEvent::CouldNotResolvePath(
+                "c".into(),
+                2
+            ))),
+            vec![P::CouldNotResolvePath("c".into(), 2)]
+        );
+    }
+
+    #[test]
+    fn allocation_failure_does_not_silence_the_verification_event() {
+        let mut t = RepairTranslator::new(HashMap::new());
+        t.on_event(DownloadStageEvent::FileSizeVerificationStage(
+            FileSizeVerificationEvent::FileNotFound("a".into(), 1),
+        ));
+        let out = t.on_event(DownloadStageEvent::FileAllocationStage(
+            FileAllocationEvent::CouldNotResolvePath("a".into(), 1),
+        ));
+        assert!(out.contains(&P::AllocationError("a".into())));
+        let out = t.on_event(mismatch("a", 1));
+        assert!(out.contains(&P::ChecksumMismatch("a".into(), 1)));
+    }
+
+    #[test]
+    fn download_started_sums_compressed_sizes_of_failing_chunks() {
+        let mut t = RepairTranslator::new(sizes(&[
+            ("a", 100, &[40]),
+            ("b", 100, &[30, 20]),
+            ("untouched", 100, &[999]),
+        ]));
+        t.on_event(verified(100)); // not a failure: no lookup
+        t.on_event(mismatch("a", 100));
+        t.on_event(mismatch("b", 100));
+        t.on_event(mismatch("b", 100)); // second chunk of b, second entry
+        t.on_event(mismatch("b", 100)); // entries exhausted: adds nothing
+        t.on_event(mismatch("unknown", 1)); // no entry at all: adds nothing
+        assert_eq!(
+            t.on_event(preparing()),
+            vec![
+                P::Verification { checked_bytes: 501 },
+                P::DownloadStarted { total_bytes: 90 },
+            ]
+        );
+    }
+
+    #[test]
+    fn preparing_clears_dirty_so_the_next_tick_is_silent() {
+        let mut t = RepairTranslator::new(HashMap::new());
+        t.on_event(verified(1));
+        t.on_event(preparing());
+        assert!(t.on_tick().is_empty());
+    }
+
+    #[test]
+    fn download_bytes_sum_and_regressions_saturate() {
+        let mut t = RepairTranslator::new(HashMap::new());
+        t.on_event(preparing());
+        t.on_event(DownloadStageEvent::DownloadStage(DownloadEvent::Progress(
+            10,
+        )));
+        t.on_event(DownloadStageEvent::DownloadStage(
+            DownloadEvent::ProgressRegression(4),
+        ));
+        assert_eq!(
+            t.on_tick(),
+            vec![P::DownloadProgress {
+                downloaded_bytes: 6
+            }]
+        );
+        t.on_event(DownloadStageEvent::DownloadStage(
+            DownloadEvent::ProgressRegression(100),
+        ));
+        assert_eq!(
+            t.finish(),
+            vec![P::DownloadProgress {
+                downloaded_bytes: 0
+            }]
+        );
+        assert!(t.finish().is_empty());
+    }
+
+    #[test]
+    fn allocation_error_stage_event_produces_nothing() {
+        let mut t = RepairTranslator::new(HashMap::new());
+        assert!(
+            t.on_event(DownloadStageEvent::FileAllocationError())
+                .is_empty()
+        );
+    }
+}
