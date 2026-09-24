@@ -15,7 +15,6 @@ use crate::api::progress_reporting::{DownloadGameProgress, RepairGameProgress};
 pub(crate) enum Stage {
     SizeVerification,
     Allocation,
-    #[expect(dead_code, reason = "entered by the repair translator")]
     Verification,
     Download,
 }

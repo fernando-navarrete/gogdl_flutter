@@ -12,6 +12,7 @@ use tokio::time::interval;
 pub(crate) mod download;
 pub(crate) mod install;
 pub(crate) mod proton;
+pub(crate) mod repair;
 pub(crate) mod saves;
 pub(crate) mod verify;
 
