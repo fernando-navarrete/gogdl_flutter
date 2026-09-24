@@ -20,6 +20,7 @@ use crate::api::progress_reporting::{
 use crate::frb_generated::StreamSink;
 use crate::progress::{
     self,
+    download::DownloadTranslator,
     proton::ProtonTranslator,
     saves::{SavesDownloadTranslator, SavesUploadTranslator},
     verify::VerifyTranslator,
@@ -239,177 +240,16 @@ impl GogdlApi {
             .map(|chunk| chunk.compressed_size)
             .sum();
 
-        let (tx, mut rx) = mpsc::unbounded_channel();
+        let (tx, rx) = mpsc::unbounded_channel();
         let download_future = self.inner.download_game(bundles, path, tx);
 
-        let progress_sink = sink.clone();
-        let progress_reporting_future = async move {
-            let _ = progress_sink.add(DownloadGameProgress::Started {
-                total_files,
-                total_bytes,
-            });
-
-            // `download_game` runs these three stages strictly in sequence
-            // (see `DownloadStageEvent`'s docs), so events never interleave
-            // across stages.
-            #[derive(PartialEq)]
-            enum Stage {
-                SizeVerification,
-                Allocation,
-                Download,
-            }
-            let mut stage = Stage::SizeVerification;
-
-            let mut checked_files: u64 = 0;
-
-            // Only files that fail size verification go on to allocation, so
-            // these totals are discovered incrementally during that stage
-            // and only known for certain once it ends.
-            let mut allocation_total_files: u64 = 0;
-            let mut allocation_total_bytes: u64 = 0;
-            let mut allocated_files: u64 = 0;
-            let mut allocated_bytes: u64 = 0;
-
-            let mut downloaded: u64 = 0;
-
-            let mut dirty = false;
-            // Only forward the first allocation failure per path so the UI
-            // sees one event per file.
-            let mut reported: HashSet<String> = HashSet::new();
-
-            let mut ticker = interval(Duration::from_millis(150));
-            ticker.tick().await; // first tick fires immediately, discard it
-
-            loop {
-                tokio::select! {
-                    event = rx.recv() => {
-                        match event {
-                            Some(gogdl_lib::DownloadStageEvent::FileSizeVerificationStage(event)) => {
-                                checked_files += 1;
-                                dirty = true;
-                                use gogdl_lib::FileSizeVerificationEvent as E;
-                                match event {
-                                    E::FileSizeVerificationSuccess(_, _) => {}
-                                    E::FileWithNoChunks(_, size)
-                                    | E::CouldNotResolvePath(_, size)
-                                    | E::FileNotFound(_, size)
-                                    | E::FileSizeVerificationFailed(_, size)
-                                    | E::FileSizeMismatch(_, size) => {
-                                        allocation_total_files += 1;
-                                        allocation_total_bytes += size;
-                                    }
-                                }
-                            }
-                            Some(gogdl_lib::DownloadStageEvent::FileAllocationStage(event)) => {
-                                if stage == Stage::SizeVerification {
-                                    // final flush so the size-verification stage
-                                    // doesn't sit at a stale count once allocation starts
-                                    let _ = progress_sink.add(DownloadGameProgress::FileSizeVerification { checked_files });
-                                    if allocation_total_files > 0 {
-                                        let _ = progress_sink.add(DownloadGameProgress::FileAllocationStarted {
-                                            total_files: allocation_total_files,
-                                            total_bytes: allocation_total_bytes,
-                                        });
-                                    }
-                                    stage = Stage::Allocation;
-                                }
-                                use gogdl_lib::FileAllocationEvent as E;
-                                match event {
-                                    E::FileAllocationSuccess(_, size) => {
-                                        allocated_files += 1;
-                                        allocated_bytes += size;
-                                        dirty = true;
-                                    }
-                                    E::FileWithNoChunks(_, _) => {
-                                        allocated_files += 1;
-                                        dirty = true;
-                                    }
-                                    E::CouldNotResolvePath(path, _) => {
-                                        allocated_files += 1;
-                                        dirty = true;
-                                        if reported.insert(path.clone()) {
-                                            // one-shot signal, flush immediately regardless of ticker
-                                            let _ = progress_sink.add(DownloadGameProgress::AllocationError(path));
-                                        }
-                                    }
-                                }
-                            }
-                            Some(gogdl_lib::DownloadStageEvent::VerificationStage(_event)) => {}
-                            Some(gogdl_lib::DownloadStageEvent::FileAllocationError()) => {
-                                // `download_future` is about to resolve with
-                                // `DownloadError::FileAllocationError`, which
-                                // surfaces to Dart as a stream error; no
-                                // progress event needed here.
-                            }
-                            Some(gogdl_lib::DownloadStageEvent::DownloadStage(DownloadEvent::Preparing)) => {
-                                // final flush of whichever pre-transfer stage just ended
-                                match stage {
-                                    Stage::SizeVerification => {
-                                        let _ = progress_sink.add(DownloadGameProgress::FileSizeVerification { checked_files });
-                                    }
-                                    Stage::Allocation => {
-                                        let _ = progress_sink.add(DownloadGameProgress::FileAllocation { allocated_files, allocated_bytes });
-                                    }
-                                    Stage::Download => {}
-                                }
-                                stage = Stage::Download;
-                                dirty = false;
-                            }
-                            Some(gogdl_lib::DownloadStageEvent::DownloadStage(DownloadEvent::Prepared)) => {}
-                            Some(gogdl_lib::DownloadStageEvent::DownloadStage(DownloadEvent::Downloading)) => {}
-                            Some(gogdl_lib::DownloadStageEvent::DownloadStage(DownloadEvent::Progress(delta))) => {
-                                downloaded += delta as u64;
-                                dirty = true;
-                            }
-                            Some(gogdl_lib::DownloadStageEvent::DownloadStage(DownloadEvent::ProgressRegression(delta))) => {
-                                // a delta to subtract, not a replacement value; see `DownloadEvent`'s docs
-                                downloaded = downloaded.saturating_sub(delta as u64);
-                                dirty = true;
-                            }
-                            None => break, // sender dropped, download_future is done
-                        }
-                    }
-                    _ = ticker.tick() => {
-                        if dirty {
-                            match stage {
-                                Stage::SizeVerification => {
-                                    let _ = progress_sink.add(DownloadGameProgress::FileSizeVerification { checked_files });
-                                }
-                                Stage::Allocation => {
-                                    let _ = progress_sink.add(DownloadGameProgress::FileAllocation { allocated_files, allocated_bytes });
-                                }
-                                Stage::Download => {
-                                    let _ = progress_sink.add(DownloadGameProgress::DownloadProgress { downloaded_bytes: downloaded });
-                                }
-                            }
-                            dirty = false;
-                        }
-                    }
-                }
-            }
-
-            // final flush so the UI doesn't sit at a stale % between the last tick
-            // and the channel closing
-            if dirty {
-                match stage {
-                    Stage::SizeVerification => {
-                        let _ = progress_sink
-                            .add(DownloadGameProgress::FileSizeVerification { checked_files });
-                    }
-                    Stage::Allocation => {
-                        let _ = progress_sink.add(DownloadGameProgress::FileAllocation {
-                            allocated_files,
-                            allocated_bytes,
-                        });
-                    }
-                    Stage::Download => {
-                        let _ = progress_sink.add(DownloadGameProgress::DownloadProgress {
-                            downloaded_bytes: downloaded,
-                        });
-                    }
-                }
-            }
-        };
+        let _ = sink.add(DownloadGameProgress::Started {
+            total_files,
+            total_bytes,
+        });
+        let progress_reporting_future = progress::drive(DownloadTranslator::new(), rx, |p| {
+            let _ = sink.add(p);
+        });
 
         let (result, _) = tokio::join!(download_future, progress_reporting_future);
         result?;
