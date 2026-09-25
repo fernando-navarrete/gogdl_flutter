@@ -12,6 +12,16 @@
 # unprotected branches). Its public half must be added as a deploy key on the gogdl-lib
 # project.
 #
+# Jobs run in a prebuilt image (ci/Dockerfile: apt packages, rustup `stable`, the frb codegen
+# and Flutter), so none of them touches apt, rustup or the Flutter clone: the network is slow
+# and the runner is small. The runner is a container with its own docker-in-docker daemon, so
+# build the image on the host and load it there: `ci/build-image.sh --load-into <container>`.
+# Rebuild it after bumping .fvmrc or the frb version (update `image:` below to the printed
+# name; the `.toolchain` check fails a job whose image has a stale Flutter). The runner's
+# config.toml must not force pulls, under [runners.docker]:
+#   pull_policy = ["if-not-present"]
+# (or allowed_pull_policies including it), then restart the runner.
+#
 # If a job fails to resolve thinkcentre.home, the runner's containers aren't seeing the LAN's
 # /etc/hosts entry (it's a hosts-file entry, not real DNS). Fix it in
 # /etc/gitlab-runner/config.toml under [runners.docker]:
@@ -30,23 +40,19 @@ stages:
   - release
 
 default:
-  image: debian:bookworm-slim
+  image:
+    name: gogdl-flutter-ci:flutter-3.47.2-frb-2.13.0
+    pull_policy: if-not-present
 
-# Everything that gets cached must live inside the project dir, so cargo and rustup are
-# relocated under .ci/ as well.
+# Everything that gets cached must live inside the project dir. The toolchains are in the image
+# (/opt/cargo/bin, /opt/flutter/bin are on PATH); only the download caches are relocated here.
+# CARGO_HOME only holds cargo's registry and git downloads here; the rustup proxies and the
+# codegen binary are found through PATH, and the toolchain through the image's RUSTUP_HOME.
 variables:
   PUB_CACHE: "$CI_PROJECT_DIR/.ci/pub-cache"
-  FLUTTER_HOME: "$CI_PROJECT_DIR/.ci/flutter"
-  RUSTUP_HOME: "$CI_PROJECT_DIR/.ci/rustup"
   CARGO_HOME: "$CI_PROJECT_DIR/.ci/cargo"
   CARGO_NET_GIT_FETCH_WITH_CLI: "true"
   CARGO_TERM_COLOR: always
-
-.apt:
-  script:
-    - apt-get update -qq
-    # build-essential/cmake/pkg-config: aws-lc-sys and friends. EXTRA_PACKAGES is per job.
-    - apt-get install -qq -y --no-install-recommends git curl unzip xz-utils ca-certificates openssh-client build-essential cmake pkg-config $EXTRA_PACKAGES >/dev/null
 
 # SSH access to gogdl-lib via the base64-encoded deploy key variable.
 .ssh:
@@ -58,30 +64,19 @@ variables:
     - ssh-add ~/.ssh/gogdl_deploy_key
     - ssh-keyscan -p 2200 thinkcentre.home >> ~/.ssh/known_hosts 2>/dev/null
 
-# Rust via rustup, installed only if missing from the cache. The toolchain must be called
-# `stable`: cargokit asks rustup for `stable` when building the plugin, and would download a
-# second toolchain if it were installed under another name.
-.rust:
+# Fails when the image's Flutter isn't the one pinned in .fvmrc, which would otherwise be
+# tested against the old Flutter without any error. (A literal block, not a plain list-item
+# string: the sed script's `": *"` would otherwise parse as a YAML mapping value.)
+.toolchain:
   script:
     - |
-      if [ ! -x "$CARGO_HOME/bin/rustup" ]; then
-        curl -sSf https://sh.rustup.rs | sh -s -- -y --no-modify-path --profile minimal --default-toolchain stable -c rustfmt -c clippy
+      want=$(sed -n 's/.*"flutter": *"\([^"]*\)".*/\1/p' .fvmrc)
+      have=$(cat /opt/flutter-version)
+      if [ "$want" != "$have" ]; then
+        echo "CI image has Flutter $have but .fvmrc pins $want: rebuild it with ci/build-image.sh and update image: in .gitlab-ci.yml" >&2
+        exit 1
       fi
-    - export PATH="$CARGO_HOME/bin:$PATH"
     - rustc --version
-
-# Flutter, pinned to the version in .fvmrc; cached in .ci/flutter/.
-# (A literal block, not a plain list-item string: the sed script's `": *"`
-# would otherwise parse as a YAML mapping value followed by an alias.)
-.flutter:
-  script:
-    - |
-      FLUTTER_VERSION=$(sed -n 's/.*"flutter": *"\([^"]*\)".*/\1/p' .fvmrc)
-      if [ ! -x "$FLUTTER_HOME/bin/flutter" ]; then
-        git clone --depth 1 -b "$FLUTTER_VERSION" https://github.com/flutter/flutter.git "$FLUTTER_HOME"
-      fi
-    - export PATH="$FLUTTER_HOME/bin:$PATH"
-    - flutter config --no-analytics >/dev/null
     - flutter --version
 
 .cache-flutter: &cache-flutter
@@ -91,7 +86,6 @@ variables:
       - .fvmrc
       - pubspec.yaml
   paths:
-    - .ci/flutter/
     - .ci/pub-cache/
 
 .cache-cargo: &cache-cargo
@@ -100,8 +94,8 @@ variables:
     files:
       - rust/Cargo.lock
   paths:
-    - .ci/rustup/
-    - .ci/cargo/
+    - .ci/cargo/registry/
+    - .ci/cargo/git/
 
 .cache-target: &cache-target
   key:
@@ -113,15 +107,12 @@ variables:
 
 rust:
   stage: check
-  variables:
-    EXTRA_PACKAGES: ""
   cache:
     - *cache-cargo
     - *cache-target
   before_script:
-    - !reference [.apt, script]
     - !reference [.ssh, script]
-    - !reference [.rust, script]
+    - !reference [.toolchain, script]
   script:
     - cd rust
     - cargo fmt --check
@@ -130,13 +121,10 @@ rust:
 
 dart:
   stage: check
-  variables:
-    EXTRA_PACKAGES: ""
   cache:
     - *cache-flutter
   before_script:
-    - !reference [.apt, script]
-    - !reference [.flutter, script]
+    - !reference [.toolchain, script]
   script:
     - flutter pub get
     - flutter analyze --fatal-infos
@@ -149,20 +137,15 @@ dart:
 # them (see Phase 4).
 codegen:
   stage: check
-  variables:
-    EXTRA_PACKAGES: ""
   cache:
     - *cache-flutter
     - *cache-cargo
     - *cache-target
   before_script:
-    - !reference [.apt, script]
     - !reference [.ssh, script]
-    - !reference [.rust, script]
-    - !reference [.flutter, script]
+    - !reference [.toolchain, script]
   script:
     - flutter pub get
-    - cargo install flutter_rust_bridge_codegen --version 2.13.0 --locked
     - flutter_rust_bridge_codegen generate
     - dart run build_runner build --delete-conflicting-outputs
     - git status --porcelain
@@ -173,16 +156,12 @@ codegen:
 # on a virtual display.
 integration:
   stage: check
-  variables:
-    EXTRA_PACKAGES: "clang ninja-build libgtk-3-dev liblzma-dev libstdc++-12-dev xvfb xauth"
   cache:
     - *cache-flutter
     - *cache-cargo
   before_script:
-    - !reference [.apt, script]
     - !reference [.ssh, script]
-    - !reference [.rust, script]
-    - !reference [.flutter, script]
+    - !reference [.toolchain, script]
   script:
     - cd example
     - flutter pub get
@@ -193,7 +172,9 @@ integration:
 # tag can't ship without matching versions and notes. The release uses CI_JOB_TOKEN.
 release:
   stage: release
-  image: registry.gitlab.com/gitlab-org/release-cli:latest
+  image:
+    name: registry.gitlab.com/gitlab-org/release-cli:latest
+    pull_policy: if-not-present
   rules:
     - if: $CI_COMMIT_TAG =~ /^v\d+\.\d+\.\d+$/
   cache: []
