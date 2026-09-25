@@ -1,3 +1,12 @@
+## 1.2.3
+
+No change to the Dart API or to the progress events Dart receives.
+
+* Linux is the only declared platform: removed the example's `android/`, `ios/`, `macos/` and
+  `windows/` dirs and its unused `cupertino_icons` dependency.
+* Stopped generating frb's web output (`web: false`), which removes `frb_generated.web.dart` and the
+  wasm section of `rust/src/frb_generated.rs`.
+
 ## 1.2.2
 
 No change to the Dart API or to the progress events Dart receives.

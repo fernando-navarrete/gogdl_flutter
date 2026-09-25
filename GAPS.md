@@ -168,10 +168,13 @@ needs it; ROADMAP.md schedules each item to land before that stage starts.
   Flutter FFI plugin project.", with boilerplate comments and an unused `ffigen` dev dependency.
   Fixed in `v1.2.2`: the README describes the bridge, `CHANGELOG.md` has real entries (backfilled
   from `1.0.0`), and `pubspec.yaml` has a real description and no `ffi`/`ffigen`.
-- [ ] **P2 — Declared platforms are never built.** `pubspec.yaml` declares Android, iOS, macOS and
+- [x] **P2 — Declared platforms are never built.** `pubspec.yaml` declares Android, iOS, macOS and
   Windows, and `frb_generated.web.dart` exists, but only Linux is used or tested (Lumen needs
   Proton). Either drop the other platforms or build them in CI. As it is, they claim support
   nobody checks.
+  Fixed in `v1.2.3`: Linux only. The example's `android/`, `ios/`, `macos/` and `windows/` dirs are
+  gone (the root ones went with cargokit in `v1.2.1`), and `web: false` in
+  `flutter_rust_bridge.yaml` stops frb from generating the web output.
 - [ ] **P2 — Tighten lints.** Enable stricter rules on top of `flutter_lints` and
   `clippy -D warnings`, once the example is fixed and CI is running.
 

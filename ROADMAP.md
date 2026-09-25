@@ -81,8 +81,8 @@ Follow-up patches (`v1.2.1+`), one per tag:
    Assets has no support for them (GAPS §6).
 2. `v1.2.2`: replace the template README, `CHANGELOG.md` and `pubspec.yaml` text, and drop the
    unused `ffigen` dev dependency (GAPS §6).
-3. `v1.2.3`: decide on the declared platforms. Either drop Android/iOS/macOS/Windows/web, or add CI
-   builds for them (GAPS §6).
+3. `v1.2.3`: Linux only. Drop the example's Android/iOS/macOS/Windows dirs and the web output
+   (GAPS §6).
 4. `v1.2.4`: tighten Dart lints on top of `flutter_lints` (GAPS §6).
 
 ## v1.3.0 — Download management (for Lumen `v1.3.0`)

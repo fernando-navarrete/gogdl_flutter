@@ -7,7 +7,8 @@ saves as a single `GogdlApi` class. Long-running jobs stream their progress as f
 classes (`DownloadGameProgress`, `RepairGameProgress`, ...). Everything public is exported from
 `lib/gogdl_flutter.dart`.
 
-Lumen is the only consumer. Linux is the only platform that is built and tested.
+Lumen is the only consumer. Linux is the only platform that is built and tested, and
+frb's web output is turned off (`web: false` in `flutter_rust_bridge.yaml`).
 
 `gogdl-lib` is a private git dependency (pinned by tag in `rust/Cargo.toml`) served only over the
 LAN, at `ssh://git@thinkcentre.home:2200`. Nothing builds without access to that host.
