@@ -9,8 +9,8 @@ under.
 - **Patch** (`1.x.y`): one tag per small, self-contained fix or addition.
 - **Minor** (`1.x.0`): a big update, meaning a feature set or cross-cutting refactor. Patches then
   continue from `.1` under that minor.
-- Tags use the existing `vX.Y.Z` format. `v1.1.3` is the newest tag, so the next stage is
-  **`v1.2.0`**.
+- Tags use the existing `vX.Y.Z` format. `v1.2.4` is the newest tag, so the next stage is
+  **`v1.3.0`**.
 - For each release: bump `version:` in `pubspec.yaml` **and** `version` in `rust/Cargo.toml` to
   match, tick the item(s) in `GAPS.md`, add a `CHANGELOG.md` entry, commit, then tag.
 - Lumen is the only consumer, so a breaking Dart API change is allowed in a **minor**, never in a
@@ -28,7 +28,7 @@ the stage it serves, so Lumen can pin it on day one.
 
 | Lumen stage | Needs from the bridge | Bridge release |
 |---|---|---|
-| (none, internal) | Tests, CI/CD | `v1.2.0` |
+| (none, internal) | Tests, CI/CD | `v1.2.0` ✅ |
 | `v1.3.0` Download management | Cancel/pause, resume path, error kinds, install size, free space | `v1.3.0` |
 | `v1.4.0` Library and account | Sign out, batched titles/links, DLC product listing, Proton `has_more` | `v1.4.0` |
 | `v1.5.0` UI polish and packaging | Login error kinds, precompiled `.so` for packaging, breaking API cleanups | `v1.5.0` |
@@ -39,12 +39,12 @@ Lumen items that need no bridge change: uninstall, Proton version removal, downl
 dismiss/Retry (Lumen `v1.3.0`); update detection, since `get_game_builds` already returns build ids
 and dates (Lumen `v1.4.0`); everything in Lumen `v1.6.0`.
 
-**Before `v1.2.0`:** merge `feat/cloud-saves` into `main` (GAPS §6). `v1.1.0`–`v1.1.3` only exist on
-that branch.
+**Before `v1.2.0`** (done): merge `feat/cloud-saves` into `main` (GAPS §6). `v1.1.0`–`v1.1.3` only
+existed on that branch.
 
 ---
 
-## v1.2.0 — Foundation: tests, CI and CD
+## v1.2.0 ✅ — Foundation: tests, CI and CD
 
 This goes before any feature work so that everything after it lands with tests and a pipeline.
 
