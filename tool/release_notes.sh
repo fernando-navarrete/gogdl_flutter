@@ -1,6 +1,7 @@
 #!/bin/sh
-# Release gate for a vX.Y.Z tag. Fails unless pubspec.yaml, rust/Cargo.toml and the tag agree
-# and CHANGELOG.md has a non-empty `## X.Y.Z` section; prints that section on stdout.
+# Release gate for a vX.Y.Z tag. Fails unless pubspec.yaml, rust/Cargo.toml, the two lock files
+# that record this package's own version (rust/Cargo.lock, example/pubspec.lock) and the tag
+# all agree, and CHANGELOG.md has a non-empty `## X.Y.Z` section; prints that section on stdout.
 # Usage: tool/release_notes.sh <tag>   (run from the repo root)
 set -eu
 
@@ -27,12 +28,36 @@ cargo_version=$(awk '
   }
 ' rust/Cargo.toml)
 
-if [ "$pubspec_version" != "$version" ] || [ "$cargo_version" != "$version" ]; then
+cargo_lock_version=$(awk '
+  /^name = "gogdl_flutter"$/ { found = 1; next }
+  found && /^version = / {
+    v = $0
+    sub(/^version = "/, "", v)
+    sub(/".*$/, "", v)
+    print v
+    exit
+  }
+' rust/Cargo.lock)
+pubspec_lock_version=$(awk '
+  /^  gogdl_flutter:$/ { found = 1; next }
+  found && /^    version:/ {
+    v = $0
+    sub(/^    version: *"/, "", v)
+    sub(/".*$/, "", v)
+    print v
+    exit
+  }
+' example/pubspec.lock)
+
+if [ "$pubspec_version" != "$version" ] || [ "$cargo_version" != "$version" ] \
+  || [ "$cargo_lock_version" != "$version" ] || [ "$pubspec_lock_version" != "$version" ]; then
   {
     echo "error: version mismatch"
-    echo "  tag:                $version"
-    echo "  pubspec.yaml:       ${pubspec_version:-<not found>}"
-    echo "  rust/Cargo.toml:    ${cargo_version:-<not found>}"
+    echo "  tag:                      $version"
+    echo "  pubspec.yaml:             ${pubspec_version:-<not found>}"
+    echo "  rust/Cargo.toml:          ${cargo_version:-<not found>}"
+    echo "  rust/Cargo.lock:          ${cargo_lock_version:-<not found>}"
+    echo "  example/pubspec.lock:     ${pubspec_lock_version:-<not found>}"
   } >&2
   exit 1
 fi
