@@ -12,12 +12,12 @@
 # unprotected branches). Its public half must be added as a deploy key on the gogdl-lib
 # project.
 #
-# Jobs run in a prebuilt image (ci/Dockerfile: apt packages, rustup `stable`, the frb codegen
+# Jobs run in a prebuilt image (ci/Dockerfile: apt packages, the pinned rustup toolchain, the frb codegen
 # and Flutter), so none of them touches apt, rustup or the Flutter clone: the network is slow
 # and the runner is small. The runner shares the host's docker through its mounted docker.sock,
 # so the image is built on the host with `ci/build-image.sh` and jobs see it directly. Rebuild
-# it after bumping .fvmrc or the frb version (update `image:` below to the printed name; the
-# `.toolchain` check fails a job whose image has a stale Flutter). The runner's config.toml
+# it after bumping .fvmrc, rust/rust-toolchain.toml or the frb version (update `image:` below to
+# the printed name; the `.toolchain` check fails a job whose image has a stale Flutter or Rust). The runner's config.toml
 # (volume `gitlab-runner-config`) must not force pulls, under [runners.docker]:
 #   pull_policy = ["if-not-present"]
 # (or allowed_pull_policies including it), then `docker service update --force gitlab-runner`.
@@ -41,7 +41,7 @@ stages:
 
 default:
   image:
-    name: gogdl-flutter-ci:flutter-3.47.2-frb-2.13.0
+    name: gogdl-flutter-ci:flutter-3.47.2-rust-1.98.1-frb-2.13.0
     pull_policy: if-not-present
 
 # Everything that gets cached must live inside the project dir. The toolchains are in the image
@@ -64,9 +64,10 @@ variables:
     - ssh-add ~/.ssh/gogdl_deploy_key
     - ssh-keyscan -p 2200 thinkcentre.home >> ~/.ssh/known_hosts 2>/dev/null
 
-# Fails when the image's Flutter isn't the one pinned in .fvmrc, which would otherwise be
-# tested against the old Flutter without any error. (A literal block, not a plain list-item
-# string: the sed script's `": *"` would otherwise parse as a YAML mapping value.)
+# Fails when the image's Flutter or Rust isn't the one pinned in .fvmrc / rust/rust-toolchain.toml,
+# which would otherwise be tested against the old toolchain without any error (for Rust, the
+# build hook would even download the pinned one on every run). (A literal block, not a plain
+# list-item string: the sed script's `": *"` would otherwise parse as a YAML mapping value.)
 .toolchain:
   script:
     - |
@@ -74,6 +75,12 @@ variables:
       have=$(cat /opt/flutter-version)
       if [ "$want" != "$have" ]; then
         echo "CI image has Flutter $have but .fvmrc pins $want: rebuild it with ci/build-image.sh and update image: in .gitlab-ci.yml" >&2
+        exit 1
+      fi
+      want=$(sed -n 's/^channel *= *"\([^"]*\)".*/\1/p' rust/rust-toolchain.toml)
+      have=$(cat /opt/rust-version)
+      if [ "$want" != "$have" ]; then
+        echo "CI image has Rust $have but rust/rust-toolchain.toml pins $want: rebuild it with ci/build-image.sh and update image: in .gitlab-ci.yml" >&2
         exit 1
       fi
     - rustc --version
@@ -96,6 +103,14 @@ variables:
   paths:
     - .ci/cargo/registry/
     - .ci/cargo/git/
+
+.cache-hook-target: &cache-hook-target
+  key:
+    prefix: hook-target
+    files:
+      - rust/Cargo.lock
+  paths:
+    - example/.dart_tool/hooks_runner/shared/gogdl_flutter/build/
 
 .cache-target: &cache-target
   key:
@@ -152,13 +167,14 @@ codegen:
     - git diff --exit-code
     - test -z "$(git status --porcelain)"
 
-# Builds the example for Linux (cargokit compiles the plugin) and runs the integration test
-# on a virtual display.
+# Builds the example for Linux (the Native Assets build hook, hook/build.dart, runs cargo) and
+# runs the integration test on a virtual display.
 integration:
   stage: check
   cache:
     - *cache-flutter
     - *cache-cargo
+    - *cache-hook-target
   before_script:
     - !reference [.ssh, script]
     - !reference [.toolchain, script]

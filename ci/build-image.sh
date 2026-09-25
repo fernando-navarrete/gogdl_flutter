@@ -8,7 +8,8 @@
 # image directly. --load-into <container> is only for a runner with its own docker-in-docker
 # daemon: it pipes the image in with `docker save | docker exec -i <container> docker load`.
 #
-# Run it again after bumping the Flutter version in .fvmrc or FRB_VERSION below; the tag changes,
+# Run it again after bumping the Flutter version in .fvmrc, the Rust channel in
+# rust/rust-toolchain.toml or FRB_VERSION below; the tag changes,
 # so .gitlab-ci.yml's `image:` must be updated to the printed name.
 set -eu
 
@@ -28,9 +29,13 @@ FRB_VERSION=2.13.0
 FLUTTER_VERSION=$(sed -n 's/.*"flutter": *"\([^"]*\)".*/\1/p' .fvmrc)
 [ -n "$FLUTTER_VERSION" ] || { echo "error: no flutter version in .fvmrc" >&2; exit 1; }
 
-IMAGE="gogdl-flutter-ci:flutter-$FLUTTER_VERSION-frb-$FRB_VERSION"
+RUST_VERSION=$(sed -n 's/^channel *= *"\([^"]*\)".*/\1/p' rust/rust-toolchain.toml)
+[ -n "$RUST_VERSION" ] || { echo "error: no channel in rust/rust-toolchain.toml" >&2; exit 1; }
+
+IMAGE="gogdl-flutter-ci:flutter-$FLUTTER_VERSION-rust-$RUST_VERSION-frb-$FRB_VERSION"
 docker build -t "$IMAGE" \
   --build-arg "FLUTTER_VERSION=$FLUTTER_VERSION" \
+  --build-arg "RUST_VERSION=$RUST_VERSION" \
   --build-arg "FRB_VERSION=$FRB_VERSION" \
   ci/
 echo "built $IMAGE"
