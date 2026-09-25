@@ -3,17 +3,13 @@
 #
 # Usage: ci/build-image.sh [--load-into <container>]
 #
-# Run it on the runner host (thinkcentre.home) from a checkout. The runner is a container with
-# its own docker-in-docker daemon, and job containers only see images in that inner daemon, so
-# pass the container that owns it with --load-into: the image is built with the host's docker
-# (fast, cached layers) and piped into the inner daemon with `docker save | docker load`. No
-# registry is needed. Without the flag it only builds.
+# Run it on the runner host (thinkcentre.home) from a checkout. The runner shares the host's
+# docker through its mounted docker.sock, so a plain build is all that's needed: jobs see the
+# image directly. --load-into <container> is only for a runner with its own docker-in-docker
+# daemon: it pipes the image in with `docker save | docker exec -i <container> docker load`.
 #
 # Run it again after bumping the Flutter version in .fvmrc or FRB_VERSION below; the tag changes,
-# so .gitlab-ci.yml's `image:` must be updated to the printed name. The inner daemon's
-# /var/lib/docker should be a volume: if it isn't, the image is lost when that container is
-# recreated and jobs fail trying to pull gogdl-flutter-ci:* from Docker Hub. Rerun with
-# --load-into to fix it.
+# so .gitlab-ci.yml's `image:` must be updated to the printed name.
 set -eu
 
 cd "$(dirname "$0")/.."

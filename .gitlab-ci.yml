@@ -14,13 +14,13 @@
 #
 # Jobs run in a prebuilt image (ci/Dockerfile: apt packages, rustup `stable`, the frb codegen
 # and Flutter), so none of them touches apt, rustup or the Flutter clone: the network is slow
-# and the runner is small. The runner is a container with its own docker-in-docker daemon, so
-# build the image on the host and load it there: `ci/build-image.sh --load-into <container>`.
-# Rebuild it after bumping .fvmrc or the frb version (update `image:` below to the printed
-# name; the `.toolchain` check fails a job whose image has a stale Flutter). The runner's
-# config.toml must not force pulls, under [runners.docker]:
+# and the runner is small. The runner shares the host's docker through its mounted docker.sock,
+# so the image is built on the host with `ci/build-image.sh` and jobs see it directly. Rebuild
+# it after bumping .fvmrc or the frb version (update `image:` below to the printed name; the
+# `.toolchain` check fails a job whose image has a stale Flutter). The runner's config.toml
+# (volume `gitlab-runner-config`) must not force pulls, under [runners.docker]:
 #   pull_policy = ["if-not-present"]
-# (or allowed_pull_policies including it), then restart the runner.
+# (or allowed_pull_policies including it), then `docker service update --force gitlab-runner`.
 #
 # If a job fails to resolve thinkcentre.home, the runner's containers aren't seeing the LAN's
 # /etc/hosts entry (it's a hosts-file entry, not real DNS). Fix it in
