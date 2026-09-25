@@ -1,12 +1,6 @@
 analyzer:
   exclude:
-    - cargokit/**
     - build/**
-    - android/**
-    - ios/**
-    - windows/**
-    - macos/**
-    - linux/**
 
 include: package:flutter_lints/flutter.yaml
 
