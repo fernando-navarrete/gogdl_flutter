@@ -144,12 +144,20 @@ needs it; ROADMAP.md schedules each item to land before that stage starts.
   `rust/src/frb_generated.rs` are committed, and nothing checks they match
   `flutter_rust_bridge_codegen generate` output for the pinned `2.13.0`.
   Fixed in `v1.2.0`: the `codegen` job regenerates and fails on any diff.
+- [x] **P1 — Built with the vendored cargokit.** The crate was built by a vendored copy of cargokit
+  (`cargokit/`, ~30 files) hooked into each platform's CMake, Gradle and podspec files, which the
+  package carried as root `android/`, `ios/`, `linux/`, `macos/` and `windows/` dirs.
+  Fixed in `v1.2.1`: migrated to Native Assets (`hook/build.dart`, through
+  `flutter_rust_bridge_hooks`), with the toolchain pinned in `rust/rust-toolchain.toml`. cargokit and
+  the glue dirs are gone; the Rust and Dart APIs are unchanged and the `.so` is still bundled as
+  `lib/libgogdl_flutter.so`.
 - [ ] **P1 — No release pipeline.** Tags are cut by hand, and nothing checks that `pubspec.yaml`,
   `rust/Cargo.toml` and the tag agree. Every Lumen build (and Lumen's CI) compiles the whole Rust
-  crate from source. cargokit supports precompiled binaries, which would make Lumen builds much
-  faster.
-  Partly fixed in `v1.2.0`: the version check and GitLab release on tags. The precompiled binaries
-  follow in `v1.2.1`, so this stays open.
+  crate from source, which is slow.
+  Partly fixed in `v1.2.0`: the version check and GitLab release on tags. Precompiled binaries are
+  still open: the cargokit mechanism this pointed to is gone, and `native_toolchain_rust` has no
+  precompiled-binary support. Deferred to `v1.5.0`, which needs a prebuilt `.so` for Lumen's
+  packaging anyway.
 - [ ] **P1 — The build isn't reproducible outside the LAN.** `gogdl-lib` is a git dependency over
   `ssh://git@thinkcentre.home:2200`, the same situation Lumen documented and deferred in its
   `v1.1.0`. CI on the self-hosted runner works around it with a deploy key.

@@ -28,10 +28,10 @@ the stage it serves, so Lumen can pin it on day one.
 
 | Lumen stage | Needs from the bridge | Bridge release |
 |---|---|---|
-| (none, internal) | Tests, CI/CD, precompiled binaries | `v1.2.0` |
+| (none, internal) | Tests, CI/CD | `v1.2.0` |
 | `v1.3.0` Download management | Cancel/pause, resume path, error kinds, install size, free space | `v1.3.0` |
 | `v1.4.0` Library and account | Sign out, batched titles/links, DLC product listing, Proton `has_more` | `v1.4.0` |
-| `v1.5.0` UI polish and packaging | Login error kinds, prebuilt `.so` for packaging, breaking API cleanups | `v1.5.0` |
+| `v1.5.0` UI polish and packaging | Login error kinds, precompiled `.so` for packaging, breaking API cleanups | `v1.5.0` |
 | `v1.6.0` Extras | Nothing | — |
 | Not on Lumen's roadmap yet | Cloud saves support/listing/sync, upstream-driven items | `v1.6.0`, `v1.7.0` |
 
@@ -76,9 +76,9 @@ This goes before any feature work so that everything after it lands with tests a
 - Fix the clippy warning and `cargo fmt` drift so the new gates start green (GAPS §4).
 
 Follow-up patches (`v1.2.1+`), one per tag:
-1. `v1.2.1`: precompiled binaries. The tag pipeline builds the Linux `.so` and publishes it as
-   cargokit precompiled artifacts, so Lumen builds and CI stop compiling the crate from source
-   (GAPS §6).
+1. `v1.2.1`: migrate from the vendored cargokit to Native Assets (`hook/build.dart`, toolchain
+   pinned in `rust/rust-toolchain.toml`). Precompiled binaries move to `v1.5.0`, since Native
+   Assets has no support for them (GAPS §6).
 2. `v1.2.2`: replace the template README, `CHANGELOG.md` and `pubspec.yaml` text, and drop the
    unused `ffigen` dev dependency (GAPS §6).
 3. `v1.2.3`: decide on the declared platforms. Either drop Android/iOS/macOS/Windows/web, or add CI
@@ -132,8 +132,9 @@ here and Lumen migrates once.
 - Named fields in every progress enum. `GameBuild` keeps only the timestamp.
   `DownloadableProduct.product_type` becomes an enum (GAPS §3).
 - Remove the getters deprecated in `v1.4.0` (GAPS §3).
-- Check that Lumen's AppImage/Flatpak release pipeline can consume `v1.2.1`'s prebuilt `.so`
-  (a Flatpak build can't reach the LAN-only `gogdl-lib` repo) (GAPS §6).
+- Build and publish a precompiled Linux `.so` from the tag pipeline, and check that Lumen's
+  AppImage/Flatpak release pipeline can consume it (a Flatpak build can't reach the LAN-only
+  `gogdl-lib` repo) (GAPS §6).
 - **Breaking** for Lumen `v1.5.0`: the progress enum field names, the model changes and the removed
   getters.
 

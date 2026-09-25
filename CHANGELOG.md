@@ -1,3 +1,14 @@
+## 1.2.1
+
+No change to the Dart API or to the progress events Dart receives.
+
+* Migrated the native build from the vendored cargokit to Native Assets: a Dart build hook
+  (`hook/build.dart`, through `flutter_rust_bridge_hooks`) runs cargo and bundles the library.
+  Removed `cargokit/` and the root `android/`, `ios/`, `linux/`, `macos/` and `windows/` dirs.
+* Pinned the Rust toolchain to `1.98.1` in `rust/rust-toolchain.toml`. Consumers need rustup.
+* CI image and `.toolchain` check now use the pinned Rust version.
+* Precompiled binaries are deferred to `v1.5.0` (Native Assets has no support for them).
+
 ## 1.2.0
 
 No change to the Dart API or to the progress events Dart receives.
