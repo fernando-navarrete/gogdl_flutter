@@ -24,10 +24,11 @@ collects them as the list of things to request upstream.
   multi-GB download keeps using the network and disk with nobody listening. It could stop early
   here: treat a failed `sink.add` as "listener gone" and drop the job future. A clean stop that
   leaves resumable state on disk is **[lib]** (see §2 "Cancel and pause").
-- [ ] **P1 — The example app and its integration test don't compile.** `example/lib/main.dart:19`
+- [x] **P1 — The example app and its integration test don't compile.** `example/lib/main.dart:19`
   and `example/integration_test/simple_test.dart:9` still call the frb template's `greet()`, which no
   longer exists. These are the analyzer's only two errors, so `flutter analyze` can't gate CI until
   they're fixed.
+  Fixed in `v1.2.0`: the example is an offline smoke app with a passing Linux integration test.
 - [ ] **P2 — `get_proton_releases` can't tell a filtered page from the end of the list.** It
   fetches a fixed page of 5 and silently drops releases with no suitable asset
   (`gogdl.rs:106-112`). A page where every release gets filtered out returns `[]`, which Lumen
@@ -111,12 +112,13 @@ needs it; ROADMAP.md schedules each item to land before that stage starts.
 
 ## 4. Code structure
 
-- [ ] **P1 — The progress coalescing is untestable and duplicated.** `gogdl.rs` is ~1000 lines,
+- [x] **P1 — The progress coalescing is untestable and duplicated.** `gogdl.rs` is ~1000 lines,
   almost all event-to-progress translation inlined in each job method: the same
   ticker/`select!`/dirty-flag/final-flush scaffolding six times, and `download_game` and
   `repair_game` share ~200 near-identical lines of stage handling. Move each translator into its own
   module as a plain state machine (`on_event(event) -> Vec<Progress>`, `on_tick()`, `finish()`) and
   share the tick loop, so the logic can be unit-tested with synthetic events and no network.
+  Fixed in `v1.2.0`: translators under `rust/src/progress/` and one shared tick loop.
 - [x] **P2 — One clippy warning** (redundant closure, `GameBuild::from_gogdl` in `.map`) and
   `cargo fmt` drift.
 
@@ -131,17 +133,23 @@ needs it; ROADMAP.md schedules each item to land before that stage starts.
 
 ## 6. Testing, CI/CD, tooling and docs
 
-- [ ] **P0 — No tests at all.** There are no Rust `#[cfg(test)]` modules, no Dart tests, and the
+- [x] **P0 — No tests at all.** There are no Rust `#[cfg(test)]` modules, no Dart tests, and the
   only integration test is the broken frb template (§1).
-- [ ] **P1 — No CI.** Nothing runs analyze, clippy, fmt, tests or codegen on push or tag. Lumen
+  Fixed in `v1.2.0`: Rust unit tests for the translators, tick loop and model adapters, plus the
+  Linux integration test.
+- [x] **P1 — No CI.** Nothing runs analyze, clippy, fmt, tests or codegen on push or tag. Lumen
   already has GitLab CI on the self-hosted runner (`thinkcentre.home`), so reuse that setup.
-- [ ] **P1 — Generated bindings can drift from the Rust API.** `lib/src/rust/**` and
+  Fixed in `v1.2.0`: `.gitlab-ci.yml` with `rust`, `dart`, `codegen` and `integration` jobs.
+- [x] **P1 — Generated bindings can drift from the Rust API.** `lib/src/rust/**` and
   `rust/src/frb_generated.rs` are committed, and nothing checks they match
   `flutter_rust_bridge_codegen generate` output for the pinned `2.13.0`.
+  Fixed in `v1.2.0`: the `codegen` job regenerates and fails on any diff.
 - [ ] **P1 — No release pipeline.** Tags are cut by hand, and nothing checks that `pubspec.yaml`,
   `rust/Cargo.toml` and the tag agree. Every Lumen build (and Lumen's CI) compiles the whole Rust
   crate from source. cargokit supports precompiled binaries, which would make Lumen builds much
   faster.
+  Partly fixed in `v1.2.0`: the version check and GitLab release on tags. The precompiled binaries
+  follow in `v1.2.1`, so this stays open.
 - [ ] **P1 — The build isn't reproducible outside the LAN.** `gogdl-lib` is a git dependency over
   `ssh://git@thinkcentre.home:2200`, the same situation Lumen documented and deferred in its
   `v1.1.0`. CI on the self-hosted runner works around it with a deploy key.
