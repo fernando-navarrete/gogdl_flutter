@@ -63,6 +63,21 @@ variables:
     - eval "$(ssh-agent -s)"
     - ssh-add ~/.ssh/gogdl_deploy_key
     - ssh-keyscan -p 2200 thinkcentre.home >> ~/.ssh/known_hosts 2>/dev/null
+    # The Native Assets build hook runs cargo with a stripped environment (only HOME and PATH
+    # get through), so the ssh-agent, CARGO_NET_GIT_FETCH_WITH_CLI, CARGO_HOME and RUSTUP_HOME
+    # above don't reach it. Give it the same setup through files under ~ instead.
+    - |
+      cat > ~/.ssh/config <<EOF
+      Host thinkcentre.home
+        Port 2200
+        IdentityFile ~/.ssh/gogdl_deploy_key
+        IdentitiesOnly yes
+      EOF
+    - mkdir -p ~/.cargo "$CARGO_HOME/registry" "$CARGO_HOME/git"
+    - printf '[net]\ngit-fetch-with-cli = true\n' > ~/.cargo/config.toml
+    - ln -sfn "$CARGO_HOME/registry" ~/.cargo/registry
+    - ln -sfn "$CARGO_HOME/git" ~/.cargo/git
+    - ln -sfn /opt/rustup ~/.rustup
 
 # Fails when the image's Flutter or Rust isn't the one pinned in .fvmrc / rust/rust-toolchain.toml,
 # which would otherwise be tested against the old toolchain without any error (for Rust, the
