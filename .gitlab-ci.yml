@@ -1,7 +1,7 @@
 # CI/CD for gogdl_flutter. Runs on the self-hosted runner on thinkcentre.home (Docker
-# executor), same setup as lumen's .gitlab-ci.yml. See v1.2.0-FOUNDATION.md Phases 5 and 6:
-# the `check` stage gates everything, and the `release` stage publishes a GitLab release on
-# vX.Y.Z tags.
+# executor), same setup as lumen's .gitlab-ci.yml. See devlog/v1.2.0-foundation.md (Phases 5
+# and 6): the `check` stage gates everything, and the `release` stage publishes a GitLab
+# release on vX.Y.Z tags.
 #
 # `gogdl-lib` is a private git dependency reachable only over the LAN
 # (ssh://git@thinkcentre.home:2200). cargo fetches it through the git CLI
