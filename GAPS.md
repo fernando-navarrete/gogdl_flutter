@@ -190,6 +190,11 @@ Consolidated from the **[lib]** items above, in the order this repo needs them (
    enums), so the bridge's model adapters can be unit-tested without the network. If `serde`
    round-tripping from fixtures already works, just document it. Wanted by bridge `v1.2.0`, which
    skips those tests without it.
+   `gogdl-lib` `v1.1.0` documents it (`tests/public_types.rs`, and a `# Constructing in tests`
+   section with a doctest on each type): structs deserialize from JSON, the event enums are built
+   from their public variants. Caveats: `ProductDetails.title` is skipped by serde, so set it by
+   hand; `productType` is upper case (`"GAME"`, `"DLC"`) in real responses; and the events and
+   Proton types have no `Debug`/`PartialEq` yet, so use `matches!` (tracked upstream).
 2. **Cooperative cancellation** for `download_game`, `repair_game`, `verify_files`,
    `download_proton_release` and the save transfers (a `CancellationToken` parameter, or a
    documented cancel-safe contract for dropping the future), leaving state that `repair_game` can
