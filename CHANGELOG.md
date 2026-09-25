@@ -1,3 +1,15 @@
+## 1.2.4
+
+No change to the Dart API or to the progress events Dart receives.
+
+* Tightened the Dart lints on top of `flutter_lints`: `strict-casts`, `strict-inference` and
+  `strict-raw-types`, plus rules for unawaited futures, missing types, `dynamic` calls, unclosed
+  streams and subscriptions, single quotes, `final` locals and sorted directives and dependencies.
+  `example/` inherits the root `analysis_options.yaml`.
+* Generated code (`lib/src/rust/**`, `*.freezed.dart`) is excluded from analysis, so a regenerate
+  never trips a lint.
+* Sorted the exports in `lib/gogdl_flutter.dart` and the dependencies in both `pubspec.yaml` files.
+
 ## 1.2.3
 
 No change to the Dart API or to the progress events Dart receives.

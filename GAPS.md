@@ -175,8 +175,11 @@ needs it; ROADMAP.md schedules each item to land before that stage starts.
   Fixed in `v1.2.3`: Linux only. The example's `android/`, `ios/`, `macos/` and `windows/` dirs are
   gone (the root ones went with cargokit in `v1.2.1`), and `web: false` in
   `flutter_rust_bridge.yaml` stops frb from generating the web output.
-- [ ] **P2 — Tighten lints.** Enable stricter rules on top of `flutter_lints` and
+- [x] **P2 — Tighten lints.** Enable stricter rules on top of `flutter_lints` and
   `clippy -D warnings`, once the example is fixed and CI is running.
+  Fixed in `v1.2.4`: the Dart side has the strict analyzer modes and a list of extra rules
+  (see `analysis_options.yaml`), with generated code excluded and `example/` inheriting them.
+  Clippy stays at `-D warnings`, without the pedantic group.
 
 ## 7. Requests for `gogdl-lib`
 

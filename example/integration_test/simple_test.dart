@@ -6,7 +6,7 @@ import 'package:integration_test/integration_test.dart';
 
 void main() {
   IntegrationTestWidgetsFlutterBinding.ensureInitialized();
-  setUpAll(() async => await RustLib.init());
+  setUpAll(RustLib.init);
 
   test('GogdlApi constructs', () {
     expect(GogdlApi.new, returnsNormally);
