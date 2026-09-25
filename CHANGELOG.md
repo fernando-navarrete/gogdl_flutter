@@ -1,3 +1,11 @@
+## 1.2.2
+
+No change to the Dart API or to the progress events Dart receives.
+
+* Replaced the template README, `CHANGELOG.md` and `pubspec.yaml` text: the README now describes the
+  bridge, how it is built, how to regenerate the bindings, and CI and releases.
+* Dropped the unused `ffi` and `ffigen` dev dependencies, and marked the package `publish_to: none`.
+
 ## 1.2.1
 
 No change to the Dart API or to the progress events Dart receives.
@@ -24,6 +32,25 @@ No change to the Dart API or to the progress events Dart receives.
   and creates a GitLab release from this changelog.
 * Fixed the clippy warning and the `cargo fmt` drift.
 
-## 0.0.1
+## 1.1.3
 
-* TODO: Describe initial release.
+* Updated `gogdl-lib` to `v1.0.11`.
+
+## 1.1.2
+
+* Added the `Finished` download progress event. Updated `gogdl-lib` to `v1.0.10`.
+
+## 1.1.1
+
+* Save downloads and uploads take separate prefix and installation paths. Updated `gogdl-lib` to
+  `v1.0.9`.
+
+## 1.1.0
+
+* Added `GogdlApi.downloadSaveFiles` and `GogdlApi.uploadSaveFiles`, which stream
+  `DownloadSavesProgress` and `UploadSavesProgress`. `GogError` gained a second variant for save
+  errors. Updated `gogdl-lib` to `v1.0.8`.
+
+## 1.0.0
+
+* First release.

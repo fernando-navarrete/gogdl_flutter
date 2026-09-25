@@ -163,9 +163,11 @@ needs it; ROADMAP.md schedules each item to land before that stage starts.
   `v1.1.0`. CI on the self-hosted runner works around it with a deploy key.
 - [x] **P2 — `main` is behind the released tags.** `v1.1.0`–`v1.1.3` only exist on
   `feat/cloud-saves`, which is 5 commits ahead of `main`. Merge it before starting the next stage.
-- [ ] **P2 — Template leftovers.** The README describes the FFI plugin template (`src/`, `ffigen`,
+- [x] **P2 — Template leftovers.** The README describes the FFI plugin template (`src/`, `ffigen`,
   `sum`/`sumAsync`). `CHANGELOG.md` is `0.0.1 — TODO`. The `pubspec.yaml` description is "A new
   Flutter FFI plugin project.", with boilerplate comments and an unused `ffigen` dev dependency.
+  Fixed in `v1.2.2`: the README describes the bridge, `CHANGELOG.md` has real entries (backfilled
+  from `1.0.0`), and `pubspec.yaml` has a real description and no `ffi`/`ffigen`.
 - [ ] **P2 — Declared platforms are never built.** `pubspec.yaml` declares Android, iOS, macOS and
   Windows, and `frb_generated.web.dart` exists, but only Linux is used or tested (Lumen needs
   Proton). Either drop the other platforms or build them in CI. As it is, they claim support
