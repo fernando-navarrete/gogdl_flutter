@@ -56,7 +56,7 @@ extension DownloadSavesProgressPatterns on DownloadSavesProgress {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( DownloadSavesProgress_Started value)?  started,TResult Function( DownloadSavesProgress_FileStarted value)?  fileStarted,TResult Function( DownloadSavesProgress_Progress value)?  progress,TResult Function( DownloadSavesProgress_FileFinished value)?  fileFinished,TResult Function( DownloadSavesProgress_Finished value)?  finished,required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( DownloadSavesProgress_Started value)?  started,TResult Function( DownloadSavesProgress_FileStarted value)?  fileStarted,TResult Function( DownloadSavesProgress_Progress value)?  progress,TResult Function( DownloadSavesProgress_FileFinished value)?  fileFinished,TResult Function( DownloadSavesProgress_Finished value)?  finished,TResult Function( DownloadSavesProgress_Cancelled value)?  cancelled,required TResult orElse(),}){
 final _that = this;
 switch (_that) {
 case DownloadSavesProgress_Started() when started != null:
@@ -64,7 +64,8 @@ return started(_that);case DownloadSavesProgress_FileStarted() when fileStarted 
 return fileStarted(_that);case DownloadSavesProgress_Progress() when progress != null:
 return progress(_that);case DownloadSavesProgress_FileFinished() when fileFinished != null:
 return fileFinished(_that);case DownloadSavesProgress_Finished() when finished != null:
-return finished(_that);case _:
+return finished(_that);case DownloadSavesProgress_Cancelled() when cancelled != null:
+return cancelled(_that);case _:
   return orElse();
 
 }
@@ -82,7 +83,7 @@ return finished(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( DownloadSavesProgress_Started value)  started,required TResult Function( DownloadSavesProgress_FileStarted value)  fileStarted,required TResult Function( DownloadSavesProgress_Progress value)  progress,required TResult Function( DownloadSavesProgress_FileFinished value)  fileFinished,required TResult Function( DownloadSavesProgress_Finished value)  finished,}){
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( DownloadSavesProgress_Started value)  started,required TResult Function( DownloadSavesProgress_FileStarted value)  fileStarted,required TResult Function( DownloadSavesProgress_Progress value)  progress,required TResult Function( DownloadSavesProgress_FileFinished value)  fileFinished,required TResult Function( DownloadSavesProgress_Finished value)  finished,required TResult Function( DownloadSavesProgress_Cancelled value)  cancelled,}){
 final _that = this;
 switch (_that) {
 case DownloadSavesProgress_Started():
@@ -90,7 +91,8 @@ return started(_that);case DownloadSavesProgress_FileStarted():
 return fileStarted(_that);case DownloadSavesProgress_Progress():
 return progress(_that);case DownloadSavesProgress_FileFinished():
 return fileFinished(_that);case DownloadSavesProgress_Finished():
-return finished(_that);}
+return finished(_that);case DownloadSavesProgress_Cancelled():
+return cancelled(_that);}
 }
 /// A variant of `map` that fallback to returning `null`.
 ///
@@ -104,7 +106,7 @@ return finished(_that);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( DownloadSavesProgress_Started value)?  started,TResult? Function( DownloadSavesProgress_FileStarted value)?  fileStarted,TResult? Function( DownloadSavesProgress_Progress value)?  progress,TResult? Function( DownloadSavesProgress_FileFinished value)?  fileFinished,TResult? Function( DownloadSavesProgress_Finished value)?  finished,}){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( DownloadSavesProgress_Started value)?  started,TResult? Function( DownloadSavesProgress_FileStarted value)?  fileStarted,TResult? Function( DownloadSavesProgress_Progress value)?  progress,TResult? Function( DownloadSavesProgress_FileFinished value)?  fileFinished,TResult? Function( DownloadSavesProgress_Finished value)?  finished,TResult? Function( DownloadSavesProgress_Cancelled value)?  cancelled,}){
 final _that = this;
 switch (_that) {
 case DownloadSavesProgress_Started() when started != null:
@@ -112,7 +114,8 @@ return started(_that);case DownloadSavesProgress_FileStarted() when fileStarted 
 return fileStarted(_that);case DownloadSavesProgress_Progress() when progress != null:
 return progress(_that);case DownloadSavesProgress_FileFinished() when fileFinished != null:
 return fileFinished(_that);case DownloadSavesProgress_Finished() when finished != null:
-return finished(_that);case _:
+return finished(_that);case DownloadSavesProgress_Cancelled() when cancelled != null:
+return cancelled(_that);case _:
   return null;
 
 }
@@ -129,14 +132,15 @@ return finished(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( BigInt totalFiles,  BigInt totalBytes)?  started,TResult Function( String name,  String destination,  BigInt totalBytes)?  fileStarted,TResult Function( BigInt downloadedBytes,  BigInt fileDownloadedBytes)?  progress,TResult Function( String name)?  fileFinished,TResult Function()?  finished,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( BigInt totalFiles,  BigInt totalBytes)?  started,TResult Function( String name,  String destination,  BigInt totalBytes)?  fileStarted,TResult Function( BigInt downloadedBytes,  BigInt fileDownloadedBytes)?  progress,TResult Function( String name)?  fileFinished,TResult Function()?  finished,TResult Function()?  cancelled,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case DownloadSavesProgress_Started() when started != null:
 return started(_that.totalFiles,_that.totalBytes);case DownloadSavesProgress_FileStarted() when fileStarted != null:
 return fileStarted(_that.name,_that.destination,_that.totalBytes);case DownloadSavesProgress_Progress() when progress != null:
 return progress(_that.downloadedBytes,_that.fileDownloadedBytes);case DownloadSavesProgress_FileFinished() when fileFinished != null:
 return fileFinished(_that.name);case DownloadSavesProgress_Finished() when finished != null:
-return finished();case _:
+return finished();case DownloadSavesProgress_Cancelled() when cancelled != null:
+return cancelled();case _:
   return orElse();
 
 }
@@ -154,14 +158,15 @@ return finished();case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( BigInt totalFiles,  BigInt totalBytes)  started,required TResult Function( String name,  String destination,  BigInt totalBytes)  fileStarted,required TResult Function( BigInt downloadedBytes,  BigInt fileDownloadedBytes)  progress,required TResult Function( String name)  fileFinished,required TResult Function()  finished,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( BigInt totalFiles,  BigInt totalBytes)  started,required TResult Function( String name,  String destination,  BigInt totalBytes)  fileStarted,required TResult Function( BigInt downloadedBytes,  BigInt fileDownloadedBytes)  progress,required TResult Function( String name)  fileFinished,required TResult Function()  finished,required TResult Function()  cancelled,}) {final _that = this;
 switch (_that) {
 case DownloadSavesProgress_Started():
 return started(_that.totalFiles,_that.totalBytes);case DownloadSavesProgress_FileStarted():
 return fileStarted(_that.name,_that.destination,_that.totalBytes);case DownloadSavesProgress_Progress():
 return progress(_that.downloadedBytes,_that.fileDownloadedBytes);case DownloadSavesProgress_FileFinished():
 return fileFinished(_that.name);case DownloadSavesProgress_Finished():
-return finished();}
+return finished();case DownloadSavesProgress_Cancelled():
+return cancelled();}
 }
 /// A variant of `when` that fallback to returning `null`
 ///
@@ -175,14 +180,15 @@ return finished();}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( BigInt totalFiles,  BigInt totalBytes)?  started,TResult? Function( String name,  String destination,  BigInt totalBytes)?  fileStarted,TResult? Function( BigInt downloadedBytes,  BigInt fileDownloadedBytes)?  progress,TResult? Function( String name)?  fileFinished,TResult? Function()?  finished,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( BigInt totalFiles,  BigInt totalBytes)?  started,TResult? Function( String name,  String destination,  BigInt totalBytes)?  fileStarted,TResult? Function( BigInt downloadedBytes,  BigInt fileDownloadedBytes)?  progress,TResult? Function( String name)?  fileFinished,TResult? Function()?  finished,TResult? Function()?  cancelled,}) {final _that = this;
 switch (_that) {
 case DownloadSavesProgress_Started() when started != null:
 return started(_that.totalFiles,_that.totalBytes);case DownloadSavesProgress_FileStarted() when fileStarted != null:
 return fileStarted(_that.name,_that.destination,_that.totalBytes);case DownloadSavesProgress_Progress() when progress != null:
 return progress(_that.downloadedBytes,_that.fileDownloadedBytes);case DownloadSavesProgress_FileFinished() when fileFinished != null:
 return fileFinished(_that.name);case DownloadSavesProgress_Finished() when finished != null:
-return finished();case _:
+return finished();case DownloadSavesProgress_Cancelled() when cancelled != null:
+return cancelled();case _:
   return null;
 
 }
@@ -494,6 +500,38 @@ int get hashCode => runtimeType.hashCode;
 @override
 String toString() {
     return 'DownloadSavesProgress.finished()';
+}
+
+
+}
+
+
+
+
+/// @nodoc
+
+
+class DownloadSavesProgress_Cancelled extends DownloadSavesProgress {
+  const DownloadSavesProgress_Cancelled(): super._();
+  
+
+
+
+
+
+
+@override
+bool operator ==(Object other) {
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is DownloadSavesProgress_Cancelled);
+}
+
+
+@override
+int get hashCode => runtimeType.hashCode;
+
+@override
+String toString() {
+    return 'DownloadSavesProgress.cancelled()';
 }
 
 

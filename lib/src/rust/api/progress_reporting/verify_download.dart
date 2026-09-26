@@ -47,4 +47,9 @@ sealed class VerifyDownloadProgress with _$VerifyDownloadProgress {
   /// re-downloading. Zero means the install is intact.
   const factory VerifyDownloadProgress.finished(BigInt field0) =
       VerifyDownloadProgress_Finished;
+
+  /// The job was cancelled with its `CancelToken`. Verifying writes
+  /// nothing, so the install is as it was. Terminal.
+  const factory VerifyDownloadProgress.cancelled() =
+      VerifyDownloadProgress_Cancelled;
 }

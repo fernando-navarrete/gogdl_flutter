@@ -15,27 +15,22 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$VerifyDownloadProgress {
 
- Object get field0;
+
 
 
 
 @override
 bool operator ==(Object other) {
-  final _this = this as VerifyDownloadProgress;
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is VerifyDownloadProgress&&const DeepCollectionEquality().equals(other.field0, _this.field0));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is VerifyDownloadProgress);
 }
 
 
 @override
-int get hashCode {
-  final _this = this as VerifyDownloadProgress;
-  return Object.hash(runtimeType,const DeepCollectionEquality().hash(_this.field0));
-}
+int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  final _this = this as VerifyDownloadProgress;
-  return 'VerifyDownloadProgress(field0: ${_this.field0})';
+    return 'VerifyDownloadProgress()';
 }
 
 
@@ -61,7 +56,7 @@ extension VerifyDownloadProgressPatterns on VerifyDownloadProgress {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( VerifyDownloadProgress_Started value)?  started,TResult Function( VerifyDownloadProgress_Progress value)?  progress,TResult Function( VerifyDownloadProgress_CouldNotResolvePath value)?  couldNotResolvePath,TResult Function( VerifyDownloadProgress_FileNotFound value)?  fileNotFound,TResult Function( VerifyDownloadProgress_ChecksumMismatch value)?  checksumMismatch,TResult Function( VerifyDownloadProgress_Finished value)?  finished,required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( VerifyDownloadProgress_Started value)?  started,TResult Function( VerifyDownloadProgress_Progress value)?  progress,TResult Function( VerifyDownloadProgress_CouldNotResolvePath value)?  couldNotResolvePath,TResult Function( VerifyDownloadProgress_FileNotFound value)?  fileNotFound,TResult Function( VerifyDownloadProgress_ChecksumMismatch value)?  checksumMismatch,TResult Function( VerifyDownloadProgress_Finished value)?  finished,TResult Function( VerifyDownloadProgress_Cancelled value)?  cancelled,required TResult orElse(),}){
 final _that = this;
 switch (_that) {
 case VerifyDownloadProgress_Started() when started != null:
@@ -70,7 +65,8 @@ return progress(_that);case VerifyDownloadProgress_CouldNotResolvePath() when co
 return couldNotResolvePath(_that);case VerifyDownloadProgress_FileNotFound() when fileNotFound != null:
 return fileNotFound(_that);case VerifyDownloadProgress_ChecksumMismatch() when checksumMismatch != null:
 return checksumMismatch(_that);case VerifyDownloadProgress_Finished() when finished != null:
-return finished(_that);case _:
+return finished(_that);case VerifyDownloadProgress_Cancelled() when cancelled != null:
+return cancelled(_that);case _:
   return orElse();
 
 }
@@ -88,7 +84,7 @@ return finished(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( VerifyDownloadProgress_Started value)  started,required TResult Function( VerifyDownloadProgress_Progress value)  progress,required TResult Function( VerifyDownloadProgress_CouldNotResolvePath value)  couldNotResolvePath,required TResult Function( VerifyDownloadProgress_FileNotFound value)  fileNotFound,required TResult Function( VerifyDownloadProgress_ChecksumMismatch value)  checksumMismatch,required TResult Function( VerifyDownloadProgress_Finished value)  finished,}){
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( VerifyDownloadProgress_Started value)  started,required TResult Function( VerifyDownloadProgress_Progress value)  progress,required TResult Function( VerifyDownloadProgress_CouldNotResolvePath value)  couldNotResolvePath,required TResult Function( VerifyDownloadProgress_FileNotFound value)  fileNotFound,required TResult Function( VerifyDownloadProgress_ChecksumMismatch value)  checksumMismatch,required TResult Function( VerifyDownloadProgress_Finished value)  finished,required TResult Function( VerifyDownloadProgress_Cancelled value)  cancelled,}){
 final _that = this;
 switch (_that) {
 case VerifyDownloadProgress_Started():
@@ -97,7 +93,8 @@ return progress(_that);case VerifyDownloadProgress_CouldNotResolvePath():
 return couldNotResolvePath(_that);case VerifyDownloadProgress_FileNotFound():
 return fileNotFound(_that);case VerifyDownloadProgress_ChecksumMismatch():
 return checksumMismatch(_that);case VerifyDownloadProgress_Finished():
-return finished(_that);}
+return finished(_that);case VerifyDownloadProgress_Cancelled():
+return cancelled(_that);}
 }
 /// A variant of `map` that fallback to returning `null`.
 ///
@@ -111,7 +108,7 @@ return finished(_that);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( VerifyDownloadProgress_Started value)?  started,TResult? Function( VerifyDownloadProgress_Progress value)?  progress,TResult? Function( VerifyDownloadProgress_CouldNotResolvePath value)?  couldNotResolvePath,TResult? Function( VerifyDownloadProgress_FileNotFound value)?  fileNotFound,TResult? Function( VerifyDownloadProgress_ChecksumMismatch value)?  checksumMismatch,TResult? Function( VerifyDownloadProgress_Finished value)?  finished,}){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( VerifyDownloadProgress_Started value)?  started,TResult? Function( VerifyDownloadProgress_Progress value)?  progress,TResult? Function( VerifyDownloadProgress_CouldNotResolvePath value)?  couldNotResolvePath,TResult? Function( VerifyDownloadProgress_FileNotFound value)?  fileNotFound,TResult? Function( VerifyDownloadProgress_ChecksumMismatch value)?  checksumMismatch,TResult? Function( VerifyDownloadProgress_Finished value)?  finished,TResult? Function( VerifyDownloadProgress_Cancelled value)?  cancelled,}){
 final _that = this;
 switch (_that) {
 case VerifyDownloadProgress_Started() when started != null:
@@ -120,7 +117,8 @@ return progress(_that);case VerifyDownloadProgress_CouldNotResolvePath() when co
 return couldNotResolvePath(_that);case VerifyDownloadProgress_FileNotFound() when fileNotFound != null:
 return fileNotFound(_that);case VerifyDownloadProgress_ChecksumMismatch() when checksumMismatch != null:
 return checksumMismatch(_that);case VerifyDownloadProgress_Finished() when finished != null:
-return finished(_that);case _:
+return finished(_that);case VerifyDownloadProgress_Cancelled() when cancelled != null:
+return cancelled(_that);case _:
   return null;
 
 }
@@ -137,7 +135,7 @@ return finished(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( BigInt field0)?  started,TResult Function( BigInt field0)?  progress,TResult Function( String field0,  BigInt field1)?  couldNotResolvePath,TResult Function( String field0,  BigInt field1)?  fileNotFound,TResult Function( String field0,  BigInt field1)?  checksumMismatch,TResult Function( BigInt field0)?  finished,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( BigInt field0)?  started,TResult Function( BigInt field0)?  progress,TResult Function( String field0,  BigInt field1)?  couldNotResolvePath,TResult Function( String field0,  BigInt field1)?  fileNotFound,TResult Function( String field0,  BigInt field1)?  checksumMismatch,TResult Function( BigInt field0)?  finished,TResult Function()?  cancelled,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case VerifyDownloadProgress_Started() when started != null:
 return started(_that.field0);case VerifyDownloadProgress_Progress() when progress != null:
@@ -145,7 +143,8 @@ return progress(_that.field0);case VerifyDownloadProgress_CouldNotResolvePath() 
 return couldNotResolvePath(_that.field0,_that.field1);case VerifyDownloadProgress_FileNotFound() when fileNotFound != null:
 return fileNotFound(_that.field0,_that.field1);case VerifyDownloadProgress_ChecksumMismatch() when checksumMismatch != null:
 return checksumMismatch(_that.field0,_that.field1);case VerifyDownloadProgress_Finished() when finished != null:
-return finished(_that.field0);case _:
+return finished(_that.field0);case VerifyDownloadProgress_Cancelled() when cancelled != null:
+return cancelled();case _:
   return orElse();
 
 }
@@ -163,7 +162,7 @@ return finished(_that.field0);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( BigInt field0)  started,required TResult Function( BigInt field0)  progress,required TResult Function( String field0,  BigInt field1)  couldNotResolvePath,required TResult Function( String field0,  BigInt field1)  fileNotFound,required TResult Function( String field0,  BigInt field1)  checksumMismatch,required TResult Function( BigInt field0)  finished,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( BigInt field0)  started,required TResult Function( BigInt field0)  progress,required TResult Function( String field0,  BigInt field1)  couldNotResolvePath,required TResult Function( String field0,  BigInt field1)  fileNotFound,required TResult Function( String field0,  BigInt field1)  checksumMismatch,required TResult Function( BigInt field0)  finished,required TResult Function()  cancelled,}) {final _that = this;
 switch (_that) {
 case VerifyDownloadProgress_Started():
 return started(_that.field0);case VerifyDownloadProgress_Progress():
@@ -171,7 +170,8 @@ return progress(_that.field0);case VerifyDownloadProgress_CouldNotResolvePath():
 return couldNotResolvePath(_that.field0,_that.field1);case VerifyDownloadProgress_FileNotFound():
 return fileNotFound(_that.field0,_that.field1);case VerifyDownloadProgress_ChecksumMismatch():
 return checksumMismatch(_that.field0,_that.field1);case VerifyDownloadProgress_Finished():
-return finished(_that.field0);}
+return finished(_that.field0);case VerifyDownloadProgress_Cancelled():
+return cancelled();}
 }
 /// A variant of `when` that fallback to returning `null`
 ///
@@ -185,7 +185,7 @@ return finished(_that.field0);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( BigInt field0)?  started,TResult? Function( BigInt field0)?  progress,TResult? Function( String field0,  BigInt field1)?  couldNotResolvePath,TResult? Function( String field0,  BigInt field1)?  fileNotFound,TResult? Function( String field0,  BigInt field1)?  checksumMismatch,TResult? Function( BigInt field0)?  finished,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( BigInt field0)?  started,TResult? Function( BigInt field0)?  progress,TResult? Function( String field0,  BigInt field1)?  couldNotResolvePath,TResult? Function( String field0,  BigInt field1)?  fileNotFound,TResult? Function( String field0,  BigInt field1)?  checksumMismatch,TResult? Function( BigInt field0)?  finished,TResult? Function()?  cancelled,}) {final _that = this;
 switch (_that) {
 case VerifyDownloadProgress_Started() when started != null:
 return started(_that.field0);case VerifyDownloadProgress_Progress() when progress != null:
@@ -193,7 +193,8 @@ return progress(_that.field0);case VerifyDownloadProgress_CouldNotResolvePath() 
 return couldNotResolvePath(_that.field0,_that.field1);case VerifyDownloadProgress_FileNotFound() when fileNotFound != null:
 return fileNotFound(_that.field0,_that.field1);case VerifyDownloadProgress_ChecksumMismatch() when checksumMismatch != null:
 return checksumMismatch(_that.field0,_that.field1);case VerifyDownloadProgress_Finished() when finished != null:
-return finished(_that.field0);case _:
+return finished(_that.field0);case VerifyDownloadProgress_Cancelled() when cancelled != null:
+return cancelled();case _:
   return null;
 
 }
@@ -208,7 +209,7 @@ class VerifyDownloadProgress_Started extends VerifyDownloadProgress {
   const VerifyDownloadProgress_Started(this.field0): super._();
   
 
-@override final  BigInt field0;
+ final  BigInt field0;
 
 /// Create a copy of VerifyDownloadProgress
 /// with the given fields replaced by the non-null parameter values.
@@ -276,7 +277,7 @@ class VerifyDownloadProgress_Progress extends VerifyDownloadProgress {
   const VerifyDownloadProgress_Progress(this.field0): super._();
   
 
-@override final  BigInt field0;
+ final  BigInt field0;
 
 /// Create a copy of VerifyDownloadProgress
 /// with the given fields replaced by the non-null parameter values.
@@ -344,7 +345,7 @@ class VerifyDownloadProgress_CouldNotResolvePath extends VerifyDownloadProgress 
   const VerifyDownloadProgress_CouldNotResolvePath(this.field0, this.field1): super._();
   
 
-@override final  String field0;
+ final  String field0;
  final  BigInt field1;
 
 /// Create a copy of VerifyDownloadProgress
@@ -414,7 +415,7 @@ class VerifyDownloadProgress_FileNotFound extends VerifyDownloadProgress {
   const VerifyDownloadProgress_FileNotFound(this.field0, this.field1): super._();
   
 
-@override final  String field0;
+ final  String field0;
  final  BigInt field1;
 
 /// Create a copy of VerifyDownloadProgress
@@ -484,7 +485,7 @@ class VerifyDownloadProgress_ChecksumMismatch extends VerifyDownloadProgress {
   const VerifyDownloadProgress_ChecksumMismatch(this.field0, this.field1): super._();
   
 
-@override final  String field0;
+ final  String field0;
  final  BigInt field1;
 
 /// Create a copy of VerifyDownloadProgress
@@ -554,7 +555,7 @@ class VerifyDownloadProgress_Finished extends VerifyDownloadProgress {
   const VerifyDownloadProgress_Finished(this.field0): super._();
   
 
-@override final  BigInt field0;
+ final  BigInt field0;
 
 /// Create a copy of VerifyDownloadProgress
 /// with the given fields replaced by the non-null parameter values.
@@ -614,5 +615,37 @@ as BigInt,
 
 
 }
+
+/// @nodoc
+
+
+class VerifyDownloadProgress_Cancelled extends VerifyDownloadProgress {
+  const VerifyDownloadProgress_Cancelled(): super._();
+  
+
+
+
+
+
+
+@override
+bool operator ==(Object other) {
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is VerifyDownloadProgress_Cancelled);
+}
+
+
+@override
+int get hashCode => runtimeType.hashCode;
+
+@override
+String toString() {
+    return 'VerifyDownloadProgress.cancelled()';
+}
+
+
+}
+
+
+
 
 // dart format on

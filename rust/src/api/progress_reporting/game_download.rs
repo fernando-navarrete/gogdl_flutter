@@ -31,4 +31,7 @@ pub enum DownloadGameProgress {
     DownloadProgress { downloaded_bytes: u64 },
     /// Every chunk transferred and checksummed. Terminal.
     Finished,
+    /// The job was cancelled with its `CancelToken`. The files written so
+    /// far stay, and `repairGame` resumes the install. Terminal.
+    Cancelled,
 }

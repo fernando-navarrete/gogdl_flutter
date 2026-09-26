@@ -58,4 +58,9 @@ sealed class DownloadGameProgress with _$DownloadGameProgress {
 
   /// Every chunk transferred and checksummed. Terminal.
   const factory DownloadGameProgress.finished() = DownloadGameProgress_Finished;
+
+  /// The job was cancelled with its `CancelToken`. The files written so
+  /// far stay, and `repairGame` resumes the install. Terminal.
+  const factory DownloadGameProgress.cancelled() =
+      DownloadGameProgress_Cancelled;
 }

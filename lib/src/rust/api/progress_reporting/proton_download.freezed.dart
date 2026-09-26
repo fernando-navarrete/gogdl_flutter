@@ -15,27 +15,22 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$ProtonDownloadProgress {
 
- Object get field0;
+
 
 
 
 @override
 bool operator ==(Object other) {
-  final _this = this as ProtonDownloadProgress;
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is ProtonDownloadProgress&&const DeepCollectionEquality().equals(other.field0, _this.field0));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is ProtonDownloadProgress);
 }
 
 
 @override
-int get hashCode {
-  final _this = this as ProtonDownloadProgress;
-  return Object.hash(runtimeType,const DeepCollectionEquality().hash(_this.field0));
-}
+int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  final _this = this as ProtonDownloadProgress;
-  return 'ProtonDownloadProgress(field0: ${_this.field0})';
+    return 'ProtonDownloadProgress()';
 }
 
 
@@ -61,14 +56,15 @@ extension ProtonDownloadProgressPatterns on ProtonDownloadProgress {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( ProtonDownloadProgress_Started value)?  started,TResult Function( ProtonDownloadProgress_Progress value)?  progress,TResult Function( ProtonDownloadProgress_Extracted value)?  extracted,TResult Function( ProtonDownloadProgress_Finished value)?  finished,required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( ProtonDownloadProgress_Started value)?  started,TResult Function( ProtonDownloadProgress_Progress value)?  progress,TResult Function( ProtonDownloadProgress_Extracted value)?  extracted,TResult Function( ProtonDownloadProgress_Finished value)?  finished,TResult Function( ProtonDownloadProgress_Cancelled value)?  cancelled,required TResult orElse(),}){
 final _that = this;
 switch (_that) {
 case ProtonDownloadProgress_Started() when started != null:
 return started(_that);case ProtonDownloadProgress_Progress() when progress != null:
 return progress(_that);case ProtonDownloadProgress_Extracted() when extracted != null:
 return extracted(_that);case ProtonDownloadProgress_Finished() when finished != null:
-return finished(_that);case _:
+return finished(_that);case ProtonDownloadProgress_Cancelled() when cancelled != null:
+return cancelled(_that);case _:
   return orElse();
 
 }
@@ -86,14 +82,15 @@ return finished(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( ProtonDownloadProgress_Started value)  started,required TResult Function( ProtonDownloadProgress_Progress value)  progress,required TResult Function( ProtonDownloadProgress_Extracted value)  extracted,required TResult Function( ProtonDownloadProgress_Finished value)  finished,}){
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( ProtonDownloadProgress_Started value)  started,required TResult Function( ProtonDownloadProgress_Progress value)  progress,required TResult Function( ProtonDownloadProgress_Extracted value)  extracted,required TResult Function( ProtonDownloadProgress_Finished value)  finished,required TResult Function( ProtonDownloadProgress_Cancelled value)  cancelled,}){
 final _that = this;
 switch (_that) {
 case ProtonDownloadProgress_Started():
 return started(_that);case ProtonDownloadProgress_Progress():
 return progress(_that);case ProtonDownloadProgress_Extracted():
 return extracted(_that);case ProtonDownloadProgress_Finished():
-return finished(_that);}
+return finished(_that);case ProtonDownloadProgress_Cancelled():
+return cancelled(_that);}
 }
 /// A variant of `map` that fallback to returning `null`.
 ///
@@ -107,14 +104,15 @@ return finished(_that);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( ProtonDownloadProgress_Started value)?  started,TResult? Function( ProtonDownloadProgress_Progress value)?  progress,TResult? Function( ProtonDownloadProgress_Extracted value)?  extracted,TResult? Function( ProtonDownloadProgress_Finished value)?  finished,}){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( ProtonDownloadProgress_Started value)?  started,TResult? Function( ProtonDownloadProgress_Progress value)?  progress,TResult? Function( ProtonDownloadProgress_Extracted value)?  extracted,TResult? Function( ProtonDownloadProgress_Finished value)?  finished,TResult? Function( ProtonDownloadProgress_Cancelled value)?  cancelled,}){
 final _that = this;
 switch (_that) {
 case ProtonDownloadProgress_Started() when started != null:
 return started(_that);case ProtonDownloadProgress_Progress() when progress != null:
 return progress(_that);case ProtonDownloadProgress_Extracted() when extracted != null:
 return extracted(_that);case ProtonDownloadProgress_Finished() when finished != null:
-return finished(_that);case _:
+return finished(_that);case ProtonDownloadProgress_Cancelled() when cancelled != null:
+return cancelled(_that);case _:
   return null;
 
 }
@@ -131,13 +129,14 @@ return finished(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( BigInt field0)?  started,TResult Function( BigInt field0)?  progress,TResult Function( String field0)?  extracted,TResult Function( String field0)?  finished,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( BigInt field0)?  started,TResult Function( BigInt field0)?  progress,TResult Function( String field0)?  extracted,TResult Function( String field0)?  finished,TResult Function()?  cancelled,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case ProtonDownloadProgress_Started() when started != null:
 return started(_that.field0);case ProtonDownloadProgress_Progress() when progress != null:
 return progress(_that.field0);case ProtonDownloadProgress_Extracted() when extracted != null:
 return extracted(_that.field0);case ProtonDownloadProgress_Finished() when finished != null:
-return finished(_that.field0);case _:
+return finished(_that.field0);case ProtonDownloadProgress_Cancelled() when cancelled != null:
+return cancelled();case _:
   return orElse();
 
 }
@@ -155,13 +154,14 @@ return finished(_that.field0);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( BigInt field0)  started,required TResult Function( BigInt field0)  progress,required TResult Function( String field0)  extracted,required TResult Function( String field0)  finished,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( BigInt field0)  started,required TResult Function( BigInt field0)  progress,required TResult Function( String field0)  extracted,required TResult Function( String field0)  finished,required TResult Function()  cancelled,}) {final _that = this;
 switch (_that) {
 case ProtonDownloadProgress_Started():
 return started(_that.field0);case ProtonDownloadProgress_Progress():
 return progress(_that.field0);case ProtonDownloadProgress_Extracted():
 return extracted(_that.field0);case ProtonDownloadProgress_Finished():
-return finished(_that.field0);}
+return finished(_that.field0);case ProtonDownloadProgress_Cancelled():
+return cancelled();}
 }
 /// A variant of `when` that fallback to returning `null`
 ///
@@ -175,13 +175,14 @@ return finished(_that.field0);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( BigInt field0)?  started,TResult? Function( BigInt field0)?  progress,TResult? Function( String field0)?  extracted,TResult? Function( String field0)?  finished,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( BigInt field0)?  started,TResult? Function( BigInt field0)?  progress,TResult? Function( String field0)?  extracted,TResult? Function( String field0)?  finished,TResult? Function()?  cancelled,}) {final _that = this;
 switch (_that) {
 case ProtonDownloadProgress_Started() when started != null:
 return started(_that.field0);case ProtonDownloadProgress_Progress() when progress != null:
 return progress(_that.field0);case ProtonDownloadProgress_Extracted() when extracted != null:
 return extracted(_that.field0);case ProtonDownloadProgress_Finished() when finished != null:
-return finished(_that.field0);case _:
+return finished(_that.field0);case ProtonDownloadProgress_Cancelled() when cancelled != null:
+return cancelled();case _:
   return null;
 
 }
@@ -196,7 +197,7 @@ class ProtonDownloadProgress_Started extends ProtonDownloadProgress {
   const ProtonDownloadProgress_Started(this.field0): super._();
   
 
-@override final  BigInt field0;
+ final  BigInt field0;
 
 /// Create a copy of ProtonDownloadProgress
 /// with the given fields replaced by the non-null parameter values.
@@ -264,7 +265,7 @@ class ProtonDownloadProgress_Progress extends ProtonDownloadProgress {
   const ProtonDownloadProgress_Progress(this.field0): super._();
   
 
-@override final  BigInt field0;
+ final  BigInt field0;
 
 /// Create a copy of ProtonDownloadProgress
 /// with the given fields replaced by the non-null parameter values.
@@ -332,7 +333,7 @@ class ProtonDownloadProgress_Extracted extends ProtonDownloadProgress {
   const ProtonDownloadProgress_Extracted(this.field0): super._();
   
 
-@override final  String field0;
+ final  String field0;
 
 /// Create a copy of ProtonDownloadProgress
 /// with the given fields replaced by the non-null parameter values.
@@ -400,7 +401,7 @@ class ProtonDownloadProgress_Finished extends ProtonDownloadProgress {
   const ProtonDownloadProgress_Finished(this.field0): super._();
   
 
-@override final  String field0;
+ final  String field0;
 
 /// Create a copy of ProtonDownloadProgress
 /// with the given fields replaced by the non-null parameter values.
@@ -460,5 +461,37 @@ as String,
 
 
 }
+
+/// @nodoc
+
+
+class ProtonDownloadProgress_Cancelled extends ProtonDownloadProgress {
+  const ProtonDownloadProgress_Cancelled(): super._();
+  
+
+
+
+
+
+
+@override
+bool operator ==(Object other) {
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is ProtonDownloadProgress_Cancelled);
+}
+
+
+@override
+int get hashCode => runtimeType.hashCode;
+
+@override
+String toString() {
+    return 'ProtonDownloadProgress.cancelled()';
+}
+
+
+}
+
+
+
 
 // dart format on

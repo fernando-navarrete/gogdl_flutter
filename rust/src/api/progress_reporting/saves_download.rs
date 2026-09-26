@@ -29,4 +29,8 @@ pub enum DownloadSavesProgress {
     FileFinished { name: String },
     /// Every file downloaded. Terminal.
     Finished,
+    /// The job was cancelled with its `CancelToken`. Each local save is
+    /// either the old one or the complete new one, never a partial one.
+    /// Terminal.
+    Cancelled,
 }

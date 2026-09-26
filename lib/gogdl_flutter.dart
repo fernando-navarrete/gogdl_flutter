@@ -1,6 +1,7 @@
 library;
 
-export 'src/rust/api/error.dart' show GogError;
+export 'src/rust/api/cancel_token.dart' show CancelToken;
+export 'src/rust/api/error.dart' show GogError, GogErrorKind, SpaceShortfall;
 export 'src/rust/api/gogdl.dart' show GogdlApi;
 export 'src/rust/api/models/downloadable_product.dart' show DownloadableProduct;
 export 'src/rust/api/models/game_build.dart' show GameBuild;
@@ -15,6 +16,7 @@ export 'src/rust/api/progress_reporting/game_download.dart'
         DownloadGameProgress_AllocationError,
         DownloadGameProgress_DownloadProgress,
         DownloadGameProgress_Finished,
+        DownloadGameProgress_Cancelled,
         DownloadGameProgressPatterns;
 export 'src/rust/api/progress_reporting/game_repair.dart'
     show
@@ -31,6 +33,7 @@ export 'src/rust/api/progress_reporting/game_repair.dart'
         RepairGameProgress_DownloadStarted,
         RepairGameProgress_DownloadProgress,
         RepairGameProgress_Finished,
+        RepairGameProgress_Cancelled,
         RepairGameProgressPatterns;
 export 'src/rust/api/progress_reporting/proton_download.dart'
     show
@@ -39,6 +42,7 @@ export 'src/rust/api/progress_reporting/proton_download.dart'
         ProtonDownloadProgress_Progress,
         ProtonDownloadProgress_Extracted,
         ProtonDownloadProgress_Finished,
+        ProtonDownloadProgress_Cancelled,
         ProtonDownloadProgressPatterns;
 export 'src/rust/api/progress_reporting/saves_download.dart'
     show
@@ -48,6 +52,7 @@ export 'src/rust/api/progress_reporting/saves_download.dart'
         DownloadSavesProgress_Progress,
         DownloadSavesProgress_FileFinished,
         DownloadSavesProgress_Finished,
+        DownloadSavesProgress_Cancelled,
         DownloadSavesProgressPatterns;
 export 'src/rust/api/progress_reporting/saves_upload.dart'
     show
@@ -57,6 +62,7 @@ export 'src/rust/api/progress_reporting/saves_upload.dart'
         UploadSavesProgress_Progress,
         UploadSavesProgress_FileFinished,
         UploadSavesProgress_Finished,
+        UploadSavesProgress_Cancelled,
         UploadSavesProgressPatterns;
 export 'src/rust/api/progress_reporting/verify_download.dart'
     show
@@ -67,5 +73,6 @@ export 'src/rust/api/progress_reporting/verify_download.dart'
         VerifyDownloadProgress_FileNotFound,
         VerifyDownloadProgress_ChecksumMismatch,
         VerifyDownloadProgress_Finished,
+        VerifyDownloadProgress_Cancelled,
         VerifyDownloadProgressPatterns;
 export 'src/rust/frb_generated.dart' show RustLib;

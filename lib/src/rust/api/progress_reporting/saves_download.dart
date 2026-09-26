@@ -48,4 +48,10 @@ sealed class DownloadSavesProgress with _$DownloadSavesProgress {
   /// Every file downloaded. Terminal.
   const factory DownloadSavesProgress.finished() =
       DownloadSavesProgress_Finished;
+
+  /// The job was cancelled with its `CancelToken`. Each local save is
+  /// either the old one or the complete new one, never a partial one.
+  /// Terminal.
+  const factory DownloadSavesProgress.cancelled() =
+      DownloadSavesProgress_Cancelled;
 }

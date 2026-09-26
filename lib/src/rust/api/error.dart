@@ -45,9 +45,6 @@ enum GogErrorKind {
   /// The game doesn't support cloud saves.
   cloudSavesUnsupported,
 
-  /// The job was cancelled.
-  cancelled,
-
   /// Anything else. `message()` has the details.
   unknown,
 }

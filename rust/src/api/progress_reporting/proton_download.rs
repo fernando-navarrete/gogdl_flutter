@@ -12,4 +12,8 @@ pub enum ProtonDownloadProgress {
     /// directory name inside the tarball — see `Extracted`, whose paths
     /// reflect the archive's own layout, before the rename.
     Finished(String),
+    /// The job was cancelled with its `CancelToken`. `path` is as it was
+    /// before the download: the release is extracted into a hidden staging
+    /// directory, which the next download into `path` cleans up. Terminal.
+    Cancelled,
 }

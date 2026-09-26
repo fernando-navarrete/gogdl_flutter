@@ -20,4 +20,7 @@ pub enum VerifyDownloadProgress {
     /// Verification ran to completion; the `u64` is how many chunks need
     /// re-downloading. Zero means the install is intact.
     Finished(u64),
+    /// The job was cancelled with its `CancelToken`. Verifying writes
+    /// nothing, so the install is as it was. Terminal.
+    Cancelled,
 }

@@ -4,6 +4,7 @@
 // ignore_for_file: invalid_use_of_internal_member, unused_import, unnecessary_import
 
 import '../frb_generated.dart';
+import 'cancel_token.dart';
 import 'error.dart';
 import 'models/downloadable_product.dart';
 import 'models/game_build.dart';
@@ -18,24 +19,33 @@ import 'progress_reporting/verify_download.dart';
 
 // Rust type: RustOpaqueMoi<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<GogdlApi>>
 abstract class GogdlApi implements RustOpaqueInterface {
+  /// Cancelling `cancel` keeps the files written so far, and the stream ends with `cancelled`.
+  /// Call `repairGame` to resume the install.
   Stream<DownloadGameProgress> downloadGame({
     required int gameId,
     required String path,
     required String buildName,
     required List<int> selectedProducts,
+    required CancelToken cancel,
   });
 
   /// A 30s stall fails the download with a network error. It isn't retried.
+  ///
+  /// Cancelling `cancel` leaves `path` as it was, and the stream ends with `cancelled`.
   Stream<ProtonDownloadProgress> downloadProtonRelease({
     required String path,
     required String tagName,
+    required CancelToken cancel,
   });
 
+  /// Cancelling `cancel` leaves each local save either the old one or the complete new one, and
+  /// the stream ends with `cancelled`.
   Stream<DownloadSavesProgress> downloadSaveFiles({
     required int gameId,
     required String buildName,
     required String prefix,
     required String installPath,
+    required CancelToken cancel,
   });
 
   Future<String> getBackgroundImageLink({required int gameId});
@@ -71,11 +81,14 @@ abstract class GogdlApi implements RustOpaqueInterface {
 
   Future<void> removeTokenRefreshCallback();
 
+  /// Cancelling `cancel` keeps the files written so far, and the stream ends with `cancelled`.
+  /// Call `repairGame` again to resume the install.
   Stream<RepairGameProgress> repairGame({
     required int gameId,
     required String path,
     required String buildName,
     required List<int> selectedProducts,
+    required CancelToken cancel,
   });
 
   Future<void> restoreAuth({required String jsonStr});
@@ -86,17 +99,23 @@ abstract class GogdlApi implements RustOpaqueInterface {
 
   /// Each file's upload must finish within 30s, since the read timeout covers sending the
   /// request body. A slower one fails with a network error and isn't retried.
+  ///
+  /// Cancelling `cancel` leaves local files untouched, and the stream ends with `cancelled`. The
+  /// file in flight may or may not have been stored, so upload again to be sure.
   Stream<UploadSavesProgress> uploadSaveFiles({
     required int gameId,
     required String buildName,
     required String prefix,
     required String installPath,
+    required CancelToken cancel,
   });
 
+  /// Cancelling `cancel` stops the check, and the stream ends with `cancelled`.
   Stream<VerifyDownloadProgress> verifyDownload({
     required int gameId,
     required String path,
     required String buildName,
     required List<int> selectedProducts,
+    required CancelToken cancel,
   });
 }

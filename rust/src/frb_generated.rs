@@ -27,6 +27,7 @@
 
 // Section: imports
 
+use crate::api::cancel_token::*;
 use crate::api::error::*;
 use crate::api::gogdl::*;
 use flutter_rust_bridge::for_generated::byteorder::{NativeEndian, ReadBytesExt, WriteBytesExt};
@@ -41,7 +42,7 @@ flutter_rust_bridge::frb_generated_boilerplate!(
     default_rust_auto_opaque = RustAutoOpaqueMoi,
 );
 pub(crate) const FLUTTER_RUST_BRIDGE_CODEGEN_VERSION: &str = "2.13.0";
-pub(crate) const FLUTTER_RUST_BRIDGE_CODEGEN_CONTENT_HASH: i32 = 1088691444;
+pub(crate) const FLUTTER_RUST_BRIDGE_CODEGEN_CONTENT_HASH: i32 = 1823049855;
 
 // Section: executor
 
@@ -49,6 +50,83 @@ flutter_rust_bridge::frb_generated_default_handler!();
 
 // Section: wire_funcs
 
+fn wire__crate__api__cancel_token__CancelToken_cancel_impl(
+    ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
+    rust_vec_len_: i32,
+    data_len_: i32,
+) -> flutter_rust_bridge::for_generated::WireSyncRust2DartSse {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap_sync::<flutter_rust_bridge::for_generated::SseCodec, _>(
+        flutter_rust_bridge::for_generated::TaskInfo {
+            debug_name: "CancelToken_cancel",
+            port: None,
+            mode: flutter_rust_bridge::for_generated::FfiCallMode::Sync,
+        },
+        move || {
+            let message = unsafe {
+                flutter_rust_bridge::for_generated::Dart2RustMessageSse::from_wire(
+                    ptr_,
+                    rust_vec_len_,
+                    data_len_,
+                )
+            };
+            let mut deserializer =
+                flutter_rust_bridge::for_generated::SseDeserializer::new(message);
+            let api_that = <RustOpaqueMoi<
+                flutter_rust_bridge::for_generated::RustAutoOpaqueInner<CancelToken>,
+            >>::sse_decode(&mut deserializer);
+            deserializer.end();
+            transform_result_sse::<_, ()>((move || {
+                let mut api_that_guard = None;
+                let decode_indices_ =
+                    flutter_rust_bridge::for_generated::lockable_compute_decode_order(vec![
+                        flutter_rust_bridge::for_generated::LockableOrderInfo::new(
+                            &api_that, 0, false,
+                        ),
+                    ]);
+                for i in decode_indices_ {
+                    match i {
+                        0 => api_that_guard = Some(api_that.lockable_decode_sync_ref()),
+                        _ => unreachable!(),
+                    }
+                }
+                let api_that_guard = api_that_guard.unwrap();
+                let output_ok = Ok::<_, ()>({
+                    crate::api::cancel_token::CancelToken::cancel(&*api_that_guard);
+                })?;
+                std::result::Result::Ok(output_ok)
+            })())
+        },
+    )
+}
+fn wire__crate__api__cancel_token__CancelToken_new_impl(
+    ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
+    rust_vec_len_: i32,
+    data_len_: i32,
+) -> flutter_rust_bridge::for_generated::WireSyncRust2DartSse {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap_sync::<flutter_rust_bridge::for_generated::SseCodec, _>(
+        flutter_rust_bridge::for_generated::TaskInfo {
+            debug_name: "CancelToken_new",
+            port: None,
+            mode: flutter_rust_bridge::for_generated::FfiCallMode::Sync,
+        },
+        move || {
+            let message = unsafe {
+                flutter_rust_bridge::for_generated::Dart2RustMessageSse::from_wire(
+                    ptr_,
+                    rust_vec_len_,
+                    data_len_,
+                )
+            };
+            let mut deserializer =
+                flutter_rust_bridge::for_generated::SseDeserializer::new(message);
+            deserializer.end();
+            transform_result_sse::<_, ()>((move || {
+                let output_ok = Ok::<_, ()>(crate::api::cancel_token::CancelToken::new())?;
+                std::result::Result::Ok(output_ok)
+            })())
+        },
+    )
+}
 fn wire__crate__api__error__GogError_kind_impl(
     ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
     rust_vec_len_: i32,
@@ -219,6 +297,9 @@ fn wire__crate__api__gogdl__GogdlApi_download_game_impl(
             let api_path = <String>::sse_decode(&mut deserializer);
             let api_build_name = <String>::sse_decode(&mut deserializer);
             let api_selected_products = <Vec<i32>>::sse_decode(&mut deserializer);
+            let api_cancel = <RustOpaqueMoi<
+                flutter_rust_bridge::for_generated::RustAutoOpaqueInner<CancelToken>,
+            >>::sse_decode(&mut deserializer);
             let api_sink = <StreamSink<
                 crate::api::progress_reporting::game_download::DownloadGameProgress,
                 flutter_rust_bridge::for_generated::SseCodec,
@@ -228,11 +309,19 @@ fn wire__crate__api__gogdl__GogdlApi_download_game_impl(
                 transform_result_sse::<_, GogError>(
                     (move || async move {
                         let mut api_that_guard = None;
+                        let mut api_cancel_guard = None;
                         let decode_indices_ =
                             flutter_rust_bridge::for_generated::lockable_compute_decode_order(
-                                vec![flutter_rust_bridge::for_generated::LockableOrderInfo::new(
-                                    &api_that, 0, false,
-                                )],
+                                vec![
+                                    flutter_rust_bridge::for_generated::LockableOrderInfo::new(
+                                        &api_that, 0, false,
+                                    ),
+                                    flutter_rust_bridge::for_generated::LockableOrderInfo::new(
+                                        &api_cancel,
+                                        1,
+                                        false,
+                                    ),
+                                ],
                             );
                         for i in decode_indices_ {
                             match i {
@@ -240,16 +329,22 @@ fn wire__crate__api__gogdl__GogdlApi_download_game_impl(
                                     api_that_guard =
                                         Some(api_that.lockable_decode_async_ref().await)
                                 }
+                                1 => {
+                                    api_cancel_guard =
+                                        Some(api_cancel.lockable_decode_async_ref().await)
+                                }
                                 _ => unreachable!(),
                             }
                         }
                         let api_that_guard = api_that_guard.unwrap();
+                        let api_cancel_guard = api_cancel_guard.unwrap();
                         let output_ok = crate::api::gogdl::GogdlApi::download_game(
                             &*api_that_guard,
                             api_game_id,
                             &api_path,
                             &api_build_name,
                             &api_selected_products,
+                            &*api_cancel_guard,
                             api_sink,
                         )
                         .await?;
@@ -288,6 +383,9 @@ fn wire__crate__api__gogdl__GogdlApi_download_proton_release_impl(
             >>::sse_decode(&mut deserializer);
             let api_path = <String>::sse_decode(&mut deserializer);
             let api_tag_name = <String>::sse_decode(&mut deserializer);
+            let api_cancel = <RustOpaqueMoi<
+                flutter_rust_bridge::for_generated::RustAutoOpaqueInner<CancelToken>,
+            >>::sse_decode(&mut deserializer);
             let api_sink = <StreamSink<
                 crate::api::progress_reporting::proton_download::ProtonDownloadProgress,
                 flutter_rust_bridge::for_generated::SseCodec,
@@ -297,11 +395,19 @@ fn wire__crate__api__gogdl__GogdlApi_download_proton_release_impl(
                 transform_result_sse::<_, GogError>(
                     (move || async move {
                         let mut api_that_guard = None;
+                        let mut api_cancel_guard = None;
                         let decode_indices_ =
                             flutter_rust_bridge::for_generated::lockable_compute_decode_order(
-                                vec![flutter_rust_bridge::for_generated::LockableOrderInfo::new(
-                                    &api_that, 0, false,
-                                )],
+                                vec![
+                                    flutter_rust_bridge::for_generated::LockableOrderInfo::new(
+                                        &api_that, 0, false,
+                                    ),
+                                    flutter_rust_bridge::for_generated::LockableOrderInfo::new(
+                                        &api_cancel,
+                                        1,
+                                        false,
+                                    ),
+                                ],
                             );
                         for i in decode_indices_ {
                             match i {
@@ -309,14 +415,20 @@ fn wire__crate__api__gogdl__GogdlApi_download_proton_release_impl(
                                     api_that_guard =
                                         Some(api_that.lockable_decode_async_ref().await)
                                 }
+                                1 => {
+                                    api_cancel_guard =
+                                        Some(api_cancel.lockable_decode_async_ref().await)
+                                }
                                 _ => unreachable!(),
                             }
                         }
                         let api_that_guard = api_that_guard.unwrap();
+                        let api_cancel_guard = api_cancel_guard.unwrap();
                         let output_ok = crate::api::gogdl::GogdlApi::download_proton_release(
                             &*api_that_guard,
                             &api_path,
                             &api_tag_name,
+                            &*api_cancel_guard,
                             api_sink,
                         )
                         .await?;
@@ -357,6 +469,9 @@ fn wire__crate__api__gogdl__GogdlApi_download_save_files_impl(
             let api_build_name = <String>::sse_decode(&mut deserializer);
             let api_prefix = <String>::sse_decode(&mut deserializer);
             let api_install_path = <String>::sse_decode(&mut deserializer);
+            let api_cancel = <RustOpaqueMoi<
+                flutter_rust_bridge::for_generated::RustAutoOpaqueInner<CancelToken>,
+            >>::sse_decode(&mut deserializer);
             let api_sink = <StreamSink<
                 crate::api::progress_reporting::saves_download::DownloadSavesProgress,
                 flutter_rust_bridge::for_generated::SseCodec,
@@ -366,11 +481,19 @@ fn wire__crate__api__gogdl__GogdlApi_download_save_files_impl(
                 transform_result_sse::<_, GogError>(
                     (move || async move {
                         let mut api_that_guard = None;
+                        let mut api_cancel_guard = None;
                         let decode_indices_ =
                             flutter_rust_bridge::for_generated::lockable_compute_decode_order(
-                                vec![flutter_rust_bridge::for_generated::LockableOrderInfo::new(
-                                    &api_that, 0, false,
-                                )],
+                                vec![
+                                    flutter_rust_bridge::for_generated::LockableOrderInfo::new(
+                                        &api_that, 0, false,
+                                    ),
+                                    flutter_rust_bridge::for_generated::LockableOrderInfo::new(
+                                        &api_cancel,
+                                        1,
+                                        false,
+                                    ),
+                                ],
                             );
                         for i in decode_indices_ {
                             match i {
@@ -378,16 +501,22 @@ fn wire__crate__api__gogdl__GogdlApi_download_save_files_impl(
                                     api_that_guard =
                                         Some(api_that.lockable_decode_async_ref().await)
                                 }
+                                1 => {
+                                    api_cancel_guard =
+                                        Some(api_cancel.lockable_decode_async_ref().await)
+                                }
                                 _ => unreachable!(),
                             }
                         }
                         let api_that_guard = api_that_guard.unwrap();
+                        let api_cancel_guard = api_cancel_guard.unwrap();
                         let output_ok = crate::api::gogdl::GogdlApi::download_save_files(
                             &*api_that_guard,
                             api_game_id,
                             &api_build_name,
                             &api_prefix,
                             &api_install_path,
+                            &*api_cancel_guard,
                             api_sink,
                         )
                         .await?;
@@ -1163,6 +1292,9 @@ fn wire__crate__api__gogdl__GogdlApi_repair_game_impl(
             let api_path = <String>::sse_decode(&mut deserializer);
             let api_build_name = <String>::sse_decode(&mut deserializer);
             let api_selected_products = <Vec<i32>>::sse_decode(&mut deserializer);
+            let api_cancel = <RustOpaqueMoi<
+                flutter_rust_bridge::for_generated::RustAutoOpaqueInner<CancelToken>,
+            >>::sse_decode(&mut deserializer);
             let api_sink = <StreamSink<
                 crate::api::progress_reporting::game_repair::RepairGameProgress,
                 flutter_rust_bridge::for_generated::SseCodec,
@@ -1172,11 +1304,19 @@ fn wire__crate__api__gogdl__GogdlApi_repair_game_impl(
                 transform_result_sse::<_, GogError>(
                     (move || async move {
                         let mut api_that_guard = None;
+                        let mut api_cancel_guard = None;
                         let decode_indices_ =
                             flutter_rust_bridge::for_generated::lockable_compute_decode_order(
-                                vec![flutter_rust_bridge::for_generated::LockableOrderInfo::new(
-                                    &api_that, 0, false,
-                                )],
+                                vec![
+                                    flutter_rust_bridge::for_generated::LockableOrderInfo::new(
+                                        &api_that, 0, false,
+                                    ),
+                                    flutter_rust_bridge::for_generated::LockableOrderInfo::new(
+                                        &api_cancel,
+                                        1,
+                                        false,
+                                    ),
+                                ],
                             );
                         for i in decode_indices_ {
                             match i {
@@ -1184,16 +1324,22 @@ fn wire__crate__api__gogdl__GogdlApi_repair_game_impl(
                                     api_that_guard =
                                         Some(api_that.lockable_decode_async_ref().await)
                                 }
+                                1 => {
+                                    api_cancel_guard =
+                                        Some(api_cancel.lockable_decode_async_ref().await)
+                                }
                                 _ => unreachable!(),
                             }
                         }
                         let api_that_guard = api_that_guard.unwrap();
+                        let api_cancel_guard = api_cancel_guard.unwrap();
                         let output_ok = crate::api::gogdl::GogdlApi::repair_game(
                             &*api_that_guard,
                             api_game_id,
                             &api_path,
                             &api_build_name,
                             &api_selected_products,
+                            &*api_cancel_guard,
                             api_sink,
                         )
                         .await?;
@@ -1358,6 +1504,9 @@ fn wire__crate__api__gogdl__GogdlApi_upload_save_files_impl(
             let api_build_name = <String>::sse_decode(&mut deserializer);
             let api_prefix = <String>::sse_decode(&mut deserializer);
             let api_install_path = <String>::sse_decode(&mut deserializer);
+            let api_cancel = <RustOpaqueMoi<
+                flutter_rust_bridge::for_generated::RustAutoOpaqueInner<CancelToken>,
+            >>::sse_decode(&mut deserializer);
             let api_sink = <StreamSink<
                 crate::api::progress_reporting::saves_upload::UploadSavesProgress,
                 flutter_rust_bridge::for_generated::SseCodec,
@@ -1367,11 +1516,19 @@ fn wire__crate__api__gogdl__GogdlApi_upload_save_files_impl(
                 transform_result_sse::<_, GogError>(
                     (move || async move {
                         let mut api_that_guard = None;
+                        let mut api_cancel_guard = None;
                         let decode_indices_ =
                             flutter_rust_bridge::for_generated::lockable_compute_decode_order(
-                                vec![flutter_rust_bridge::for_generated::LockableOrderInfo::new(
-                                    &api_that, 0, false,
-                                )],
+                                vec![
+                                    flutter_rust_bridge::for_generated::LockableOrderInfo::new(
+                                        &api_that, 0, false,
+                                    ),
+                                    flutter_rust_bridge::for_generated::LockableOrderInfo::new(
+                                        &api_cancel,
+                                        1,
+                                        false,
+                                    ),
+                                ],
                             );
                         for i in decode_indices_ {
                             match i {
@@ -1379,16 +1536,22 @@ fn wire__crate__api__gogdl__GogdlApi_upload_save_files_impl(
                                     api_that_guard =
                                         Some(api_that.lockable_decode_async_ref().await)
                                 }
+                                1 => {
+                                    api_cancel_guard =
+                                        Some(api_cancel.lockable_decode_async_ref().await)
+                                }
                                 _ => unreachable!(),
                             }
                         }
                         let api_that_guard = api_that_guard.unwrap();
+                        let api_cancel_guard = api_cancel_guard.unwrap();
                         let output_ok = crate::api::gogdl::GogdlApi::upload_save_files(
                             &*api_that_guard,
                             api_game_id,
                             &api_build_name,
                             &api_prefix,
                             &api_install_path,
+                            &*api_cancel_guard,
                             api_sink,
                         )
                         .await?;
@@ -1429,6 +1592,9 @@ fn wire__crate__api__gogdl__GogdlApi_verify_download_impl(
             let api_path = <String>::sse_decode(&mut deserializer);
             let api_build_name = <String>::sse_decode(&mut deserializer);
             let api_selected_products = <Vec<i32>>::sse_decode(&mut deserializer);
+            let api_cancel = <RustOpaqueMoi<
+                flutter_rust_bridge::for_generated::RustAutoOpaqueInner<CancelToken>,
+            >>::sse_decode(&mut deserializer);
             let api_sink = <StreamSink<
                 crate::api::progress_reporting::verify_download::VerifyDownloadProgress,
                 flutter_rust_bridge::for_generated::SseCodec,
@@ -1438,11 +1604,19 @@ fn wire__crate__api__gogdl__GogdlApi_verify_download_impl(
                 transform_result_sse::<_, GogError>(
                     (move || async move {
                         let mut api_that_guard = None;
+                        let mut api_cancel_guard = None;
                         let decode_indices_ =
                             flutter_rust_bridge::for_generated::lockable_compute_decode_order(
-                                vec![flutter_rust_bridge::for_generated::LockableOrderInfo::new(
-                                    &api_that, 0, false,
-                                )],
+                                vec![
+                                    flutter_rust_bridge::for_generated::LockableOrderInfo::new(
+                                        &api_that, 0, false,
+                                    ),
+                                    flutter_rust_bridge::for_generated::LockableOrderInfo::new(
+                                        &api_cancel,
+                                        1,
+                                        false,
+                                    ),
+                                ],
                             );
                         for i in decode_indices_ {
                             match i {
@@ -1450,16 +1624,22 @@ fn wire__crate__api__gogdl__GogdlApi_verify_download_impl(
                                     api_that_guard =
                                         Some(api_that.lockable_decode_async_ref().await)
                                 }
+                                1 => {
+                                    api_cancel_guard =
+                                        Some(api_cancel.lockable_decode_async_ref().await)
+                                }
                                 _ => unreachable!(),
                             }
                         }
                         let api_that_guard = api_that_guard.unwrap();
+                        let api_cancel_guard = api_cancel_guard.unwrap();
                         let output_ok = crate::api::gogdl::GogdlApi::verify_download(
                             &*api_that_guard,
                             api_game_id,
                             &api_path,
                             &api_build_name,
                             &api_selected_products,
+                            &*api_cancel_guard,
                             api_sink,
                         )
                         .await?;
@@ -1507,6 +1687,9 @@ fn decode_DartFn_Inputs_String_Output_unit_AnyhowException(
     }
 }
 flutter_rust_bridge::frb_generated_moi_arc_impl_value!(
+    flutter_rust_bridge::for_generated::RustAutoOpaqueInner<CancelToken>
+);
+flutter_rust_bridge::frb_generated_moi_arc_impl_value!(
     flutter_rust_bridge::for_generated::RustAutoOpaqueInner<GogError>
 );
 flutter_rust_bridge::frb_generated_moi_arc_impl_value!(
@@ -1520,6 +1703,16 @@ impl SseDecode for flutter_rust_bridge::for_generated::anyhow::Error {
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
         let mut inner = <String>::sse_decode(deserializer);
         return flutter_rust_bridge::for_generated::anyhow::anyhow!("{}", inner);
+    }
+}
+
+impl SseDecode for CancelToken {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut inner = <RustOpaqueMoi<
+            flutter_rust_bridge::for_generated::RustAutoOpaqueInner<CancelToken>,
+        >>::sse_decode(deserializer);
+        return flutter_rust_bridge::for_generated::rust_auto_opaque_decode_owned(inner);
     }
 }
 
@@ -1548,6 +1741,16 @@ impl SseDecode for flutter_rust_bridge::DartOpaque {
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
         let mut inner = <usize>::sse_decode(deserializer);
         return unsafe { flutter_rust_bridge::for_generated::sse_decode_dart_opaque(inner) };
+    }
+}
+
+impl SseDecode
+    for RustOpaqueMoi<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<CancelToken>>
+{
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut inner = <usize>::sse_decode(deserializer);
+        return decode_rust_opaque_moi(inner);
     }
 }
 
@@ -1692,6 +1895,9 @@ impl SseDecode for crate::api::progress_reporting::game_download::DownloadGamePr
             6 => {
                 return crate::api::progress_reporting::game_download::DownloadGameProgress::Finished;
             }
+            7 => {
+                return crate::api::progress_reporting::game_download::DownloadGameProgress::Cancelled;
+            }
             _ => {
                 unimplemented!("");
             }
@@ -1726,6 +1932,9 @@ impl SseDecode for crate::api::progress_reporting::saves_download::DownloadSaves
             }
             4 => {
                 return crate::api::progress_reporting::saves_download::DownloadSavesProgress::Finished;
+            }
+            5 => {
+                return crate::api::progress_reporting::saves_download::DownloadSavesProgress::Cancelled;
             }
             _ => {
                 unimplemented!("");
@@ -1776,8 +1985,7 @@ impl SseDecode for crate::api::error::GogErrorKind {
             4 => crate::api::error::GogErrorKind::Integrity,
             5 => crate::api::error::GogErrorKind::FileSystem,
             6 => crate::api::error::GogErrorKind::CloudSavesUnsupported,
-            7 => crate::api::error::GogErrorKind::Cancelled,
-            8 => crate::api::error::GogErrorKind::Unknown,
+            7 => crate::api::error::GogErrorKind::Unknown,
             _ => unreachable!("Invalid variant for GogErrorKind: {}", inner),
         };
     }
@@ -1918,6 +2126,9 @@ impl SseDecode for crate::api::progress_reporting::proton_download::ProtonDownlo
                 let mut var_field0 = <String>::sse_decode(deserializer);
                 return crate::api::progress_reporting::proton_download::ProtonDownloadProgress::Finished(var_field0);
             }
+            4 => {
+                return crate::api::progress_reporting::proton_download::ProtonDownloadProgress::Cancelled;
+            }
             _ => {
                 unimplemented!("");
             }
@@ -1998,6 +2209,9 @@ impl SseDecode for crate::api::progress_reporting::game_repair::RepairGameProgre
             11 => {
                 return crate::api::progress_reporting::game_repair::RepairGameProgress::Finished;
             }
+            12 => {
+                return crate::api::progress_reporting::game_repair::RepairGameProgress::Cancelled;
+            }
             _ => {
                 unimplemented!("");
             }
@@ -2063,6 +2277,9 @@ impl SseDecode for crate::api::progress_reporting::saves_upload::UploadSavesProg
             4 => {
                 return crate::api::progress_reporting::saves_upload::UploadSavesProgress::Finished;
             }
+            5 => {
+                return crate::api::progress_reporting::saves_upload::UploadSavesProgress::Cancelled;
+            }
             _ => {
                 unimplemented!("");
             }
@@ -2109,6 +2326,9 @@ impl SseDecode for crate::api::progress_reporting::verify_download::VerifyDownlo
                 let mut var_field0 = <u64>::sse_decode(deserializer);
                 return crate::api::progress_reporting::verify_download::VerifyDownloadProgress::Finished(var_field0);
             }
+            6 => {
+                return crate::api::progress_reporting::verify_download::VerifyDownloadProgress::Cancelled;
+            }
             _ => {
                 unimplemented!("");
             }
@@ -2132,101 +2352,101 @@ fn pde_ffi_dispatcher_primary_impl(
 ) {
     // Codec=Pde (Serialization + dispatch), see doc to use other codecs
     match func_id {
-        4 => {
+        6 => {
             wire__crate__api__gogdl__GogdlApi_download_game_impl(port, ptr, rust_vec_len, data_len)
         }
-        5 => wire__crate__api__gogdl__GogdlApi_download_proton_release_impl(
+        7 => wire__crate__api__gogdl__GogdlApi_download_proton_release_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        6 => wire__crate__api__gogdl__GogdlApi_download_save_files_impl(
+        8 => wire__crate__api__gogdl__GogdlApi_download_save_files_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        7 => wire__crate__api__gogdl__GogdlApi_get_background_image_link_impl(
+        9 => wire__crate__api__gogdl__GogdlApi_get_background_image_link_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        8 => wire__crate__api__gogdl__GogdlApi_get_downloadable_products_impl(
+        10 => wire__crate__api__gogdl__GogdlApi_get_downloadable_products_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        9 => wire__crate__api__gogdl__GogdlApi_get_game_boxart_link_impl(
+        11 => wire__crate__api__gogdl__GogdlApi_get_game_boxart_link_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        10 => wire__crate__api__gogdl__GogdlApi_get_game_builds_impl(
+        12 => wire__crate__api__gogdl__GogdlApi_get_game_builds_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        11 => wire__crate__api__gogdl__GogdlApi_get_game_screenshots_impl(
+        13 => wire__crate__api__gogdl__GogdlApi_get_game_screenshots_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        12 => wire__crate__api__gogdl__GogdlApi_get_game_summary_impl(
+        14 => wire__crate__api__gogdl__GogdlApi_get_game_summary_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        13 => {
+        15 => {
             wire__crate__api__gogdl__GogdlApi_get_game_title_impl(port, ptr, rust_vec_len, data_len)
         }
-        15 => wire__crate__api__gogdl__GogdlApi_get_owned_games_impl(
+        17 => wire__crate__api__gogdl__GogdlApi_get_owned_games_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        16 => wire__crate__api__gogdl__GogdlApi_get_proton_releases_impl(
+        18 => wire__crate__api__gogdl__GogdlApi_get_proton_releases_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        17 => wire__crate__api__gogdl__GogdlApi_login_with_code_impl(
+        19 => wire__crate__api__gogdl__GogdlApi_login_with_code_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        19 => wire__crate__api__gogdl__GogdlApi_remove_token_refresh_callback_impl(
+        21 => wire__crate__api__gogdl__GogdlApi_remove_token_refresh_callback_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        20 => wire__crate__api__gogdl__GogdlApi_repair_game_impl(port, ptr, rust_vec_len, data_len),
-        21 => {
+        22 => wire__crate__api__gogdl__GogdlApi_repair_game_impl(port, ptr, rust_vec_len, data_len),
+        23 => {
             wire__crate__api__gogdl__GogdlApi_restore_auth_impl(port, ptr, rust_vec_len, data_len)
         }
-        22 => wire__crate__api__gogdl__GogdlApi_set_token_refresh_callback_impl(
+        24 => wire__crate__api__gogdl__GogdlApi_set_token_refresh_callback_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        23 => wire__crate__api__gogdl__GogdlApi_upload_save_files_impl(
+        25 => wire__crate__api__gogdl__GogdlApi_upload_save_files_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        24 => wire__crate__api__gogdl__GogdlApi_verify_download_impl(
+        26 => wire__crate__api__gogdl__GogdlApi_verify_download_impl(
             port,
             ptr,
             rust_vec_len,
@@ -2244,16 +2464,33 @@ fn pde_ffi_dispatcher_sync_impl(
 ) -> flutter_rust_bridge::for_generated::WireSyncRust2DartSse {
     // Codec=Pde (Serialization + dispatch), see doc to use other codecs
     match func_id {
-        1 => wire__crate__api__error__GogError_kind_impl(ptr, rust_vec_len, data_len),
-        2 => wire__crate__api__error__GogError_message_impl(ptr, rust_vec_len, data_len),
-        3 => wire__crate__api__error__GogError_space_shortfall_impl(ptr, rust_vec_len, data_len),
-        14 => wire__crate__api__gogdl__GogdlApi_get_login_link_impl(ptr, rust_vec_len, data_len),
-        18 => wire__crate__api__gogdl__GogdlApi_new_impl(ptr, rust_vec_len, data_len),
+        1 => wire__crate__api__cancel_token__CancelToken_cancel_impl(ptr, rust_vec_len, data_len),
+        2 => wire__crate__api__cancel_token__CancelToken_new_impl(ptr, rust_vec_len, data_len),
+        3 => wire__crate__api__error__GogError_kind_impl(ptr, rust_vec_len, data_len),
+        4 => wire__crate__api__error__GogError_message_impl(ptr, rust_vec_len, data_len),
+        5 => wire__crate__api__error__GogError_space_shortfall_impl(ptr, rust_vec_len, data_len),
+        16 => wire__crate__api__gogdl__GogdlApi_get_login_link_impl(ptr, rust_vec_len, data_len),
+        20 => wire__crate__api__gogdl__GogdlApi_new_impl(ptr, rust_vec_len, data_len),
         _ => unreachable!(),
     }
 }
 
 // Section: rust2dart
+
+// Codec=Dco (DartCObject based), see doc to use other codecs
+impl flutter_rust_bridge::IntoDart for FrbWrapper<CancelToken> {
+    fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
+        flutter_rust_bridge::for_generated::rust_auto_opaque_encode::<_, MoiArc<_>>(self.0)
+            .into_dart()
+    }
+}
+impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive for FrbWrapper<CancelToken> {}
+
+impl flutter_rust_bridge::IntoIntoDart<FrbWrapper<CancelToken>> for CancelToken {
+    fn into_into_dart(self) -> FrbWrapper<CancelToken> {
+        self.into()
+    }
+}
 
 // Codec=Dco (DartCObject based), see doc to use other codecs
 impl flutter_rust_bridge::IntoDart for FrbWrapper<GogError> {
@@ -2306,6 +2543,7 @@ field0.into_into_dart().into_dart()].into_dart() }
 crate::api::progress_reporting::game_download::DownloadGameProgress::DownloadProgress{downloaded_bytes} => { [5.into_dart(),
 downloaded_bytes.into_into_dart().into_dart()].into_dart() }
 crate::api::progress_reporting::game_download::DownloadGameProgress::Finished => { [6.into_dart()].into_dart() }
+crate::api::progress_reporting::game_download::DownloadGameProgress::Cancelled => { [7.into_dart()].into_dart() }
  _ => { unimplemented!(""); }}
     }
 }
@@ -2340,6 +2578,7 @@ file_downloaded_bytes.into_into_dart().into_dart()].into_dart() }
 crate::api::progress_reporting::saves_download::DownloadSavesProgress::FileFinished{name} => { [3.into_dart(),
 name.into_into_dart().into_dart()].into_dart() }
 crate::api::progress_reporting::saves_download::DownloadSavesProgress::Finished => { [4.into_dart()].into_dart() }
+crate::api::progress_reporting::saves_download::DownloadSavesProgress::Cancelled => { [5.into_dart()].into_dart() }
  _ => { unimplemented!(""); }}
     }
 }
@@ -2417,8 +2656,7 @@ impl flutter_rust_bridge::IntoDart for crate::api::error::GogErrorKind {
             Self::Integrity => 4.into_dart(),
             Self::FileSystem => 5.into_dart(),
             Self::CloudSavesUnsupported => 6.into_dart(),
-            Self::Cancelled => 7.into_dart(),
-            Self::Unknown => 8.into_dart(),
+            Self::Unknown => 7.into_dart(),
             _ => unreachable!(),
         }
     }
@@ -2452,6 +2690,9 @@ impl flutter_rust_bridge::IntoDart
             crate::api::progress_reporting::proton_download::ProtonDownloadProgress::Finished(
                 field0,
             ) => [3.into_dart(), field0.into_into_dart().into_dart()].into_dart(),
+            crate::api::progress_reporting::proton_download::ProtonDownloadProgress::Cancelled => {
+                [4.into_dart()].into_dart()
+            }
             _ => {
                 unimplemented!("");
             }
@@ -2528,6 +2769,7 @@ total_bytes.into_into_dart().into_dart()].into_dart() }
 crate::api::progress_reporting::game_repair::RepairGameProgress::DownloadProgress{downloaded_bytes} => { [10.into_dart(),
 downloaded_bytes.into_into_dart().into_dart()].into_dart() }
 crate::api::progress_reporting::game_repair::RepairGameProgress::Finished => { [11.into_dart()].into_dart() }
+crate::api::progress_reporting::game_repair::RepairGameProgress::Cancelled => { [12.into_dart()].into_dart() }
  _ => { unimplemented!(""); }}
     }
 }
@@ -2600,6 +2842,9 @@ impl flutter_rust_bridge::IntoDart
             crate::api::progress_reporting::saves_upload::UploadSavesProgress::Finished => {
                 [4.into_dart()].into_dart()
             }
+            crate::api::progress_reporting::saves_upload::UploadSavesProgress::Cancelled => {
+                [5.into_dart()].into_dart()
+            }
             _ => {
                 unimplemented!("");
             }
@@ -2639,6 +2884,7 @@ field0.into_into_dart().into_dart(),
 field1.into_into_dart().into_dart()].into_dart() }
 crate::api::progress_reporting::verify_download::VerifyDownloadProgress::Finished(field0) => { [5.into_dart(),
 field0.into_into_dart().into_dart()].into_dart() }
+crate::api::progress_reporting::verify_download::VerifyDownloadProgress::Cancelled => { [6.into_dart()].into_dart() }
  _ => { unimplemented!(""); }}
     }
 }
@@ -2665,6 +2911,13 @@ impl SseEncode for flutter_rust_bridge::for_generated::anyhow::Error {
     }
 }
 
+impl SseEncode for CancelToken {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <RustOpaqueMoi<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<CancelToken>>>::sse_encode(flutter_rust_bridge::for_generated::rust_auto_opaque_encode::<_, MoiArc<_>>(self), serializer);
+    }
+}
+
 impl SseEncode for GogError {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
@@ -2683,6 +2936,17 @@ impl SseEncode for flutter_rust_bridge::DartOpaque {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
         <usize>::sse_encode(self.encode(), serializer);
+    }
+}
+
+impl SseEncode
+    for RustOpaqueMoi<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<CancelToken>>
+{
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        let (ptr, size) = self.sse_encode_raw();
+        <usize>::sse_encode(ptr, serializer);
+        <i32>::sse_encode(size, serializer);
     }
 }
 
@@ -2806,6 +3070,7 @@ crate::api::progress_reporting::game_download::DownloadGameProgress::AllocationE
 crate::api::progress_reporting::game_download::DownloadGameProgress::DownloadProgress{downloaded_bytes} => { <i32>::sse_encode(5, serializer); <u64>::sse_encode(downloaded_bytes, serializer);
  }
 crate::api::progress_reporting::game_download::DownloadGameProgress::Finished => { <i32>::sse_encode(6, serializer);  }
+crate::api::progress_reporting::game_download::DownloadGameProgress::Cancelled => { <i32>::sse_encode(7, serializer);  }
  _ => { unimplemented!(""); }}
     }
 }
@@ -2826,6 +3091,7 @@ crate::api::progress_reporting::saves_download::DownloadSavesProgress::Progress{
 crate::api::progress_reporting::saves_download::DownloadSavesProgress::FileFinished{name} => { <i32>::sse_encode(3, serializer); <String>::sse_encode(name, serializer);
  }
 crate::api::progress_reporting::saves_download::DownloadSavesProgress::Finished => { <i32>::sse_encode(4, serializer);  }
+crate::api::progress_reporting::saves_download::DownloadSavesProgress::Cancelled => { <i32>::sse_encode(5, serializer);  }
  _ => { unimplemented!(""); }}
     }
 }
@@ -2861,8 +3127,7 @@ impl SseEncode for crate::api::error::GogErrorKind {
                 crate::api::error::GogErrorKind::Integrity => 4,
                 crate::api::error::GogErrorKind::FileSystem => 5,
                 crate::api::error::GogErrorKind::CloudSavesUnsupported => 6,
-                crate::api::error::GogErrorKind::Cancelled => 7,
-                crate::api::error::GogErrorKind::Unknown => 8,
+                crate::api::error::GogErrorKind::Unknown => 7,
                 _ => {
                     unimplemented!("");
                 }
@@ -2996,6 +3261,9 @@ impl SseEncode for crate::api::progress_reporting::proton_download::ProtonDownlo
                 <i32>::sse_encode(3, serializer);
                 <String>::sse_encode(field0, serializer);
             }
+            crate::api::progress_reporting::proton_download::ProtonDownloadProgress::Cancelled => {
+                <i32>::sse_encode(4, serializer);
+            }
             _ => {
                 unimplemented!("");
             }
@@ -3043,6 +3311,7 @@ crate::api::progress_reporting::game_repair::RepairGameProgress::DownloadStarted
 crate::api::progress_reporting::game_repair::RepairGameProgress::DownloadProgress{downloaded_bytes} => { <i32>::sse_encode(10, serializer); <u64>::sse_encode(downloaded_bytes, serializer);
  }
 crate::api::progress_reporting::game_repair::RepairGameProgress::Finished => { <i32>::sse_encode(11, serializer);  }
+crate::api::progress_reporting::game_repair::RepairGameProgress::Cancelled => { <i32>::sse_encode(12, serializer);  }
  _ => { unimplemented!(""); }}
     }
 }
@@ -3111,6 +3380,9 @@ impl SseEncode for crate::api::progress_reporting::saves_upload::UploadSavesProg
             crate::api::progress_reporting::saves_upload::UploadSavesProgress::Finished => {
                 <i32>::sse_encode(4, serializer);
             }
+            crate::api::progress_reporting::saves_upload::UploadSavesProgress::Cancelled => {
+                <i32>::sse_encode(5, serializer);
+            }
             _ => {
                 unimplemented!("");
             }
@@ -3146,6 +3418,7 @@ crate::api::progress_reporting::verify_download::VerifyDownloadProgress::Checksu
  }
 crate::api::progress_reporting::verify_download::VerifyDownloadProgress::Finished(field0) => { <i32>::sse_encode(5, serializer); <u64>::sse_encode(field0, serializer);
  }
+crate::api::progress_reporting::verify_download::VerifyDownloadProgress::Cancelled => { <i32>::sse_encode(6, serializer);  }
  _ => { unimplemented!(""); }}
     }
 }
@@ -3165,6 +3438,7 @@ mod io {
     // Section: imports
 
     use super::*;
+    use crate::api::cancel_token::*;
     use crate::api::error::*;
     use crate::api::gogdl::*;
     use flutter_rust_bridge::for_generated::byteorder::{
@@ -3176,6 +3450,20 @@ mod io {
     // Section: boilerplate
 
     flutter_rust_bridge::frb_generated_boilerplate_io!();
+
+    #[unsafe(no_mangle)]
+    pub extern "C" fn frbgen_gogdl_flutter_rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerCancelToken(
+        ptr: *const std::ffi::c_void,
+    ) {
+        MoiArc::<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<CancelToken>>::increment_strong_count(ptr as _);
+    }
+
+    #[unsafe(no_mangle)]
+    pub extern "C" fn frbgen_gogdl_flutter_rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerCancelToken(
+        ptr: *const std::ffi::c_void,
+    ) {
+        MoiArc::<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<CancelToken>>::decrement_strong_count(ptr as _);
+    }
 
     #[unsafe(no_mangle)]
     pub extern "C" fn frbgen_gogdl_flutter_rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerGogError(

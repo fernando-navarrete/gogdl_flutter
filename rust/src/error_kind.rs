@@ -268,8 +268,6 @@ mod tests {
                 GogError::SavesError(SavesError::CloudStorageNotSupported),
                 CloudSavesUnsupported,
             ),
-            // cancelled
-            (GogError::Cancelled, Cancelled),
         ];
         for (error, kind) in cases {
             assert_eq!(error.kind(), kind, "{error:?}");
@@ -319,6 +317,5 @@ mod tests {
                 .space_shortfall()
                 .is_none()
         );
-        assert!(GogError::Cancelled.space_shortfall().is_none());
     }
 }

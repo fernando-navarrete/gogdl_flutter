@@ -7,6 +7,7 @@ use gogdl_lib::GogDl;
 use tokio::sync::mpsc;
 
 use crate::api::auth_refresh_observer::AuthRefreshObserver;
+pub use crate::api::cancel_token::CancelToken;
 pub use crate::api::error::GogError;
 pub use crate::api::models::downloadable_product::DownloadableProduct;
 pub use crate::api::models::game_build::GameBuild;
@@ -18,7 +19,7 @@ use crate::api::progress_reporting::{
 use crate::client::{self, CONNECT_TIMEOUT, READ_TIMEOUT};
 use crate::frb_generated::StreamSink;
 use crate::progress::{
-    self,
+    self, Outcome,
     download::DownloadTranslator,
     proton::ProtonTranslator,
     repair::RepairTranslator,
@@ -124,30 +125,46 @@ impl GogdlApi {
         Ok(releases)
     }
     /// A 30s stall fails the download with a network error. It isn't retried.
+    ///
+    /// Cancelling `cancel` leaves `path` as it was, and the stream ends with `cancelled`.
     pub async fn download_proton_release(
         &self,
         path: &str,
         tag_name: &str,
+        cancel: &CancelToken,
         sink: StreamSink<ProtonDownloadProgress>,
     ) -> Result<(), GogError> {
-        let release = self.inner.get_proton_release_by_tag(tag_name).await?;
+        let cancel = &cancel.0;
+        let Some(release) = cancel
+            .run_until_cancelled(self.inner.get_proton_release_by_tag(tag_name))
+            .await
+        else {
+            let _ = sink.add(ProtonDownloadProgress::Cancelled);
+            return Ok(());
+        };
+        let release = release?;
 
         let (tx, rx) = mpsc::unbounded_channel();
         let download_future = self
             .inner
             .download_proton_release(&release, Path::new(path), tx);
 
-        let Some(result) = progress::run(download_future, ProtonTranslator::new(), rx, |p| {
+        let outcome = progress::run(download_future, ProtonTranslator::new(), rx, cancel, |p| {
             sink.add(p).is_ok()
         })
-        .await
-        else {
-            return Ok(()); // listener gone, nobody to report to
-        };
-        let extracted_path = result?;
-        let _ = sink.add(ProtonDownloadProgress::Finished(
-            extracted_path.to_string_lossy().into_owned(),
-        ));
+        .await;
+        match outcome {
+            Outcome::Finished(result) => {
+                let extracted_path = result?;
+                let _ = sink.add(ProtonDownloadProgress::Finished(
+                    extracted_path.to_string_lossy().into_owned(),
+                ));
+            }
+            Outcome::Cancelled => {
+                let _ = sink.add(ProtonDownloadProgress::Cancelled);
+            }
+            Outcome::ListenerGone => {} // nobody to report to
+        }
         Ok(())
     }
     pub async fn login_with_code(&self, code: &str) -> Result<String, GogError> {
@@ -177,18 +194,29 @@ impl GogdlApi {
         self.inner.remove_token_observer().await;
     }
 
+    /// Cancelling `cancel` stops the check, and the stream ends with `cancelled`.
     pub async fn verify_download(
         &self,
         game_id: i32,
         path: &str,
         build_name: &str,
         selected_products: &[i32],
+        cancel: &CancelToken,
         sink: StreamSink<VerifyDownloadProgress>,
     ) -> Result<(), GogError> {
-        let bundles = self
-            .inner
-            .get_product_bundles(game_id, build_name, selected_products)
-            .await?;
+        let cancel = &cancel.0;
+        let Some(bundles) = cancel
+            .run_until_cancelled(self.inner.get_product_bundles(
+                game_id,
+                build_name,
+                selected_products,
+            ))
+            .await
+        else {
+            let _ = sink.add(VerifyDownloadProgress::Cancelled);
+            return Ok(());
+        };
+        let bundles = bundles?;
 
         let total_bytes: u64 = bundles
             .iter()
@@ -206,12 +234,17 @@ impl GogdlApi {
         let (tx, rx) = mpsc::unbounded_channel();
         let verify_future = self.inner.verify_files(bundles, path, tx);
 
-        let Some(result) = progress::run(verify_future, VerifyTranslator::new(), rx, |p| {
+        let outcome = progress::run(verify_future, VerifyTranslator::new(), rx, cancel, |p| {
             sink.add(p).is_ok()
         })
-        .await
-        else {
-            return Ok(()); // listener gone, nobody to report to
+        .await;
+        let result = match outcome {
+            Outcome::Finished(result) => result,
+            Outcome::Cancelled => {
+                let _ = sink.add(VerifyDownloadProgress::Cancelled);
+                return Ok(());
+            }
+            Outcome::ListenerGone => return Ok(()), // nobody to report to
         };
 
         match result {
@@ -227,18 +260,30 @@ impl GogdlApi {
         }
         Ok(())
     }
+    /// Cancelling `cancel` keeps the files written so far, and the stream ends with `cancelled`.
+    /// Call `repairGame` to resume the install.
     pub async fn download_game(
         &self,
         game_id: i32,
         path: &str,
         build_name: &str,
         selected_products: &[i32],
+        cancel: &CancelToken,
         sink: StreamSink<DownloadGameProgress>,
     ) -> Result<(), GogError> {
-        let bundles = self
-            .inner
-            .get_product_bundles(game_id, build_name, selected_products)
-            .await?;
+        let cancel = &cancel.0;
+        let Some(bundles) = cancel
+            .run_until_cancelled(self.inner.get_product_bundles(
+                game_id,
+                build_name,
+                selected_products,
+            ))
+            .await
+        else {
+            let _ = sink.add(DownloadGameProgress::Cancelled);
+            return Ok(());
+        };
+        let bundles = bundles?;
 
         let total_files: u64 = bundles
             .iter()
@@ -268,29 +313,50 @@ impl GogdlApi {
         let (tx, rx) = mpsc::unbounded_channel();
         let download_future = self.inner.download_game(bundles, path, tx);
 
-        let Some(result) = progress::run(download_future, DownloadTranslator::new(), rx, |p| {
-            sink.add(p).is_ok()
-        })
-        .await
-        else {
-            return Ok(()); // listener gone, nobody to report to
-        };
-        result?;
-        let _ = sink.add(DownloadGameProgress::Finished);
+        let outcome = progress::run(
+            download_future,
+            DownloadTranslator::new(),
+            rx,
+            cancel,
+            |p| sink.add(p).is_ok(),
+        )
+        .await;
+        match outcome {
+            Outcome::Finished(result) => {
+                result?;
+                let _ = sink.add(DownloadGameProgress::Finished);
+            }
+            Outcome::Cancelled => {
+                let _ = sink.add(DownloadGameProgress::Cancelled);
+            }
+            Outcome::ListenerGone => {} // nobody to report to
+        }
         Ok(())
     }
+    /// Cancelling `cancel` keeps the files written so far, and the stream ends with `cancelled`.
+    /// Call `repairGame` again to resume the install.
     pub async fn repair_game(
         &self,
         game_id: i32,
         path: &str,
         build_name: &str,
         selected_products: &[i32],
+        cancel: &CancelToken,
         sink: StreamSink<RepairGameProgress>,
     ) -> Result<(), GogError> {
-        let bundles = self
-            .inner
-            .get_product_bundles(game_id, build_name, selected_products)
-            .await?;
+        let cancel = &cancel.0;
+        let Some(bundles) = cancel
+            .run_until_cancelled(self.inner.get_product_bundles(
+                game_id,
+                build_name,
+                selected_products,
+            ))
+            .await
+        else {
+            let _ = sink.add(RepairGameProgress::Cancelled);
+            return Ok(());
+        };
+        let bundles = bundles?;
 
         let total_files: u64 = bundles
             .iter()
@@ -335,23 +401,34 @@ impl GogdlApi {
         let repair_future = self.inner.repair_game(bundles, path, tx);
 
         let translator = RepairTranslator::new(compressed_sizes);
-        let Some(result) =
-            progress::run(repair_future, translator, rx, |p| sink.add(p).is_ok()).await
-        else {
-            return Ok(()); // listener gone, nobody to report to
-        };
-        result?;
-        let _ = sink.add(RepairGameProgress::Finished);
+        let outcome = progress::run(repair_future, translator, rx, cancel, |p| {
+            sink.add(p).is_ok()
+        })
+        .await;
+        match outcome {
+            Outcome::Finished(result) => {
+                result?;
+                let _ = sink.add(RepairGameProgress::Finished);
+            }
+            Outcome::Cancelled => {
+                let _ = sink.add(RepairGameProgress::Cancelled);
+            }
+            Outcome::ListenerGone => {} // nobody to report to
+        }
         Ok(())
     }
+    /// Cancelling `cancel` leaves each local save either the old one or the complete new one, and
+    /// the stream ends with `cancelled`.
     pub async fn download_save_files(
         &self,
         game_id: i32,
         build_name: &str,
         prefix: &str,
         install_path: &str,
+        cancel: &CancelToken,
         sink: StreamSink<DownloadSavesProgress>,
     ) -> Result<(), GogError> {
+        let cancel = &cancel.0;
         let (tx, rx) = mpsc::unbounded_channel();
         let download_future = self.inner.download_save_files(
             game_id,
@@ -361,28 +438,41 @@ impl GogdlApi {
             tx,
         );
 
-        let Some(result) =
-            progress::run(download_future, SavesDownloadTranslator::new(), rx, |p| {
-                sink.add(p).is_ok()
-            })
-            .await
-        else {
-            return Ok(()); // listener gone, nobody to report to
-        };
-        result?;
-        let _ = sink.add(DownloadSavesProgress::Finished);
+        let outcome = progress::run(
+            download_future,
+            SavesDownloadTranslator::new(),
+            rx,
+            cancel,
+            |p| sink.add(p).is_ok(),
+        )
+        .await;
+        match outcome {
+            Outcome::Finished(result) => {
+                result?;
+                let _ = sink.add(DownloadSavesProgress::Finished);
+            }
+            Outcome::Cancelled => {
+                let _ = sink.add(DownloadSavesProgress::Cancelled);
+            }
+            Outcome::ListenerGone => {} // nobody to report to
+        }
         Ok(())
     }
     /// Each file's upload must finish within 30s, since the read timeout covers sending the
     /// request body. A slower one fails with a network error and isn't retried.
+    ///
+    /// Cancelling `cancel` leaves local files untouched, and the stream ends with `cancelled`. The
+    /// file in flight may or may not have been stored, so upload again to be sure.
     pub async fn upload_save_files(
         &self,
         game_id: i32,
         build_name: &str,
         prefix: &str,
         install_path: &str,
+        cancel: &CancelToken,
         sink: StreamSink<UploadSavesProgress>,
     ) -> Result<(), GogError> {
+        let cancel = &cancel.0;
         let (tx, rx) = mpsc::unbounded_channel();
         let upload_future = self.inner.upload_save_files(
             game_id,
@@ -392,15 +482,24 @@ impl GogdlApi {
             tx,
         );
 
-        let Some(result) = progress::run(upload_future, SavesUploadTranslator::new(), rx, |p| {
-            sink.add(p).is_ok()
-        })
-        .await
-        else {
-            return Ok(()); // listener gone, nobody to report to
-        };
-        result?;
-        let _ = sink.add(UploadSavesProgress::Finished);
+        let outcome = progress::run(
+            upload_future,
+            SavesUploadTranslator::new(),
+            rx,
+            cancel,
+            |p| sink.add(p).is_ok(),
+        )
+        .await;
+        match outcome {
+            Outcome::Finished(result) => {
+                result?;
+                let _ = sink.add(UploadSavesProgress::Finished);
+            }
+            Outcome::Cancelled => {
+                let _ = sink.add(UploadSavesProgress::Cancelled);
+            }
+            Outcome::ListenerGone => {} // nobody to report to
+        }
         Ok(())
     }
 }

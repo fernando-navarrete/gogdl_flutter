@@ -27,4 +27,10 @@ sealed class ProtonDownloadProgress with _$ProtonDownloadProgress {
   /// reflect the archive's own layout, before the rename.
   const factory ProtonDownloadProgress.finished(String field0) =
       ProtonDownloadProgress_Finished;
+
+  /// The job was cancelled with its `CancelToken`. `path` is as it was
+  /// before the download: the release is extracted into a hidden staging
+  /// directory, which the next download into `path` cleans up. Terminal.
+  const factory ProtonDownloadProgress.cancelled() =
+      ProtonDownloadProgress_Cancelled;
 }

@@ -56,7 +56,7 @@ extension DownloadGameProgressPatterns on DownloadGameProgress {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( DownloadGameProgress_Started value)?  started,TResult Function( DownloadGameProgress_FileSizeVerification value)?  fileSizeVerification,TResult Function( DownloadGameProgress_FileAllocationStarted value)?  fileAllocationStarted,TResult Function( DownloadGameProgress_FileAllocation value)?  fileAllocation,TResult Function( DownloadGameProgress_AllocationError value)?  allocationError,TResult Function( DownloadGameProgress_DownloadProgress value)?  downloadProgress,TResult Function( DownloadGameProgress_Finished value)?  finished,required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( DownloadGameProgress_Started value)?  started,TResult Function( DownloadGameProgress_FileSizeVerification value)?  fileSizeVerification,TResult Function( DownloadGameProgress_FileAllocationStarted value)?  fileAllocationStarted,TResult Function( DownloadGameProgress_FileAllocation value)?  fileAllocation,TResult Function( DownloadGameProgress_AllocationError value)?  allocationError,TResult Function( DownloadGameProgress_DownloadProgress value)?  downloadProgress,TResult Function( DownloadGameProgress_Finished value)?  finished,TResult Function( DownloadGameProgress_Cancelled value)?  cancelled,required TResult orElse(),}){
 final _that = this;
 switch (_that) {
 case DownloadGameProgress_Started() when started != null:
@@ -66,7 +66,8 @@ return fileAllocationStarted(_that);case DownloadGameProgress_FileAllocation() w
 return fileAllocation(_that);case DownloadGameProgress_AllocationError() when allocationError != null:
 return allocationError(_that);case DownloadGameProgress_DownloadProgress() when downloadProgress != null:
 return downloadProgress(_that);case DownloadGameProgress_Finished() when finished != null:
-return finished(_that);case _:
+return finished(_that);case DownloadGameProgress_Cancelled() when cancelled != null:
+return cancelled(_that);case _:
   return orElse();
 
 }
@@ -84,7 +85,7 @@ return finished(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( DownloadGameProgress_Started value)  started,required TResult Function( DownloadGameProgress_FileSizeVerification value)  fileSizeVerification,required TResult Function( DownloadGameProgress_FileAllocationStarted value)  fileAllocationStarted,required TResult Function( DownloadGameProgress_FileAllocation value)  fileAllocation,required TResult Function( DownloadGameProgress_AllocationError value)  allocationError,required TResult Function( DownloadGameProgress_DownloadProgress value)  downloadProgress,required TResult Function( DownloadGameProgress_Finished value)  finished,}){
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( DownloadGameProgress_Started value)  started,required TResult Function( DownloadGameProgress_FileSizeVerification value)  fileSizeVerification,required TResult Function( DownloadGameProgress_FileAllocationStarted value)  fileAllocationStarted,required TResult Function( DownloadGameProgress_FileAllocation value)  fileAllocation,required TResult Function( DownloadGameProgress_AllocationError value)  allocationError,required TResult Function( DownloadGameProgress_DownloadProgress value)  downloadProgress,required TResult Function( DownloadGameProgress_Finished value)  finished,required TResult Function( DownloadGameProgress_Cancelled value)  cancelled,}){
 final _that = this;
 switch (_that) {
 case DownloadGameProgress_Started():
@@ -94,7 +95,8 @@ return fileAllocationStarted(_that);case DownloadGameProgress_FileAllocation():
 return fileAllocation(_that);case DownloadGameProgress_AllocationError():
 return allocationError(_that);case DownloadGameProgress_DownloadProgress():
 return downloadProgress(_that);case DownloadGameProgress_Finished():
-return finished(_that);}
+return finished(_that);case DownloadGameProgress_Cancelled():
+return cancelled(_that);}
 }
 /// A variant of `map` that fallback to returning `null`.
 ///
@@ -108,7 +110,7 @@ return finished(_that);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( DownloadGameProgress_Started value)?  started,TResult? Function( DownloadGameProgress_FileSizeVerification value)?  fileSizeVerification,TResult? Function( DownloadGameProgress_FileAllocationStarted value)?  fileAllocationStarted,TResult? Function( DownloadGameProgress_FileAllocation value)?  fileAllocation,TResult? Function( DownloadGameProgress_AllocationError value)?  allocationError,TResult? Function( DownloadGameProgress_DownloadProgress value)?  downloadProgress,TResult? Function( DownloadGameProgress_Finished value)?  finished,}){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( DownloadGameProgress_Started value)?  started,TResult? Function( DownloadGameProgress_FileSizeVerification value)?  fileSizeVerification,TResult? Function( DownloadGameProgress_FileAllocationStarted value)?  fileAllocationStarted,TResult? Function( DownloadGameProgress_FileAllocation value)?  fileAllocation,TResult? Function( DownloadGameProgress_AllocationError value)?  allocationError,TResult? Function( DownloadGameProgress_DownloadProgress value)?  downloadProgress,TResult? Function( DownloadGameProgress_Finished value)?  finished,TResult? Function( DownloadGameProgress_Cancelled value)?  cancelled,}){
 final _that = this;
 switch (_that) {
 case DownloadGameProgress_Started() when started != null:
@@ -118,7 +120,8 @@ return fileAllocationStarted(_that);case DownloadGameProgress_FileAllocation() w
 return fileAllocation(_that);case DownloadGameProgress_AllocationError() when allocationError != null:
 return allocationError(_that);case DownloadGameProgress_DownloadProgress() when downloadProgress != null:
 return downloadProgress(_that);case DownloadGameProgress_Finished() when finished != null:
-return finished(_that);case _:
+return finished(_that);case DownloadGameProgress_Cancelled() when cancelled != null:
+return cancelled(_that);case _:
   return null;
 
 }
@@ -135,7 +138,7 @@ return finished(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( BigInt totalFiles,  BigInt totalBytes)?  started,TResult Function( BigInt checkedFiles)?  fileSizeVerification,TResult Function( BigInt totalFiles,  BigInt totalBytes)?  fileAllocationStarted,TResult Function( BigInt allocatedFiles,  BigInt allocatedBytes)?  fileAllocation,TResult Function( String field0)?  allocationError,TResult Function( BigInt downloadedBytes)?  downloadProgress,TResult Function()?  finished,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( BigInt totalFiles,  BigInt totalBytes)?  started,TResult Function( BigInt checkedFiles)?  fileSizeVerification,TResult Function( BigInt totalFiles,  BigInt totalBytes)?  fileAllocationStarted,TResult Function( BigInt allocatedFiles,  BigInt allocatedBytes)?  fileAllocation,TResult Function( String field0)?  allocationError,TResult Function( BigInt downloadedBytes)?  downloadProgress,TResult Function()?  finished,TResult Function()?  cancelled,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case DownloadGameProgress_Started() when started != null:
 return started(_that.totalFiles,_that.totalBytes);case DownloadGameProgress_FileSizeVerification() when fileSizeVerification != null:
@@ -144,7 +147,8 @@ return fileAllocationStarted(_that.totalFiles,_that.totalBytes);case DownloadGam
 return fileAllocation(_that.allocatedFiles,_that.allocatedBytes);case DownloadGameProgress_AllocationError() when allocationError != null:
 return allocationError(_that.field0);case DownloadGameProgress_DownloadProgress() when downloadProgress != null:
 return downloadProgress(_that.downloadedBytes);case DownloadGameProgress_Finished() when finished != null:
-return finished();case _:
+return finished();case DownloadGameProgress_Cancelled() when cancelled != null:
+return cancelled();case _:
   return orElse();
 
 }
@@ -162,7 +166,7 @@ return finished();case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( BigInt totalFiles,  BigInt totalBytes)  started,required TResult Function( BigInt checkedFiles)  fileSizeVerification,required TResult Function( BigInt totalFiles,  BigInt totalBytes)  fileAllocationStarted,required TResult Function( BigInt allocatedFiles,  BigInt allocatedBytes)  fileAllocation,required TResult Function( String field0)  allocationError,required TResult Function( BigInt downloadedBytes)  downloadProgress,required TResult Function()  finished,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( BigInt totalFiles,  BigInt totalBytes)  started,required TResult Function( BigInt checkedFiles)  fileSizeVerification,required TResult Function( BigInt totalFiles,  BigInt totalBytes)  fileAllocationStarted,required TResult Function( BigInt allocatedFiles,  BigInt allocatedBytes)  fileAllocation,required TResult Function( String field0)  allocationError,required TResult Function( BigInt downloadedBytes)  downloadProgress,required TResult Function()  finished,required TResult Function()  cancelled,}) {final _that = this;
 switch (_that) {
 case DownloadGameProgress_Started():
 return started(_that.totalFiles,_that.totalBytes);case DownloadGameProgress_FileSizeVerification():
@@ -171,7 +175,8 @@ return fileAllocationStarted(_that.totalFiles,_that.totalBytes);case DownloadGam
 return fileAllocation(_that.allocatedFiles,_that.allocatedBytes);case DownloadGameProgress_AllocationError():
 return allocationError(_that.field0);case DownloadGameProgress_DownloadProgress():
 return downloadProgress(_that.downloadedBytes);case DownloadGameProgress_Finished():
-return finished();}
+return finished();case DownloadGameProgress_Cancelled():
+return cancelled();}
 }
 /// A variant of `when` that fallback to returning `null`
 ///
@@ -185,7 +190,7 @@ return finished();}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( BigInt totalFiles,  BigInt totalBytes)?  started,TResult? Function( BigInt checkedFiles)?  fileSizeVerification,TResult? Function( BigInt totalFiles,  BigInt totalBytes)?  fileAllocationStarted,TResult? Function( BigInt allocatedFiles,  BigInt allocatedBytes)?  fileAllocation,TResult? Function( String field0)?  allocationError,TResult? Function( BigInt downloadedBytes)?  downloadProgress,TResult? Function()?  finished,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( BigInt totalFiles,  BigInt totalBytes)?  started,TResult? Function( BigInt checkedFiles)?  fileSizeVerification,TResult? Function( BigInt totalFiles,  BigInt totalBytes)?  fileAllocationStarted,TResult? Function( BigInt allocatedFiles,  BigInt allocatedBytes)?  fileAllocation,TResult? Function( String field0)?  allocationError,TResult? Function( BigInt downloadedBytes)?  downloadProgress,TResult? Function()?  finished,TResult? Function()?  cancelled,}) {final _that = this;
 switch (_that) {
 case DownloadGameProgress_Started() when started != null:
 return started(_that.totalFiles,_that.totalBytes);case DownloadGameProgress_FileSizeVerification() when fileSizeVerification != null:
@@ -194,7 +199,8 @@ return fileAllocationStarted(_that.totalFiles,_that.totalBytes);case DownloadGam
 return fileAllocation(_that.allocatedFiles,_that.allocatedBytes);case DownloadGameProgress_AllocationError() when allocationError != null:
 return allocationError(_that.field0);case DownloadGameProgress_DownloadProgress() when downloadProgress != null:
 return downloadProgress(_that.downloadedBytes);case DownloadGameProgress_Finished() when finished != null:
-return finished();case _:
+return finished();case DownloadGameProgress_Cancelled() when cancelled != null:
+return cancelled();case _:
   return null;
 
 }
@@ -640,6 +646,38 @@ int get hashCode => runtimeType.hashCode;
 @override
 String toString() {
     return 'DownloadGameProgress.finished()';
+}
+
+
+}
+
+
+
+
+/// @nodoc
+
+
+class DownloadGameProgress_Cancelled extends DownloadGameProgress {
+  const DownloadGameProgress_Cancelled(): super._();
+  
+
+
+
+
+
+
+@override
+bool operator ==(Object other) {
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is DownloadGameProgress_Cancelled);
+}
+
+
+@override
+int get hashCode => runtimeType.hashCode;
+
+@override
+String toString() {
+    return 'DownloadGameProgress.cancelled()';
 }
 
 

@@ -3,6 +3,7 @@
 
 // ignore_for_file: unused_import, unused_element, unnecessary_import, duplicate_ignore, invalid_use_of_internal_member, annotate_overrides, non_constant_identifier_names, curly_braces_in_flow_control_structures, prefer_const_literals_to_create_immutables, unused_field
 
+import 'api/cancel_token.dart';
 import 'api/error.dart';
 import 'api/gogdl.dart';
 import 'api/models/downloadable_product.dart';
@@ -74,7 +75,7 @@ class RustLib extends BaseEntrypoint<RustLibApi, RustLibApiImpl, RustLibWire> {
   String get codegenVersion => '2.13.0';
 
   @override
-  int get rustContentHash => 1088691444;
+  int get rustContentHash => 1823049855;
 
   static const kDefaultExternalLibraryLoaderConfig =
       ExternalLibraryLoaderConfig(
@@ -86,6 +87,10 @@ class RustLib extends BaseEntrypoint<RustLibApi, RustLibApiImpl, RustLibWire> {
 }
 
 abstract class RustLibApi extends BaseApi {
+  void crateApiCancelTokenCancelTokenCancel({required CancelToken that});
+
+  CancelToken crateApiCancelTokenCancelTokenNew();
+
   GogErrorKind crateApiErrorGogErrorKind({required GogError that});
 
   String crateApiErrorGogErrorMessage({required GogError that});
@@ -98,12 +103,14 @@ abstract class RustLibApi extends BaseApi {
     required String path,
     required String buildName,
     required List<int> selectedProducts,
+    required CancelToken cancel,
   });
 
   Stream<ProtonDownloadProgress> crateApiGogdlGogdlApiDownloadProtonRelease({
     required GogdlApi that,
     required String path,
     required String tagName,
+    required CancelToken cancel,
   });
 
   Stream<DownloadSavesProgress> crateApiGogdlGogdlApiDownloadSaveFiles({
@@ -112,6 +119,7 @@ abstract class RustLibApi extends BaseApi {
     required String buildName,
     required String prefix,
     required String installPath,
+    required CancelToken cancel,
   });
 
   Future<String> crateApiGogdlGogdlApiGetBackgroundImageLink({
@@ -179,6 +187,7 @@ abstract class RustLibApi extends BaseApi {
     required String path,
     required String buildName,
     required List<int> selectedProducts,
+    required CancelToken cancel,
   });
 
   Future<void> crateApiGogdlGogdlApiRestoreAuth({
@@ -197,6 +206,7 @@ abstract class RustLibApi extends BaseApi {
     required String buildName,
     required String prefix,
     required String installPath,
+    required CancelToken cancel,
   });
 
   Stream<VerifyDownloadProgress> crateApiGogdlGogdlApiVerifyDownload({
@@ -205,7 +215,16 @@ abstract class RustLibApi extends BaseApi {
     required String path,
     required String buildName,
     required List<int> selectedProducts,
+    required CancelToken cancel,
   });
+
+  RustArcIncrementStrongCountFnType
+  get rust_arc_increment_strong_count_CancelToken;
+
+  RustArcDecrementStrongCountFnType
+  get rust_arc_decrement_strong_count_CancelToken;
+
+  CrossPlatformFinalizerArg get rust_arc_decrement_strong_count_CancelTokenPtr;
 
   RustArcIncrementStrongCountFnType
   get rust_arc_increment_strong_count_GogError;
@@ -233,6 +252,55 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   });
 
   @override
+  void crateApiCancelTokenCancelTokenCancel({required CancelToken that}) {
+    return handler.executeSync(
+      SyncTask(
+        callFfi: () {
+          final serializer = SseSerializer(generalizedFrbRustBinding);
+          sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerCancelToken(
+            that,
+            serializer,
+          );
+          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 1)!;
+        },
+        codec: SseCodec(
+          decodeSuccessData: sse_decode_unit,
+          decodeErrorData: null,
+        ),
+        constMeta: kCrateApiCancelTokenCancelTokenCancelConstMeta,
+        argValues: [that],
+        apiImpl: this,
+      ),
+    );
+  }
+
+  TaskConstMeta get kCrateApiCancelTokenCancelTokenCancelConstMeta =>
+      const TaskConstMeta(debugName: "CancelToken_cancel", argNames: ["that"]);
+
+  @override
+  CancelToken crateApiCancelTokenCancelTokenNew() {
+    return handler.executeSync(
+      SyncTask(
+        callFfi: () {
+          final serializer = SseSerializer(generalizedFrbRustBinding);
+          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 2)!;
+        },
+        codec: SseCodec(
+          decodeSuccessData:
+              sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerCancelToken,
+          decodeErrorData: null,
+        ),
+        constMeta: kCrateApiCancelTokenCancelTokenNewConstMeta,
+        argValues: [],
+        apiImpl: this,
+      ),
+    );
+  }
+
+  TaskConstMeta get kCrateApiCancelTokenCancelTokenNewConstMeta =>
+      const TaskConstMeta(debugName: "CancelToken_new", argNames: []);
+
+  @override
   GogErrorKind crateApiErrorGogErrorKind({required GogError that}) {
     return handler.executeSync(
       SyncTask(
@@ -242,7 +310,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
             that,
             serializer,
           );
-          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 1)!;
+          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 3)!;
         },
         codec: SseCodec(
           decodeSuccessData: sse_decode_gog_error_kind,
@@ -268,7 +336,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
             that,
             serializer,
           );
-          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 2)!;
+          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 4)!;
         },
         codec: SseCodec(
           decodeSuccessData: sse_decode_String,
@@ -296,7 +364,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
             that,
             serializer,
           );
-          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 3)!;
+          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 5)!;
         },
         codec: SseCodec(
           decodeSuccessData: sse_decode_opt_box_autoadd_space_shortfall,
@@ -322,6 +390,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     required String path,
     required String buildName,
     required List<int> selectedProducts,
+    required CancelToken cancel,
   }) {
     final sink = RustStreamSink<DownloadGameProgress>();
     unawaited(
@@ -337,11 +406,15 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
             sse_encode_String(path, serializer);
             sse_encode_String(buildName, serializer);
             sse_encode_list_prim_i_32_loose(selectedProducts, serializer);
+            sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerCancelToken(
+              cancel,
+              serializer,
+            );
             sse_encode_StreamSink_download_game_progress_Sse(sink, serializer);
             pdeCallFfi(
               generalizedFrbRustBinding,
               serializer,
-              funcId: 4,
+              funcId: 6,
               port: port_,
             );
           },
@@ -351,7 +424,15 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
                 sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerGogError,
           ),
           constMeta: kCrateApiGogdlGogdlApiDownloadGameConstMeta,
-          argValues: [that, gameId, path, buildName, selectedProducts, sink],
+          argValues: [
+            that,
+            gameId,
+            path,
+            buildName,
+            selectedProducts,
+            cancel,
+            sink,
+          ],
           apiImpl: this,
         ),
       ),
@@ -368,6 +449,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           "path",
           "buildName",
           "selectedProducts",
+          "cancel",
           "sink",
         ],
       );
@@ -377,6 +459,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     required GogdlApi that,
     required String path,
     required String tagName,
+    required CancelToken cancel,
   }) {
     final sink = RustStreamSink<ProtonDownloadProgress>();
     unawaited(
@@ -390,6 +473,10 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
             );
             sse_encode_String(path, serializer);
             sse_encode_String(tagName, serializer);
+            sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerCancelToken(
+              cancel,
+              serializer,
+            );
             sse_encode_StreamSink_proton_download_progress_Sse(
               sink,
               serializer,
@@ -397,7 +484,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
             pdeCallFfi(
               generalizedFrbRustBinding,
               serializer,
-              funcId: 5,
+              funcId: 7,
               port: port_,
             );
           },
@@ -407,7 +494,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
                 sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerGogError,
           ),
           constMeta: kCrateApiGogdlGogdlApiDownloadProtonReleaseConstMeta,
-          argValues: [that, path, tagName, sink],
+          argValues: [that, path, tagName, cancel, sink],
           apiImpl: this,
         ),
       ),
@@ -418,7 +505,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   TaskConstMeta get kCrateApiGogdlGogdlApiDownloadProtonReleaseConstMeta =>
       const TaskConstMeta(
         debugName: "GogdlApi_download_proton_release",
-        argNames: ["that", "path", "tagName", "sink"],
+        argNames: ["that", "path", "tagName", "cancel", "sink"],
       );
 
   @override
@@ -428,6 +515,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     required String buildName,
     required String prefix,
     required String installPath,
+    required CancelToken cancel,
   }) {
     final sink = RustStreamSink<DownloadSavesProgress>();
     unawaited(
@@ -443,11 +531,15 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
             sse_encode_String(buildName, serializer);
             sse_encode_String(prefix, serializer);
             sse_encode_String(installPath, serializer);
+            sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerCancelToken(
+              cancel,
+              serializer,
+            );
             sse_encode_StreamSink_download_saves_progress_Sse(sink, serializer);
             pdeCallFfi(
               generalizedFrbRustBinding,
               serializer,
-              funcId: 6,
+              funcId: 8,
               port: port_,
             );
           },
@@ -457,7 +549,15 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
                 sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerGogError,
           ),
           constMeta: kCrateApiGogdlGogdlApiDownloadSaveFilesConstMeta,
-          argValues: [that, gameId, buildName, prefix, installPath, sink],
+          argValues: [
+            that,
+            gameId,
+            buildName,
+            prefix,
+            installPath,
+            cancel,
+            sink,
+          ],
           apiImpl: this,
         ),
       ),
@@ -474,6 +574,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           "buildName",
           "prefix",
           "installPath",
+          "cancel",
           "sink",
         ],
       );
@@ -495,7 +596,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 7,
+            funcId: 9,
             port: port_,
           );
         },
@@ -537,7 +638,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 8,
+            funcId: 10,
             port: port_,
           );
         },
@@ -576,7 +677,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 9,
+            funcId: 11,
             port: port_,
           );
         },
@@ -615,7 +716,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 10,
+            funcId: 12,
             port: port_,
           );
         },
@@ -654,7 +755,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 11,
+            funcId: 13,
             port: port_,
           );
         },
@@ -693,7 +794,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 12,
+            funcId: 14,
             port: port_,
           );
         },
@@ -732,7 +833,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 13,
+            funcId: 15,
             port: port_,
           );
         },
@@ -764,7 +865,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
             that,
             serializer,
           );
-          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 14)!;
+          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 16)!;
         },
         codec: SseCodec(
           decodeSuccessData: sse_decode_String,
@@ -798,7 +899,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 15,
+            funcId: 17,
             port: port_,
           );
         },
@@ -837,7 +938,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 16,
+            funcId: 18,
             port: port_,
           );
         },
@@ -876,7 +977,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 17,
+            funcId: 19,
             port: port_,
           );
         },
@@ -904,7 +1005,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       SyncTask(
         callFfi: () {
           final serializer = SseSerializer(generalizedFrbRustBinding);
-          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 18)!;
+          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 20)!;
         },
         codec: SseCodec(
           decodeSuccessData:
@@ -936,7 +1037,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 19,
+            funcId: 21,
             port: port_,
           );
         },
@@ -964,6 +1065,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     required String path,
     required String buildName,
     required List<int> selectedProducts,
+    required CancelToken cancel,
   }) {
     final sink = RustStreamSink<RepairGameProgress>();
     unawaited(
@@ -979,11 +1081,15 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
             sse_encode_String(path, serializer);
             sse_encode_String(buildName, serializer);
             sse_encode_list_prim_i_32_loose(selectedProducts, serializer);
+            sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerCancelToken(
+              cancel,
+              serializer,
+            );
             sse_encode_StreamSink_repair_game_progress_Sse(sink, serializer);
             pdeCallFfi(
               generalizedFrbRustBinding,
               serializer,
-              funcId: 20,
+              funcId: 22,
               port: port_,
             );
           },
@@ -993,7 +1099,15 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
                 sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerGogError,
           ),
           constMeta: kCrateApiGogdlGogdlApiRepairGameConstMeta,
-          argValues: [that, gameId, path, buildName, selectedProducts, sink],
+          argValues: [
+            that,
+            gameId,
+            path,
+            buildName,
+            selectedProducts,
+            cancel,
+            sink,
+          ],
           apiImpl: this,
         ),
       ),
@@ -1010,6 +1124,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           "path",
           "buildName",
           "selectedProducts",
+          "cancel",
           "sink",
         ],
       );
@@ -1031,7 +1146,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 21,
+            funcId: 23,
             port: port_,
           );
         },
@@ -1073,7 +1188,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 22,
+            funcId: 24,
             port: port_,
           );
         },
@@ -1101,6 +1216,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     required String buildName,
     required String prefix,
     required String installPath,
+    required CancelToken cancel,
   }) {
     final sink = RustStreamSink<UploadSavesProgress>();
     unawaited(
@@ -1116,11 +1232,15 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
             sse_encode_String(buildName, serializer);
             sse_encode_String(prefix, serializer);
             sse_encode_String(installPath, serializer);
+            sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerCancelToken(
+              cancel,
+              serializer,
+            );
             sse_encode_StreamSink_upload_saves_progress_Sse(sink, serializer);
             pdeCallFfi(
               generalizedFrbRustBinding,
               serializer,
-              funcId: 23,
+              funcId: 25,
               port: port_,
             );
           },
@@ -1130,7 +1250,15 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
                 sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerGogError,
           ),
           constMeta: kCrateApiGogdlGogdlApiUploadSaveFilesConstMeta,
-          argValues: [that, gameId, buildName, prefix, installPath, sink],
+          argValues: [
+            that,
+            gameId,
+            buildName,
+            prefix,
+            installPath,
+            cancel,
+            sink,
+          ],
           apiImpl: this,
         ),
       ),
@@ -1147,6 +1275,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           "buildName",
           "prefix",
           "installPath",
+          "cancel",
           "sink",
         ],
       );
@@ -1158,6 +1287,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     required String path,
     required String buildName,
     required List<int> selectedProducts,
+    required CancelToken cancel,
   }) {
     final sink = RustStreamSink<VerifyDownloadProgress>();
     unawaited(
@@ -1173,6 +1303,10 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
             sse_encode_String(path, serializer);
             sse_encode_String(buildName, serializer);
             sse_encode_list_prim_i_32_loose(selectedProducts, serializer);
+            sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerCancelToken(
+              cancel,
+              serializer,
+            );
             sse_encode_StreamSink_verify_download_progress_Sse(
               sink,
               serializer,
@@ -1180,7 +1314,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
             pdeCallFfi(
               generalizedFrbRustBinding,
               serializer,
-              funcId: 24,
+              funcId: 26,
               port: port_,
             );
           },
@@ -1190,7 +1324,15 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
                 sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerGogError,
           ),
           constMeta: kCrateApiGogdlGogdlApiVerifyDownloadConstMeta,
-          argValues: [that, gameId, path, buildName, selectedProducts, sink],
+          argValues: [
+            that,
+            gameId,
+            path,
+            buildName,
+            selectedProducts,
+            cancel,
+            sink,
+          ],
           apiImpl: this,
         ),
       ),
@@ -1207,6 +1349,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           "path",
           "buildName",
           "selectedProducts",
+          "cancel",
           "sink",
         ],
       );
@@ -1247,6 +1390,14 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   RustArcIncrementStrongCountFnType
+  get rust_arc_increment_strong_count_CancelToken => wire
+      .rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerCancelToken;
+
+  RustArcDecrementStrongCountFnType
+  get rust_arc_decrement_strong_count_CancelToken => wire
+      .rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerCancelToken;
+
+  RustArcIncrementStrongCountFnType
   get rust_arc_increment_strong_count_GogError => wire
       .rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerGogError;
 
@@ -1269,6 +1420,15 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  CancelToken
+  dco_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerCancelToken(
+    dynamic raw,
+  ) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return CancelTokenImpl.frbInternalDcoDecode(raw as List<dynamic>);
+  }
+
+  @protected
   GogError
   dco_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerGogError(
     dynamic raw,
@@ -1284,6 +1444,15 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   ) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     return GogdlApiImpl.frbInternalDcoDecode(raw as List<dynamic>);
+  }
+
+  @protected
+  CancelToken
+  dco_decode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerCancelToken(
+    dynamic raw,
+  ) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return CancelTokenImpl.frbInternalDcoDecode(raw as List<dynamic>);
   }
 
   @protected
@@ -1315,6 +1484,15 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   Object dco_decode_DartOpaque(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     return decodeDartOpaque(raw, generalizedFrbRustBinding);
+  }
+
+  @protected
+  CancelToken
+  dco_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerCancelToken(
+    dynamic raw,
+  ) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return CancelTokenImpl.frbInternalDcoDecode(raw as List<dynamic>);
   }
 
   @protected
@@ -1420,6 +1598,8 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         );
       case 6:
         return DownloadGameProgress_Finished();
+      case 7:
+        return DownloadGameProgress_Cancelled();
       default:
         throw Exception("unreachable");
     }
@@ -1451,6 +1631,8 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         );
       case 4:
         return DownloadSavesProgress_Finished();
+      case 5:
+        return DownloadSavesProgress_Cancelled();
       default:
         throw Exception("unreachable");
     }
@@ -1567,6 +1749,8 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         return ProtonDownloadProgress_Extracted(dco_decode_String(raw[1]));
       case 3:
         return ProtonDownloadProgress_Finished(dco_decode_String(raw[1]));
+      case 4:
+        return ProtonDownloadProgress_Cancelled();
       default:
         throw Exception("unreachable");
     }
@@ -1638,6 +1822,8 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         );
       case 11:
         return RepairGameProgress_Finished();
+      case 12:
+        return RepairGameProgress_Cancelled();
       default:
         throw Exception("unreachable");
     }
@@ -1696,6 +1882,8 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         );
       case 4:
         return UploadSavesProgress_Finished();
+      case 5:
+        return UploadSavesProgress_Cancelled();
       default:
         throw Exception("unreachable");
     }
@@ -1732,6 +1920,8 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         );
       case 5:
         return VerifyDownloadProgress_Finished(dco_decode_u_64(raw[1]));
+      case 6:
+        return VerifyDownloadProgress_Cancelled();
       default:
         throw Exception("unreachable");
     }
@@ -1742,6 +1932,18 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     // Codec=Sse (Serialization based), see doc to use other codecs
     var inner = sse_decode_String(deserializer);
     return AnyhowException(inner);
+  }
+
+  @protected
+  CancelToken
+  sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerCancelToken(
+    SseDeserializer deserializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return CancelTokenImpl.frbInternalSseDecode(
+      sse_decode_usize(deserializer),
+      sse_decode_i_32(deserializer),
+    );
   }
 
   @protected
@@ -1763,6 +1965,18 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   ) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     return GogdlApiImpl.frbInternalSseDecode(
+      sse_decode_usize(deserializer),
+      sse_decode_i_32(deserializer),
+    );
+  }
+
+  @protected
+  CancelToken
+  sse_decode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerCancelToken(
+    SseDeserializer deserializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return CancelTokenImpl.frbInternalSseDecode(
       sse_decode_usize(deserializer),
       sse_decode_i_32(deserializer),
     );
@@ -1797,6 +2011,18 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     // Codec=Sse (Serialization based), see doc to use other codecs
     var inner = sse_decode_isize(deserializer);
     return decodeDartOpaque(inner, generalizedFrbRustBinding);
+  }
+
+  @protected
+  CancelToken
+  sse_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerCancelToken(
+    SseDeserializer deserializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return CancelTokenImpl.frbInternalSseDecode(
+      sse_decode_usize(deserializer),
+      sse_decode_i_32(deserializer),
+    );
   }
 
   @protected
@@ -1934,6 +2160,8 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         );
       case 6:
         return DownloadGameProgress_Finished();
+      case 7:
+        return DownloadGameProgress_Cancelled();
       default:
         throw UnimplementedError('');
     }
@@ -1975,6 +2203,8 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         return DownloadSavesProgress_FileFinished(name: var_name);
       case 4:
         return DownloadSavesProgress_Finished();
+      case 5:
+        return DownloadSavesProgress_Cancelled();
       default:
         throw UnimplementedError('');
     }
@@ -2141,6 +2371,8 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       case 3:
         var var_field0 = sse_decode_String(deserializer);
         return ProtonDownloadProgress_Finished(var_field0);
+      case 4:
+        return ProtonDownloadProgress_Cancelled();
       default:
         throw UnimplementedError('');
     }
@@ -2216,6 +2448,8 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         );
       case 11:
         return RepairGameProgress_Finished();
+      case 12:
+        return RepairGameProgress_Cancelled();
       default:
         throw UnimplementedError('');
     }
@@ -2281,6 +2515,8 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         return UploadSavesProgress_FileFinished(name: var_name);
       case 4:
         return UploadSavesProgress_Finished();
+      case 5:
+        return UploadSavesProgress_Cancelled();
       default:
         throw UnimplementedError('');
     }
@@ -2324,6 +2560,8 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       case 5:
         var var_field0 = sse_decode_u_64(deserializer);
         return VerifyDownloadProgress_Finished(var_field0);
+      case 6:
+        return VerifyDownloadProgress_Cancelled();
       default:
         throw UnimplementedError('');
     }
@@ -2342,6 +2580,19 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   ) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     sse_encode_String(self.message, serializer);
+  }
+
+  @protected
+  void
+  sse_encode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerCancelToken(
+    CancelToken self,
+    SseSerializer serializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_usize(
+      (self as CancelTokenImpl).frbInternalSseEncode(move: true),
+      serializer,
+    );
   }
 
   @protected
@@ -2366,6 +2617,19 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     // Codec=Sse (Serialization based), see doc to use other codecs
     sse_encode_usize(
       (self as GogdlApiImpl).frbInternalSseEncode(move: true),
+      serializer,
+    );
+  }
+
+  @protected
+  void
+  sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerCancelToken(
+    CancelToken self,
+    SseSerializer serializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_usize(
+      (self as CancelTokenImpl).frbInternalSseEncode(move: false),
       serializer,
     );
   }
@@ -2419,6 +2683,19 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           generalizedFrbRustBinding,
         ),
       ),
+      serializer,
+    );
+  }
+
+  @protected
+  void
+  sse_encode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerCancelToken(
+    CancelToken self,
+    SseSerializer serializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_usize(
+      (self as CancelTokenImpl).frbInternalSseEncode(move: null),
       serializer,
     );
   }
@@ -2609,6 +2886,8 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         sse_encode_u_64(downloadedBytes, serializer);
       case DownloadGameProgress_Finished():
         sse_encode_i_32(6, serializer);
+      case DownloadGameProgress_Cancelled():
+        sse_encode_i_32(7, serializer);
     }
   }
 
@@ -2647,6 +2926,8 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         sse_encode_String(name, serializer);
       case DownloadSavesProgress_Finished():
         sse_encode_i_32(4, serializer);
+      case DownloadSavesProgress_Cancelled():
+        sse_encode_i_32(5, serializer);
     }
   }
 
@@ -2803,6 +3084,8 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       case ProtonDownloadProgress_Finished(field0: final field0):
         sse_encode_i_32(3, serializer);
         sse_encode_String(field0, serializer);
+      case ProtonDownloadProgress_Cancelled():
+        sse_encode_i_32(4, serializer);
     }
   }
 
@@ -2883,6 +3166,8 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         sse_encode_u_64(downloadedBytes, serializer);
       case RepairGameProgress_Finished():
         sse_encode_i_32(11, serializer);
+      case RepairGameProgress_Cancelled():
+        sse_encode_i_32(12, serializer);
     }
   }
 
@@ -2944,6 +3229,8 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         sse_encode_String(name, serializer);
       case UploadSavesProgress_Finished():
         sse_encode_i_32(4, serializer);
+      case UploadSavesProgress_Cancelled():
+        sse_encode_i_32(5, serializer);
     }
   }
 
@@ -2990,6 +3277,8 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       case VerifyDownloadProgress_Finished(field0: final field0):
         sse_encode_i_32(5, serializer);
         sse_encode_u_64(field0, serializer);
+      case VerifyDownloadProgress_Cancelled():
+        sse_encode_i_32(6, serializer);
     }
   }
 
@@ -2998,6 +3287,29 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     // Codec=Sse (Serialization based), see doc to use other codecs
     serializer.buffer.putUint8(self ? 1 : 0);
   }
+}
+
+@sealed
+class CancelTokenImpl extends RustOpaque implements CancelToken {
+  // Not to be used by end users
+  CancelTokenImpl.frbInternalDcoDecode(List<dynamic> wire)
+    : super.frbInternalDcoDecode(wire, _kStaticData);
+
+  // Not to be used by end users
+  CancelTokenImpl.frbInternalSseDecode(BigInt ptr, int externalSizeOnNative)
+    : super.frbInternalSseDecode(ptr, externalSizeOnNative, _kStaticData);
+
+  static final _kStaticData = RustArcStaticData(
+    rustArcIncrementStrongCount:
+        RustLib.instance.api.rust_arc_increment_strong_count_CancelToken,
+    rustArcDecrementStrongCount:
+        RustLib.instance.api.rust_arc_decrement_strong_count_CancelToken,
+    rustArcDecrementStrongCountPtr:
+        RustLib.instance.api.rust_arc_decrement_strong_count_CancelTokenPtr,
+  );
+
+  void cancel() =>
+      RustLib.instance.api.crateApiCancelTokenCancelTokenCancel(that: this);
 }
 
 @sealed
@@ -3052,40 +3364,52 @@ class GogdlApiImpl extends RustOpaque implements GogdlApi {
         RustLib.instance.api.rust_arc_decrement_strong_count_GogdlApiPtr,
   );
 
+  /// Cancelling `cancel` keeps the files written so far, and the stream ends with `cancelled`.
+  /// Call `repairGame` to resume the install.
   Stream<DownloadGameProgress> downloadGame({
     required int gameId,
     required String path,
     required String buildName,
     required List<int> selectedProducts,
+    required CancelToken cancel,
   }) => RustLib.instance.api.crateApiGogdlGogdlApiDownloadGame(
     that: this,
     gameId: gameId,
     path: path,
     buildName: buildName,
     selectedProducts: selectedProducts,
+    cancel: cancel,
   );
 
   /// A 30s stall fails the download with a network error. It isn't retried.
+  ///
+  /// Cancelling `cancel` leaves `path` as it was, and the stream ends with `cancelled`.
   Stream<ProtonDownloadProgress> downloadProtonRelease({
     required String path,
     required String tagName,
+    required CancelToken cancel,
   }) => RustLib.instance.api.crateApiGogdlGogdlApiDownloadProtonRelease(
     that: this,
     path: path,
     tagName: tagName,
+    cancel: cancel,
   );
 
+  /// Cancelling `cancel` leaves each local save either the old one or the complete new one, and
+  /// the stream ends with `cancelled`.
   Stream<DownloadSavesProgress> downloadSaveFiles({
     required int gameId,
     required String buildName,
     required String prefix,
     required String installPath,
+    required CancelToken cancel,
   }) => RustLib.instance.api.crateApiGogdlGogdlApiDownloadSaveFiles(
     that: this,
     gameId: gameId,
     buildName: buildName,
     prefix: prefix,
     installPath: installPath,
+    cancel: cancel,
   );
 
   Future<String> getBackgroundImageLink({required int gameId}) => RustLib
@@ -3140,17 +3464,21 @@ class GogdlApiImpl extends RustOpaque implements GogdlApi {
   Future<void> removeTokenRefreshCallback() => RustLib.instance.api
       .crateApiGogdlGogdlApiRemoveTokenRefreshCallback(that: this);
 
+  /// Cancelling `cancel` keeps the files written so far, and the stream ends with `cancelled`.
+  /// Call `repairGame` again to resume the install.
   Stream<RepairGameProgress> repairGame({
     required int gameId,
     required String path,
     required String buildName,
     required List<int> selectedProducts,
+    required CancelToken cancel,
   }) => RustLib.instance.api.crateApiGogdlGogdlApiRepairGame(
     that: this,
     gameId: gameId,
     path: path,
     buildName: buildName,
     selectedProducts: selectedProducts,
+    cancel: cancel,
   );
 
   Future<void> restoreAuth({required String jsonStr}) => RustLib.instance.api
@@ -3165,29 +3493,37 @@ class GogdlApiImpl extends RustOpaque implements GogdlApi {
 
   /// Each file's upload must finish within 30s, since the read timeout covers sending the
   /// request body. A slower one fails with a network error and isn't retried.
+  ///
+  /// Cancelling `cancel` leaves local files untouched, and the stream ends with `cancelled`. The
+  /// file in flight may or may not have been stored, so upload again to be sure.
   Stream<UploadSavesProgress> uploadSaveFiles({
     required int gameId,
     required String buildName,
     required String prefix,
     required String installPath,
+    required CancelToken cancel,
   }) => RustLib.instance.api.crateApiGogdlGogdlApiUploadSaveFiles(
     that: this,
     gameId: gameId,
     buildName: buildName,
     prefix: prefix,
     installPath: installPath,
+    cancel: cancel,
   );
 
+  /// Cancelling `cancel` stops the check, and the stream ends with `cancelled`.
   Stream<VerifyDownloadProgress> verifyDownload({
     required int gameId,
     required String path,
     required String buildName,
     required List<int> selectedProducts,
+    required CancelToken cancel,
   }) => RustLib.instance.api.crateApiGogdlGogdlApiVerifyDownload(
     that: this,
     gameId: gameId,
     path: path,
     buildName: buildName,
     selectedProducts: selectedProducts,
+    cancel: cancel,
   );
 }

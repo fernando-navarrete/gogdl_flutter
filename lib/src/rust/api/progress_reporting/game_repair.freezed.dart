@@ -56,7 +56,7 @@ extension RepairGameProgressPatterns on RepairGameProgress {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( RepairGameProgress_Started value)?  started,TResult Function( RepairGameProgress_FileSizeVerification value)?  fileSizeVerification,TResult Function( RepairGameProgress_FileAllocationStarted value)?  fileAllocationStarted,TResult Function( RepairGameProgress_FileAllocation value)?  fileAllocation,TResult Function( RepairGameProgress_AllocationError value)?  allocationError,TResult Function( RepairGameProgress_Verification value)?  verification,TResult Function( RepairGameProgress_CouldNotResolvePath value)?  couldNotResolvePath,TResult Function( RepairGameProgress_FileNotFound value)?  fileNotFound,TResult Function( RepairGameProgress_ChecksumMismatch value)?  checksumMismatch,TResult Function( RepairGameProgress_DownloadStarted value)?  downloadStarted,TResult Function( RepairGameProgress_DownloadProgress value)?  downloadProgress,TResult Function( RepairGameProgress_Finished value)?  finished,required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( RepairGameProgress_Started value)?  started,TResult Function( RepairGameProgress_FileSizeVerification value)?  fileSizeVerification,TResult Function( RepairGameProgress_FileAllocationStarted value)?  fileAllocationStarted,TResult Function( RepairGameProgress_FileAllocation value)?  fileAllocation,TResult Function( RepairGameProgress_AllocationError value)?  allocationError,TResult Function( RepairGameProgress_Verification value)?  verification,TResult Function( RepairGameProgress_CouldNotResolvePath value)?  couldNotResolvePath,TResult Function( RepairGameProgress_FileNotFound value)?  fileNotFound,TResult Function( RepairGameProgress_ChecksumMismatch value)?  checksumMismatch,TResult Function( RepairGameProgress_DownloadStarted value)?  downloadStarted,TResult Function( RepairGameProgress_DownloadProgress value)?  downloadProgress,TResult Function( RepairGameProgress_Finished value)?  finished,TResult Function( RepairGameProgress_Cancelled value)?  cancelled,required TResult orElse(),}){
 final _that = this;
 switch (_that) {
 case RepairGameProgress_Started() when started != null:
@@ -71,7 +71,8 @@ return fileNotFound(_that);case RepairGameProgress_ChecksumMismatch() when check
 return checksumMismatch(_that);case RepairGameProgress_DownloadStarted() when downloadStarted != null:
 return downloadStarted(_that);case RepairGameProgress_DownloadProgress() when downloadProgress != null:
 return downloadProgress(_that);case RepairGameProgress_Finished() when finished != null:
-return finished(_that);case _:
+return finished(_that);case RepairGameProgress_Cancelled() when cancelled != null:
+return cancelled(_that);case _:
   return orElse();
 
 }
@@ -89,7 +90,7 @@ return finished(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( RepairGameProgress_Started value)  started,required TResult Function( RepairGameProgress_FileSizeVerification value)  fileSizeVerification,required TResult Function( RepairGameProgress_FileAllocationStarted value)  fileAllocationStarted,required TResult Function( RepairGameProgress_FileAllocation value)  fileAllocation,required TResult Function( RepairGameProgress_AllocationError value)  allocationError,required TResult Function( RepairGameProgress_Verification value)  verification,required TResult Function( RepairGameProgress_CouldNotResolvePath value)  couldNotResolvePath,required TResult Function( RepairGameProgress_FileNotFound value)  fileNotFound,required TResult Function( RepairGameProgress_ChecksumMismatch value)  checksumMismatch,required TResult Function( RepairGameProgress_DownloadStarted value)  downloadStarted,required TResult Function( RepairGameProgress_DownloadProgress value)  downloadProgress,required TResult Function( RepairGameProgress_Finished value)  finished,}){
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( RepairGameProgress_Started value)  started,required TResult Function( RepairGameProgress_FileSizeVerification value)  fileSizeVerification,required TResult Function( RepairGameProgress_FileAllocationStarted value)  fileAllocationStarted,required TResult Function( RepairGameProgress_FileAllocation value)  fileAllocation,required TResult Function( RepairGameProgress_AllocationError value)  allocationError,required TResult Function( RepairGameProgress_Verification value)  verification,required TResult Function( RepairGameProgress_CouldNotResolvePath value)  couldNotResolvePath,required TResult Function( RepairGameProgress_FileNotFound value)  fileNotFound,required TResult Function( RepairGameProgress_ChecksumMismatch value)  checksumMismatch,required TResult Function( RepairGameProgress_DownloadStarted value)  downloadStarted,required TResult Function( RepairGameProgress_DownloadProgress value)  downloadProgress,required TResult Function( RepairGameProgress_Finished value)  finished,required TResult Function( RepairGameProgress_Cancelled value)  cancelled,}){
 final _that = this;
 switch (_that) {
 case RepairGameProgress_Started():
@@ -104,7 +105,8 @@ return fileNotFound(_that);case RepairGameProgress_ChecksumMismatch():
 return checksumMismatch(_that);case RepairGameProgress_DownloadStarted():
 return downloadStarted(_that);case RepairGameProgress_DownloadProgress():
 return downloadProgress(_that);case RepairGameProgress_Finished():
-return finished(_that);}
+return finished(_that);case RepairGameProgress_Cancelled():
+return cancelled(_that);}
 }
 /// A variant of `map` that fallback to returning `null`.
 ///
@@ -118,7 +120,7 @@ return finished(_that);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( RepairGameProgress_Started value)?  started,TResult? Function( RepairGameProgress_FileSizeVerification value)?  fileSizeVerification,TResult? Function( RepairGameProgress_FileAllocationStarted value)?  fileAllocationStarted,TResult? Function( RepairGameProgress_FileAllocation value)?  fileAllocation,TResult? Function( RepairGameProgress_AllocationError value)?  allocationError,TResult? Function( RepairGameProgress_Verification value)?  verification,TResult? Function( RepairGameProgress_CouldNotResolvePath value)?  couldNotResolvePath,TResult? Function( RepairGameProgress_FileNotFound value)?  fileNotFound,TResult? Function( RepairGameProgress_ChecksumMismatch value)?  checksumMismatch,TResult? Function( RepairGameProgress_DownloadStarted value)?  downloadStarted,TResult? Function( RepairGameProgress_DownloadProgress value)?  downloadProgress,TResult? Function( RepairGameProgress_Finished value)?  finished,}){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( RepairGameProgress_Started value)?  started,TResult? Function( RepairGameProgress_FileSizeVerification value)?  fileSizeVerification,TResult? Function( RepairGameProgress_FileAllocationStarted value)?  fileAllocationStarted,TResult? Function( RepairGameProgress_FileAllocation value)?  fileAllocation,TResult? Function( RepairGameProgress_AllocationError value)?  allocationError,TResult? Function( RepairGameProgress_Verification value)?  verification,TResult? Function( RepairGameProgress_CouldNotResolvePath value)?  couldNotResolvePath,TResult? Function( RepairGameProgress_FileNotFound value)?  fileNotFound,TResult? Function( RepairGameProgress_ChecksumMismatch value)?  checksumMismatch,TResult? Function( RepairGameProgress_DownloadStarted value)?  downloadStarted,TResult? Function( RepairGameProgress_DownloadProgress value)?  downloadProgress,TResult? Function( RepairGameProgress_Finished value)?  finished,TResult? Function( RepairGameProgress_Cancelled value)?  cancelled,}){
 final _that = this;
 switch (_that) {
 case RepairGameProgress_Started() when started != null:
@@ -133,7 +135,8 @@ return fileNotFound(_that);case RepairGameProgress_ChecksumMismatch() when check
 return checksumMismatch(_that);case RepairGameProgress_DownloadStarted() when downloadStarted != null:
 return downloadStarted(_that);case RepairGameProgress_DownloadProgress() when downloadProgress != null:
 return downloadProgress(_that);case RepairGameProgress_Finished() when finished != null:
-return finished(_that);case _:
+return finished(_that);case RepairGameProgress_Cancelled() when cancelled != null:
+return cancelled(_that);case _:
   return null;
 
 }
@@ -150,7 +153,7 @@ return finished(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( BigInt totalFiles,  BigInt totalBytes)?  started,TResult Function( BigInt checkedFiles)?  fileSizeVerification,TResult Function( BigInt totalFiles,  BigInt totalBytes)?  fileAllocationStarted,TResult Function( BigInt allocatedFiles,  BigInt allocatedBytes)?  fileAllocation,TResult Function( String field0)?  allocationError,TResult Function( BigInt checkedBytes)?  verification,TResult Function( String field0,  BigInt field1)?  couldNotResolvePath,TResult Function( String field0,  BigInt field1)?  fileNotFound,TResult Function( String field0,  BigInt field1)?  checksumMismatch,TResult Function( BigInt totalBytes)?  downloadStarted,TResult Function( BigInt downloadedBytes)?  downloadProgress,TResult Function()?  finished,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( BigInt totalFiles,  BigInt totalBytes)?  started,TResult Function( BigInt checkedFiles)?  fileSizeVerification,TResult Function( BigInt totalFiles,  BigInt totalBytes)?  fileAllocationStarted,TResult Function( BigInt allocatedFiles,  BigInt allocatedBytes)?  fileAllocation,TResult Function( String field0)?  allocationError,TResult Function( BigInt checkedBytes)?  verification,TResult Function( String field0,  BigInt field1)?  couldNotResolvePath,TResult Function( String field0,  BigInt field1)?  fileNotFound,TResult Function( String field0,  BigInt field1)?  checksumMismatch,TResult Function( BigInt totalBytes)?  downloadStarted,TResult Function( BigInt downloadedBytes)?  downloadProgress,TResult Function()?  finished,TResult Function()?  cancelled,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case RepairGameProgress_Started() when started != null:
 return started(_that.totalFiles,_that.totalBytes);case RepairGameProgress_FileSizeVerification() when fileSizeVerification != null:
@@ -164,7 +167,8 @@ return fileNotFound(_that.field0,_that.field1);case RepairGameProgress_ChecksumM
 return checksumMismatch(_that.field0,_that.field1);case RepairGameProgress_DownloadStarted() when downloadStarted != null:
 return downloadStarted(_that.totalBytes);case RepairGameProgress_DownloadProgress() when downloadProgress != null:
 return downloadProgress(_that.downloadedBytes);case RepairGameProgress_Finished() when finished != null:
-return finished();case _:
+return finished();case RepairGameProgress_Cancelled() when cancelled != null:
+return cancelled();case _:
   return orElse();
 
 }
@@ -182,7 +186,7 @@ return finished();case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( BigInt totalFiles,  BigInt totalBytes)  started,required TResult Function( BigInt checkedFiles)  fileSizeVerification,required TResult Function( BigInt totalFiles,  BigInt totalBytes)  fileAllocationStarted,required TResult Function( BigInt allocatedFiles,  BigInt allocatedBytes)  fileAllocation,required TResult Function( String field0)  allocationError,required TResult Function( BigInt checkedBytes)  verification,required TResult Function( String field0,  BigInt field1)  couldNotResolvePath,required TResult Function( String field0,  BigInt field1)  fileNotFound,required TResult Function( String field0,  BigInt field1)  checksumMismatch,required TResult Function( BigInt totalBytes)  downloadStarted,required TResult Function( BigInt downloadedBytes)  downloadProgress,required TResult Function()  finished,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( BigInt totalFiles,  BigInt totalBytes)  started,required TResult Function( BigInt checkedFiles)  fileSizeVerification,required TResult Function( BigInt totalFiles,  BigInt totalBytes)  fileAllocationStarted,required TResult Function( BigInt allocatedFiles,  BigInt allocatedBytes)  fileAllocation,required TResult Function( String field0)  allocationError,required TResult Function( BigInt checkedBytes)  verification,required TResult Function( String field0,  BigInt field1)  couldNotResolvePath,required TResult Function( String field0,  BigInt field1)  fileNotFound,required TResult Function( String field0,  BigInt field1)  checksumMismatch,required TResult Function( BigInt totalBytes)  downloadStarted,required TResult Function( BigInt downloadedBytes)  downloadProgress,required TResult Function()  finished,required TResult Function()  cancelled,}) {final _that = this;
 switch (_that) {
 case RepairGameProgress_Started():
 return started(_that.totalFiles,_that.totalBytes);case RepairGameProgress_FileSizeVerification():
@@ -196,7 +200,8 @@ return fileNotFound(_that.field0,_that.field1);case RepairGameProgress_ChecksumM
 return checksumMismatch(_that.field0,_that.field1);case RepairGameProgress_DownloadStarted():
 return downloadStarted(_that.totalBytes);case RepairGameProgress_DownloadProgress():
 return downloadProgress(_that.downloadedBytes);case RepairGameProgress_Finished():
-return finished();}
+return finished();case RepairGameProgress_Cancelled():
+return cancelled();}
 }
 /// A variant of `when` that fallback to returning `null`
 ///
@@ -210,7 +215,7 @@ return finished();}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( BigInt totalFiles,  BigInt totalBytes)?  started,TResult? Function( BigInt checkedFiles)?  fileSizeVerification,TResult? Function( BigInt totalFiles,  BigInt totalBytes)?  fileAllocationStarted,TResult? Function( BigInt allocatedFiles,  BigInt allocatedBytes)?  fileAllocation,TResult? Function( String field0)?  allocationError,TResult? Function( BigInt checkedBytes)?  verification,TResult? Function( String field0,  BigInt field1)?  couldNotResolvePath,TResult? Function( String field0,  BigInt field1)?  fileNotFound,TResult? Function( String field0,  BigInt field1)?  checksumMismatch,TResult? Function( BigInt totalBytes)?  downloadStarted,TResult? Function( BigInt downloadedBytes)?  downloadProgress,TResult? Function()?  finished,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( BigInt totalFiles,  BigInt totalBytes)?  started,TResult? Function( BigInt checkedFiles)?  fileSizeVerification,TResult? Function( BigInt totalFiles,  BigInt totalBytes)?  fileAllocationStarted,TResult? Function( BigInt allocatedFiles,  BigInt allocatedBytes)?  fileAllocation,TResult? Function( String field0)?  allocationError,TResult? Function( BigInt checkedBytes)?  verification,TResult? Function( String field0,  BigInt field1)?  couldNotResolvePath,TResult? Function( String field0,  BigInt field1)?  fileNotFound,TResult? Function( String field0,  BigInt field1)?  checksumMismatch,TResult? Function( BigInt totalBytes)?  downloadStarted,TResult? Function( BigInt downloadedBytes)?  downloadProgress,TResult? Function()?  finished,TResult? Function()?  cancelled,}) {final _that = this;
 switch (_that) {
 case RepairGameProgress_Started() when started != null:
 return started(_that.totalFiles,_that.totalBytes);case RepairGameProgress_FileSizeVerification() when fileSizeVerification != null:
@@ -224,7 +229,8 @@ return fileNotFound(_that.field0,_that.field1);case RepairGameProgress_ChecksumM
 return checksumMismatch(_that.field0,_that.field1);case RepairGameProgress_DownloadStarted() when downloadStarted != null:
 return downloadStarted(_that.totalBytes);case RepairGameProgress_DownloadProgress() when downloadProgress != null:
 return downloadProgress(_that.downloadedBytes);case RepairGameProgress_Finished() when finished != null:
-return finished();case _:
+return finished();case RepairGameProgress_Cancelled() when cancelled != null:
+return cancelled();case _:
   return null;
 
 }
@@ -1016,6 +1022,38 @@ int get hashCode => runtimeType.hashCode;
 @override
 String toString() {
     return 'RepairGameProgress.finished()';
+}
+
+
+}
+
+
+
+
+/// @nodoc
+
+
+class RepairGameProgress_Cancelled extends RepairGameProgress {
+  const RepairGameProgress_Cancelled(): super._();
+  
+
+
+
+
+
+
+@override
+bool operator ==(Object other) {
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is RepairGameProgress_Cancelled);
+}
+
+
+@override
+int get hashCode => runtimeType.hashCode;
+
+@override
+String toString() {
+    return 'RepairGameProgress.cancelled()';
 }
 
 

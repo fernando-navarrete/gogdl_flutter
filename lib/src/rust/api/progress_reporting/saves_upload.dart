@@ -46,4 +46,9 @@ sealed class UploadSavesProgress with _$UploadSavesProgress {
 
   /// Every file uploaded. Terminal.
   const factory UploadSavesProgress.finished() = UploadSavesProgress_Finished;
+
+  /// The job was cancelled with its `CancelToken`. Local files are
+  /// untouched. The file in flight may or may not have been stored, so
+  /// upload again to be sure. Terminal.
+  const factory UploadSavesProgress.cancelled() = UploadSavesProgress_Cancelled;
 }

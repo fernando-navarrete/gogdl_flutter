@@ -90,4 +90,8 @@ sealed class RepairGameProgress with _$RepairGameProgress {
   /// The repair ran to completion, whether or not anything needed
   /// re-downloading. Terminal.
   const factory RepairGameProgress.finished() = RepairGameProgress_Finished;
+
+  /// The job was cancelled with its `CancelToken`. The files written so
+  /// far stay, and another `repairGame` resumes the install. Terminal.
+  const factory RepairGameProgress.cancelled() = RepairGameProgress_Cancelled;
 }

@@ -9,8 +9,6 @@ pub enum GogError {
     GogdlError(#[from] GogDlError),
     #[error("{0}")]
     SavesError(#[from] SavesError),
-    #[error("Cancelled")]
-    Cancelled,
 }
 
 /// What kind of failure a `GogError` is, for code that needs to react to it rather than show
@@ -31,8 +29,6 @@ pub enum GogErrorKind {
     FileSystem,
     /// The game doesn't support cloud saves.
     CloudSavesUnsupported,
-    /// The job was cancelled.
-    Cancelled,
     /// Anything else. `message()` has the details.
     Unknown,
 }
@@ -58,7 +54,6 @@ impl GogError {
         match self {
             GogError::GogdlError(e) => error_kind::gogdl(e),
             GogError::SavesError(e) => error_kind::saves(e),
-            GogError::Cancelled => GogErrorKind::Cancelled,
         }
     }
 

@@ -1,13 +1,15 @@
 //! Translation of `gogdl-lib` events into the progress events Dart receives.
 //!
 //! Each job has a [`Translator`]: a plain state machine with no I/O. [`drive`]
-//! runs the tick loop shared by all of them. Lives outside `api/` so
+//! runs the tick loop shared by all of them, and [`run`] runs it alongside
+//! the job, stopping the job on a cancel or when the listener goes away. Lives outside `api/` so
 //! flutter_rust_bridge doesn't pick it up for codegen.
 
 use std::time::Duration;
 
 use tokio::sync::mpsc::UnboundedReceiver;
 use tokio::time::interval;
+use tokio_util::sync::CancellationToken;
 
 pub(crate) mod download;
 pub(crate) mod install;
@@ -37,23 +39,35 @@ pub(crate) trait Translator {
 /// Feeds `rx` through `translator` until the sender is dropped, coalescing on
 /// a [`TICK`] interval, and hands everything it produces to `emit`.
 ///
+/// Once `cancel` fires, `rx` is closed: the events already queued are still
+/// translated and emitted, then the final flush, without waiting for every
+/// sender to drop (Proton's extraction task holds one for a while after its
+/// job future is dropped).
+///
 /// `emit` returns `false` when the listener is gone (a failed `sink.add`).
 /// `drive` then stops at once, without the final flush, and returns `false`.
-/// It returns `true` once the sender is dropped and everything was emitted.
+/// It returns `true` once the channel is done and everything was emitted.
 pub(crate) async fn drive<T: Translator>(
     mut translator: T,
     mut rx: UnboundedReceiver<T::Event>,
+    cancel: &CancellationToken,
     mut emit: impl FnMut(T::Progress) -> bool,
 ) -> bool {
     let mut ticker = interval(TICK);
     ticker.tick().await; // first tick fires immediately, discard it
 
+    let mut closed = false;
     loop {
         let emits = tokio::select! {
             event = rx.recv() => match event {
                 Some(event) => translator.on_event(event),
-                None => break, // sender dropped, the job is done
+                None => break, // sender dropped or cancelled, the job is done
             },
+            _ = cancel.cancelled(), if !closed => {
+                rx.close();
+                closed = true;
+                Vec::new()
+            }
             _ = ticker.tick() => translator.on_tick(),
         };
         if !emits.into_iter().all(&mut emit) {
@@ -64,38 +78,74 @@ pub(crate) async fn drive<T: Translator>(
     translator.finish().into_iter().all(&mut emit)
 }
 
+/// How [`run`] ended.
+#[derive(Debug, PartialEq)]
+pub(crate) enum Outcome<O> {
+    /// The job ran to the end, and every event was flushed before this.
+    Finished(O),
+    /// `cancel` fired first. The job future was dropped and what it had
+    /// reported was flushed.
+    Cancelled,
+    /// The listener went away while the job was running. The job future was
+    /// dropped.
+    ListenerGone,
+}
+
 /// Runs `job` alongside [`drive`] and returns its output once both are done,
 /// so every event is flushed before the caller sends `Finished`.
 ///
-/// Returns `None` if the listener goes away while the job is still running.
-/// The job future is then dropped, which stops it (see each `gogdl-lib`
-/// job's `# Cancelling` rustdoc). That's only noticed on the next emit, so a
-/// job that reports nothing (a stalled request) runs until it does.
+/// Dropping the job future stops it (see each `gogdl-lib` job's
+/// `# Cancelling` rustdoc), which is how both a cancel and a listener that
+/// went away stop it. A job that's already cancelled is never polled. A
+/// cancel that races the job finishing keeps the job's output, like
+/// `CancellationToken::run_until_cancelled`.
+///
+/// A listener that went away is only noticed on the next emit, so a job that
+/// reports nothing (a stalled request) runs until it does. A cancel doesn't
+/// depend on that.
 pub(crate) async fn run<J: Future, T: Translator>(
     job: J,
     translator: T,
     rx: UnboundedReceiver<T::Event>,
+    cancel: &CancellationToken,
     emit: impl FnMut(T::Progress) -> bool,
-) -> Option<J::Output> {
-    let drive = drive(translator, rx, emit);
-    tokio::pin!(job, drive);
+) -> Outcome<J::Output> {
+    let drive = drive(translator, rx, cancel, emit);
+    tokio::pin!(drive);
 
+    if cancel.is_cancelled() {
+        drop(job);
+        drive.await;
+        return Outcome::Cancelled;
+    }
+
+    // Boxed so a cancel can drop it while `drive` still drains.
+    let mut job = Box::pin(job);
     let mut output = None;
     let mut driven = false;
     while output.is_none() || !driven {
         tokio::select! {
+            biased;
             out = &mut job, if output.is_none() => output = Some(out),
+            _ = cancel.cancelled(), if output.is_none() => {
+                drop(job);
+                // Whether the flush reached anyone doesn't change the outcome.
+                if !driven {
+                    drive.await;
+                }
+                return Outcome::Cancelled;
+            }
             listening = &mut drive, if !driven => {
                 // Once the job is done, a failed final flush only loses the
                 // last counters; the job's own result still stands.
                 if !listening && output.is_none() {
-                    return None;
+                    return Outcome::ListenerGone;
                 }
                 driven = true;
             }
         }
     }
-    output
+    Outcome::Finished(output.expect("the loop only ends with an output"))
 }
 
 #[cfg(test)]
@@ -162,7 +212,8 @@ mod tests {
     ) {
         let (tx, rx) = unbounded_channel();
         let out = Arc::new(Mutex::new(Vec::new()));
-        let handle = tokio::spawn(drive(Sum::default(), rx, recorder(&out)));
+        let emit = recorder(&out);
+        let handle = tokio::spawn(async move { drive(Sum::default(), rx, &never(), emit).await });
         (tx, out, handle)
     }
 
@@ -182,6 +233,11 @@ mod tests {
         fn drop(&mut self) {
             self.0.store(true, Ordering::SeqCst);
         }
+    }
+
+    /// A token nobody cancels.
+    fn never() -> CancellationToken {
+        CancellationToken::new()
     }
 
     fn take(out: &Mutex<Vec<Out>>) -> Vec<Out> {
@@ -253,10 +309,13 @@ mod tests {
         let (tx, rx) = unbounded_channel();
         let out = Arc::new(Mutex::new(Vec::new()));
         let sink = out.clone();
-        let handle = tokio::spawn(drive(Sum::default(), rx, move |p| {
-            sink.lock().unwrap().push(p);
-            false
-        }));
+        let handle = tokio::spawn(async move {
+            drive(Sum::default(), rx, &never(), move |p| {
+                sink.lock().unwrap().push(p);
+                false
+            })
+            .await
+        });
         settle().await;
         tx.send(1).unwrap();
         // the loop must finish while the sender is still alive
@@ -277,12 +336,12 @@ mod tests {
         };
         let out = Arc::new(Mutex::new(Vec::new()));
         let sink = out.clone();
-        let result = run(job, Sum::default(), rx, move |p| {
+        let result = run(job, Sum::default(), rx, &never(), move |p| {
             sink.lock().unwrap().push(p);
             false
         })
         .await;
-        assert_eq!(result, None);
+        assert_eq!(result, Outcome::ListenerGone);
         assert!(dropped.load(Ordering::SeqCst));
         assert_eq!(take(&out), vec![Out::Event(1)]);
     }
@@ -298,8 +357,8 @@ mod tests {
             "done"
         };
         let out = Arc::new(Mutex::new(Vec::new()));
-        let result = run(job, Sum::default(), rx, recorder(&out)).await;
-        assert_eq!(result, Some("done"));
+        let result = run(job, Sum::default(), rx, &never(), recorder(&out)).await;
+        assert_eq!(result, Outcome::Finished("done"));
         assert_eq!(
             take(&out),
             vec![Out::Event(1), Out::Tick(1), Out::Event(2), Out::Finish(3)]
@@ -315,13 +374,136 @@ mod tests {
         };
         let out = Arc::new(Mutex::new(Vec::new()));
         let sink = out.clone();
-        let result = run(job, Sum::default(), rx, move |p| {
+        let result = run(job, Sum::default(), rx, &never(), move |p| {
             let finish = matches!(p, Out::Finish(_));
             sink.lock().unwrap().push(p);
             !finish
         })
         .await;
-        assert_eq!(result, Some("done"));
+        assert_eq!(result, Outcome::Finished("done"));
+        assert_eq!(take(&out), vec![Out::Event(1), Out::Finish(1)]);
+    }
+
+    #[tokio::test(start_paused = true)]
+    async fn a_cancelled_drive_drains_the_queue_then_flushes() {
+        let (tx, rx) = unbounded_channel();
+        let cancel = CancellationToken::new();
+        tx.send(1).unwrap();
+        tx.send(2).unwrap();
+        cancel.cancel();
+        let out = Arc::new(Mutex::new(Vec::new()));
+        // `tx` is still alive, so only the cancel can end the loop.
+        assert!(drive(Sum::default(), rx, &cancel, recorder(&out)).await);
+        assert_eq!(
+            take(&out),
+            vec![Out::Event(1), Out::Event(2), Out::Finish(3)]
+        );
+        assert!(tx.send(3).is_err());
+    }
+
+    #[tokio::test(start_paused = true)]
+    async fn run_never_polls_a_job_cancelled_before_it_starts() {
+        let (_tx, rx) = unbounded_channel::<u32>();
+        let cancel = CancellationToken::new();
+        cancel.cancel();
+        let polled = Arc::new(AtomicBool::new(false));
+        let flag = polled.clone();
+        let job = async move { flag.store(true, Ordering::SeqCst) };
+        let out = Arc::new(Mutex::new(Vec::new()));
+        let result = run(job, Sum::default(), rx, &cancel, recorder(&out)).await;
+        assert_eq!(result, Outcome::Cancelled);
+        assert!(!polled.load(Ordering::SeqCst));
+        assert_eq!(take(&out), vec![Out::Finish(0)]);
+    }
+
+    #[tokio::test(start_paused = true)]
+    async fn run_drops_a_job_cancelled_mid_way_and_flushes_what_it_reported() {
+        let (tx, rx) = unbounded_channel();
+        let cancel = CancellationToken::new();
+        let dropped = Arc::new(AtomicBool::new(false));
+        let guard = DropGuard(dropped.clone());
+        let job = async move {
+            let _guard = guard;
+            tx.send(1).unwrap();
+            tokio::time::sleep(TICK + TICK / 2).await;
+            tx.send(2).unwrap();
+            pending::<()>().await;
+        };
+        let canceller = cancel.clone();
+        tokio::spawn(async move {
+            // Between two ticks, so the cancel can't race the second tick.
+            tokio::time::sleep(TICK * 2 + TICK / 2).await;
+            canceller.cancel();
+        });
+        let out = Arc::new(Mutex::new(Vec::new()));
+        let result = run(job, Sum::default(), rx, &cancel, recorder(&out)).await;
+        assert_eq!(result, Outcome::Cancelled);
+        assert!(dropped.load(Ordering::SeqCst));
+        assert_eq!(
+            take(&out),
+            vec![
+                Out::Event(1),
+                Out::Tick(1),
+                Out::Event(2),
+                Out::Tick(3),
+                Out::Finish(3)
+            ]
+        );
+    }
+
+    #[tokio::test(start_paused = true)]
+    async fn run_is_cancelled_even_while_a_sender_outlives_the_job() {
+        // Like Proton's extraction task, which keeps a sender clone for a
+        // while after the job future is dropped.
+        let (tx, rx) = unbounded_channel();
+        let straggler = tx.clone();
+        let cancel = CancellationToken::new();
+        let job = async move {
+            tx.send(1).unwrap();
+            pending::<()>().await;
+        };
+        let canceller = cancel.clone();
+        tokio::spawn(async move {
+            tokio::time::sleep(TICK / 2).await;
+            canceller.cancel();
+        });
+        let out = Arc::new(Mutex::new(Vec::new()));
+        let result = run(job, Sum::default(), rx, &cancel, recorder(&out)).await;
+        assert_eq!(result, Outcome::Cancelled);
+        assert_eq!(take(&out), vec![Out::Event(1), Out::Finish(1)]);
+        assert!(straggler.send(2).is_err());
+    }
+
+    #[tokio::test(start_paused = true)]
+    async fn run_keeps_the_output_of_a_job_that_finished_before_the_cancel() {
+        let (tx, rx) = unbounded_channel();
+        let cancel = CancellationToken::new();
+        let canceller = cancel.clone();
+        let job = async move {
+            tx.send(1).unwrap();
+            // Finishes in the same poll that cancels.
+            canceller.cancel();
+            "done"
+        };
+        let out = Arc::new(Mutex::new(Vec::new()));
+        let result = run(job, Sum::default(), rx, &cancel, recorder(&out)).await;
+        assert_eq!(result, Outcome::Finished("done"));
+        assert_eq!(take(&out), vec![Out::Event(1), Out::Finish(1)]);
+    }
+
+    #[tokio::test(start_paused = true)]
+    async fn a_cancel_after_the_job_finished_changes_nothing() {
+        let (tx, rx) = unbounded_channel();
+        let cancel = CancellationToken::new();
+        let job = async move {
+            tx.send(1).unwrap();
+            "done"
+        };
+        let out = Arc::new(Mutex::new(Vec::new()));
+        let result = run(job, Sum::default(), rx, &cancel, recorder(&out)).await;
+        cancel.cancel();
+        cancel.cancel(); // idempotent
+        assert_eq!(result, Outcome::Finished("done"));
         assert_eq!(take(&out), vec![Out::Event(1), Out::Finish(1)]);
     }
 }

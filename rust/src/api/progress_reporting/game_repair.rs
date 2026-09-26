@@ -47,4 +47,7 @@ pub enum RepairGameProgress {
     /// The repair ran to completion, whether or not anything needed
     /// re-downloading. Terminal.
     Finished,
+    /// The job was cancelled with its `CancelToken`. The files written so
+    /// far stay, and another `repairGame` resumes the install. Terminal.
+    Cancelled,
 }

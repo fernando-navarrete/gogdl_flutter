@@ -56,7 +56,7 @@ extension UploadSavesProgressPatterns on UploadSavesProgress {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( UploadSavesProgress_Started value)?  started,TResult Function( UploadSavesProgress_FileStarted value)?  fileStarted,TResult Function( UploadSavesProgress_Progress value)?  progress,TResult Function( UploadSavesProgress_FileFinished value)?  fileFinished,TResult Function( UploadSavesProgress_Finished value)?  finished,required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( UploadSavesProgress_Started value)?  started,TResult Function( UploadSavesProgress_FileStarted value)?  fileStarted,TResult Function( UploadSavesProgress_Progress value)?  progress,TResult Function( UploadSavesProgress_FileFinished value)?  fileFinished,TResult Function( UploadSavesProgress_Finished value)?  finished,TResult Function( UploadSavesProgress_Cancelled value)?  cancelled,required TResult orElse(),}){
 final _that = this;
 switch (_that) {
 case UploadSavesProgress_Started() when started != null:
@@ -64,7 +64,8 @@ return started(_that);case UploadSavesProgress_FileStarted() when fileStarted !=
 return fileStarted(_that);case UploadSavesProgress_Progress() when progress != null:
 return progress(_that);case UploadSavesProgress_FileFinished() when fileFinished != null:
 return fileFinished(_that);case UploadSavesProgress_Finished() when finished != null:
-return finished(_that);case _:
+return finished(_that);case UploadSavesProgress_Cancelled() when cancelled != null:
+return cancelled(_that);case _:
   return orElse();
 
 }
@@ -82,7 +83,7 @@ return finished(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( UploadSavesProgress_Started value)  started,required TResult Function( UploadSavesProgress_FileStarted value)  fileStarted,required TResult Function( UploadSavesProgress_Progress value)  progress,required TResult Function( UploadSavesProgress_FileFinished value)  fileFinished,required TResult Function( UploadSavesProgress_Finished value)  finished,}){
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( UploadSavesProgress_Started value)  started,required TResult Function( UploadSavesProgress_FileStarted value)  fileStarted,required TResult Function( UploadSavesProgress_Progress value)  progress,required TResult Function( UploadSavesProgress_FileFinished value)  fileFinished,required TResult Function( UploadSavesProgress_Finished value)  finished,required TResult Function( UploadSavesProgress_Cancelled value)  cancelled,}){
 final _that = this;
 switch (_that) {
 case UploadSavesProgress_Started():
@@ -90,7 +91,8 @@ return started(_that);case UploadSavesProgress_FileStarted():
 return fileStarted(_that);case UploadSavesProgress_Progress():
 return progress(_that);case UploadSavesProgress_FileFinished():
 return fileFinished(_that);case UploadSavesProgress_Finished():
-return finished(_that);}
+return finished(_that);case UploadSavesProgress_Cancelled():
+return cancelled(_that);}
 }
 /// A variant of `map` that fallback to returning `null`.
 ///
@@ -104,7 +106,7 @@ return finished(_that);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( UploadSavesProgress_Started value)?  started,TResult? Function( UploadSavesProgress_FileStarted value)?  fileStarted,TResult? Function( UploadSavesProgress_Progress value)?  progress,TResult? Function( UploadSavesProgress_FileFinished value)?  fileFinished,TResult? Function( UploadSavesProgress_Finished value)?  finished,}){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( UploadSavesProgress_Started value)?  started,TResult? Function( UploadSavesProgress_FileStarted value)?  fileStarted,TResult? Function( UploadSavesProgress_Progress value)?  progress,TResult? Function( UploadSavesProgress_FileFinished value)?  fileFinished,TResult? Function( UploadSavesProgress_Finished value)?  finished,TResult? Function( UploadSavesProgress_Cancelled value)?  cancelled,}){
 final _that = this;
 switch (_that) {
 case UploadSavesProgress_Started() when started != null:
@@ -112,7 +114,8 @@ return started(_that);case UploadSavesProgress_FileStarted() when fileStarted !=
 return fileStarted(_that);case UploadSavesProgress_Progress() when progress != null:
 return progress(_that);case UploadSavesProgress_FileFinished() when fileFinished != null:
 return fileFinished(_that);case UploadSavesProgress_Finished() when finished != null:
-return finished(_that);case _:
+return finished(_that);case UploadSavesProgress_Cancelled() when cancelled != null:
+return cancelled(_that);case _:
   return null;
 
 }
@@ -129,14 +132,15 @@ return finished(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( BigInt totalFiles)?  started,TResult Function( String name,  String source,  BigInt totalBytes)?  fileStarted,TResult Function( BigInt uploadedBytes,  BigInt fileUploadedBytes)?  progress,TResult Function( String name)?  fileFinished,TResult Function()?  finished,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( BigInt totalFiles)?  started,TResult Function( String name,  String source,  BigInt totalBytes)?  fileStarted,TResult Function( BigInt uploadedBytes,  BigInt fileUploadedBytes)?  progress,TResult Function( String name)?  fileFinished,TResult Function()?  finished,TResult Function()?  cancelled,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case UploadSavesProgress_Started() when started != null:
 return started(_that.totalFiles);case UploadSavesProgress_FileStarted() when fileStarted != null:
 return fileStarted(_that.name,_that.source,_that.totalBytes);case UploadSavesProgress_Progress() when progress != null:
 return progress(_that.uploadedBytes,_that.fileUploadedBytes);case UploadSavesProgress_FileFinished() when fileFinished != null:
 return fileFinished(_that.name);case UploadSavesProgress_Finished() when finished != null:
-return finished();case _:
+return finished();case UploadSavesProgress_Cancelled() when cancelled != null:
+return cancelled();case _:
   return orElse();
 
 }
@@ -154,14 +158,15 @@ return finished();case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( BigInt totalFiles)  started,required TResult Function( String name,  String source,  BigInt totalBytes)  fileStarted,required TResult Function( BigInt uploadedBytes,  BigInt fileUploadedBytes)  progress,required TResult Function( String name)  fileFinished,required TResult Function()  finished,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( BigInt totalFiles)  started,required TResult Function( String name,  String source,  BigInt totalBytes)  fileStarted,required TResult Function( BigInt uploadedBytes,  BigInt fileUploadedBytes)  progress,required TResult Function( String name)  fileFinished,required TResult Function()  finished,required TResult Function()  cancelled,}) {final _that = this;
 switch (_that) {
 case UploadSavesProgress_Started():
 return started(_that.totalFiles);case UploadSavesProgress_FileStarted():
 return fileStarted(_that.name,_that.source,_that.totalBytes);case UploadSavesProgress_Progress():
 return progress(_that.uploadedBytes,_that.fileUploadedBytes);case UploadSavesProgress_FileFinished():
 return fileFinished(_that.name);case UploadSavesProgress_Finished():
-return finished();}
+return finished();case UploadSavesProgress_Cancelled():
+return cancelled();}
 }
 /// A variant of `when` that fallback to returning `null`
 ///
@@ -175,14 +180,15 @@ return finished();}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( BigInt totalFiles)?  started,TResult? Function( String name,  String source,  BigInt totalBytes)?  fileStarted,TResult? Function( BigInt uploadedBytes,  BigInt fileUploadedBytes)?  progress,TResult? Function( String name)?  fileFinished,TResult? Function()?  finished,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( BigInt totalFiles)?  started,TResult? Function( String name,  String source,  BigInt totalBytes)?  fileStarted,TResult? Function( BigInt uploadedBytes,  BigInt fileUploadedBytes)?  progress,TResult? Function( String name)?  fileFinished,TResult? Function()?  finished,TResult? Function()?  cancelled,}) {final _that = this;
 switch (_that) {
 case UploadSavesProgress_Started() when started != null:
 return started(_that.totalFiles);case UploadSavesProgress_FileStarted() when fileStarted != null:
 return fileStarted(_that.name,_that.source,_that.totalBytes);case UploadSavesProgress_Progress() when progress != null:
 return progress(_that.uploadedBytes,_that.fileUploadedBytes);case UploadSavesProgress_FileFinished() when fileFinished != null:
 return fileFinished(_that.name);case UploadSavesProgress_Finished() when finished != null:
-return finished();case _:
+return finished();case UploadSavesProgress_Cancelled() when cancelled != null:
+return cancelled();case _:
   return null;
 
 }
@@ -492,6 +498,38 @@ int get hashCode => runtimeType.hashCode;
 @override
 String toString() {
     return 'UploadSavesProgress.finished()';
+}
+
+
+}
+
+
+
+
+/// @nodoc
+
+
+class UploadSavesProgress_Cancelled extends UploadSavesProgress {
+  const UploadSavesProgress_Cancelled(): super._();
+  
+
+
+
+
+
+
+@override
+bool operator ==(Object other) {
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is UploadSavesProgress_Cancelled);
+}
+
+
+@override
+int get hashCode => runtimeType.hashCode;
+
+@override
+String toString() {
+    return 'UploadSavesProgress.cancelled()';
 }
 
 
