@@ -9,8 +9,8 @@ under.
 - **Patch** (`1.x.y`): one tag per small, self-contained fix or addition.
 - **Minor** (`1.x.0`): a big update, meaning a feature set or cross-cutting refactor. Patches then
   continue from `.1` under that minor.
-- Tags use the existing `vX.Y.Z` format. `v1.2.4` is the newest tag, so the next stage is
-  **`v1.3.0`**.
+- Tags use the existing `vX.Y.Z` format. `v1.3.0` is the newest tag, so the next stage is
+  **`v1.4.0`**.
 - For each release: bump `version:` in `pubspec.yaml` **and** `version` in `rust/Cargo.toml` to
   match, tick the item(s) in `GAPS.md`, add a `CHANGELOG.md` entry, commit, then tag.
 - Lumen is the only consumer, so a breaking Dart API change is allowed in a **minor**, never in a
@@ -29,7 +29,7 @@ the stage it serves, so Lumen can pin it on day one.
 | Lumen stage | Needs from the bridge | Bridge release |
 |---|---|---|
 | (none, internal) | Tests, CI/CD | `v1.2.0` ✅ |
-| `v1.3.0` Download management | Cancel/pause, resume path, error kinds, install size, free space | `v1.3.0` |
+| `v1.3.0` Download management | Cancel/pause, resume path, error kinds, install size, free space | `v1.3.0` ✅ |
 | `v1.4.0` Library and account | Sign out, batched titles/links, DLC product listing, Proton `has_more` | `v1.4.0` |
 | `v1.5.0` UI polish and packaging | Login error kinds, precompiled `.so` for packaging, breaking API cleanups | `v1.5.0` |
 | `v1.6.0` Extras | Nothing | — |
@@ -85,7 +85,7 @@ Follow-up patches (`v1.2.1+`), one per tag:
    (GAPS §6).
 4. `v1.2.4`: tighten Dart lints on top of `flutter_lints` (GAPS §6).
 
-## v1.3.0 — Download management (for Lumen `v1.3.0`)
+## v1.3.0 ✅ — Download management (for Lumen `v1.3.0`)
 
 Everything Lumen's download management stage needs. The full cancel/pause needs GAPS §7.2–7.3
 upstream first.
@@ -103,7 +103,8 @@ upstream first.
   (implemented here if upstream hasn't exported one), for the disk space check (GAPS §2).
 - Request timeouts on the HTTP client, so a stalled job fails with an error instead of hanging
   (GAPS §1).
-- **Breaking** for Lumen `v1.3.0`: job methods return a handle, and errors carry a kind.
+- **Breaking** for Lumen `v1.3.0`: job methods take a `CancelToken`, each progress enum gains a
+  `Cancelled` variant, and errors carry a kind.
 
 ## v1.4.0 — Library and account (for Lumen `v1.4.0`)
 
