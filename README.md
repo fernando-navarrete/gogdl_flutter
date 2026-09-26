@@ -20,7 +20,7 @@ dependencies:
   gogdl_flutter:
     git:
       url: ssh://git@thinkcentre.home:2200/gogdl/gogdl_flutter.git
-      ref: v1.2.2
+      ref: v1.3.0
 ```
 
 ```dart
@@ -52,6 +52,8 @@ are planned for `v1.5.0` (see [ROADMAP.md](ROADMAP.md)).
   types).
 - `rust/src/progress/`: one plain state machine per job that turns `gogdl-lib` events into progress
   events, plus the shared tick loop. Not part of the bridged API.
+- `rust/src/client.rs`, `rust/src/error_kind.rs`: the HTTP client with its timeouts, and the
+  mapping from `gogdl-lib` errors to `GogErrorKind`. Not part of the bridged API.
 - `lib/src/rust/`, `rust/src/frb_generated.rs`: generated. Don't edit them by hand.
 - `hook/build.dart`: the Native Assets build hook.
 - `example/`: an offline smoke app and its Linux integration test.

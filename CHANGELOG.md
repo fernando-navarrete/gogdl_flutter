@@ -1,3 +1,58 @@
+## 1.3.0
+
+Download management for Lumen `v1.3.0`: cancelling jobs, error kinds, install size and free space,
+and request timeouts. **Breaking**: ships together with the Lumen change that adopts it.
+
+### Breaking
+
+* The six job methods (`downloadGame`, `repairGame`, `verifyDownload`, `downloadProtonRelease`,
+  `downloadSaveFiles`, `uploadSaveFiles`) take a required `cancel: CancelToken`. Create one with
+  `CancelToken()` and stop the job with `cancel()`, which is sync and idempotent. A token that's
+  already cancelled when the job starts cancels it before it does anything.
+* Each progress enum has a `Cancelled` variant (`DownloadGameProgress_Cancelled`, and so on). On a
+  cancel, the progress collected so far is flushed, `Cancelled` is sent last, and the stream closes
+  with no error. No `Finished` follows. A cancel while the job is still fetching what it needs
+  (the product bundles, the Proton release) ends the same way and writes nothing to disk. A cancel
+  that races a job that has already finished does nothing, and the job's own result comes through.
+* What Lumen changes: pass a `CancelToken` to each job, handle `*_Cancelled` in its exhaustive
+  `switch`es, and switch on `GogError.kind()` instead of showing only `message()`.
+
+### Added
+
+* `GogError.kind()` returns a `GogErrorKind`: `sessionExpired`, `network`, `notFound`,
+  `notEnoughSpace`, `integrity`, `fileSystem`, `cloudSavesUnsupported` or `unknown`. Lumen's
+  planned D7 names map onto these: `notEnoughFreeSpace` is `notEnoughSpace`,
+  `couldNotResolveFreeSpace` and `fileAllocation` are `fileSystem`, `network` is `network`, `auth`
+  is `sessionExpired`, and `other` is `unknown`. A revoked session is `unknown`, not
+  `sessionExpired`, until the login error kinds in `v1.5.0`.
+* `GogError.spaceShortfall()` returns a `SpaceShortfall` (`requiredBytes`, `availableBytes`) for
+  `notEnoughSpace`, and null otherwise.
+* `GogdlApi.getInstallSize(gameId, buildName, selectedProducts)` returns an `InstallSize`
+  (`downloadBytes`, `diskBytes` and a `ProductSize` per selected product), from the build metadata
+  with no manifest fetches. The sums equal `downloadGame`'s and `verifyDownload`'s totals.
+* `GogdlApi.getFreeSpace(path)`: the free space the download's own check compares against. `path`
+  needn't exist.
+
+### Changed
+
+* A job stops when its Dart subscription is cancelled, at its next progress update (normally
+  within one 150ms tick). It used to keep running with nobody listening.
+* Requests time out: 10s to connect, and 30s without reading anything. There's no overall cap, so
+  long transfers aren't cut off. Game downloads and metadata requests retry a timeout. Proton
+  downloads, saves transfers and login fail on the first one, and a save upload must finish within
+  30s per file.
+* The Dart docs say what cancelling leaves behind: a game download or repair leaves state that
+  `repairGame` resumes, a Proton download leaves `path` as it was, a saves download keeps the old
+  save or the complete new one, and a cancelled saves upload may or may not have stored the file in
+  flight (upload again).
+* `repairGame` is documented as the resume path for a cancelled, failed or interrupted install.
+  `downloadGame` always starts over and re-downloads everything.
+* Updated `gogdl-lib` from `v1.0.11` to `v1.2.3`. Behavior changes that come with it: token-exchange
+  errors no longer carry refresh tokens, the token expiry margin is refreshed, an unauthenticated
+  401 no longer loops, an unowned product fails at once instead of retrying, `repairGame` skips
+  checksumming chunks it has just allocated, and the free-space check picks the longest matching
+  mount point (so it can fail where it used to pass).
+
 ## 1.2.4
 
 No change to the Dart API or to the progress events Dart receives.

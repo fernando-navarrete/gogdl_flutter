@@ -17,13 +17,15 @@ collects them as the list of things to request upstream.
 
 ## 1. Bugs
 
-- [ ] **P1 — Cancelling a stream on the Dart side doesn't stop the job.** Every job
+- [x] **P1 — Cancelling a stream on the Dart side doesn't stop the job.** Every job
   (`download_game`, `repair_game`, `verify_download`, `download_proton_release`,
   `download_save_files`, `upload_save_files`) discards the result of `sink.add` (`let _ = ...`).
   When Lumen cancels its subscription, the Rust future keeps going until it finishes, so a
   multi-GB download keeps using the network and disk with nobody listening. It could stop early
   here: treat a failed `sink.add` as "listener gone" and drop the job future. A clean stop that
   leaves resumable state on disk is **[lib]** (see §2 "Cancel and pause").
+  Fixed in `v1.3.0`: a failed `sink.add` means the listener is gone, and the job future is dropped
+  at the next progress update. `gogdl-lib` `v1.2.0`'s drop contract makes that a clean stop.
 - [x] **P1 — The example app and its integration test don't compile.** `example/lib/main.dart:19`
   and `example/integration_test/simple_test.dart:9` still call the frb template's `greet()`, which no
   longer exists. These are the analyzer's only two errors, so `flutter analyze` can't gate CI until
@@ -38,11 +40,11 @@ collects them as the list of things to request upstream.
 - [ ] **P2 — `get_downloadable_products` fails the whole call if one product lookup fails.** The
   per-product `get_product_details` loop uses `?`, so one bad DLC hides the base game and every
   other DLC on Lumen's DLC tab (Lumen `v1.4.0` DLC install/remove).
-- [ ] **P2 — Requests have no timeouts.** `GogdlApi::new` uses a default `Client::new()` with no
+- [x] **P2 — Requests have no timeouts.** `GogdlApi::new` uses a default `Client::new()` with no
   connect or read timeout, so a stalled connection can hang metadata calls (and Lumen's spinners)
   indefinitely. Build the client with timeouts via `gogdl_lib::Client::builder()` (it re-exports
   `reqwest::Client`). `gogdl-lib`'s own retry layer only helps once a request fails.
-  Done on `feat/v1.3.0-downloads` (Phase 2): a 10s connect and 30s read timeout, no overall one.
+  Fixed in `v1.3.0`: a 10s connect and 30s read timeout, no overall one.
   A timeout that `gogdl-lib` doesn't retry, and the upload limit, are §7.11.
 
 ## 2. Missing API surface (what Lumen needs)
@@ -50,11 +52,14 @@ collects them as the list of things to request upstream.
 What Lumen needs from the bridge. The Lumen version in brackets is the Lumen roadmap stage that
 needs it; ROADMAP.md schedules each item to land before that stage starts.
 
-- [ ] **P1 — Cancel and pause for downloads, verifications and repairs** (Lumen `v1.3.0`). Nothing
+- [x] **P1 — Cancel and pause for downloads, verifications and repairs** (Lumen `v1.3.0`). Nothing
   can be stopped once it starts. The bridge needs a cancel handle per job, for example a
   `JobHandle` opaque returned alongside the stream, or a `cancel(job_id)`. **[lib]** needs
   cooperative cancellation (a `CancellationToken` or a cancel-safe future contract) that leaves
   partial files in a state `repair_game` can resume.
+  Fixed in `v1.3.0`: each job takes a `CancelToken`, and a cancel ends its stream with an in-band
+  `Cancelled` event. Pause and cancel are the same on the bridge (stop and leave the files), and
+  `repair_game` resumes. Upstream's drop contract (`gogdl-lib` `v1.2.0`) is the [lib] part.
 - [ ] **P1 — Structured errors** (Lumen `v1.3.0` downloads page error text, and `v1.5.0` login
   errors). `GogError` exposes only `message()`, a display string, so Lumen
   can't tell "session expired, sign in again" from "offline", "not found", "not enough disk space"
@@ -62,17 +67,25 @@ needs it; ROADMAP.md schedules each item to land before that stage starts.
   switch on) next to the message. Several kinds are **[lib]**: a dead refresh token and a routine
   expiry come back as the same opaque error, and the free-space check throws away its numbers
   (`gogdl-lib` GAPS, Medium/Low).
+  The download kinds shipped in `v1.3.0`: `GogError.kind()` returns a `GogErrorKind`, and
+  `spaceShortfall()` has the free-space numbers. Still open: the login kinds (`v1.5.0`), which need
+  upstream to tell a revoked session from an expired one (§7.3). Until then a revoked session is
+  `unknown`.
 - [ ] **P1 — Sign out** (Lumen `v1.4.0`). Lumen can delete its stored token, but the `GogDl`
   instance keeps the authenticated session in memory until the app restarts. **[lib]** `GogDl`
   has no `logout`/`clear_auth`. Workaround until then: expose `GogdlApi::reset()` that swaps
   `inner` for a fresh `GogDl`, which also drops the token observer.
-- [ ] **P1 — Install and download size before installing** (Lumen `v1.3.0` disk space check).
+- [x] **P1 — Install and download size before installing** (Lumen `v1.3.0` disk space check).
   `get_product_bundles` already has everything needed. Expose
   `get_install_size(game_id, build, products)` returning the download size (compressed) and the
   on-disk size (uncompressed), plus per-product sizes for the DLC tab (Lumen `v1.4.0`).
-- [ ] **P1 — Free space at the install path** (Lumen `v1.3.0` disk space check). `gogdl-lib` checks free space internally before a
+  Fixed in `v1.3.0`: `get_install_size` returns an `InstallSize` with a `ProductSize` per selected
+  product, from `gogdl-lib`'s `get_product_sizes` (§7.10), with no manifest fetches.
+- [x] **P1 — Free space at the install path** (Lumen `v1.3.0` disk space check). `gogdl-lib` checks free space internally before a
   download but doesn't let callers ask. **[lib]** export `get_free_space` (or a `statvfs` wrapper).
   Otherwise, implement it here.
+  Fixed in `v1.3.0`: `get_free_space(path)` wraps `gogdl-lib`'s `GogDl::get_free_space` (§7.4), the
+  same figure the download's own check uses.
 - [ ] **P1 — Cloud saves support and listing** (not on Lumen's roadmap yet). `get_remote_config` (`is_supported`,
   `get_locations`) and `get_save_files` exist in `gogdl-lib` but aren't bridged, so Lumen can only
   find out a game has no cloud saves by starting a sync and waiting for it to fail. Bridge them so
@@ -84,9 +97,11 @@ needs it; ROADMAP.md schedules each item to land before that stage starts.
 - [ ] **P2 — Batched metadata for the library** (Lumen `v1.4.0`, its 5.1). Lumen fetches titles one
   `await` at a time. Add `get_game_titles(ids)` that runs the lookups in parallel (bounded) in Rust,
   or a `get_library_entries` returning title, boxart and background together.
-- [ ] **P2 — Resume an interrupted install.** `gogdl-lib` documents that `repair_game`, not
+- [x] **P2 — Resume an interrupted install.** `gogdl-lib` documents that `repair_game`, not
   `download_game`, resumes one. The bridge doesn't pass that on. Document it on the Dart API (or add
   a `resume_download` alias) so Lumen `v1.3.0` calls the right one.
+  Fixed in `v1.3.0`, as docs only: `repairGame` says it resumes a cancelled, failed or interrupted
+  install, and `downloadGame` says it always starts over.
 - [ ] **P2 — Language and OS selection.** Builds are always Windows and the language filter is
   hardcoded. **[lib]** ("Language and OS are hardcoded with no selection surface").
 
