@@ -199,14 +199,26 @@ Consolidated from the **[lib]** items above, in the order this repo needs them (
    `download_proton_release` and the save transfers (a `CancellationToken` parameter, or a
    documented cancel-safe contract for dropping the future), leaving state that `repair_game` can
    resume. Blocks bridge `v1.3.0` / Lumen `v1.3.0`.
+   Fixed upstream in `gogdl-lib` `v1.2.0`, as a documented drop contract rather than a token: each
+   of those methods has a `# Cancelling` section. Dropping the future stops the work, and
+   `repair_game` completes an install whose download was dropped. Proton extracts into a staging
+   directory, so a drop leaves `path` as it was. The bridge cancels by dropping the job future.
 3. **Structured, distinguishable errors**: session expired vs refresh token revoked, offline, not
    found, insufficient space (with required/available bytes), invalid login code, cloud saves
    unsupported. Tracked upstream as "A dead refresh token and a routine expiry both surface as the
    same opaque, unstructured error" and "The free-space check discards its own error detail". Also:
    "The four saves methods return `SavesError`, not `GogDlError`". Bridge `v1.3.0` / Lumen
    `v1.3.0` (downloads page), and the login kinds by Lumen `v1.5.0`.
+   The download part is fixed upstream in `gogdl-lib` `v1.2.0`: `NotEnoughFreeSpace { required,
+   available }` and `CouldNotResolveFreeSpace { path }` (in both `DownloadError` and `ProtonError`),
+   and `FileSystemError` is exported. Still open: a revoked refresh token is still an opaque
+   `AuthError::ClientError` (upstream plans it for its `v1.5.0`, which lines up with this repo's
+   `v1.5.0` login kinds), and the saves methods still return `SavesError` (ROADMAP `v1.7.0`).
 4. **A public free-space query** (`PathResolver::get_free_space` is internal today). Bridge
    `v1.3.0` / Lumen `v1.3.0`, or the bridge implements it itself.
+   Fixed upstream in `gogdl-lib` `v1.1.6`: `GogDl::get_free_space(path)`, the same figure the
+   download, repair and Proton checks compare against (`path` needn't exist). The disk lookup now
+   picks the longest matching mount point, not the first.
 5. **`logout`/`clear_auth` on `GogDl`**, which also drops the token observer. Bridge `v1.4.0` /
    Lumen `v1.4.0`, or the bridge falls back to `GogdlApi::reset()`.
 6. **Save sync metadata**: local and remote timestamps/hashes per file, and honoring
@@ -214,8 +226,17 @@ Consolidated from the **[lib]** items above, in the order this repo needs them (
    and upload ignore `cloudStorage.enabled`"). Also upstream's "`download_save_files` truncates a
    good local save before it has the new one on disk", which is data loss and worth fixing sooner
    than bridge `v1.6.0`, since Lumen already syncs saves.
+   The truncation part is fixed upstream in `gogdl-lib` `v1.2.0`: `download_save_files` writes a
+   sibling `.<name>.gogdl-part` file, syncs it and renames it over the destination, so a failure or
+   a dropped future leaves the old save or the complete new one. The sync metadata and
+   `cloudStorage.enabled` are still open.
 7. **Language and OS selection** for builds (upstream: "Language and OS are hardcoded with no
    selection surface").
 8. **Proton tarball integrity check** (upstream: "Proton tarballs are extracted without any
    integrity check").
 9. **`i64` (or `u64`) product ids.**
+10. **Per-product depot sizes** without fetching every manifest, so an install dialog can show the
+    download and disk size per product. Bridge `v1.3.0` / Lumen `v1.3.0`.
+    Fixed upstream in `gogdl-lib` `v1.2.0`: `GogDl::get_product_sizes(game_id, build_name)` returns
+    a `ProductSize { product_id, size, compressed_size }` per product, from the build metadata after
+    the language filter. It equals what `get_product_bundles` sums.
