@@ -25,6 +25,7 @@ abstract class GogdlApi implements RustOpaqueInterface {
     required List<int> selectedProducts,
   });
 
+  /// A 30s stall fails the download with a network error. It isn't retried.
   Stream<ProtonDownloadProgress> downloadProtonRelease({
     required String path,
     required String tagName,
@@ -62,6 +63,10 @@ abstract class GogdlApi implements RustOpaqueInterface {
 
   Future<String> loginWithCode({required String code});
 
+  /// Connections time out after 10s, and a request fails after 30s without reading anything.
+  /// Metadata requests and game chunk downloads retry a timeout (six attempts, with backoff).
+  /// Proton downloads, saves downloads and uploads, and `loginWithCode` don't: a timeout fails
+  /// them with a network error.
   factory GogdlApi() => RustLib.instance.api.crateApiGogdlGogdlApiNew();
 
   Future<void> removeTokenRefreshCallback();
@@ -79,6 +84,8 @@ abstract class GogdlApi implements RustOpaqueInterface {
     required FutureOr<void> Function(String) callback,
   });
 
+  /// Each file's upload must finish within 30s, since the read timeout covers sending the
+  /// request body. A slower one fails with a network error and isn't retried.
   Stream<UploadSavesProgress> uploadSaveFiles({
     required int gameId,
     required String buildName,

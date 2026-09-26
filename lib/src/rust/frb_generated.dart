@@ -2887,6 +2887,7 @@ class GogdlApiImpl extends RustOpaque implements GogdlApi {
     selectedProducts: selectedProducts,
   );
 
+  /// A 30s stall fails the download with a network error. It isn't retried.
   Stream<ProtonDownloadProgress> downloadProtonRelease({
     required String path,
     required String tagName,
@@ -2984,6 +2985,8 @@ class GogdlApiImpl extends RustOpaque implements GogdlApi {
     callback: callback,
   );
 
+  /// Each file's upload must finish within 30s, since the read timeout covers sending the
+  /// request body. A slower one fails with a network error and isn't retried.
   Stream<UploadSavesProgress> uploadSaveFiles({
     required int gameId,
     required String buildName,

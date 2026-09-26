@@ -42,6 +42,8 @@ collects them as the list of things to request upstream.
   connect or read timeout, so a stalled connection can hang metadata calls (and Lumen's spinners)
   indefinitely. Build the client with timeouts via `gogdl_lib::Client::builder()` (it re-exports
   `reqwest::Client`). `gogdl-lib`'s own retry layer only helps once a request fails.
+  Done on `feat/v1.3.0-downloads` (Phase 2): a 10s connect and 30s read timeout, no overall one.
+  A timeout that `gogdl-lib` doesn't retry, and the upload limit, are §7.11.
 
 ## 2. Missing API surface (what Lumen needs)
 
@@ -240,3 +242,11 @@ Consolidated from the **[lib]** items above, in the order this repo needs them (
     Fixed upstream in `gogdl-lib` `v1.2.0`: `GogDl::get_product_sizes(game_id, build_name)` returns
     a `ProductSize { product_id, size, compressed_size }` per product, from the build metadata after
     the language filter. It equals what `get_product_bundles` sums.
+11. **Retry or time out stream transfers on their own terms.** The bridge's client has a 30s
+    `read_timeout` (bridge `v1.3.0`). reqwest starts it at `send()` and only restarts it on reads of
+    the response body, so it also bounds uploading a request body. A save file whose upload takes
+    more than 30s (about 4 MB on a 1 Mbit uplink) fails. Also, only `fetch` and game chunk
+    downloads retry a timeout. The Proton tarball (`stream_chunk`), saves download
+    (`stream_chunk_with_headers`) and saves upload (`put_stream`) fail on the first one. Wanted:
+    retry the Proton and saves streams like chunks, and give `put_stream` a timeout that tracks
+    upload progress (or a second client without `read_timeout`). Bridge ROADMAP `v1.7.0`.

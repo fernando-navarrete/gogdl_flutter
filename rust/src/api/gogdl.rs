@@ -3,7 +3,7 @@ use std::path::Path;
 use std::sync::Arc;
 
 use flutter_rust_bridge::{DartFnFuture, frb};
-use gogdl_lib::{Client, GogDl};
+use gogdl_lib::GogDl;
 use tokio::sync::mpsc;
 
 use crate::api::auth_refresh_observer::AuthRefreshObserver;
@@ -15,6 +15,7 @@ use crate::api::progress_reporting::{
     DownloadGameProgress, DownloadSavesProgress, ProtonDownloadProgress, RepairGameProgress,
     UploadSavesProgress, VerifyDownloadProgress,
 };
+use crate::client::{self, CONNECT_TIMEOUT, READ_TIMEOUT};
 use crate::frb_generated::StreamSink;
 use crate::progress::{
     self,
@@ -31,9 +32,13 @@ pub struct GogdlApi {
 }
 
 impl GogdlApi {
+    /// Connections time out after 10s, and a request fails after 30s without reading anything.
+    /// Metadata requests and game chunk downloads retry a timeout (six attempts, with backoff).
+    /// Proton downloads, saves downloads and uploads, and `loginWithCode` don't: a timeout fails
+    /// them with a network error.
     #[frb(sync)]
     pub fn new() -> Self {
-        let client = Client::new();
+        let client = client::build(CONNECT_TIMEOUT, READ_TIMEOUT);
         Self {
             inner: Arc::new(GogDl::new_from_client(client)),
         }
@@ -118,6 +123,7 @@ impl GogdlApi {
             .collect::<Vec<ProtonRelease>>();
         Ok(releases)
     }
+    /// A 30s stall fails the download with a network error. It isn't retried.
     pub async fn download_proton_release(
         &self,
         path: &str,
@@ -367,6 +373,8 @@ impl GogdlApi {
         let _ = sink.add(DownloadSavesProgress::Finished);
         Ok(())
     }
+    /// Each file's upload must finish within 30s, since the read timeout covers sending the
+    /// request body. A slower one fails with a network error and isn't retried.
     pub async fn upload_save_files(
         &self,
         game_id: i32,
