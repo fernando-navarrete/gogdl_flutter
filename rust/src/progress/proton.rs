@@ -50,6 +50,8 @@ impl Translator for ProtonTranslator {
                 self.dirty = true;
                 Vec::new()
             }
+            // a variant added upstream later has nothing to report yet
+            _ => Vec::new(),
         }
     }
 

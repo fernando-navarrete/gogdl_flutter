@@ -90,6 +90,8 @@ impl Translator for SavesDownloadTranslator {
                 out.push(DownloadSavesProgress::FileFinished { name });
                 out
             }
+            // a variant added upstream later has nothing to report yet
+            _ => Vec::new(),
         }
     }
 
@@ -159,6 +161,8 @@ impl Translator for SavesUploadTranslator {
                 out.push(UploadSavesProgress::FileFinished { name });
                 out
             }
+            // a variant added upstream later has nothing to report yet
+            _ => Vec::new(),
         }
     }
 

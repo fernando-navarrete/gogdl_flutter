@@ -51,6 +51,8 @@ impl RepairTranslator {
             }
             E::FileNotFound(path, size) => (path, size, RepairGameProgress::FileNotFound),
             E::ChecksumMismatch(path, size) => (path, size, RepairGameProgress::ChecksumMismatch),
+            // a variant added upstream later has nothing to report yet
+            _ => return out,
         };
         self.install.checked_bytes += size;
         self.install.dirty = true;
@@ -85,7 +87,7 @@ impl Translator for RepairTranslator {
             // `DownloadError::FileAllocationError`, which surfaces to Dart as
             // a stream error; no progress event needed here.
             DownloadStageEvent::FileAllocationError() => Vec::new(),
-            DownloadStageEvent::DownloadStage(DownloadEvent::Preparing) => {
+            DownloadStageEvent::DownloadStage(DownloadEvent::Started { .. }) => {
                 self.install.stage = Stage::Download;
                 self.install.dirty = false;
                 vec![
@@ -99,8 +101,6 @@ impl Translator for RepairTranslator {
                     },
                 ]
             }
-            DownloadStageEvent::DownloadStage(DownloadEvent::Prepared)
-            | DownloadStageEvent::DownloadStage(DownloadEvent::Downloading) => Vec::new(),
             DownloadStageEvent::DownloadStage(DownloadEvent::Progress(delta)) => {
                 self.install.on_download_progress(delta as u64);
                 Vec::new()
@@ -109,6 +109,9 @@ impl Translator for RepairTranslator {
                 self.install.on_download_regression(delta as u64);
                 Vec::new()
             }
+            // `Downloading`, the deprecated `Preparing`/`Prepared` (still sent
+            // just before `Started`) and anything upstream adds later.
+            _ => Vec::new(),
         }
     }
 
@@ -148,8 +151,10 @@ mod tests {
         verify(VerificationEvent::ChecksumMismatch(path.into(), size))
     }
 
-    fn preparing() -> DownloadStageEvent {
-        DownloadStageEvent::DownloadStage(DownloadEvent::Preparing)
+    fn started() -> DownloadStageEvent {
+        DownloadStageEvent::DownloadStage(DownloadEvent::Started {
+            compressed_total: 0,
+        })
     }
 
     #[test]
@@ -244,7 +249,7 @@ mod tests {
         t.on_event(mismatch("b", 100)); // entries exhausted: adds nothing
         t.on_event(mismatch("unknown", 1)); // no entry at all: adds nothing
         assert_eq!(
-            t.on_event(preparing()),
+            t.on_event(started()),
             vec![
                 P::Verification { checked_bytes: 501 },
                 P::DownloadStarted { total_bytes: 90 },
@@ -253,17 +258,40 @@ mod tests {
     }
 
     #[test]
-    fn preparing_clears_dirty_so_the_next_tick_is_silent() {
+    fn started_clears_dirty_so_the_next_tick_is_silent() {
         let mut t = RepairTranslator::new(HashMap::new());
         t.on_event(verified(1));
-        t.on_event(preparing());
+        t.on_event(started());
         assert!(t.on_tick().is_empty());
+    }
+
+    #[test]
+    #[allow(deprecated)]
+    fn deprecated_preparing_and_prepared_leave_the_stage_to_started() {
+        let mut t = RepairTranslator::new(sizes(&[("a", 100, &[40])]));
+        t.on_event(mismatch("a", 100));
+        // still sent back-to-back just before `Started`: no `DownloadStarted` yet
+        assert!(
+            t.on_event(DownloadStageEvent::DownloadStage(DownloadEvent::Preparing))
+                .is_empty()
+        );
+        assert!(
+            t.on_event(DownloadStageEvent::DownloadStage(DownloadEvent::Prepared))
+                .is_empty()
+        );
+        assert_eq!(
+            t.on_event(started()),
+            vec![
+                P::Verification { checked_bytes: 100 },
+                P::DownloadStarted { total_bytes: 40 },
+            ]
+        );
     }
 
     #[test]
     fn download_bytes_sum_and_regressions_saturate() {
         let mut t = RepairTranslator::new(HashMap::new());
-        t.on_event(preparing());
+        t.on_event(started());
         t.on_event(DownloadStageEvent::DownloadStage(DownloadEvent::Progress(
             10,
         )));

@@ -139,6 +139,8 @@ impl Install {
                 self.allocation_total_files += 1;
                 self.allocation_total_bytes += size;
             }
+            // a variant added upstream later has nothing to report yet
+            _ => {}
         }
     }
 
@@ -178,6 +180,8 @@ impl Install {
                     out.push(P::allocation_error(path));
                 }
             }
+            // a variant added upstream later has nothing to report yet
+            _ => {}
         }
         out
     }

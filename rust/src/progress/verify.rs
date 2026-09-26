@@ -63,6 +63,8 @@ impl Translator for VerifyTranslator {
             VerificationEvent::ChecksumMismatch(path, size) => {
                 self.failure(path, size, VerifyDownloadProgress::ChecksumMismatch)
             }
+            // a variant added upstream later has nothing to report yet
+            _ => Vec::new(),
         }
     }
 
