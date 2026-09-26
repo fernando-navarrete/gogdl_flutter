@@ -110,6 +110,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   String dco_decode_String(dynamic raw);
 
   @protected
+  SpaceShortfall dco_decode_box_autoadd_space_shortfall(dynamic raw);
+
+  @protected
   DownloadGameProgress dco_decode_download_game_progress(dynamic raw);
 
   @protected
@@ -120,6 +123,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   GameBuild dco_decode_game_build(dynamic raw);
+
+  @protected
+  GogErrorKind dco_decode_gog_error_kind(dynamic raw);
 
   @protected
   int dco_decode_i_32(dynamic raw);
@@ -152,6 +158,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   List<ProtonRelease> dco_decode_list_proton_release(dynamic raw);
 
   @protected
+  SpaceShortfall? dco_decode_opt_box_autoadd_space_shortfall(dynamic raw);
+
+  @protected
   ProtonDownloadProgress dco_decode_proton_download_progress(dynamic raw);
 
   @protected
@@ -159,6 +168,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   RepairGameProgress dco_decode_repair_game_progress(dynamic raw);
+
+  @protected
+  SpaceShortfall dco_decode_space_shortfall(dynamic raw);
 
   @protected
   BigInt dco_decode_u_64(dynamic raw);
@@ -256,6 +268,11 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   String sse_decode_String(SseDeserializer deserializer);
 
   @protected
+  SpaceShortfall sse_decode_box_autoadd_space_shortfall(
+    SseDeserializer deserializer,
+  );
+
+  @protected
   DownloadGameProgress sse_decode_download_game_progress(
     SseDeserializer deserializer,
   );
@@ -272,6 +289,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   GameBuild sse_decode_game_build(SseDeserializer deserializer);
+
+  @protected
+  GogErrorKind sse_decode_gog_error_kind(SseDeserializer deserializer);
 
   @protected
   int sse_decode_i_32(SseDeserializer deserializer);
@@ -308,6 +328,11 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   );
 
   @protected
+  SpaceShortfall? sse_decode_opt_box_autoadd_space_shortfall(
+    SseDeserializer deserializer,
+  );
+
+  @protected
   ProtonDownloadProgress sse_decode_proton_download_progress(
     SseDeserializer deserializer,
   );
@@ -319,6 +344,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   RepairGameProgress sse_decode_repair_game_progress(
     SseDeserializer deserializer,
   );
+
+  @protected
+  SpaceShortfall sse_decode_space_shortfall(SseDeserializer deserializer);
 
   @protected
   BigInt sse_decode_u_64(SseDeserializer deserializer);
@@ -442,6 +470,12 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   void sse_encode_String(String self, SseSerializer serializer);
 
   @protected
+  void sse_encode_box_autoadd_space_shortfall(
+    SpaceShortfall self,
+    SseSerializer serializer,
+  );
+
+  @protected
   void sse_encode_download_game_progress(
     DownloadGameProgress self,
     SseSerializer serializer,
@@ -461,6 +495,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   void sse_encode_game_build(GameBuild self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_gog_error_kind(GogErrorKind self, SseSerializer serializer);
 
   @protected
   void sse_encode_i_32(int self, SseSerializer serializer);
@@ -511,6 +548,12 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   );
 
   @protected
+  void sse_encode_opt_box_autoadd_space_shortfall(
+    SpaceShortfall? self,
+    SseSerializer serializer,
+  );
+
+  @protected
   void sse_encode_proton_download_progress(
     ProtonDownloadProgress self,
     SseSerializer serializer,
@@ -522,6 +565,12 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   @protected
   void sse_encode_repair_game_progress(
     RepairGameProgress self,
+    SseSerializer serializer,
+  );
+
+  @protected
+  void sse_encode_space_shortfall(
+    SpaceShortfall self,
     SseSerializer serializer,
   );
 

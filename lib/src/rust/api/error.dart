@@ -6,9 +6,70 @@
 import '../frb_generated.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 
-// These function are ignored because they are on traits that is not defined in current crate (put an empty `#[frb]` on it to unignore): `fmt`, `fmt`, `from`, `from`, `source`
+// These function are ignored because they are on traits that is not defined in current crate (put an empty `#[frb]` on it to unignore): `assert_fields_are_eq`, `clone`, `eq`, `fmt`, `fmt`, `fmt`, `from`, `from`, `source`
 
 // Rust type: RustOpaqueMoi<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<GogError>>
 abstract class GogError implements RustOpaqueInterface {
+  /// The error's kind. A revoked session (a refresh token GOG no longer accepts) is `unknown`,
+  /// not `sessionExpired`, since `gogdl-lib` doesn't tell it apart from other refresh failures
+  /// yet (upstream `v1.5.0`).
+  GogErrorKind kind();
+
   String message();
+
+  /// The required and available bytes when `kind()` is `notEnoughSpace`, and null otherwise.
+  SpaceShortfall? spaceShortfall();
+}
+
+/// What kind of failure a `GogError` is, for code that needs to react to it rather than show
+/// `message()`.
+enum GogErrorKind {
+  /// Not logged in, or the session expired and couldn't be refreshed.
+  sessionExpired,
+
+  /// A request failed or timed out, including after retrying.
+  network,
+
+  /// The build, or the resource a request asked for, doesn't exist (HTTP 404).
+  notFound,
+
+  /// Not enough free space at the install path. `spaceShortfall()` has the numbers.
+  notEnoughSpace,
+
+  /// Downloaded data didn't match its checksum or couldn't be decompressed.
+  integrity,
+
+  /// A file couldn't be created, allocated or written, or the path's disk couldn't be found.
+  fileSystem,
+
+  /// The game doesn't support cloud saves.
+  cloudSavesUnsupported,
+
+  /// The job was cancelled.
+  cancelled,
+
+  /// Anything else. `message()` has the details.
+  unknown,
+}
+
+/// How much free space a job needed, and how much there was, in bytes.
+class SpaceShortfall {
+  final BigInt requiredBytes;
+  final BigInt availableBytes;
+
+  const SpaceShortfall({
+    required this.requiredBytes,
+    required this.availableBytes,
+  });
+
+  @override
+  int get hashCode => requiredBytes.hashCode ^ availableBytes.hashCode;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is SpaceShortfall &&
+          runtimeType == other.runtimeType &&
+          requiredBytes == other.requiredBytes &&
+          availableBytes == other.availableBytes;
 }

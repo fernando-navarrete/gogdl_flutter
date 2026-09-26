@@ -41,7 +41,7 @@ flutter_rust_bridge::frb_generated_boilerplate!(
     default_rust_auto_opaque = RustAutoOpaqueMoi,
 );
 pub(crate) const FLUTTER_RUST_BRIDGE_CODEGEN_VERSION: &str = "2.13.0";
-pub(crate) const FLUTTER_RUST_BRIDGE_CODEGEN_CONTENT_HASH: i32 = 227585415;
+pub(crate) const FLUTTER_RUST_BRIDGE_CODEGEN_CONTENT_HASH: i32 = 1088691444;
 
 // Section: executor
 
@@ -49,6 +49,52 @@ flutter_rust_bridge::frb_generated_default_handler!();
 
 // Section: wire_funcs
 
+fn wire__crate__api__error__GogError_kind_impl(
+    ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
+    rust_vec_len_: i32,
+    data_len_: i32,
+) -> flutter_rust_bridge::for_generated::WireSyncRust2DartSse {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap_sync::<flutter_rust_bridge::for_generated::SseCodec, _>(
+        flutter_rust_bridge::for_generated::TaskInfo {
+            debug_name: "GogError_kind",
+            port: None,
+            mode: flutter_rust_bridge::for_generated::FfiCallMode::Sync,
+        },
+        move || {
+            let message = unsafe {
+                flutter_rust_bridge::for_generated::Dart2RustMessageSse::from_wire(
+                    ptr_,
+                    rust_vec_len_,
+                    data_len_,
+                )
+            };
+            let mut deserializer =
+                flutter_rust_bridge::for_generated::SseDeserializer::new(message);
+            let api_that = <RustOpaqueMoi<
+                flutter_rust_bridge::for_generated::RustAutoOpaqueInner<GogError>,
+            >>::sse_decode(&mut deserializer);
+            deserializer.end();
+            transform_result_sse::<_, ()>((move || {
+                let mut api_that_guard = None;
+                let decode_indices_ =
+                    flutter_rust_bridge::for_generated::lockable_compute_decode_order(vec![
+                        flutter_rust_bridge::for_generated::LockableOrderInfo::new(
+                            &api_that, 0, false,
+                        ),
+                    ]);
+                for i in decode_indices_ {
+                    match i {
+                        0 => api_that_guard = Some(api_that.lockable_decode_sync_ref()),
+                        _ => unreachable!(),
+                    }
+                }
+                let api_that_guard = api_that_guard.unwrap();
+                let output_ok = Ok::<_, ()>(crate::api::error::GogError::kind(&*api_that_guard))?;
+                std::result::Result::Ok(output_ok)
+            })())
+        },
+    )
+}
 fn wire__crate__api__error__GogError_message_impl(
     ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
     rust_vec_len_: i32,
@@ -91,6 +137,54 @@ fn wire__crate__api__error__GogError_message_impl(
                 let api_that_guard = api_that_guard.unwrap();
                 let output_ok =
                     Ok::<_, ()>(crate::api::error::GogError::message(&*api_that_guard))?;
+                std::result::Result::Ok(output_ok)
+            })())
+        },
+    )
+}
+fn wire__crate__api__error__GogError_space_shortfall_impl(
+    ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
+    rust_vec_len_: i32,
+    data_len_: i32,
+) -> flutter_rust_bridge::for_generated::WireSyncRust2DartSse {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap_sync::<flutter_rust_bridge::for_generated::SseCodec, _>(
+        flutter_rust_bridge::for_generated::TaskInfo {
+            debug_name: "GogError_space_shortfall",
+            port: None,
+            mode: flutter_rust_bridge::for_generated::FfiCallMode::Sync,
+        },
+        move || {
+            let message = unsafe {
+                flutter_rust_bridge::for_generated::Dart2RustMessageSse::from_wire(
+                    ptr_,
+                    rust_vec_len_,
+                    data_len_,
+                )
+            };
+            let mut deserializer =
+                flutter_rust_bridge::for_generated::SseDeserializer::new(message);
+            let api_that = <RustOpaqueMoi<
+                flutter_rust_bridge::for_generated::RustAutoOpaqueInner<GogError>,
+            >>::sse_decode(&mut deserializer);
+            deserializer.end();
+            transform_result_sse::<_, ()>((move || {
+                let mut api_that_guard = None;
+                let decode_indices_ =
+                    flutter_rust_bridge::for_generated::lockable_compute_decode_order(vec![
+                        flutter_rust_bridge::for_generated::LockableOrderInfo::new(
+                            &api_that, 0, false,
+                        ),
+                    ]);
+                for i in decode_indices_ {
+                    match i {
+                        0 => api_that_guard = Some(api_that.lockable_decode_sync_ref()),
+                        _ => unreachable!(),
+                    }
+                }
+                let api_that_guard = api_that_guard.unwrap();
+                let output_ok = Ok::<_, ()>(crate::api::error::GogError::space_shortfall(
+                    &*api_that_guard,
+                ))?;
                 std::result::Result::Ok(output_ok)
             })())
         },
@@ -1670,6 +1764,25 @@ impl SseDecode for crate::api::models::game_build::GameBuild {
     }
 }
 
+impl SseDecode for crate::api::error::GogErrorKind {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut inner = <i32>::sse_decode(deserializer);
+        return match inner {
+            0 => crate::api::error::GogErrorKind::SessionExpired,
+            1 => crate::api::error::GogErrorKind::Network,
+            2 => crate::api::error::GogErrorKind::NotFound,
+            3 => crate::api::error::GogErrorKind::NotEnoughSpace,
+            4 => crate::api::error::GogErrorKind::Integrity,
+            5 => crate::api::error::GogErrorKind::FileSystem,
+            6 => crate::api::error::GogErrorKind::CloudSavesUnsupported,
+            7 => crate::api::error::GogErrorKind::Cancelled,
+            8 => crate::api::error::GogErrorKind::Unknown,
+            _ => unreachable!("Invalid variant for GogErrorKind: {}", inner),
+        };
+    }
+}
+
 impl SseDecode for i32 {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
@@ -1768,6 +1881,19 @@ impl SseDecode for Vec<crate::api::models::proton_release::ProtonRelease> {
             );
         }
         return ans_;
+    }
+}
+
+impl SseDecode for Option<crate::api::error::SpaceShortfall> {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        if (<bool>::sse_decode(deserializer)) {
+            return Some(<crate::api::error::SpaceShortfall>::sse_decode(
+                deserializer,
+            ));
+        } else {
+            return None;
+        }
     }
 }
 
@@ -1876,6 +2002,18 @@ impl SseDecode for crate::api::progress_reporting::game_repair::RepairGameProgre
                 unimplemented!("");
             }
         }
+    }
+}
+
+impl SseDecode for crate::api::error::SpaceShortfall {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut var_requiredBytes = <u64>::sse_decode(deserializer);
+        let mut var_availableBytes = <u64>::sse_decode(deserializer);
+        return crate::api::error::SpaceShortfall {
+            required_bytes: var_requiredBytes,
+            available_bytes: var_availableBytes,
+        };
     }
 }
 
@@ -1994,101 +2132,101 @@ fn pde_ffi_dispatcher_primary_impl(
 ) {
     // Codec=Pde (Serialization + dispatch), see doc to use other codecs
     match func_id {
-        2 => {
+        4 => {
             wire__crate__api__gogdl__GogdlApi_download_game_impl(port, ptr, rust_vec_len, data_len)
         }
-        3 => wire__crate__api__gogdl__GogdlApi_download_proton_release_impl(
+        5 => wire__crate__api__gogdl__GogdlApi_download_proton_release_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        4 => wire__crate__api__gogdl__GogdlApi_download_save_files_impl(
+        6 => wire__crate__api__gogdl__GogdlApi_download_save_files_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        5 => wire__crate__api__gogdl__GogdlApi_get_background_image_link_impl(
+        7 => wire__crate__api__gogdl__GogdlApi_get_background_image_link_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        6 => wire__crate__api__gogdl__GogdlApi_get_downloadable_products_impl(
+        8 => wire__crate__api__gogdl__GogdlApi_get_downloadable_products_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        7 => wire__crate__api__gogdl__GogdlApi_get_game_boxart_link_impl(
+        9 => wire__crate__api__gogdl__GogdlApi_get_game_boxart_link_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        8 => wire__crate__api__gogdl__GogdlApi_get_game_builds_impl(
+        10 => wire__crate__api__gogdl__GogdlApi_get_game_builds_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        9 => wire__crate__api__gogdl__GogdlApi_get_game_screenshots_impl(
+        11 => wire__crate__api__gogdl__GogdlApi_get_game_screenshots_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        10 => wire__crate__api__gogdl__GogdlApi_get_game_summary_impl(
+        12 => wire__crate__api__gogdl__GogdlApi_get_game_summary_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        11 => {
+        13 => {
             wire__crate__api__gogdl__GogdlApi_get_game_title_impl(port, ptr, rust_vec_len, data_len)
         }
-        13 => wire__crate__api__gogdl__GogdlApi_get_owned_games_impl(
+        15 => wire__crate__api__gogdl__GogdlApi_get_owned_games_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        14 => wire__crate__api__gogdl__GogdlApi_get_proton_releases_impl(
+        16 => wire__crate__api__gogdl__GogdlApi_get_proton_releases_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        15 => wire__crate__api__gogdl__GogdlApi_login_with_code_impl(
+        17 => wire__crate__api__gogdl__GogdlApi_login_with_code_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        17 => wire__crate__api__gogdl__GogdlApi_remove_token_refresh_callback_impl(
+        19 => wire__crate__api__gogdl__GogdlApi_remove_token_refresh_callback_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        18 => wire__crate__api__gogdl__GogdlApi_repair_game_impl(port, ptr, rust_vec_len, data_len),
-        19 => {
+        20 => wire__crate__api__gogdl__GogdlApi_repair_game_impl(port, ptr, rust_vec_len, data_len),
+        21 => {
             wire__crate__api__gogdl__GogdlApi_restore_auth_impl(port, ptr, rust_vec_len, data_len)
         }
-        20 => wire__crate__api__gogdl__GogdlApi_set_token_refresh_callback_impl(
+        22 => wire__crate__api__gogdl__GogdlApi_set_token_refresh_callback_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        21 => wire__crate__api__gogdl__GogdlApi_upload_save_files_impl(
+        23 => wire__crate__api__gogdl__GogdlApi_upload_save_files_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        22 => wire__crate__api__gogdl__GogdlApi_verify_download_impl(
+        24 => wire__crate__api__gogdl__GogdlApi_verify_download_impl(
             port,
             ptr,
             rust_vec_len,
@@ -2106,9 +2244,11 @@ fn pde_ffi_dispatcher_sync_impl(
 ) -> flutter_rust_bridge::for_generated::WireSyncRust2DartSse {
     // Codec=Pde (Serialization + dispatch), see doc to use other codecs
     match func_id {
-        1 => wire__crate__api__error__GogError_message_impl(ptr, rust_vec_len, data_len),
-        12 => wire__crate__api__gogdl__GogdlApi_get_login_link_impl(ptr, rust_vec_len, data_len),
-        16 => wire__crate__api__gogdl__GogdlApi_new_impl(ptr, rust_vec_len, data_len),
+        1 => wire__crate__api__error__GogError_kind_impl(ptr, rust_vec_len, data_len),
+        2 => wire__crate__api__error__GogError_message_impl(ptr, rust_vec_len, data_len),
+        3 => wire__crate__api__error__GogError_space_shortfall_impl(ptr, rust_vec_len, data_len),
+        14 => wire__crate__api__gogdl__GogdlApi_get_login_link_impl(ptr, rust_vec_len, data_len),
+        18 => wire__crate__api__gogdl__GogdlApi_new_impl(ptr, rust_vec_len, data_len),
         _ => unreachable!(),
     }
 }
@@ -2267,6 +2407,34 @@ impl flutter_rust_bridge::IntoIntoDart<crate::api::models::game_build::GameBuild
     }
 }
 // Codec=Dco (DartCObject based), see doc to use other codecs
+impl flutter_rust_bridge::IntoDart for crate::api::error::GogErrorKind {
+    fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
+        match self {
+            Self::SessionExpired => 0.into_dart(),
+            Self::Network => 1.into_dart(),
+            Self::NotFound => 2.into_dart(),
+            Self::NotEnoughSpace => 3.into_dart(),
+            Self::Integrity => 4.into_dart(),
+            Self::FileSystem => 5.into_dart(),
+            Self::CloudSavesUnsupported => 6.into_dart(),
+            Self::Cancelled => 7.into_dart(),
+            Self::Unknown => 8.into_dart(),
+            _ => unreachable!(),
+        }
+    }
+}
+impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive
+    for crate::api::error::GogErrorKind
+{
+}
+impl flutter_rust_bridge::IntoIntoDart<crate::api::error::GogErrorKind>
+    for crate::api::error::GogErrorKind
+{
+    fn into_into_dart(self) -> crate::api::error::GogErrorKind {
+        self
+    }
+}
+// Codec=Dco (DartCObject based), see doc to use other codecs
 impl flutter_rust_bridge::IntoDart
     for crate::api::progress_reporting::proton_download::ProtonDownloadProgress
 {
@@ -2373,6 +2541,27 @@ impl
     > for crate::api::progress_reporting::game_repair::RepairGameProgress
 {
     fn into_into_dart(self) -> crate::api::progress_reporting::game_repair::RepairGameProgress {
+        self
+    }
+}
+// Codec=Dco (DartCObject based), see doc to use other codecs
+impl flutter_rust_bridge::IntoDart for crate::api::error::SpaceShortfall {
+    fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
+        [
+            self.required_bytes.into_into_dart().into_dart(),
+            self.available_bytes.into_into_dart().into_dart(),
+        ]
+        .into_dart()
+    }
+}
+impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive
+    for crate::api::error::SpaceShortfall
+{
+}
+impl flutter_rust_bridge::IntoIntoDart<crate::api::error::SpaceShortfall>
+    for crate::api::error::SpaceShortfall
+{
+    fn into_into_dart(self) -> crate::api::error::SpaceShortfall {
         self
     }
 }
@@ -2660,6 +2849,29 @@ impl SseEncode for crate::api::models::game_build::GameBuild {
     }
 }
 
+impl SseEncode for crate::api::error::GogErrorKind {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <i32>::sse_encode(
+            match self {
+                crate::api::error::GogErrorKind::SessionExpired => 0,
+                crate::api::error::GogErrorKind::Network => 1,
+                crate::api::error::GogErrorKind::NotFound => 2,
+                crate::api::error::GogErrorKind::NotEnoughSpace => 3,
+                crate::api::error::GogErrorKind::Integrity => 4,
+                crate::api::error::GogErrorKind::FileSystem => 5,
+                crate::api::error::GogErrorKind::CloudSavesUnsupported => 6,
+                crate::api::error::GogErrorKind::Cancelled => 7,
+                crate::api::error::GogErrorKind::Unknown => 8,
+                _ => {
+                    unimplemented!("");
+                }
+            },
+            serializer,
+        );
+    }
+}
+
 impl SseEncode for i32 {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
@@ -2746,6 +2958,16 @@ impl SseEncode for Vec<crate::api::models::proton_release::ProtonRelease> {
     }
 }
 
+impl SseEncode for Option<crate::api::error::SpaceShortfall> {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <bool>::sse_encode(self.is_some(), serializer);
+        if let Some(value) = self {
+            <crate::api::error::SpaceShortfall>::sse_encode(value, serializer);
+        }
+    }
+}
+
 impl SseEncode for crate::api::progress_reporting::proton_download::ProtonDownloadProgress {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
@@ -2822,6 +3044,14 @@ crate::api::progress_reporting::game_repair::RepairGameProgress::DownloadProgres
  }
 crate::api::progress_reporting::game_repair::RepairGameProgress::Finished => { <i32>::sse_encode(11, serializer);  }
  _ => { unimplemented!(""); }}
+    }
+}
+
+impl SseEncode for crate::api::error::SpaceShortfall {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <u64>::sse_encode(self.required_bytes, serializer);
+        <u64>::sse_encode(self.available_bytes, serializer);
     }
 }
 
