@@ -292,7 +292,8 @@ mod tests {
         let (tx, rx) = unbounded_channel();
         let job = async move {
             tx.send(1).unwrap();
-            tokio::time::sleep(TICK).await;
+            // Between two ticks, so the first tick can't race the second event.
+            tokio::time::sleep(TICK + TICK / 2).await;
             tx.send(2).unwrap();
             "done"
         };
