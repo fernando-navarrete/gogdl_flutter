@@ -36,29 +36,72 @@ pub(crate) trait Translator {
 
 /// Feeds `rx` through `translator` until the sender is dropped, coalescing on
 /// a [`TICK`] interval, and hands everything it produces to `emit`.
+///
+/// `emit` returns `false` when the listener is gone (a failed `sink.add`).
+/// `drive` then stops at once, without the final flush, and returns `false`.
+/// It returns `true` once the sender is dropped and everything was emitted.
 pub(crate) async fn drive<T: Translator>(
     mut translator: T,
     mut rx: UnboundedReceiver<T::Event>,
-    mut emit: impl FnMut(T::Progress),
-) {
+    mut emit: impl FnMut(T::Progress) -> bool,
+) -> bool {
     let mut ticker = interval(TICK);
     ticker.tick().await; // first tick fires immediately, discard it
 
     loop {
-        tokio::select! {
+        let emits = tokio::select! {
             event = rx.recv() => match event {
-                Some(event) => translator.on_event(event).into_iter().for_each(&mut emit),
+                Some(event) => translator.on_event(event),
                 None => break, // sender dropped, the job is done
             },
-            _ = ticker.tick() => translator.on_tick().into_iter().for_each(&mut emit),
+            _ = ticker.tick() => translator.on_tick(),
+        };
+        if !emits.into_iter().all(&mut emit) {
+            return false;
         }
     }
 
-    translator.finish().into_iter().for_each(&mut emit);
+    translator.finish().into_iter().all(&mut emit)
+}
+
+/// Runs `job` alongside [`drive`] and returns its output once both are done,
+/// so every event is flushed before the caller sends `Finished`.
+///
+/// Returns `None` if the listener goes away while the job is still running.
+/// The job future is then dropped, which stops it (see each `gogdl-lib`
+/// job's `# Cancelling` rustdoc). That's only noticed on the next emit, so a
+/// job that reports nothing (a stalled request) runs until it does.
+pub(crate) async fn run<J: Future, T: Translator>(
+    job: J,
+    translator: T,
+    rx: UnboundedReceiver<T::Event>,
+    emit: impl FnMut(T::Progress) -> bool,
+) -> Option<J::Output> {
+    let drive = drive(translator, rx, emit);
+    tokio::pin!(job, drive);
+
+    let mut output = None;
+    let mut driven = false;
+    while output.is_none() || !driven {
+        tokio::select! {
+            out = &mut job, if output.is_none() => output = Some(out),
+            listening = &mut drive, if !driven => {
+                // Once the job is done, a failed final flush only loses the
+                // last counters; the job's own result still stands.
+                if !listening && output.is_none() {
+                    return None;
+                }
+                driven = true;
+            }
+        }
+    }
+    output
 }
 
 #[cfg(test)]
 mod tests {
+    use std::future::pending;
+    use std::sync::atomic::{AtomicBool, Ordering};
     use std::sync::{Arc, Mutex};
 
     use tokio::sync::mpsc::unbounded_channel;
@@ -115,15 +158,30 @@ mod tests {
     fn start() -> (
         tokio::sync::mpsc::UnboundedSender<u32>,
         Arc<Mutex<Vec<Out>>>,
-        tokio::task::JoinHandle<()>,
+        tokio::task::JoinHandle<bool>,
     ) {
         let (tx, rx) = unbounded_channel();
         let out = Arc::new(Mutex::new(Vec::new()));
-        let sink = out.clone();
-        let handle = tokio::spawn(drive(Sum::default(), rx, move |p| {
-            sink.lock().unwrap().push(p)
-        }));
+        let handle = tokio::spawn(drive(Sum::default(), rx, recorder(&out)));
         (tx, out, handle)
+    }
+
+    /// An emit that records everything and never loses its listener.
+    fn recorder(out: &Arc<Mutex<Vec<Out>>>) -> impl FnMut(Out) -> bool + use<> {
+        let out = out.clone();
+        move |p| {
+            out.lock().unwrap().push(p);
+            true
+        }
+    }
+
+    /// Sets its flag when dropped, to see a job future being dropped.
+    struct DropGuard(Arc<AtomicBool>);
+
+    impl Drop for DropGuard {
+        fn drop(&mut self) {
+            self.0.store(true, Ordering::SeqCst);
+        }
     }
 
     fn take(out: &Mutex<Vec<Out>>) -> Vec<Out> {
@@ -186,7 +244,83 @@ mod tests {
         tx.send(4).unwrap();
         drop(tx);
         // the loop must finish on its own, without another tick
-        handle.await.unwrap();
+        assert!(handle.await.unwrap());
         assert_eq!(take(&out), vec![Out::Event(4), Out::Finish(4)]);
+    }
+
+    #[tokio::test(start_paused = true)]
+    async fn a_failed_emit_stops_the_loop_without_the_final_flush() {
+        let (tx, rx) = unbounded_channel();
+        let out = Arc::new(Mutex::new(Vec::new()));
+        let sink = out.clone();
+        let handle = tokio::spawn(drive(Sum::default(), rx, move |p| {
+            sink.lock().unwrap().push(p);
+            false
+        }));
+        settle().await;
+        tx.send(1).unwrap();
+        // the loop must finish while the sender is still alive
+        assert!(!handle.await.unwrap());
+        assert_eq!(take(&out), vec![Out::Event(1)]);
+        drop(tx);
+    }
+
+    #[tokio::test(start_paused = true)]
+    async fn run_drops_the_job_when_the_listener_goes_away() {
+        let (tx, rx) = unbounded_channel();
+        let dropped = Arc::new(AtomicBool::new(false));
+        let guard = DropGuard(dropped.clone());
+        let job = async move {
+            let _guard = guard;
+            tx.send(1).unwrap();
+            pending::<()>().await;
+        };
+        let out = Arc::new(Mutex::new(Vec::new()));
+        let sink = out.clone();
+        let result = run(job, Sum::default(), rx, move |p| {
+            sink.lock().unwrap().push(p);
+            false
+        })
+        .await;
+        assert_eq!(result, None);
+        assert!(dropped.load(Ordering::SeqCst));
+        assert_eq!(take(&out), vec![Out::Event(1)]);
+    }
+
+    #[tokio::test(start_paused = true)]
+    async fn run_flushes_every_event_before_returning_the_output() {
+        let (tx, rx) = unbounded_channel();
+        let job = async move {
+            tx.send(1).unwrap();
+            tokio::time::sleep(TICK).await;
+            tx.send(2).unwrap();
+            "done"
+        };
+        let out = Arc::new(Mutex::new(Vec::new()));
+        let result = run(job, Sum::default(), rx, recorder(&out)).await;
+        assert_eq!(result, Some("done"));
+        assert_eq!(
+            take(&out),
+            vec![Out::Event(1), Out::Tick(1), Out::Event(2), Out::Finish(3)]
+        );
+    }
+
+    #[tokio::test(start_paused = true)]
+    async fn run_keeps_the_output_when_only_the_final_flush_fails() {
+        let (tx, rx) = unbounded_channel();
+        let job = async move {
+            tx.send(1).unwrap();
+            "done"
+        };
+        let out = Arc::new(Mutex::new(Vec::new()));
+        let sink = out.clone();
+        let result = run(job, Sum::default(), rx, move |p| {
+            let finish = matches!(p, Out::Finish(_));
+            sink.lock().unwrap().push(p);
+            !finish
+        })
+        .await;
+        assert_eq!(result, Some("done"));
+        assert_eq!(take(&out), vec![Out::Event(1), Out::Finish(1)]);
     }
 }

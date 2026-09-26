@@ -131,11 +131,13 @@ impl GogdlApi {
             .inner
             .download_proton_release(&release, Path::new(path), tx);
 
-        let progress_reporting_future = progress::drive(ProtonTranslator::new(), rx, |p| {
-            let _ = sink.add(p);
-        });
-
-        let (result, _) = tokio::join!(download_future, progress_reporting_future);
+        let Some(result) = progress::run(download_future, ProtonTranslator::new(), rx, |p| {
+            sink.add(p).is_ok()
+        })
+        .await
+        else {
+            return Ok(()); // listener gone, nobody to report to
+        };
         let extracted_path = result?;
         let _ = sink.add(ProtonDownloadProgress::Finished(
             extracted_path.to_string_lossy().into_owned(),
@@ -188,15 +190,23 @@ impl GogdlApi {
             .filter_map(|file| file.size())
             .sum();
 
+        if sink
+            .add(VerifyDownloadProgress::Started(total_bytes))
+            .is_err()
+        {
+            return Ok(()); // listener gone before the job started
+        }
+
         let (tx, rx) = mpsc::unbounded_channel();
         let verify_future = self.inner.verify_files(bundles, path, tx);
 
-        let _ = sink.add(VerifyDownloadProgress::Started(total_bytes));
-        let progress_reporting_future = progress::drive(VerifyTranslator::new(), rx, |p| {
-            let _ = sink.add(p);
-        });
-
-        let (result, _) = tokio::join!(verify_future, progress_reporting_future);
+        let Some(result) = progress::run(verify_future, VerifyTranslator::new(), rx, |p| {
+            sink.add(p).is_ok()
+        })
+        .await
+        else {
+            return Ok(()); // listener gone, nobody to report to
+        };
 
         match result {
             Ok(()) => {
@@ -239,18 +249,26 @@ impl GogdlApi {
             .map(|chunk| chunk.compressed_size)
             .sum();
 
+        if sink
+            .add(DownloadGameProgress::Started {
+                total_files,
+                total_bytes,
+            })
+            .is_err()
+        {
+            return Ok(()); // listener gone before the job started
+        }
+
         let (tx, rx) = mpsc::unbounded_channel();
         let download_future = self.inner.download_game(bundles, path, tx);
 
-        let _ = sink.add(DownloadGameProgress::Started {
-            total_files,
-            total_bytes,
-        });
-        let progress_reporting_future = progress::drive(DownloadTranslator::new(), rx, |p| {
-            let _ = sink.add(p);
-        });
-
-        let (result, _) = tokio::join!(download_future, progress_reporting_future);
+        let Some(result) = progress::run(download_future, DownloadTranslator::new(), rx, |p| {
+            sink.add(p).is_ok()
+        })
+        .await
+        else {
+            return Ok(()); // listener gone, nobody to report to
+        };
         result?;
         let _ = sink.add(DownloadGameProgress::Finished);
         Ok(())
@@ -297,19 +315,25 @@ impl GogdlApi {
             }
         }
 
+        if sink
+            .add(RepairGameProgress::Started {
+                total_files,
+                total_bytes,
+            })
+            .is_err()
+        {
+            return Ok(()); // listener gone before the job started
+        }
+
         let (tx, rx) = mpsc::unbounded_channel();
         let repair_future = self.inner.repair_game(bundles, path, tx);
 
-        let _ = sink.add(RepairGameProgress::Started {
-            total_files,
-            total_bytes,
-        });
-        let progress_reporting_future =
-            progress::drive(RepairTranslator::new(compressed_sizes), rx, |p| {
-                let _ = sink.add(p);
-            });
-
-        let (result, _) = tokio::join!(repair_future, progress_reporting_future);
+        let translator = RepairTranslator::new(compressed_sizes);
+        let Some(result) =
+            progress::run(repair_future, translator, rx, |p| sink.add(p).is_ok()).await
+        else {
+            return Ok(()); // listener gone, nobody to report to
+        };
         result?;
         let _ = sink.add(RepairGameProgress::Finished);
         Ok(())
@@ -331,11 +355,14 @@ impl GogdlApi {
             tx,
         );
 
-        let progress_reporting_future = progress::drive(SavesDownloadTranslator::new(), rx, |p| {
-            let _ = sink.add(p);
-        });
-
-        let (result, _) = tokio::join!(download_future, progress_reporting_future);
+        let Some(result) =
+            progress::run(download_future, SavesDownloadTranslator::new(), rx, |p| {
+                sink.add(p).is_ok()
+            })
+            .await
+        else {
+            return Ok(()); // listener gone, nobody to report to
+        };
         result?;
         let _ = sink.add(DownloadSavesProgress::Finished);
         Ok(())
@@ -357,11 +384,13 @@ impl GogdlApi {
             tx,
         );
 
-        let progress_reporting_future = progress::drive(SavesUploadTranslator::new(), rx, |p| {
-            let _ = sink.add(p);
-        });
-
-        let (result, _) = tokio::join!(upload_future, progress_reporting_future);
+        let Some(result) = progress::run(upload_future, SavesUploadTranslator::new(), rx, |p| {
+            sink.add(p).is_ok()
+        })
+        .await
+        else {
+            return Ok(()); // listener gone, nobody to report to
+        };
         result?;
         let _ = sink.add(UploadSavesProgress::Finished);
         Ok(())
