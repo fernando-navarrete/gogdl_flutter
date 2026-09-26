@@ -3364,6 +3364,13 @@ class GogdlApiImpl extends RustOpaque implements GogdlApi {
         RustLib.instance.api.rust_arc_decrement_strong_count_GogdlApiPtr,
   );
 
+  /// Downloads `selectedProducts` of `buildName` into `path`.
+  ///
+  /// This always starts over: it downloads every chunk again, even when most of the install is
+  /// already on disk from an earlier run. To resume an install that was cancelled, failed or
+  /// interrupted by an app exit, call `repairGame` with the same `path`, `buildName` and
+  /// `selectedProducts` instead.
+  ///
   /// Cancelling `cancel` keeps the files written so far, and the stream ends with `cancelled`.
   /// Call `repairGame` to resume the install.
   Stream<DownloadGameProgress> downloadGame({
@@ -3464,6 +3471,14 @@ class GogdlApiImpl extends RustOpaque implements GogdlApi {
   Future<void> removeTokenRefreshCallback() => RustLib.instance.api
       .crateApiGogdlGogdlApiRemoveTokenRefreshCallback(that: this);
 
+  /// Checks `selectedProducts` of `buildName` under `path` and downloads only the chunks that are
+  /// missing or corrupt.
+  ///
+  /// This is the resume path: call it on an install that `downloadGame` (or an earlier
+  /// `repairGame`) didn't finish, whether it was cancelled, failed or interrupted by an app exit.
+  /// Chunks it has just allocated aren't read back, so a resume only reads what was already on
+  /// disk.
+  ///
   /// Cancelling `cancel` keeps the files written so far, and the stream ends with `cancelled`.
   /// Call `repairGame` again to resume the install.
   Stream<RepairGameProgress> repairGame({
