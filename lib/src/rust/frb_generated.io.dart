@@ -8,6 +8,7 @@ import 'api/error.dart';
 import 'api/gogdl.dart';
 import 'api/models/downloadable_product.dart';
 import 'api/models/game_build.dart';
+import 'api/models/install_size.dart';
 import 'api/models/proton_release.dart';
 import 'api/progress_reporting/game_download.dart';
 import 'api/progress_reporting/game_repair.dart';
@@ -157,6 +158,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   PlatformInt64 dco_decode_i_64(dynamic raw);
 
   @protected
+  InstallSize dco_decode_install_size(dynamic raw);
+
+  @protected
   PlatformInt64 dco_decode_isize(dynamic raw);
 
   @protected
@@ -178,10 +182,16 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   Uint8List dco_decode_list_prim_u_8_strict(dynamic raw);
 
   @protected
+  List<ProductSize> dco_decode_list_product_size(dynamic raw);
+
+  @protected
   List<ProtonRelease> dco_decode_list_proton_release(dynamic raw);
 
   @protected
   SpaceShortfall? dco_decode_opt_box_autoadd_space_shortfall(dynamic raw);
+
+  @protected
+  ProductSize dco_decode_product_size(dynamic raw);
 
   @protected
   ProtonDownloadProgress dco_decode_proton_download_progress(dynamic raw);
@@ -341,6 +351,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   PlatformInt64 sse_decode_i_64(SseDeserializer deserializer);
 
   @protected
+  InstallSize sse_decode_install_size(SseDeserializer deserializer);
+
+  @protected
   PlatformInt64 sse_decode_isize(SseDeserializer deserializer);
 
   @protected
@@ -364,6 +377,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   Uint8List sse_decode_list_prim_u_8_strict(SseDeserializer deserializer);
 
   @protected
+  List<ProductSize> sse_decode_list_product_size(SseDeserializer deserializer);
+
+  @protected
   List<ProtonRelease> sse_decode_list_proton_release(
     SseDeserializer deserializer,
   );
@@ -372,6 +388,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   SpaceShortfall? sse_decode_opt_box_autoadd_space_shortfall(
     SseDeserializer deserializer,
   );
+
+  @protected
+  ProductSize sse_decode_product_size(SseDeserializer deserializer);
 
   @protected
   ProtonDownloadProgress sse_decode_proton_download_progress(
@@ -568,6 +587,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   void sse_encode_i_64(PlatformInt64 self, SseSerializer serializer);
 
   @protected
+  void sse_encode_install_size(InstallSize self, SseSerializer serializer);
+
+  @protected
   void sse_encode_isize(PlatformInt64 self, SseSerializer serializer);
 
   @protected
@@ -604,6 +626,12 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   );
 
   @protected
+  void sse_encode_list_product_size(
+    List<ProductSize> self,
+    SseSerializer serializer,
+  );
+
+  @protected
   void sse_encode_list_proton_release(
     List<ProtonRelease> self,
     SseSerializer serializer,
@@ -614,6 +642,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
     SpaceShortfall? self,
     SseSerializer serializer,
   );
+
+  @protected
+  void sse_encode_product_size(ProductSize self, SseSerializer serializer);
 
   @protected
   void sse_encode_proton_download_progress(

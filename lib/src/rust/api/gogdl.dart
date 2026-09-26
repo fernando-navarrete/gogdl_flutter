@@ -8,6 +8,7 @@ import 'cancel_token.dart';
 import 'error.dart';
 import 'models/downloadable_product.dart';
 import 'models/game_build.dart';
+import 'models/install_size.dart';
 import 'models/proton_release.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 import 'progress_reporting/game_download.dart';
@@ -62,6 +63,13 @@ abstract class GogdlApi implements RustOpaqueInterface {
     required String buildName,
   });
 
+  /// The free space, in bytes, on the disk `path` is on: the same figure the download, repair
+  /// and Proton checks compare against. `path` needn't exist, and isn't created: its nearest
+  /// existing ancestor stands in for it. Local only, with no network or login.
+  ///
+  /// Fails with `fileSystem` when no ancestor of `path` can be resolved or no disk matches it.
+  Future<BigInt> getFreeSpace({required String path});
+
   Future<String> getGameBoxartLink({required int gameId});
 
   Future<List<GameBuild>> getGameBuilds({required int gameId});
@@ -71,6 +79,20 @@ abstract class GogdlApi implements RustOpaqueInterface {
   Future<String> getGameSummary({required int gameId});
 
   Future<String> getGameTitle({required int gameId});
+
+  /// The download and on-disk size of `selectedProducts` of `buildName`, in total and per
+  /// product. It's one request for the build's metadata, with no depot manifests, and it equals
+  /// the totals `downloadGame` and `verifyDownload` report. Ids in `selectedProducts` that aren't
+  /// in the build are ignored.
+  ///
+  /// `diskBytes` is what the download's own check compares against `getFreeSpace`. A game
+  /// that's already partly on disk (resumed with `repairGame`) needs less than that, so a check
+  /// against it is a warning, not a guarantee.
+  Future<InstallSize> getInstallSize({
+    required int gameId,
+    required String buildName,
+    required List<int> selectedProducts,
+  });
 
   String getLoginLink();
 

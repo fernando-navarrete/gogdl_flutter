@@ -11,6 +11,7 @@ pub use crate::api::cancel_token::CancelToken;
 pub use crate::api::error::GogError;
 pub use crate::api::models::downloadable_product::DownloadableProduct;
 pub use crate::api::models::game_build::GameBuild;
+pub use crate::api::models::install_size::{InstallSize, ProductSize};
 pub use crate::api::models::proton_release::ProtonRelease;
 use crate::api::progress_reporting::{
     DownloadGameProgress, DownloadSavesProgress, ProtonDownloadProgress, RepairGameProgress,
@@ -112,6 +113,32 @@ impl GogdlApi {
         }
 
         Ok(products)
+    }
+    /// The download and on-disk size of `selectedProducts` of `buildName`, in total and per
+    /// product. It's one request for the build's metadata, with no depot manifests, and it equals
+    /// the totals `downloadGame` and `verifyDownload` report. Ids in `selectedProducts` that aren't
+    /// in the build are ignored.
+    ///
+    /// `diskBytes` is what the download's own check compares against `getFreeSpace`. A game
+    /// that's already partly on disk (resumed with `repairGame`) needs less than that, so a check
+    /// against it is a warning, not a guarantee.
+    pub async fn get_install_size(
+        &self,
+        game_id: i32,
+        build_name: &str,
+        selected_products: &[i32],
+    ) -> Result<InstallSize, GogError> {
+        let sizes = self.inner.get_product_sizes(game_id, build_name).await?;
+        Ok(InstallSize::from_gogdl(&sizes, selected_products))
+    }
+    /// The free space, in bytes, on the disk `path` is on: the same figure the download, repair
+    /// and Proton checks compare against. `path` needn't exist, and isn't created: its nearest
+    /// existing ancestor stands in for it. Local only, with no network or login.
+    ///
+    /// Fails with `fileSystem` when no ancestor of `path` can be resolved or no disk matches it.
+    pub async fn get_free_space(&self, path: &str) -> Result<u64, GogError> {
+        let free_space = self.inner.get_free_space(Path::new(path)).await?;
+        Ok(free_space)
     }
     pub async fn get_proton_releases(&self, page: i32) -> Result<Vec<ProtonRelease>, GogError> {
         let proton_releases = self.inner.get_proton_releases(page as u32, 5).await?;
@@ -516,5 +543,35 @@ impl GogdlApi {
             Outcome::ListenerGone => {} // nobody to report to
         }
         Ok(())
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[tokio::test]
+    async fn free_space_of_the_temp_dir_is_positive() {
+        let dir = std::env::temp_dir();
+        let free_space = GogdlApi::new()
+            .get_free_space(dir.to_str().unwrap())
+            .await
+            .unwrap();
+        assert!(free_space > 0);
+    }
+
+    #[tokio::test]
+    async fn a_missing_path_uses_its_nearest_existing_ancestor() {
+        let dir = std::env::temp_dir();
+        let root = dir.join(format!("gogdl-missing-{}", std::process::id()));
+        let missing = root.join("a").join("b");
+        let api = GogdlApi::new();
+
+        let for_dir = api.get_free_space(dir.to_str().unwrap()).await.unwrap();
+        let for_missing = api.get_free_space(missing.to_str().unwrap()).await.unwrap();
+
+        // Other processes can write to the temp dir between the two calls.
+        assert!(for_dir.abs_diff(for_missing) < 64 * 1024 * 1024);
+        assert!(!root.exists());
     }
 }

@@ -8,6 +8,7 @@ import 'api/error.dart';
 import 'api/gogdl.dart';
 import 'api/models/downloadable_product.dart';
 import 'api/models/game_build.dart';
+import 'api/models/install_size.dart';
 import 'api/models/proton_release.dart';
 import 'api/progress_reporting/game_download.dart';
 import 'api/progress_reporting/game_repair.dart';
@@ -75,7 +76,7 @@ class RustLib extends BaseEntrypoint<RustLibApi, RustLibApiImpl, RustLibWire> {
   String get codegenVersion => '2.13.0';
 
   @override
-  int get rustContentHash => 1823049855;
+  int get rustContentHash => 9993956;
 
   static const kDefaultExternalLibraryLoaderConfig =
       ExternalLibraryLoaderConfig(
@@ -134,6 +135,11 @@ abstract class RustLibApi extends BaseApi {
     required String buildName,
   });
 
+  Future<BigInt> crateApiGogdlGogdlApiGetFreeSpace({
+    required GogdlApi that,
+    required String path,
+  });
+
   Future<String> crateApiGogdlGogdlApiGetGameBoxartLink({
     required GogdlApi that,
     required int gameId,
@@ -157,6 +163,13 @@ abstract class RustLibApi extends BaseApi {
   Future<String> crateApiGogdlGogdlApiGetGameTitle({
     required GogdlApi that,
     required int gameId,
+  });
+
+  Future<InstallSize> crateApiGogdlGogdlApiGetInstallSize({
+    required GogdlApi that,
+    required int gameId,
+    required String buildName,
+    required List<int> selectedProducts,
   });
 
   String crateApiGogdlGogdlApiGetLoginLink({required GogdlApi that});
@@ -661,6 +674,45 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       );
 
   @override
+  Future<BigInt> crateApiGogdlGogdlApiGetFreeSpace({
+    required GogdlApi that,
+    required String path,
+  }) {
+    return handler.executeNormal(
+      NormalTask(
+        callFfi: (port_) {
+          final serializer = SseSerializer(generalizedFrbRustBinding);
+          sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerGogdlApi(
+            that,
+            serializer,
+          );
+          sse_encode_String(path, serializer);
+          pdeCallFfi(
+            generalizedFrbRustBinding,
+            serializer,
+            funcId: 11,
+            port: port_,
+          );
+        },
+        codec: SseCodec(
+          decodeSuccessData: sse_decode_u_64,
+          decodeErrorData:
+              sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerGogError,
+        ),
+        constMeta: kCrateApiGogdlGogdlApiGetFreeSpaceConstMeta,
+        argValues: [that, path],
+        apiImpl: this,
+      ),
+    );
+  }
+
+  TaskConstMeta get kCrateApiGogdlGogdlApiGetFreeSpaceConstMeta =>
+      const TaskConstMeta(
+        debugName: "GogdlApi_get_free_space",
+        argNames: ["that", "path"],
+      );
+
+  @override
   Future<String> crateApiGogdlGogdlApiGetGameBoxartLink({
     required GogdlApi that,
     required int gameId,
@@ -677,7 +729,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 11,
+            funcId: 12,
             port: port_,
           );
         },
@@ -716,7 +768,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 12,
+            funcId: 13,
             port: port_,
           );
         },
@@ -755,7 +807,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 13,
+            funcId: 14,
             port: port_,
           );
         },
@@ -794,7 +846,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 14,
+            funcId: 15,
             port: port_,
           );
         },
@@ -833,7 +885,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 15,
+            funcId: 16,
             port: port_,
           );
         },
@@ -856,6 +908,49 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       );
 
   @override
+  Future<InstallSize> crateApiGogdlGogdlApiGetInstallSize({
+    required GogdlApi that,
+    required int gameId,
+    required String buildName,
+    required List<int> selectedProducts,
+  }) {
+    return handler.executeNormal(
+      NormalTask(
+        callFfi: (port_) {
+          final serializer = SseSerializer(generalizedFrbRustBinding);
+          sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerGogdlApi(
+            that,
+            serializer,
+          );
+          sse_encode_i_32(gameId, serializer);
+          sse_encode_String(buildName, serializer);
+          sse_encode_list_prim_i_32_loose(selectedProducts, serializer);
+          pdeCallFfi(
+            generalizedFrbRustBinding,
+            serializer,
+            funcId: 17,
+            port: port_,
+          );
+        },
+        codec: SseCodec(
+          decodeSuccessData: sse_decode_install_size,
+          decodeErrorData:
+              sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerGogError,
+        ),
+        constMeta: kCrateApiGogdlGogdlApiGetInstallSizeConstMeta,
+        argValues: [that, gameId, buildName, selectedProducts],
+        apiImpl: this,
+      ),
+    );
+  }
+
+  TaskConstMeta get kCrateApiGogdlGogdlApiGetInstallSizeConstMeta =>
+      const TaskConstMeta(
+        debugName: "GogdlApi_get_install_size",
+        argNames: ["that", "gameId", "buildName", "selectedProducts"],
+      );
+
+  @override
   String crateApiGogdlGogdlApiGetLoginLink({required GogdlApi that}) {
     return handler.executeSync(
       SyncTask(
@@ -865,7 +960,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
             that,
             serializer,
           );
-          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 16)!;
+          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 18)!;
         },
         codec: SseCodec(
           decodeSuccessData: sse_decode_String,
@@ -899,7 +994,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 17,
+            funcId: 19,
             port: port_,
           );
         },
@@ -938,7 +1033,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 18,
+            funcId: 20,
             port: port_,
           );
         },
@@ -977,7 +1072,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 19,
+            funcId: 21,
             port: port_,
           );
         },
@@ -1005,7 +1100,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       SyncTask(
         callFfi: () {
           final serializer = SseSerializer(generalizedFrbRustBinding);
-          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 20)!;
+          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 22)!;
         },
         codec: SseCodec(
           decodeSuccessData:
@@ -1037,7 +1132,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 21,
+            funcId: 23,
             port: port_,
           );
         },
@@ -1089,7 +1184,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
             pdeCallFfi(
               generalizedFrbRustBinding,
               serializer,
-              funcId: 22,
+              funcId: 24,
               port: port_,
             );
           },
@@ -1146,7 +1241,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 23,
+            funcId: 25,
             port: port_,
           );
         },
@@ -1188,7 +1283,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 24,
+            funcId: 26,
             port: port_,
           );
         },
@@ -1240,7 +1335,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
             pdeCallFfi(
               generalizedFrbRustBinding,
               serializer,
-              funcId: 25,
+              funcId: 27,
               port: port_,
             );
           },
@@ -1314,7 +1409,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
             pdeCallFfi(
               generalizedFrbRustBinding,
               serializer,
-              funcId: 26,
+              funcId: 28,
               port: port_,
             );
           },
@@ -1684,6 +1779,19 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  InstallSize dco_decode_install_size(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    final arr = raw as List<dynamic>;
+    if (arr.length != 3)
+      throw Exception('unexpected arr length: expect 3 but see ${arr.length}');
+    return InstallSize(
+      downloadBytes: dco_decode_u_64(arr[0]),
+      diskBytes: dco_decode_u_64(arr[1]),
+      products: dco_decode_list_product_size(arr[2]),
+    );
+  }
+
+  @protected
   PlatformInt64 dco_decode_isize(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     return dcoDecodeI64(raw);
@@ -1726,6 +1834,12 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  List<ProductSize> dco_decode_list_product_size(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return (raw as List<dynamic>).map(dco_decode_product_size).toList();
+  }
+
+  @protected
   List<ProtonRelease> dco_decode_list_proton_release(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     return (raw as List<dynamic>).map(dco_decode_proton_release).toList();
@@ -1735,6 +1849,19 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   SpaceShortfall? dco_decode_opt_box_autoadd_space_shortfall(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     return raw == null ? null : dco_decode_box_autoadd_space_shortfall(raw);
+  }
+
+  @protected
+  ProductSize dco_decode_product_size(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    final arr = raw as List<dynamic>;
+    if (arr.length != 3)
+      throw Exception('unexpected arr length: expect 3 but see ${arr.length}');
+    return ProductSize(
+      id: dco_decode_i_32(arr[0]),
+      downloadBytes: dco_decode_u_64(arr[1]),
+      diskBytes: dco_decode_u_64(arr[2]),
+    );
   }
 
   @protected
@@ -2260,6 +2387,19 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  InstallSize sse_decode_install_size(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    var var_downloadBytes = sse_decode_u_64(deserializer);
+    var var_diskBytes = sse_decode_u_64(deserializer);
+    var var_products = sse_decode_list_product_size(deserializer);
+    return InstallSize(
+      downloadBytes: var_downloadBytes,
+      diskBytes: var_diskBytes,
+      products: var_products,
+    );
+  }
+
+  @protected
   PlatformInt64 sse_decode_isize(SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     return deserializer.buffer.getPlatformInt64();
@@ -2325,6 +2465,18 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  List<ProductSize> sse_decode_list_product_size(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+
+    var len_ = sse_decode_i_32(deserializer);
+    var ans_ = <ProductSize>[];
+    for (var idx_ = 0; idx_ < len_; ++idx_) {
+      ans_.add(sse_decode_product_size(deserializer));
+    }
+    return ans_;
+  }
+
+  @protected
   List<ProtonRelease> sse_decode_list_proton_release(
     SseDeserializer deserializer,
   ) {
@@ -2349,6 +2501,19 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     } else {
       return null;
     }
+  }
+
+  @protected
+  ProductSize sse_decode_product_size(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    var var_id = sse_decode_i_32(deserializer);
+    var var_downloadBytes = sse_decode_u_64(deserializer);
+    var var_diskBytes = sse_decode_u_64(deserializer);
+    return ProductSize(
+      id: var_id,
+      downloadBytes: var_downloadBytes,
+      diskBytes: var_diskBytes,
+    );
   }
 
   @protected
@@ -2970,6 +3135,14 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  void sse_encode_install_size(InstallSize self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_u_64(self.downloadBytes, serializer);
+    sse_encode_u_64(self.diskBytes, serializer);
+    sse_encode_list_product_size(self.products, serializer);
+  }
+
+  @protected
   void sse_encode_isize(PlatformInt64 self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     serializer.buffer.putPlatformInt64(self);
@@ -3041,6 +3214,18 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  void sse_encode_list_product_size(
+    List<ProductSize> self,
+    SseSerializer serializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_i_32(self.length, serializer);
+    for (final item in self) {
+      sse_encode_product_size(item, serializer);
+    }
+  }
+
+  @protected
   void sse_encode_list_proton_release(
     List<ProtonRelease> self,
     SseSerializer serializer,
@@ -3063,6 +3248,14 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     if (self != null) {
       sse_encode_box_autoadd_space_shortfall(self, serializer);
     }
+  }
+
+  @protected
+  void sse_encode_product_size(ProductSize self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_i_32(self.id, serializer);
+    sse_encode_u_64(self.downloadBytes, serializer);
+    sse_encode_u_64(self.diskBytes, serializer);
   }
 
   @protected
@@ -3433,6 +3626,14 @@ class GogdlApiImpl extends RustOpaque implements GogdlApi {
     buildName: buildName,
   );
 
+  /// The free space, in bytes, on the disk `path` is on: the same figure the download, repair
+  /// and Proton checks compare against. `path` needn't exist, and isn't created: its nearest
+  /// existing ancestor stands in for it. Local only, with no network or login.
+  ///
+  /// Fails with `fileSystem` when no ancestor of `path` can be resolved or no disk matches it.
+  Future<BigInt> getFreeSpace({required String path}) => RustLib.instance.api
+      .crateApiGogdlGogdlApiGetFreeSpace(that: this, path: path);
+
   Future<String> getGameBoxartLink({required int gameId}) => RustLib
       .instance
       .api
@@ -3453,6 +3654,25 @@ class GogdlApiImpl extends RustOpaque implements GogdlApi {
 
   Future<String> getGameTitle({required int gameId}) => RustLib.instance.api
       .crateApiGogdlGogdlApiGetGameTitle(that: this, gameId: gameId);
+
+  /// The download and on-disk size of `selectedProducts` of `buildName`, in total and per
+  /// product. It's one request for the build's metadata, with no depot manifests, and it equals
+  /// the totals `downloadGame` and `verifyDownload` report. Ids in `selectedProducts` that aren't
+  /// in the build are ignored.
+  ///
+  /// `diskBytes` is what the download's own check compares against `getFreeSpace`. A game
+  /// that's already partly on disk (resumed with `repairGame`) needs less than that, so a check
+  /// against it is a warning, not a guarantee.
+  Future<InstallSize> getInstallSize({
+    required int gameId,
+    required String buildName,
+    required List<int> selectedProducts,
+  }) => RustLib.instance.api.crateApiGogdlGogdlApiGetInstallSize(
+    that: this,
+    gameId: gameId,
+    buildName: buildName,
+    selectedProducts: selectedProducts,
+  );
 
   String getLoginLink() =>
       RustLib.instance.api.crateApiGogdlGogdlApiGetLoginLink(that: this);
