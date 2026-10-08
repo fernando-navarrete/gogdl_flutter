@@ -98,11 +98,12 @@ regenerates and fails on any diff.
 
 ## CI and releases
 
-GitLab CI runs on the self-hosted runner, only for tags and for manual runs from the web UI. The
-`check` stage has four jobs: `rust`, `dart`, `codegen` and `integration`. They run in a prebuilt
-image (`ci/Dockerfile`, built with `ci/build-image.sh`), which has to be rebuilt after bumping
-`.fvmrc`, `rust/rust-toolchain.toml` or the codegen version. `.gitlab-ci.yml`'s header covers the
-runner and deploy-key setup.
+GitLab CI runs on the self-hosted runner, on merge requests, on `main`, on `vX.Y.Z` tags and for
+manual runs from the web UI. A pushed branch without an MR runs nothing. The `check` stage has four
+jobs: `rust`, `dart`, `codegen` and `integration`. They run in a prebuilt image (`ci/Dockerfile`,
+built with `ci/build-image.sh`), which has to be rebuilt after bumping `.fvmrc`,
+`rust/rust-toolchain.toml` or the codegen version. `.gitlab-ci.yml`'s header covers the runner and
+deploy-key setup.
 
 To release:
 
