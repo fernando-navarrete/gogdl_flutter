@@ -223,8 +223,11 @@ What the CI/CD line (`devlog/v1.3.x-ci-cd.md`) left open.
   compare `git ls-remote` on both sides after any tag incident.
 - [ ] **P2 — `tool/check_lib_pin.sh` hasn't run in a tag pipeline yet.** Tested locally and in the
   `release-cli` image; the next tag is its first real run.
-- [ ] **P1 — Lumen still pins `v1.3.0`.** It should pin `v1.3.3` (not `v1.3.1`, which has no GitLab
+- [x] **P1 — Lumen still pins `v1.3.0`.** It should pin `v1.3.3` (not `v1.3.1`, which has no GitLab
   release) and drop its `RUSTSEC-2026-0285` entry from `osv-scanner.toml`, which expires 2026-11-06.
+  Fixed in Lumen's `ci/github-mirror` MR (!7, `7e4e037`): it pins `v1.3.3` from GitHub over HTTPS and the
+  entry is gone. Lumen's `lint` also runs `tool/check_bridge_pin.sh`, which fails unless GitHub has the
+  pinned tag at the locked SHA (the Lumen-side half of its B2).
 - [ ] **P2 — gogdl-lib's `downstream` job no longer patches the bridge.** It adds
   `[patch."ssh://git@thinkcentre.home:2200/gogdl/gogdl-lib.git"]` to each consumer, but since
   `v1.3.3` this repo fetches `gogdl-lib` from `https://github.com/fernando-navarrete/gogdl-lib.git`,
