@@ -4,7 +4,7 @@ Work plan to bring this repo's CI/CD up to what `../gogdl-lib` runs since its CI
 (`../gogdl-lib/devlog/v1.2.x-ci-cd.md`), adapted to a Flutter + Rust bridge, plus a public push mirror to
 GitHub. It ends with `main` and the `v*` tags protected, the mirror live, and this plan turned into a devlog.
 
-The steps are short, and several share one MR: **6 MRs** in all, against the lib's 13. Inside an MR, each
+The steps are short, and several share one MR: **7 MRs** in all, against the lib's 13. Inside an MR, each
 step is one commit on the branch, and the squash leaves one commit on `main`. Bite tests run in throwaway
 MRs that are closed unmerged and don't count. Tick each checkbox as it's done.
 
@@ -12,7 +12,8 @@ MRs that are closed unmerged and don't count. Tick each checkbox as it's done.
 |---|---|---|---|---|
 | — | (none) | **0** | Decisions, blockers | ✅ |
 | **1** | `ci/mr-pipelines` | 1 (merged early as `1edda62`) | `CI: MR pipelines, pinned images, release flow` | ✅ |
-| **1b** | `ci/hooks-images-release` | 2–4, then 5 (settings) | `CI: pre-commit hook, pinned images, release flow` | 🟦 |
+| **1b** | `ci/hooks-images-release` | 2–3 (merged as `3f2bb18`) | `CI: pre-commit hook, pinned images` | ✅ |
+| **1c** | `ci/release-flow` | 4, then 5 (settings) | `CI: release flow for a protected main` | 🟦 |
 | **2** | `release/v1.3.1` | 6–11 | `v1.3.1: supply-chain checks, rustls 0.23.45` | ⬜ |
 | **3** | `ci/renovate` | 12–13 | `CI: Renovate` | ⬜ |
 | **4** | `ci/github-mirror` | 14–17 | `CI: GitHub mirror` | ⬜ |
@@ -117,9 +118,11 @@ Decided 2026-10-08: all recommended answers accepted.
 
 This plan is the branch's first commit.
 
-MR 1 merged after step 1 alone (`1edda62`). Steps 2–4 continue as MR 1b on `ci/hooks-images-release`,
-and step 5 follows that MR. Pitfall for the devlog: the squash message became the first commit's message
-("Add the CI/CD work plan"), not the MR title. Check the squash commit message template in step 5.
+MR 1 merged after step 1 alone (`1edda62`). Steps 2–3 merged as MR 1b on `ci/hooks-images-release`
+(`3f2bb18`), step 4 is MR 1c on `ci/release-flow`, and step 5 follows that MR. Pitfall for the devlog:
+the squash message became the first commit's message ("Add the CI/CD work plan"), not the MR title, and
+it happened again in MR 1b ("CI: pre-commit hook"). Step 5 must set the squash commit message template
+to `%{title}`.
 
 ### Step 1: Pipelines on MRs and `main`, MR template
 
@@ -152,31 +155,32 @@ and step 5 follows that MR. Pitfall for the devlog: the squash message became th
 - [x] `ci/build-image.sh`: `IMAGE_REVISION=1`, tag `…-frb-2.13.0-r1`. The `.toolchain` check still compares
       versions only.
 - [x] `release`: `release-cli:v0.24.0@sha256:…` (gogdl-lib's digest).
-- [ ] Rebuild on the runner host and update `image:`. **Lumen:** its `.ci-image` keeps the old tag until
+- [x] Rebuild on the runner host and update `image:`. **Lumen:** its `.ci-image` keeps the old tag until
       Lumen bumps it in its own MR. Both tags can sit on the host, so nothing breaks.
 
 **Done when:** no `image:` or `FROM` lacks `@sha256`, and the pipeline is green on `-r1`.
 
 ### Step 4: Release flow for a protected `main`
 
-- [ ] README "CI and releases" and ROADMAP "Versioning rules": (1) a release branch with both versions, both
+- [x] README "CI and releases" and ROADMAP "Versioning rules": (1) a release branch with both versions, both
       lock files, the `CHANGELOG.md` section and the GAPS tick; (2) an MR titled `vX.Y.Z: ...`, green,
       merged; (3) `git fetch`, tag the merged commit on `origin/main`, push the tag; (4) the tag
       pipeline's `release` is green.
-- [ ] `release`: `needs` on every check job (MR 2 adds its jobs to the list), `GIT_DEPTH: 0`, and fail
+- [x] `release`: `needs` on every check job (MR 2 adds its jobs to the list), `GIT_DEPTH: 0`, and fail
       unless `git merge-base --is-ancestor "$CI_COMMIT_SHA" origin/main` (gogdl-lib's block).
-- [ ] `sh tool/release_notes.sh v1.3.0` still passes locally.
+- [x] `sh tool/release_notes.sh v1.3.0` still passes locally.
 
 **Done when:** merged. MR 2 is the first release that follows it.
 
-### Step 5: Protect `main` and `v*` (settings, right after MR 1b merges)
+### Step 5: Protect `main` and `v*` (settings, right after MR 1c merges)
 
 Done early, not last as in the lib, because of two of its pitfalls: Renovate's protected variables only
 reach protected refs (its step 9), and a tag bite test run before `v*` is protected really does move the
 tag (its step 12).
 
 - [ ] Protected branch `main`: push "No one", merge Maintainers, no force push.
-- [ ] MR settings: all threads resolved, skipped pipelines not successful.
+- [ ] MR settings: all threads resolved, skipped pipelines not successful, squash commit message
+      template `%{title}`.
 - [ ] Protected tags `v*`: create Maintainers. **Check that `v*` is listed before** running any tag test.
 - [ ] Bite tests: a direct push to `main` is rejected; an MR with a failing test can't merge;
       `git push --delete origin v1.3.0` is rejected. No force-move test (B1 shows what that costs).

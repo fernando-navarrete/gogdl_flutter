@@ -112,13 +112,16 @@ commit. `.gitlab-ci.yml`'s header covers the runner and deploy-key setup.
 
 To release:
 
-1. Bump `version:` in `pubspec.yaml` and `version` in `rust/Cargo.toml`, along with the two lock
-   files that record it (`rust/Cargo.lock` and `example/pubspec.lock`).
-2. Add a `## X.Y.Z` section to `CHANGELOG.md` and tick the item in `GAPS.md`.
-3. Commit, tag `vX.Y.Z` and push the tag.
+1. On a `release/vX.Y.Z` branch, bump `version:` in `pubspec.yaml` and `version` in
+   `rust/Cargo.toml`, along with the two lock files that record it (`rust/Cargo.lock` and
+   `example/pubspec.lock`). Add a `## X.Y.Z` section to `CHANGELOG.md` and tick the item in
+   `GAPS.md`.
+2. Open an MR titled `vX.Y.Z: ...`, wait for a green pipeline, and merge it.
+3. `git fetch`, tag the merged commit (`git tag vX.Y.Z origin/main`) and push the tag.
+4. Check that the tag pipeline is green: every check job, then `release`.
 
-On a `vX.Y.Z` tag the `release` job runs `tool/release_notes.sh`. It fails unless the tag, the four
-versions above and a non-empty changelog section all agree, and then creates a GitLab release from
-that section.
+On a `vX.Y.Z` tag the `release` job waits for every check job, then fails unless the tagged commit
+is on `main` and `tool/release_notes.sh` passes: the tag, the four versions above and a non-empty
+changelog section must all agree. It then creates a GitLab release from that section.
 
 [ROADMAP.md](ROADMAP.md) has the planned releases and [GAPS.md](GAPS.md) the known gaps.

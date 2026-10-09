@@ -12,7 +12,8 @@ under.
 - Tags use the existing `vX.Y.Z` format. `v1.3.0` is the newest tag, so the next stage is
   **`v1.4.0`**.
 - For each release: bump `version:` in `pubspec.yaml` **and** `version` in `rust/Cargo.toml` to
-  match, tick the item(s) in `GAPS.md`, add a `CHANGELOG.md` entry, commit, then tag.
+  match, tick the item(s) in `GAPS.md` and add a `CHANGELOG.md` entry on a release branch, merge it
+  through an MR, then tag the merged commit on `main` (README "CI and releases").
 - Lumen is the only consumer, so a breaking Dart API change is allowed in a **minor**, never in a
   patch. It ships together with the Lumen change that adopts it, and the entry below says so.
 - A `gogdl-lib` bump that changes behavior gets its own patch tag, even if the bridge code didn't
