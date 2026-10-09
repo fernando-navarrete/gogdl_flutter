@@ -1,6 +1,6 @@
 # gogdl_flutter
 
-Dart bindings for [`gogdl-lib`](ssh://git@thinkcentre.home:2200/gogdl/gogdl-lib.git), generated with
+Dart bindings for [`gogdl-lib`](https://github.com/fernando-navarrete/gogdl-lib), generated with
 [flutter_rust_bridge](https://cjycode.com/flutter_rust_bridge) `2.13.0`. It exposes GOG login,
 library and game metadata, game download, repair and verification, Proton-GE downloads and cloud
 saves as a single `GogdlApi` class. Long-running jobs stream their progress as freezed sealed
@@ -10,8 +10,9 @@ classes (`DownloadGameProgress`, `RepairGameProgress`, ...). Everything public i
 Lumen is the only consumer. Linux is the only platform that is built and tested, and
 frb's web output is turned off (`web: false` in `flutter_rust_bridge.yaml`).
 
-`gogdl-lib` is a private git dependency (pinned by tag in `rust/Cargo.toml`) served only over the
-LAN, at `ssh://git@thinkcentre.home:2200`. Nothing builds without access to that host.
+`gogdl-lib` is a git dependency, pinned by tag in `rust/Cargo.toml` and served over the LAN at
+`ssh://git@thinkcentre.home:2200`. Both repositories are mirrored to GitHub: off the LAN, see
+"Building from the GitHub mirror" below.
 
 ## Using it
 
@@ -20,7 +21,7 @@ dependencies:
   gogdl_flutter:
     git:
       url: ssh://git@thinkcentre.home:2200/gogdl/gogdl_flutter.git
-      ref: v1.3.0
+      ref: v1.3.2
 ```
 
 ```dart
@@ -46,6 +47,19 @@ A build needs:
 There are no precompiled binaries, so every consumer compiles the whole crate. Prebuilt binaries
 are planned for `v1.5.0` (see [ROADMAP.md](ROADMAP.md)).
 
+### Building from the GitHub mirror
+
+The `thinkcentre.home` URLs stay in `rust/Cargo.toml` and in a consumer's `pubspec.yaml`. Off the
+LAN, one git setting rewrites them to the GitHub mirrors:
+
+```sh
+git config --global url."https://github.com/fernando-navarrete/".insteadOf "ssh://git@thinkcentre.home:2200/gogdl/"
+```
+
+The mirrors keep commit SHAs, so `rust/Cargo.lock` and a consumer's `pubspec.lock` still match. No
+SSH key and no `CARGO_NET_GIT_FETCH_WITH_CLI` are needed: pub and the build hook's cargo both go
+through the rewrite.
+
 ## Layout
 
 - `rust/src/api/`: the Rust API that flutter_rust_bridge reads (`GogdlApi`, models, errors, progress
@@ -57,11 +71,12 @@ are planned for `v1.5.0` (see [ROADMAP.md](ROADMAP.md)).
 - `lib/src/rust/`, `rust/src/frb_generated.rs`: generated. Don't edit them by hand.
 - `hook/build.dart`: the Native Assets build hook.
 - `example/`: an offline smoke app and its Linux integration test.
-- `ci/`, `tool/`: the CI image and the release gate. See below.
+- `ci/`, `tool/`: the CI image and the release gates. See below.
 - `SECURITY.md`: what a new crate or pub package has to meet, and what to do if one is compromised.
 - `rust/deny.toml`, `osv-scanner.toml`, `.gitleaks.toml`: config of the `audit`, `scan` and `secrets`
   CI jobs (advisories, sources and licenses; accepted findings; secret rules).
 - `.githooks/`: the pre-commit hook (see "Development").
+- `LICENSE-MIT`, `LICENSE-APACHE`: the license (see "License").
 - `renovate.json`: the Renovate config (weekly, grouped minor and patch updates of the lock files and CI
   images; the toolchains, frb and `gogdl-lib` move by hand).
 
@@ -138,7 +153,9 @@ To release:
 1. On a `release/vX.Y.Z` branch, bump `version:` in `pubspec.yaml` and `version` in
    `rust/Cargo.toml`, along with the two lock files that record it (`rust/Cargo.lock` and
    `example/pubspec.lock`). Add a `## X.Y.Z` section to `CHANGELOG.md` and tick the item in
-   `GAPS.md`.
+   `GAPS.md`. If the `gogdl-lib` pin moved, its tag has to be on its GitHub mirror first, at the
+   SHA in `rust/Cargo.lock` (`git ls-remote https://github.com/fernando-navarrete/gogdl-lib
+   refs/tags/<tag>`).
 2. Open an MR titled `vX.Y.Z: ...`, wait for a green pipeline, and merge it. GitLab takes a new
    MR's title from the branch's first commit, and the squash commit copies the title, so check both
    the title and the squash message in the merge widget before merging.
@@ -146,7 +163,20 @@ To release:
 4. Check that the tag pipeline is green: every check job, then `release`.
 
 On a `vX.Y.Z` tag the `release` job waits for every check job, then fails unless the tagged commit
-is on `main` and `tool/release_notes.sh` passes: the tag, the four versions above and a non-empty
-changelog section must all agree. It then creates a GitLab release from that section.
+is on `main`, `tool/check_lib_pin.sh` finds the pinned `gogdl-lib` tag on GitHub at the locked SHA
+(so the tag builds off the LAN), and `tool/release_notes.sh` passes: the tag, the four versions above
+and a non-empty changelog section must all agree. It then creates a GitLab release from that section.
+If only the `gogdl-lib` check failed, update that repo's mirror and retry the job.
 
 [ROADMAP.md](ROADMAP.md) has the planned releases and [GAPS.md](GAPS.md) the known gaps.
+
+## This repository is a mirror
+
+Development happens on a self-hosted GitLab. This GitHub repository is a read-only push mirror of
+`main` and the `v*` tags (GitLab's built-in push mirror, protected refs only, with a fine-grained
+token limited to this repository): issues, pull requests and Actions are off here. Report a problem to the
+maintainer directly (see `SECURITY.md`).
+
+## License
+
+Licensed under either of [MIT](LICENSE-MIT) or [Apache-2.0](LICENSE-APACHE), at your option.

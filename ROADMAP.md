@@ -17,7 +17,8 @@ under.
 - Lumen is the only consumer, so a breaking Dart API change is allowed in a **minor**, never in a
   patch. It ships together with the Lumen change that adopts it, and the entry below says so.
 - A `gogdl-lib` bump that changes behavior gets its own patch tag, even if the bridge code didn't
-  change.
+  change. The `gogdl-lib` tag has to be on its GitHub mirror, at the SHA
+  `rust/Cargo.lock` pins, before this repo is tagged: `release` checks it.
 - Items that depend on `gogdl-lib` (**[lib]** in GAPS) start with the upstream request (GAPS §7).
   If upstream isn't ready, the entry says what ships here in the meantime.
 

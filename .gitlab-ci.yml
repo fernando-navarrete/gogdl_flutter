@@ -406,7 +406,9 @@ integration:
 # Runs after all check jobs, on vX.Y.Z tags only, and only for a commit on main: tags go on the
 # merged release commit, never on a branch (README "CI and releases"). tool/release_notes.sh fails
 # if pubspec.yaml, rust/Cargo.toml and the tag disagree, or if CHANGELOG.md has no section for the
-# version, so a tag can't ship without matching versions and notes. The release uses CI_JOB_TOKEN.
+# version, so a tag can't ship without matching versions and notes. tool/check_lib_pin.sh fails
+# unless gogdl-lib's GitHub mirror has the tag rust/Cargo.lock pins, at the locked SHA, so Lumen never
+# pins a bridge tag that can't build off the LAN. The release uses CI_JOB_TOKEN.
 release:
   stage: release
   image:
@@ -444,6 +446,8 @@ release:
         echo "$CI_COMMIT_TAG points at $CI_COMMIT_SHA, which is not on $CI_DEFAULT_BRANCH: tag the merged release commit" >&2
         exit 1
       }
+    # Reads github.com, not this file, so after updating gogdl-lib's mirror a retry of this job passes.
+    - sh tool/check_lib_pin.sh
     - sh tool/release_notes.sh "$CI_COMMIT_TAG" > release_notes.md
     - cat release_notes.md
   release:

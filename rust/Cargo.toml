@@ -2,6 +2,9 @@
 name = "gogdl_flutter"
 version = "1.3.2"
 edition = "2024"
+license = "MIT OR Apache-2.0"
+description = "flutter_rust_bridge bindings for gogdl-lib, built into Lumen through Native Assets"
+repository = "https://github.com/fernando-navarrete/gogdl_flutter"
 publish = false
 
 [lib]

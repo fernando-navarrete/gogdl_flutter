@@ -32,10 +32,6 @@ allow = [
     "CDLA-Permissive-2.0", # webpki-root-certs
 ]
 
-# This crate is `publish = false` and has no license yet (the mirror's step adds MIT OR Apache-2.0).
-[licenses.private]
-ignore = true
-
 # gogdl-lib v1.2.3 predates its `license` field (added in gogdl-lib 40cceb1, after the tag) but is the
 # same author's MIT OR Apache-2.0 crate. Drop this when the pin moves to a tag that has the field.
 [[licenses.clarify]]

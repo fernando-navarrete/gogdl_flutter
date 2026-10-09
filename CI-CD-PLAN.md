@@ -18,8 +18,8 @@ MRs that are closed unmerged and don't count. Tick each checkbox as it's done.
 | **2b** | `release/v1.3.1` | 7–8 (merged as `f1d7b93`) | `CI: pub lockfile check, OSV scan` | ✅ |
 | **2c** | `release/v1.3.1` | 9–11 (merged as `50c48f2`) | `v1.3.1: supply-chain checks, rustls 0.23.45` | ✅ |
 | **2d** | `release/v1.3.2` | 11 (merged as `2ee9b4f`) | `v1.3.2: release job trusts the CA before its fetch` | ✅ |
-| **3** | `ci/renovate` | 12–13 | `CI: Renovate` | 🟦 |
-| **4** | `ci/github-mirror` | 14–17 | `CI: GitHub mirror` | ⬜ |
+| **3** | `ci/renovate` | 12–13 (merged as `bec544e`) | `CI: Renovate` | ✅ |
+| **4** | `ci/github-mirror` | 14–17 | `CI: GitHub mirror` | 🟦 |
 | **5** | `docs/ci-devlog` | 18 | `Docs: CI/CD devlog, close out the plan` | ⬜ |
 
 Status: ⬜ not started · 🟦 in progress · ✅ done · ⏸ blocked
@@ -347,24 +347,33 @@ The job is a commit on this branch. A schedule runs `main`'s `.gitlab-ci.yml`, a
 reach only protected refs, so the variables, schedule, runs and bite test come after MR 3 merges and are
 ticked on MR 4's branch.
 
-- [ ] `renovate` job from gogdl-lib (environment `renovate`, CA handling, token check). **And the
+- [x] `renovate` job from gogdl-lib (environment `renovate`, CA handling, token check). **And the
       `gogdl-lib` deploy key:** cargo has to fetch the git dependency to rewrite `rust/Cargo.lock`. Copy
       how Lumen's `renovate` job loads its key, and Lumen's guard that fails the job when Renovate aborts
       (Lumen `d9e4b54`).
       Renovate passes its child processes only a few variables, so no ssh-agent: the key goes in
       `~/.ssh/config`, and `~/.cargo/config.toml` sets `git-fetch-with-cli` (cargo's built-in git
       only uses the agent).
-- [ ] Variables `RENOVATE_TOKEN` and `GITHUB_COM_TOKEN` (protected, masked, scope `renovate`), with calendar
+- [x] Variables `RENOVATE_TOKEN` and `GITHUB_COM_TOKEN` (protected, masked, scope `renovate`), with calendar
       reminders. `main` is already protected (step 5).
-- [ ] `SECURITY.md`: both tokens in the rotation list, and `renovate` in the job logs to check.
-- [ ] Schedule "Renovate", `SCHEDULE=renovate`. Do a dry run first (`RENOVATE_DRY_RUN=full`): check the
+- [x] `SECURITY.md`: both tokens in the rotation list, and `renovate` in the job logs to check.
+- [x] Schedule "Renovate", `SCHEDULE=renovate`. Do a dry run first (`RENOVATE_DRY_RUN=full`): check the
       pub manager on a root `pubspec.yaml` with no lock file (only `example/pubspec.lock` exists), the
       ignored deps, and the 0.x rule. Then a live run.
-- [ ] Bite test: throwaway jobs print `${RENOVATE_TOKEN:+set}` on an unprotected branch, with and
+- [x] Bite test: throwaway jobs print `${RENOVATE_TOKEN:+set}` on an unprotected branch, with and
       without `environment: renovate`, and print nothing (with it, so the empty output comes from the
       protection and not the scope).
 
 **Done when:** a live run opened the grouped MR, its pipeline ran every check job, and it merged through an MR.
+
+*Done 2026-10-08.* The first live run was started from the Dependency Dashboard checkbox (the schedule
+is Monday mornings). Its grouped MR merged as `faec192`, touching `rust/Cargo.lock` only: `reqwest`
+0.13.4 → 0.13.5 (which pulls in a second `base64`, 0.23.1, alongside `hyper-util`'s 0.22.1) and
+`thiserror` 2.0.20 → 2.0.21. Every new version was more than 7 days old, so the checkbox skipped only the
+schedule, not `minimumReleaseAge`. These updates reach Lumen with the next tag (D5). Bite test in MR !14
+(closed unmerged): both token jobs printed `[]` for `RENOVATE_TOKEN` and `GITHUB_COM_TOKEN`, with and
+without `environment: renovate`, and a control job printed `[set]` for the unprotected
+`GOGDL_LIB_DEPLOY_KEY_B64`. The calendar reminders and the dry run aren't recorded.
 
 ---
 
@@ -374,33 +383,64 @@ Needs steps 9 and 5, and B1 for step 17.
 
 ### Step 14: What the mirror shows
 
-- [ ] `LICENSE-MIT` and `LICENSE-APACHE` replace `LICENSE`. `rust/Cargo.toml`: `license`, `description`,
+- [x] `LICENSE-MIT` and `LICENSE-APACHE` replace `LICENSE`. `rust/Cargo.toml`: `license`, `description`,
       `repository` (the GitHub URL, as the lib). `pubspec.yaml`: `repository`.
-- [ ] README: "This repository is a mirror" (as the lib's), and how to build outside the LAN with Lumen's
+- [x] README: "This repository is a mirror" (as the lib's), and how to build outside the LAN with Lumen's
       `insteadOf` line. `deny.toml` licenses: this crate's own license.
+
+*Done 2026-10-08.* `deny.toml` loses `[licenses.private] ignore`, so `audit` now checks this crate's
+own license: green in the `-r2` image, and red with `license = "GPL-3.0-only"` on a scratch copy. That
+green run had SSH disabled (`GIT_SSH_COMMAND=false`) and only the README's `insteadOf` line, so cargo
+fetched `gogdl-lib` from its GitHub mirror at the locked SHA. The README also links `gogdl-lib` on
+GitHub and moves "Using it" to `v1.3.2`. Both lock files are unchanged.
 
 ### Step 15: GitHub side (settings)
 
-- [ ] Create `fernando-navarrete/gogdl_flutter`, empty, public, with a "mirror" description. Issues,
+- [x] Create `fernando-navarrete/gogdl_flutter`, empty, public, with a "mirror" description. Issues,
       Projects, Wiki and Actions off. Ruleset on `main` and `v*`: no deletion, no force push, except the
       mirror token. Make sure a restore can still get through, unlike gogdl-lib's (B1).
-- [ ] Fine-grained token, `Contents: read and write` on that repo only, with an expiry and a reminder.
+- [x] Fine-grained token, `Contents: read and write` on that repo only, with an expiry and a reminder.
+
+*Done 2026-10-08.* The repo is public and empty (`git ls-remote` lists nothing), with Issues, Projects,
+Wiki, Discussions and Actions off. The description was skipped: the README says it's a mirror. Two
+active rulesets, "Protect Main" (`refs/heads/main`) and "Tag Rules" (`refs/tags/v*`), each restrict
+deletions and block force pushes. Their bypass list is the **Repository admin** role: on a personal
+repo a fine-grained token acts as its owner, so this is the only bypass that lets the mirror push a
+restore, which gogdl-lib's no-bypass ruleset couldn't (B1). The cost, for step 18's GAPS line: the
+ruleset doesn't stop the owner or the token from moving a tag on GitHub. GitLab's `v*` protection is
+the real guard, and step 16's `ls-remote` comparison is the check. The token is limited to this repo
+with `Contents: read and write`. Its expiry and reminder aren't recorded here.
 
 ### Step 16: GitLab push mirror (settings)
 
-- [ ] Settings → Repository → Mirroring: push, password auth with the token, "Mirror only protected
+- [x] Settings → Repository → Mirroring: push, password auth with the token, "Mirror only protected
       branches", "Keep divergent refs" off. "Update now".
-- [ ] Check: `main` at the same SHA, and **every `v*` tag at the same SHA as GitLab** (compare
+- [x] Check: `main` at the same SHA, and **every `v*` tag at the same SHA as GitLab** (compare
       `git ls-remote` on both, not just tag names). No other branches.
+
+*Done 2026-10-08.* After "Update now", GitHub has `main` at `faec192` and all 45 tags (the 30 old
+`-restart`/`-debug` ones too, as they match `v*`). Every GitHub ref, including the one peeled
+annotated tag, has the same SHA on GitLab, and no GitLab tag is missing. GitHub has no other
+branches: `ci/github-mirror` stayed off it.
 
 ### Step 17: The `gogdl-lib` pin check
 
-- [ ] In `release`, before the release is created: read the `gogdl-lib` tag and SHA from `rust/Cargo.lock`,
+- [x] In `release`, before the release is created: read the `gogdl-lib` tag and SHA from `rust/Cargo.lock`,
       and fail unless `git ls-remote https://github.com/fernando-navarrete/gogdl-lib refs/tags/<tag>`
       gives the same SHA (peeled). This is Lumen's B2/B4: a bridge tag never pins a dependency that GitHub
       doesn't have.
-- [ ] Check it locally against `v1.2.3`: red while B1 is open, green once it's fixed.
-- [ ] README and SECURITY.md: the mirror, its token in the rotation list, the release-order rule.
+- [x] Check it locally against `v1.2.3`: red while B1 is open, green once it's fixed.
+- [x] README and SECURITY.md: the mirror, its token in the rotation list, the release-order rule.
+
+*Done 2026-10-08.* `tool/check_lib_pin.sh` reads the pin from `rust/Cargo.lock`, and `release` runs
+it after the on-`main` check. It reads the peeled `^{}` line when the tag is annotated, and fails on a
+pin that isn't `?tag=`. Locally: green against GitHub (`v1.2.3` at `988011c`, a lightweight tag). B1 is
+already fixed, so a lock with another SHA stood in for it, and that went red with the mismatch. Also
+red: a `v9.9.9` pin (missing on GitHub), a `rev=` pin, and no `gogdl-lib` package. A local clone with an
+annotated `v1.2.3` on `988011c` passed, and red once the tag moved to its parent. Green and the
+missing-tag case behave the same in the pinned `release-cli` image (busybox). The first real run is the
+next tag. README "CI and releases" and ROADMAP "Versioning rules" carry the release-order rule, and
+SECURITY.md rotates the mirror token. The merge-propagation check below is ticked on MR 5's branch.
 
 **Done when:** a merge into `main` shows up on GitHub within minutes, a feature branch never does, and the
 pin check passes.
