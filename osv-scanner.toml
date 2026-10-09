@@ -1,0 +1,9 @@
+# Accepted findings for the `scan` job (.gitlab-ci.yml). Each entry needs a `reason` and an `ignoreUntil`
+# date, so an accepted finding comes back on its own. Ignoring an id also ignores its aliases (GHSA, CVE).
+# Rust advisories other than MAL- don't need an entry: `scan` only prints them, and `audit` gates them
+# through rust/deny.toml. Every pub advisory fails `scan` unless it is listed here.
+#
+# [[IgnoredVulns]]
+# id = "GHSA-xxxx-xxxx-xxxx"
+# ignoreUntil = 2026-12-31
+# reason = "What it is, why it doesn't apply or can't be fixed yet, and what fixes it."

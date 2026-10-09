@@ -14,14 +14,15 @@ MRs that are closed unmerged and don't count. Tick each checkbox as it's done.
 | **1** | `ci/mr-pipelines` | 1 (merged early as `1edda62`) | `CI: MR pipelines, pinned images, release flow` | ✅ |
 | **1b** | `ci/hooks-images-release` | 2–3 (merged as `3f2bb18`) | `CI: pre-commit hook, pinned images` | ✅ |
 | **1c** | `ci/release-flow` | 4 (merged as `c9e48b2`), then 5 (settings) | `CI: release flow for a protected main` | ✅ |
-| **2** | `release/v1.3.1` | 6–11 | `v1.3.1: supply-chain checks, rustls 0.23.45` | 🟦 |
+| **2** | `release/v1.3.1` | 6 (merged as `5478d80`) | `CI: cargo-deny audit job` | ✅ |
+| **2b** | `release/v1.3.1` | 7–11 | `v1.3.1: supply-chain checks, rustls 0.23.45` | 🟦 |
 | **3** | `ci/renovate` | 12–13 | `CI: Renovate` | ⬜ |
 | **4** | `ci/github-mirror` | 14–17 | `CI: GitHub mirror` | ⬜ |
 | **5** | `docs/ci-devlog` | 18 | `Docs: CI/CD devlog, close out the plan` | ⬜ |
 
 Status: ⬜ not started · 🟦 in progress · ✅ done · ⏸ blocked
 
-Every MR: the gates in `README.md` "Development" pass locally, the MR pipeline is green. Only MR 2 is a
+Every MR: the gates in `README.md` "Development" pass locally, the MR pipeline is green. Only MR 2b is a
 release. It has to be: `rustls 0.23.43` in `rust/Cargo.lock` has RUSTSEC-2026-0285, and the fix reaches
 Lumen only through a tag (Lumen accepts the finding in `osv-scanner.toml` until 2026-11-06).
 
@@ -199,10 +200,15 @@ only delete protected tags using the web interface"), so a Maintainer can still 
 
 ## MR 2: `release/v1.3.1`
 
+MR 2 merged after step 6 alone (`5478d80`), so steps 7–11 continue as MR 2b on a fresh
+`release/v1.3.1` off `main`. Pitfall for the devlog: the squash message is "Step 5: main and v*
+protected, bite tests". GitLab takes a new MR's title from the branch's first commit, and the
+`%{title}` template then copies it. Set the MR title by hand when opening the MR.
+
 ### Step 6: `cargo-deny` (`audit`)
 
 - [x] `ci/Dockerfile`: `cargo-deny@0.20.2` (`--locked`), `IMAGE_REVISION=2`.
-- [ ] Rebuild on the runner host (`…-frb-2.13.0-r2`, `image:` already points at it). Lumen keeps `-r1`.
+- [x] Rebuild on the runner host (`…-frb-2.13.0-r2`, `image:` already points at it). Lumen keeps `-r1`.
 - [x] `rust/deny.toml` from gogdl-lib, with `allow-git = ["ssh://git@thinkcentre.home:2200/gogdl/gogdl-lib.git"]`.
       The lib's license list fits as is. `rust/Cargo.toml` gets `publish = false` and `deny.toml`
       `[licenses.private] ignore = true`: this crate is unlicensed until step 14. `gogdl-lib` `v1.2.3`
@@ -214,25 +220,33 @@ only delete protected tags using the web interface"), so a Maintainer can still 
       1.0.75 → 1.0.104), RUSTSEC-2025-0056 unmaintained `adler` (`backtrace` 0.3.69 → 0.3.76, which
       moves to `miniz_oxide` 0.8 and `adler2`), and `Unicode-DFS-2016` rejected (`unicode-ident` 1.0.12 →
       1.0.26, now `Unicode-3.0`). The last three come in through frb's `allo-isolate`.
-- [ ] The MR pipeline runs `audit` green on `-r2`.
-- [ ] Bite test: `main`'s old `rust/Cargo.lock` in a throwaway MR turns `audit` red.
+- [x] The MR pipeline runs `audit` green on `-r2`.
+- [x] Bite test: `main`'s old `rust/Cargo.lock` in a throwaway MR turns `audit` red (!6, closed).
 
 **Done when:** `audit` is green here and was red on the bite test.
 
 ### Step 7: pub lockfile check
 
-- [ ] `tool/check_lockfile.sh`, adapted from Lumen's: every `example/pubspec.lock` package is `hosted` from
+- [x] `tool/check_lockfile.sh`, adapted from Lumen's: every `example/pubspec.lock` package is `hosted` from
       `https://pub.dev` with a `sha256`, `sdk`, or the `path: ".."` bridge. Anything else fails.
-- [ ] `dart` job: run it, and use `flutter pub get --enforce-lockfile` in `example/`.
+      Locally: 53 packages ok; red on a missing `sha256`, a non-pub.dev URL, another path and a `git` source.
+- [x] `dart` job: run it, and use `flutter pub get --enforce-lockfile` in `example/`. `integration` does
+      the same, since it also runs `pub get` in `example/`.
+- [x] Bite test: a hand-edited `sha256` in a throwaway MR turns `dart` red (!7, closed): `pub get
+      --enforce-lockfile` rejects it even with a warm pub cache. `check_lockfile.sh` only checks that a hash is there.
 
 **Done when:** green here, and red on a hand-edited `sha256` in a throwaway MR.
 
 ### Step 8: OSV-Scanner (`scan`), weekly schedule
 
-- [ ] `scan` job, gogdl-lib's image and digest, over `rust/Cargo.lock` and `example/pubspec.lock`. Fails on
+- [x] `scan` job, gogdl-lib's image and digest, over `rust/Cargo.lock` and `example/pubspec.lock`. Fails on
       any `MAL-` id, and on any advisory for a **pub** package (nothing else gates those). Rust
       CVE/GHSA/RUSTSEC ids are printed and left to `audit`. Accepted findings go in `osv-scanner.toml` with
       a `reason` and an `ignoreUntil`, as in Lumen. 30-day JSON artifact.
+      Two scanner runs, one per lock file, so the exit code splits cargo from pub (the image has no jq,
+      and Lumen needed a second `scan-gate` job in Dart for that). Locally, with the job's script: both
+      locks clean; `v1.3.0`'s `Cargo.lock` prints 4 ids (rustls, anyhow, adler) and passes; a pub lock
+      with `http 0.13.0` fails on GHSA-4rgh-jx4f-qfcq, and passes once that id is in `osv-scanner.toml`.
 - [ ] Schedule "Weekly scan" on `main`, `SCHEDULE=scan`. Play it by hand: only `audit` and `scan` run.
 
 **Done when:** `scan` is green, and the schedule runs exactly those two jobs.

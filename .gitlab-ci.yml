@@ -32,7 +32,8 @@
 # Pipelines run on merge requests, on main, on vX.Y.Z tags and on manual runs from the web UI
 # (Build -> Pipelines -> Run pipeline, any branch). A branch with an open MR runs only the MR
 # pipeline, and a pushed branch without an MR runs nothing. A scheduled pipeline runs only the jobs
-# that name its SCHEDULE (`audit` on SCHEDULE=scan).
+# that name its SCHEDULE: the "Weekly scan" schedule on main (CI/CD -> Schedules, SCHEDULE=scan) runs
+# `audit` and `scan`, so an advisory published after a dependency landed is noticed.
 workflow:
   rules:
     - if: $CI_PIPELINE_SOURCE == "schedule"
@@ -189,6 +190,54 @@ audit:
     - cd rust
     - cargo deny --locked check
 
+# OSV-Scanner on both lock files, minus the accepted findings in osv-scanner.toml (each with a reason
+# and an ignoreUntil date). On rust/Cargo.lock only a known-malicious crate (MAL-) fails it: audit
+# gates the RustSec advisories through deny.toml, so the rest is only printed. On example/pubspec.lock
+# any advisory fails it, since nothing else gates pub packages. Two scanner runs, one per lock file,
+# so the exit code tells them apart: the image has no jq or dart to split one report. Exit codes above
+# 1 are scanner or network errors and fail either way. Only lock files are read: no ssh, no toolchain.
+scan:
+  stage: check
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "schedule" && $SCHEDULE == "scan"
+    - if: $CI_PIPELINE_SOURCE == "schedule"
+      when: never
+    - when: on_success
+  image:
+    name: ghcr.io/google/osv-scanner:v2.6.0@sha256:afd838850ac1a0fcc15ff4a041dc9ba11123c3f0d2666217a5f0fcf9222b55fa
+    entrypoint: [''] # the binary is /osv-scanner, not on PATH; the image has /bin/sh
+    pull_policy: if-not-present
+  cache: []
+  before_script: []
+  script:
+    - |
+      rc=0
+      /osv-scanner scan --config osv-scanner.toml --lockfile rust/Cargo.lock \
+        --format json --output-file osv-cargo.json || rc=$?
+      [ "$rc" -le 1 ] || exit "$rc"
+      grep -o '"\(MAL\|RUSTSEC\|GHSA\|CVE\)-[^"]*"' osv-cargo.json | sort -u || true # what OSV found, for the log
+      n=$(grep -o '"\(RUSTSEC\|GHSA\|CVE\)-[^"]*"' osv-cargo.json | sort -u | wc -l || true)
+      echo "rust/Cargo.lock: $n non-malicious advisory ids above, not gating here (audit gates them via deny.toml)"
+      if grep -q '"MAL-' osv-cargo.json; then echo "Known-malicious crate in rust/Cargo.lock" >&2; exit 1; fi
+    - |
+      rc=0
+      /osv-scanner scan --config osv-scanner.toml --lockfile example/pubspec.lock \
+        --format json --output-file osv-pub.json || rc=$?
+      [ "$rc" -le 1 ] || exit "$rc"
+      grep -o '"\(MAL\|GHSA\|CVE\)-[^"]*"' osv-pub.json | sort -u || true # what OSV found, for the log
+      if [ "$rc" -eq 1 ]; then
+        echo "Advisory for a package in example/pubspec.lock: bump it, or accept it in osv-scanner.toml" >&2
+        exit 1
+      fi
+      echo "example/pubspec.lock: no advisories"
+  artifacts:
+    when: always
+    expire_in: 30 days
+    paths: [osv-cargo.json, osv-pub.json]
+
+# tool/check_lockfile.sh fails on a package in example/pubspec.lock from outside pub.dev (or a path
+# other than this bridge) before anything is fetched, and `pub get --enforce-lockfile` fails if that
+# lock is stale or a package's hash changed. The root has no committed lock (it's a package).
 dart:
   stage: check
   rules: !reference [.not-scheduled, rules]
@@ -197,10 +246,11 @@ dart:
   before_script:
     - !reference [.toolchain, script]
   script:
+    - sh tool/check_lockfile.sh
     - flutter pub get
     - flutter analyze --fatal-infos
     - cd example
-    - flutter pub get
+    - flutter pub get --enforce-lockfile
     - flutter analyze --fatal-infos
 
 # Regenerates the bindings and fails if anything differs. build_runner runs explicitly
@@ -237,8 +287,9 @@ integration:
     - !reference [.ssh, script]
     - !reference [.toolchain, script]
   script:
+    - sh tool/check_lockfile.sh
     - cd example
-    - flutter pub get
+    - flutter pub get --enforce-lockfile
     - xvfb-run -a flutter test integration_test -d linux
 
 # Runs after all check jobs, on vX.Y.Z tags only, and only for a commit on main: tags go on the
