@@ -69,6 +69,10 @@ cargo clippy -- -D warnings
 cargo test
 ```
 
+Once per clone, `git config core.hooksPath .githooks` enables a pre-commit hook that runs
+`cargo fmt --check` in `rust/` when a `.rs` file under `rust/` is staged. `git commit --no-verify` skips
+it; CI still checks.
+
 In the root and in `example/`:
 
 ```sh
@@ -102,8 +106,9 @@ GitLab CI runs on the self-hosted runner, on merge requests, on `main`, on `vX.Y
 manual runs from the web UI. A pushed branch without an MR runs nothing. The `check` stage has four
 jobs: `rust`, `dart`, `codegen` and `integration`. They run in a prebuilt image (`ci/Dockerfile`,
 built with `ci/build-image.sh`), which has to be rebuilt after bumping `.fvmrc`,
-`rust/rust-toolchain.toml` or the codegen version. `.gitlab-ci.yml`'s header covers the runner and
-deploy-key setup.
+`rust/rust-toolchain.toml` or the codegen version, or after changing `ci/Dockerfile` (bump
+`IMAGE_REVISION`). Every base image is pinned by digest, `rustup-init` by sha256 and Flutter by
+commit. `.gitlab-ci.yml`'s header covers the runner and deploy-key setup.
 
 To release:
 

@@ -16,8 +16,9 @@
 # and Flutter), so none of them touches apt, rustup or the Flutter clone: the network is slow
 # and the runner is small. The runner shares the host's docker through its mounted docker.sock,
 # so the image is built on the host with `ci/build-image.sh` and jobs see it directly. Rebuild
-# it after bumping .fvmrc, rust/rust-toolchain.toml or the frb version (update `image:` below to
-# the printed name; the `.toolchain` check fails a job whose image has a stale Flutter or Rust). The runner's config.toml
+# it after bumping .fvmrc, rust/rust-toolchain.toml or the frb version, or after changing
+# ci/Dockerfile with a bumped IMAGE_REVISION (update `image:` below to the printed name; the
+# `.toolchain` check fails a job whose image has a stale Flutter or Rust). The runner's config.toml
 # (volume `gitlab-runner-config`) must not force pulls, under [runners.docker]:
 #   pull_policy = ["if-not-present"]
 # (or allowed_pull_policies including it), then `docker service update --force gitlab-runner`.
@@ -49,7 +50,7 @@ stages:
 default:
   interruptible: true # with "Auto-cancel redundant pipelines" on, a new push cancels the older run
   image:
-    name: gogdl-flutter-ci:flutter-3.47.2-rust-1.98.1-frb-2.13.0
+    name: gogdl-flutter-ci:flutter-3.47.2-rust-1.98.1-frb-2.13.0-r1
     pull_policy: if-not-present
 
 # Everything that gets cached must live inside the project dir. The toolchains are in the image
@@ -223,7 +224,7 @@ integration:
 release:
   stage: release
   image:
-    name: registry.gitlab.com/gitlab-org/release-cli:latest
+    name: registry.gitlab.com/gitlab-org/release-cli:v0.24.0@sha256:3f52d526f48e8d10625c722fa6d6423ee82aadeae1b1aa91f07b62551d96dacf
     pull_policy: if-not-present
   rules:
     - if: $CI_COMMIT_TAG =~ /^v\d+\.\d+\.\d+$/

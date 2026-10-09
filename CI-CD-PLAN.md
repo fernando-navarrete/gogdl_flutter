@@ -4,14 +4,15 @@ Work plan to bring this repo's CI/CD up to what `../gogdl-lib` runs since its CI
 (`../gogdl-lib/devlog/v1.2.x-ci-cd.md`), adapted to a Flutter + Rust bridge, plus a public push mirror to
 GitHub. It ends with `main` and the `v*` tags protected, the mirror live, and this plan turned into a devlog.
 
-The steps are short, and several share one MR: **5 MRs** in all, against the lib's 13. Inside an MR, each
+The steps are short, and several share one MR: **6 MRs** in all, against the lib's 13. Inside an MR, each
 step is one commit on the branch, and the squash leaves one commit on `main`. Bite tests run in throwaway
 MRs that are closed unmerged and don't count. Tick each checkbox as it's done.
 
 | MR | Branch | Steps | Title | Status |
 |---|---|---|---|---|
 | — | (none) | **0** | Decisions, blockers | ✅ |
-| **1** | `ci/mr-pipelines` | 1–4, then 5 (settings) | `CI: MR pipelines, pinned images, release flow` | 🟦 |
+| **1** | `ci/mr-pipelines` | 1 (merged early as `1edda62`) | `CI: MR pipelines, pinned images, release flow` | ✅ |
+| **1b** | `ci/hooks-images-release` | 2–4, then 5 (settings) | `CI: pre-commit hook, pinned images, release flow` | 🟦 |
 | **2** | `release/v1.3.1` | 6–11 | `v1.3.1: supply-chain checks, rustls 0.23.45` | ⬜ |
 | **3** | `ci/renovate` | 12–13 | `CI: Renovate` | ⬜ |
 | **4** | `ci/github-mirror` | 14–17 | `CI: GitHub mirror` | ⬜ |
@@ -116,6 +117,10 @@ Decided 2026-10-08: all recommended answers accepted.
 
 This plan is the branch's first commit.
 
+MR 1 merged after step 1 alone (`1edda62`). Steps 2–4 continue as MR 1b on `ci/hooks-images-release`,
+and step 5 follows that MR. Pitfall for the devlog: the squash message became the first commit's message
+("Add the CI/CD work plan"), not the MR title. Check the squash commit message template in step 5.
+
 ### Step 1: Pipelines on MRs and `main`, MR template
 
 - [x] `workflow:rules` copied from gogdl-lib: `schedule`, `merge_request_event`, `web`, no branch
@@ -132,21 +137,21 @@ This plan is the branch's first commit.
 
 ### Step 2: Pre-commit hook
 
-- [ ] `.githooks/pre-commit` from gogdl-lib: when a staged file matches `rust/*.rs`, run
+- [x] `.githooks/pre-commit` from gogdl-lib: when a staged file matches `rust/*.rs`, run
       `cargo fmt --check` in `rust/`. It checks and never rewrites.
-- [ ] README "Development": `git config core.hooksPath .githooks` once per clone.
+- [x] README "Development": `git config core.hooksPath .githooks` once per clone.
 
 **Done when:** a commit with a misformatted `.rs` file is refused.
 
 ### Step 3: Pin every image
 
-- [ ] `ci/Dockerfile`: `debian:bookworm-slim@sha256:…` (the digest gogdl-lib uses), and `rustup-init`
+- [x] `ci/Dockerfile`: `debian:bookworm-slim@sha256:…` (the digest gogdl-lib uses), and `rustup-init`
       `1.29.1` by sha256 instead of `sh.rustup.rs` (copy the lib's block).
-- [ ] Flutter: clone the tag, then check that `git rev-parse HEAD` equals a `FLUTTER_COMMIT` passed in by
+- [x] Flutter: clone the tag, then check that `git rev-parse HEAD` equals a `FLUTTER_COMMIT` passed in by
       `ci/build-image.sh` (a small table in the script keyed by version). A moved tag fails the build.
-- [ ] `ci/build-image.sh`: `IMAGE_REVISION=1`, tag `…-frb-2.13.0-r1`. The `.toolchain` check still compares
+- [x] `ci/build-image.sh`: `IMAGE_REVISION=1`, tag `…-frb-2.13.0-r1`. The `.toolchain` check still compares
       versions only.
-- [ ] `release`: `release-cli:v0.24.0@sha256:…` (gogdl-lib's digest).
+- [x] `release`: `release-cli:v0.24.0@sha256:…` (gogdl-lib's digest).
 - [ ] Rebuild on the runner host and update `image:`. **Lumen:** its `.ci-image` keeps the old tag until
       Lumen bumps it in its own MR. Both tags can sit on the host, so nothing breaks.
 
@@ -164,7 +169,7 @@ This plan is the branch's first commit.
 
 **Done when:** merged. MR 2 is the first release that follows it.
 
-### Step 5: Protect `main` and `v*` (settings, right after MR 1 merges)
+### Step 5: Protect `main` and `v*` (settings, right after MR 1b merges)
 
 Done early, not last as in the lib, because of two of its pitfalls: Renovate's protected variables only
 reach protected refs (its step 9), and a tag bite test run before `v*` is protected really does move the
