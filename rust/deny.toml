@@ -1,0 +1,48 @@
+# cargo-deny config, run by the `audit` job as `cargo deny --locked check` in rust/.
+# Docs: https://embarkstudios.github.io/cargo-deny/
+
+# No `targets` filter: consumers build for Android, Windows and macOS through the bridge,
+# so every platform's crates count.
+[graph]
+
+[advisories]
+# An accepted advisory goes in `ignore` with a reason, plus a GAPS entry.
+ignore = []
+yanked = "deny"
+unmaintained = "all"
+unsound = "all"
+
+# crates.io, plus gogdl-lib from the LAN (D10 in CI-CD-PLAN.md). Any other registry or git source
+# fails: the Rust counterpart of a lockfile integrity check.
+[sources]
+unknown-registry = "deny"
+unknown-git = "deny"
+allow-registry = ["https://github.com/rust-lang/crates.io-index"]
+allow-git = ["ssh://git@thinkcentre.home:2200/gogdl/gogdl-lib.git"]
+
+# One acceptable side of every `OR` in the dependency graph.
+[licenses]
+allow = [
+    "MIT",
+    "Apache-2.0",
+    "Unicode-3.0",         # the unicode data crates (icu_*, unicode-ident)
+    "ISC",                 # rustls-webpki, untrusted, aws-lc-*, ring
+    "BSD-3-Clause",        # subtle, aws-lc-sys
+    "Zlib",                # zlib-rs
+    "CDLA-Permissive-2.0", # webpki-root-certs
+]
+
+# This crate is `publish = false` and has no license yet (the mirror's step adds MIT OR Apache-2.0).
+[licenses.private]
+ignore = true
+
+# gogdl-lib v1.2.3 predates its `license` field (added in gogdl-lib 40cceb1, after the tag) but is the
+# same author's MIT OR Apache-2.0 crate. Drop this when the pin moves to a tag that has the field.
+[[licenses.clarify]]
+crate = "gogdl-lib"
+expression = "MIT OR Apache-2.0"
+license-files = []
+
+[bans]
+multiple-versions = "warn"
+wildcards = "allow"

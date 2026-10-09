@@ -53,3 +53,9 @@ RUN test -n "$FLUTTER_VERSION" && test -n "$FLUTTER_COMMIT" \
  && flutter config --no-analytics >/dev/null \
  && flutter precache --linux \
  && echo "$FLUTTER_VERSION" > /opt/flutter-version
+
+# cargo-deny for the `audit` job, built from source so the job installs nothing. When bumping,
+# take a version at least 7 days old from crates.io, and bump IMAGE_REVISION in build-image.sh.
+ARG CARGO_DENY_VERSION=0.20.2
+RUN cargo install --locked "cargo-deny@$CARGO_DENY_VERSION" \
+ && rm -rf /opt/cargo/registry /opt/cargo/git

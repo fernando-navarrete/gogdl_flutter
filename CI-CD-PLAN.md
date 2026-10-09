@@ -13,8 +13,8 @@ MRs that are closed unmerged and don't count. Tick each checkbox as it's done.
 | — | (none) | **0** | Decisions, blockers | ✅ |
 | **1** | `ci/mr-pipelines` | 1 (merged early as `1edda62`) | `CI: MR pipelines, pinned images, release flow` | ✅ |
 | **1b** | `ci/hooks-images-release` | 2–3 (merged as `3f2bb18`) | `CI: pre-commit hook, pinned images` | ✅ |
-| **1c** | `ci/release-flow` | 4, then 5 (settings) | `CI: release flow for a protected main` | 🟦 |
-| **2** | `release/v1.3.1` | 6–11 | `v1.3.1: supply-chain checks, rustls 0.23.45` | ⬜ |
+| **1c** | `ci/release-flow` | 4 (merged as `c9e48b2`), then 5 (settings) | `CI: release flow for a protected main` | ✅ |
+| **2** | `release/v1.3.1` | 6–11 | `v1.3.1: supply-chain checks, rustls 0.23.45` | 🟦 |
 | **3** | `ci/renovate` | 12–13 | `CI: Renovate` | ⬜ |
 | **4** | `ci/github-mirror` | 14–17 | `CI: GitHub mirror` | ⬜ |
 | **5** | `docs/ci-devlog` | 18 | `Docs: CI/CD devlog, close out the plan` | ⬜ |
@@ -119,10 +119,11 @@ Decided 2026-10-08: all recommended answers accepted.
 This plan is the branch's first commit.
 
 MR 1 merged after step 1 alone (`1edda62`). Steps 2–3 merged as MR 1b on `ci/hooks-images-release`
-(`3f2bb18`), step 4 is MR 1c on `ci/release-flow`, and step 5 follows that MR. Pitfall for the devlog:
+(`3f2bb18`), step 4 as MR 1c on `ci/release-flow` (`c9e48b2`), and step 5 followed that MR (settings
+only, ticked on MR 2's branch). Pitfall for the devlog:
 the squash message became the first commit's message ("Add the CI/CD work plan"), not the MR title, and
-it happened again in MR 1b ("CI: pre-commit hook"). Step 5 must set the squash commit message template
-to `%{title}`.
+it happened again in MR 1b ("CI: pre-commit hook"). Step 5 set the squash commit message template to
+`%{title}`.
 
 ### Step 1: Pipelines on MRs and `main`, MR template
 
@@ -133,8 +134,8 @@ to `%{title}`.
 - [x] `.gitlab/merge_request_templates/Default.md`: Summary; gates pass locally; `CHANGELOG.md` line if
       Lumen sees a change; bindings regenerated if `rust/src/api/` changed; `rust/Cargo.lock` or
       `example/pubspec.lock` changed → new packages listed (the bar comes in step 10).
-- [ ] Project settings: merge method per D1, delete source branch, auto-cancel redundant pipelines,
-      pipelines must succeed.
+- [x] Project settings: merge method per D1, delete source branch, auto-cancel redundant pipelines,
+      pipelines must succeed. (Done in step 5.)
 
 **Done when:** this MR's own pipeline runs the four jobs, and a pushed branch with no MR runs nothing.
 
@@ -178,15 +179,21 @@ Done early, not last as in the lib, because of two of its pitfalls: Renovate's p
 reach protected refs (its step 9), and a tag bite test run before `v*` is protected really does move the
 tag (its step 12).
 
-- [ ] Protected branch `main`: push "No one", merge Maintainers, no force push.
-- [ ] MR settings: all threads resolved, skipped pipelines not successful, squash commit message
+- [x] Protected branch `main`: push "No one", merge Maintainers, no force push.
+- [x] MR settings: all threads resolved, skipped pipelines not successful, squash commit message
       template `%{title}`.
-- [ ] Protected tags `v*`: create Maintainers. **Check that `v*` is listed before** running any tag test.
-- [ ] Bite tests: a direct push to `main` is rejected; an MR with a failing test can't merge;
+- [x] Protected tags `v*`: create Maintainers. **Check that `v*` is listed before** running any tag test.
+- [x] Bite tests: a direct push to `main` is rejected; an MR with a failing test can't merge;
       `git push --delete origin v1.3.0` is rejected. No force-move test (B1 shows what that costs).
 - [ ] README: `main` and `v*` are protected. That line goes in MR 2.
 
 **Done when:** all three bite tests behave as expected.
+
+*Done 2026-10-09.* A direct push to `main` was rejected ("not allowed to push code to protected
+branches"). Throwaway MR !4 (a panicking test in `rust/src/error_kind.rs`) went red with no Merge
+button. It was closed and its branch deleted. `git push --delete origin v1.3.0` was rejected ("You can
+only delete protected tags using the web interface"), so a Maintainer can still delete a tag from the UI.
+`git ls-remote` on `main` and every `v*` tag matched the pre-test baseline afterwards.
 
 ---
 
@@ -194,12 +201,20 @@ tag (its step 12).
 
 ### Step 6: `cargo-deny` (`audit`)
 
-- [ ] `ci/Dockerfile`: `cargo-deny@0.20.2` (`--locked`), `IMAGE_REVISION=2`, rebuild.
-- [ ] `deny.toml` from gogdl-lib, with `allow-git = ["ssh://git@thinkcentre.home:2200/gogdl/gogdl-lib.git"]`
-      and the license list adjusted from `cargo deny list`.
-- [ ] `audit` job: `.ssh` (metadata fetches `gogdl-lib`), `cd rust && cargo deny --locked check`, cached
+- [x] `ci/Dockerfile`: `cargo-deny@0.20.2` (`--locked`), `IMAGE_REVISION=2`.
+- [ ] Rebuild on the runner host (`…-frb-2.13.0-r2`, `image:` already points at it). Lumen keeps `-r1`.
+- [x] `rust/deny.toml` from gogdl-lib, with `allow-git = ["ssh://git@thinkcentre.home:2200/gogdl/gogdl-lib.git"]`.
+      The lib's license list fits as is. `rust/Cargo.toml` gets `publish = false` and `deny.toml`
+      `[licenses.private] ignore = true`: this crate is unlicensed until step 14. `gogdl-lib` `v1.2.3`
+      predates its `license` field, so a `[[licenses.clarify]]` says `MIT OR Apache-2.0` until the pin moves.
+- [x] `audit` job: `.ssh` (metadata fetches `gogdl-lib`), `cd rust && cargo deny --locked check`, cached
       advisory db. Runs on MRs, `main`, tags and `SCHEDULE=scan`.
-- [ ] It goes red on RUSTSEC-2026-0285 first: `cargo update -p rustls --precise 0.23.45` (the lib's fix).
+- [x] Red first, locally, on four findings, all fixed by semver-compatible lock bumps (each version over
+      7 days old): RUSTSEC-2026-0285 (`rustls` 0.23.43 → 0.23.45), RUSTSEC-2026-0190 unsound (`anyhow`
+      1.0.75 → 1.0.104), RUSTSEC-2025-0056 unmaintained `adler` (`backtrace` 0.3.69 → 0.3.76, which
+      moves to `miniz_oxide` 0.8 and `adler2`), and `Unicode-DFS-2016` rejected (`unicode-ident` 1.0.12 →
+      1.0.26, now `Unicode-3.0`). The last three come in through frb's `allo-isolate`.
+- [ ] The MR pipeline runs `audit` green on `-r2`.
 - [ ] Bite test: `main`'s old `rust/Cargo.lock` in a throwaway MR turns `audit` red.
 
 **Done when:** `audit` is green here and was red on the bite test.

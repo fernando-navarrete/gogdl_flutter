@@ -32,7 +32,7 @@
 # Pipelines run on merge requests, on main, on vX.Y.Z tags and on manual runs from the web UI
 # (Build -> Pipelines -> Run pipeline, any branch). A branch with an open MR runs only the MR
 # pipeline, and a pushed branch without an MR runs nothing. A scheduled pipeline runs only the jobs
-# that name its SCHEDULE.
+# that name its SCHEDULE (`audit` on SCHEDULE=scan).
 workflow:
   rules:
     - if: $CI_PIPELINE_SOURCE == "schedule"
@@ -50,7 +50,7 @@ stages:
 default:
   interruptible: true # with "Auto-cancel redundant pipelines" on, a new push cancels the older run
   image:
-    name: gogdl-flutter-ci:flutter-3.47.2-rust-1.98.1-frb-2.13.0-r1
+    name: gogdl-flutter-ci:flutter-3.47.2-rust-1.98.1-frb-2.13.0-r2
     pull_policy: if-not-present
 
 # Everything that gets cached must live inside the project dir. The toolchains are in the image
@@ -165,6 +165,29 @@ rust:
     - cargo fmt --check
     - cargo clippy --locked --all-targets -- -D warnings
     - cargo test --locked
+
+# RustSec advisories, sources (crates.io plus gogdl-lib), licenses and duplicate versions, per
+# rust/deny.toml. cargo-deny is baked into the image (ci/Dockerfile). It reads the metadata of every
+# crate, so gogdl-lib is fetched over ssh. Its advisory database lands under CARGO_HOME, so it is
+# cached; each run then fetches only the new advisories.
+audit:
+  stage: check
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "schedule" && $SCHEDULE == "scan"
+    - if: $CI_PIPELINE_SOURCE == "schedule"
+      when: never
+    - when: on_success
+  cache:
+    - *cache-cargo
+    - key: advisory-db
+      paths:
+        - .ci/cargo/advisory-dbs/
+  before_script:
+    - !reference [.ssh, script]
+    - !reference [.toolchain, script]
+  script:
+    - cd rust
+    - cargo deny --locked check
 
 dart:
   stage: check
