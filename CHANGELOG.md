@@ -1,3 +1,13 @@
+## 1.3.2
+
+Same code and dependencies as `1.3.1`. No change to the Dart API or to the progress events Dart
+receives.
+
+* Fixed the `release` job: it fetched `main` for its on-`main` check before trusting the runner's
+  private CA, so `v1.3.1`'s release failed on a self-signed certificate. The `v1.3.1` tag stands
+  but has no GitLab release. Lumen: pin `v1.3.2` and drop the `RUSTSEC-2026-0285` entry from its
+  `osv-scanner.toml`.
+
 ## 1.3.1
 
 No change to the Dart API or to the progress events Dart receives.

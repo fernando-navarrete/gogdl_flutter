@@ -16,7 +16,8 @@ MRs that are closed unmerged and don't count. Tick each checkbox as it's done.
 | **1c** | `ci/release-flow` | 4 (merged as `c9e48b2`), then 5 (settings) | `CI: release flow for a protected main` | ✅ |
 | **2** | `release/v1.3.1` | 6 (merged as `5478d80`) | `CI: cargo-deny audit job` | ✅ |
 | **2b** | `release/v1.3.1` | 7–8 (merged as `f1d7b93`) | `CI: pub lockfile check, OSV scan` | ✅ |
-| **2c** | `release/v1.3.1` | 9–11 | `v1.3.1: supply-chain checks, rustls 0.23.45` | 🟦 |
+| **2c** | `release/v1.3.1` | 9–11 (merged as `50c48f2`) | `v1.3.1: supply-chain checks, rustls 0.23.45` | ✅ |
+| **2d** | `release/v1.3.2` | 11 (release fix) | `v1.3.2: release job trusts the CA before its fetch` | 🟦 |
 | **3** | `ci/renovate` | 12–13 | `CI: Renovate` | ⬜ |
 | **4** | `ci/github-mirror` | 14–17 | `CI: GitHub mirror` | ⬜ |
 | **5** | `docs/ci-devlog` | 18 | `Docs: CI/CD devlog, close out the plan` | ⬜ |
@@ -300,9 +301,22 @@ it in step 13 and the mirror token in step 17. 64 crates have a `build.rs` or pr
 - [ ] Merge, tag `v1.3.1` on `main`, and check the tag pipeline: every check job, then `release`. This is
       the first real run of a `needs` + on-`main` release in either repo, which closes gogdl-lib's GAPS
       entry for it in spirit; note it there.
-- [ ] Tell Lumen: pin `v1.3.1`, and drop its `RUSTSEC-2026-0285` entry from `osv-scanner.toml`.
+- [ ] Tell Lumen: pin `v1.3.2` (see below), and drop its `RUSTSEC-2026-0285` entry from `osv-scanner.toml`.
 
-**Done when:** the `v1.3.1` release exists and its tag pipeline is green.
+*`v1.3.1` tagged 2026-10-08 on `50c48f2`.* Every check job was green, but `release` failed:
+its `git fetch` of `main` (for the on-`main` check) ran before the step that adds the runner's private
+CA to the trust store, so git hit "SSL certificate problem: self-signed certificate". gogdl-lib's
+`release` has the same order, so its next tag fails too. A tag pipeline runs the tagged commit's
+`.gitlab-ci.yml`, so a retry can't pick up a fix: the `v1.3.1` tag stands with no GitLab release, and
+MR 2d moves the CA step before the fetch and ships it as `v1.3.2` (same code). Reproduced and checked
+locally in the pinned `release-cli` image: the fetch fails without the CA and gets past TLS with it.
+
+- [ ] MR 2d merged, `v1.3.2` tagged, its `release` green.
+- [ ] gogdl-lib: the same reorder, plus its GAPS entry ("`needs` and on-`main` rule untested"): first
+      real run here, which found this bug.
+- [ ] Lumen pins `v1.3.2` (not `v1.3.1`).
+
+**Done when:** the `v1.3.2` release exists and its tag pipeline is green.
 
 ---
 
