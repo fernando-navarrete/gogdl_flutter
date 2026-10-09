@@ -200,6 +200,30 @@ needs it; ROADMAP.md schedules each item to land before that stage starts.
   (see `analysis_options.yaml`), with generated code excluded and `example/` inheriting them.
   Clippy stays at `-D warnings`, without the pedantic group.
 
+### CI/CD
+
+What the CI/CD line (`devlog/v1.3.x-ci-cd.md`) left open.
+
+- [ ] **P2 — Runner load not measured.** MR pipelines compile the crate in `rust` and `codegen` and
+  build the Linux app in `integration` (D3). If the runner can't keep up, make `integration` manual on
+  MRs and keep it on `main` and tags.
+- [ ] **P2 — No `downstream` job** (D9). Lumen's `bridge-lock` scan covers this repo's `Cargo.lock`,
+  and a breaking change ships with Lumen's adopting MR, so nothing builds Lumen against an unreleased
+  bridge.
+- [ ] **P2 — Token expiries are calendar reminders only.** `RENOVATE_TOKEN`, `GITHUB_COM_TOKEN` and the
+  GitHub mirror token expire, and their dates aren't recorded here. An expired mirror token fails
+  silently until someone looks at the mirror settings.
+- [ ] **P2 — The first toolchain bump is untried.** Flutter, Rust and frb move by hand across this repo
+  and Lumen (D4): `ci/build-image.sh` with a new `FLUTTER_COMMIT` and `-rN`, `image:` in both repos,
+  `.fvmrc`, `rust/rust-toolchain.toml`, Renovate's `constraints`.
+- [ ] **P2 — The GitHub rulesets don't stop the owner moving a tag.** Their bypass is the Repository
+  admin role, so the mirror can push a restore (gogdl-lib's B1). GitLab's `v*` protection is the guard;
+  compare `git ls-remote` on both sides after any tag incident.
+- [ ] **P2 — `tool/check_lib_pin.sh` hasn't run in a tag pipeline yet.** Tested locally and in the
+  `release-cli` image; the next tag is its first real run.
+- [ ] **P1 — Lumen still pins `v1.3.0`.** It should pin `v1.3.2` (not `v1.3.1`, which has no GitLab
+  release) and drop its `RUSTSEC-2026-0285` entry from `osv-scanner.toml`, which expires 2026-11-06.
+
 ## 7. Requests for `gogdl-lib`
 
 Consolidated from the **[lib]** items above, in the order this repo needs them (see ROADMAP.md's

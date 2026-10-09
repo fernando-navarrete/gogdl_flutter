@@ -12,7 +12,7 @@ yanked = "deny"
 unmaintained = "all"
 unsound = "all"
 
-# crates.io, plus gogdl-lib from the LAN (D10 in CI-CD-PLAN.md). Any other registry or git source
+# crates.io, plus gogdl-lib from the LAN (D10 in devlog/v1.3.x-ci-cd.md). Any other registry or git source
 # fails: the Rust counterpart of a lockfile integrity check.
 [sources]
 unknown-registry = "deny"

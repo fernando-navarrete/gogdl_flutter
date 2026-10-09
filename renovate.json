@@ -1,6 +1,6 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "description": "Weekly, minor and patch grouped, each release at least 7 days old (security fixes excepted). Majors and 0.x minors (cargo) are held back. Lock files only (CI-CD-PLAN.md D5). Flutter, Rust, frb, gogdl-lib and the local CI image move by hand, together with Lumen (D4).",
+  "description": "Weekly, minor and patch grouped, each release at least 7 days old (security fixes excepted). Majors and 0.x minors (cargo) are held back. Lock files only (D5 in devlog/v1.3.x-ci-cd.md). Flutter, Rust, frb, gogdl-lib and the local CI image move by hand, together with Lumen (D4).",
   "extends": ["config:recommended"],
   "enabledManagers": ["cargo", "pub", "gitlabci", "dockerfile"],
   "schedule": ["before 6am on monday"],
