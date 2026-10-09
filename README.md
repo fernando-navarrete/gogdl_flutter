@@ -58,6 +58,10 @@ are planned for `v1.5.0` (see [ROADMAP.md](ROADMAP.md)).
 - `hook/build.dart`: the Native Assets build hook.
 - `example/`: an offline smoke app and its Linux integration test.
 - `ci/`, `tool/`: the CI image and the release gate. See below.
+- `SECURITY.md`: what a new crate or pub package has to meet, and what to do if one is compromised.
+- `rust/deny.toml`, `osv-scanner.toml`, `.gitleaks.toml`: config of the `audit`, `scan` and `secrets`
+  CI jobs (advisories, sources and licenses; accepted findings; secret rules).
+- `.githooks/`: the pre-commit hook (see "Development").
 
 ## Development
 
@@ -103,12 +107,25 @@ regenerates and fails on any diff.
 ## CI and releases
 
 GitLab CI runs on the self-hosted runner, on merge requests, on `main`, on `vX.Y.Z` tags and for
-manual runs from the web UI. A pushed branch without an MR runs nothing. The `check` stage has four
-jobs: `rust`, `dart`, `codegen` and `integration`. They run in a prebuilt image (`ci/Dockerfile`,
-built with `ci/build-image.sh`), which has to be rebuilt after bumping `.fvmrc`,
-`rust/rust-toolchain.toml` or the codegen version, or after changing `ci/Dockerfile` (bump
-`IMAGE_REVISION`). Every base image is pinned by digest, `rustup-init` by sha256 and Flutter by
-commit. `.gitlab-ci.yml`'s header covers the runner and deploy-key setup.
+manual runs from the web UI. A pushed branch without an MR runs nothing. `main` and the `v*` tags are
+protected: everything lands through an MR with a green pipeline, and only Maintainers create tags.
+The `check` stage has seven jobs:
+
+- `rust`: `cargo fmt --check`, clippy and the tests.
+- `dart`: `tool/check_lockfile.sh`, `pub get --enforce-lockfile` and `flutter analyze` in the root
+  and `example/`.
+- `codegen`: regenerates the bindings and fails on any diff.
+- `integration`: builds the Linux example and runs its integration test under xvfb.
+- `audit`: `cargo deny` per `rust/deny.toml` (advisories, sources, licenses).
+- `scan`: OSV-Scanner on `rust/Cargo.lock` and `example/pubspec.lock`, minus what
+  `osv-scanner.toml` accepts.
+- `secrets`: gitleaks over the MR's commits, or the whole history on `main` and tags.
+
+The "Weekly scan" schedule on `main` runs only `audit` and `scan`, so a new advisory for a locked
+package is noticed. The jobs run in a prebuilt image (`ci/Dockerfile`, built with
+`ci/build-image.sh`), which has to be rebuilt after bumping `.fvmrc`, `rust/rust-toolchain.toml` or
+the codegen version, or after changing `ci/Dockerfile` (bump `IMAGE_REVISION`). Every base image is
+pinned by digest, `rustup-init` by sha256 and Flutter by commit. `.gitlab-ci.yml`'s header covers the runner and deploy-key setup.
 
 To release:
 
@@ -116,7 +133,9 @@ To release:
    `rust/Cargo.toml`, along with the two lock files that record it (`rust/Cargo.lock` and
    `example/pubspec.lock`). Add a `## X.Y.Z` section to `CHANGELOG.md` and tick the item in
    `GAPS.md`.
-2. Open an MR titled `vX.Y.Z: ...`, wait for a green pipeline, and merge it.
+2. Open an MR titled `vX.Y.Z: ...`, wait for a green pipeline, and merge it. GitLab takes a new
+   MR's title from the branch's first commit, and the squash commit copies the title, so check both
+   the title and the squash message in the merge widget before merging.
 3. `git fetch`, tag the merged commit (`git tag vX.Y.Z origin/main`) and push the tag.
 4. Check that the tag pipeline is green: every check job, then `release`.
 

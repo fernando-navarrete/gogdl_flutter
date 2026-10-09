@@ -1,3 +1,19 @@
+## 1.3.1
+
+No change to the Dart API or to the progress events Dart receives.
+
+* `rustls` 0.23.43 → 0.23.45 in `rust/Cargo.lock`, for RUSTSEC-2026-0285. Lumen: pin `v1.3.1` and
+  drop the `RUSTSEC-2026-0285` entry from its `osv-scanner.toml`.
+* Other semver-compatible lock bumps found by the new `audit` job: `anyhow` 1.0.104
+  (RUSTSEC-2026-0190), `backtrace` 0.3.76 (`adler2` replaces the unmaintained `adler`) and
+  `unicode-ident` 1.0.26 (now `Unicode-3.0`).
+* CI runs on merge requests and `main`, with every image pinned by digest. New check jobs: `audit`
+  (`cargo deny`, `rust/deny.toml`), `scan` (OSV-Scanner on both lock files, also weekly) and
+  `secrets` (gitleaks). `dart` and `integration` check `example/pubspec.lock`'s sources and run
+  `pub get --enforce-lockfile`. `release` waits for every check job and needs the tag on `main`.
+* `SECURITY.md`: what a new crate or pub package has to meet, and what to do if one is compromised.
+  `rust/Cargo.toml` is `publish = false`.
+
 ## 1.3.0
 
 Download management for Lumen `v1.3.0`: cancelling jobs, error kinds, install size and free space,

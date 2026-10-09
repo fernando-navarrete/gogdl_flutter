@@ -235,6 +235,34 @@ scan:
     expire_in: 30 days
     paths: [osv-cargo.json, osv-pub.json]
 
+# gitleaks over git history, config in .gitleaks.toml (default rules, no allowlist). On an MR it
+# scans only the MR's commits; on main, tags and web runs, what HEAD, the remote branches and the
+# tags reach (GIT_DEPTH 0: the diff base and the full scan both need every commit). Not `--all`:
+# that also walks GitLab's hidden refs/merge-requests/* and refs/pipelines/*, which outlive a
+# closed MR. Findings are redacted, so the report is safe to keep. Not scheduled: the image is
+# pinned, so a weekly rerun would find nothing new.
+secrets:
+  stage: check
+  rules: !reference [.not-scheduled, rules]
+  image:
+    name: ghcr.io/gitleaks/gitleaks:v8.30.1@sha256:c00b6bd0aeb3071cbcb79009cb16a60dd9e0a7c60e2be9ab65d25e6bc8abbb7f
+    entrypoint: [''] # the binary is gitleaks, on PATH
+    pull_policy: if-not-present
+  variables:
+    GIT_DEPTH: 0
+  cache: []
+  before_script: []
+  script:
+    - git config --global --add safe.directory "$CI_PROJECT_DIR"
+    - |
+      range=""
+      if [ -n "${CI_MERGE_REQUEST_DIFF_BASE_SHA:-}" ]; then range="$CI_MERGE_REQUEST_DIFF_BASE_SHA..HEAD"; else range="HEAD --remotes --tags"; fi
+      gitleaks git . --config .gitleaks.toml --log-opts="$range" --redact --no-banner --exit-code 1 --report-format json --report-path gitleaks.json
+  artifacts:
+    when: always
+    expire_in: 30 days
+    paths: [gitleaks.json]
+
 # tool/check_lockfile.sh fails on a package in example/pubspec.lock from outside pub.dev (or a path
 # other than this bridge) before anything is fetched, and `pub get --enforce-lockfile` fails if that
 # lock is stale or a package's hash changed. The root has no committed lock (it's a package).
@@ -303,11 +331,14 @@ release:
     pull_policy: if-not-present
   rules:
     - if: $CI_COMMIT_TAG =~ /^v\d+\.\d+\.\d+$/
-  needs: # every check job; MR 2 adds audit, scan and secrets
+  needs: # every check job
     - { job: rust, artifacts: false }
     - { job: dart, artifacts: false }
     - { job: codegen, artifacts: false }
     - { job: integration, artifacts: false }
+    - { job: audit, artifacts: false }
+    - { job: scan, artifacts: false }
+    - { job: secrets, artifacts: false }
   variables:
     GIT_DEPTH: 0 # the ancestry check needs history
   cache: []

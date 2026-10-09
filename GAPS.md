@@ -175,6 +175,8 @@ needs it; ROADMAP.md schedules each item to land before that stage starts.
   still open: the cargokit mechanism this pointed to is gone, and `native_toolchain_rust` has no
   precompiled-binary support. Deferred to `v1.5.0`, which needs a prebuilt `.so` for Lumen's
   packaging anyway.
+  Since `v1.3.1`, `release` also waits for `audit`, `scan` and `secrets`, and the tag must be on
+  `main`.
 - [ ] **P1 — The build isn't reproducible outside the LAN.** `gogdl-lib` is a git dependency over
   `ssh://git@thinkcentre.home:2200`, the same situation Lumen documented and deferred in its
   `v1.1.0`. CI on the self-hosted runner works around it with a deploy key.

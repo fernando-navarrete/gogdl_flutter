@@ -9,7 +9,7 @@ under.
 - **Patch** (`1.x.y`): one tag per small, self-contained fix or addition.
 - **Minor** (`1.x.0`): a big update, meaning a feature set or cross-cutting refactor. Patches then
   continue from `.1` under that minor.
-- Tags use the existing `vX.Y.Z` format. `v1.3.0` is the newest tag, so the next stage is
+- Tags use the existing `vX.Y.Z` format. `v1.3.1` is the newest tag, so the next stage is
   **`v1.4.0`**.
 - For each release: bump `version:` in `pubspec.yaml` **and** `version` in `rust/Cargo.toml` to
   match, tick the item(s) in `GAPS.md` and add a `CHANGELOG.md` entry on a release branch, merge it

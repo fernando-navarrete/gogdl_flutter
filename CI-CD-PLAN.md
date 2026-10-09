@@ -15,14 +15,15 @@ MRs that are closed unmerged and don't count. Tick each checkbox as it's done.
 | **1b** | `ci/hooks-images-release` | 2–3 (merged as `3f2bb18`) | `CI: pre-commit hook, pinned images` | ✅ |
 | **1c** | `ci/release-flow` | 4 (merged as `c9e48b2`), then 5 (settings) | `CI: release flow for a protected main` | ✅ |
 | **2** | `release/v1.3.1` | 6 (merged as `5478d80`) | `CI: cargo-deny audit job` | ✅ |
-| **2b** | `release/v1.3.1` | 7–11 | `v1.3.1: supply-chain checks, rustls 0.23.45` | 🟦 |
+| **2b** | `release/v1.3.1` | 7–8 (merged as `f1d7b93`) | `CI: pub lockfile check, OSV scan` | ✅ |
+| **2c** | `release/v1.3.1` | 9–11 | `v1.3.1: supply-chain checks, rustls 0.23.45` | 🟦 |
 | **3** | `ci/renovate` | 12–13 | `CI: Renovate` | ⬜ |
 | **4** | `ci/github-mirror` | 14–17 | `CI: GitHub mirror` | ⬜ |
 | **5** | `docs/ci-devlog` | 18 | `Docs: CI/CD devlog, close out the plan` | ⬜ |
 
 Status: ⬜ not started · 🟦 in progress · ✅ done · ⏸ blocked
 
-Every MR: the gates in `README.md` "Development" pass locally, the MR pipeline is green. Only MR 2b is a
+Every MR: the gates in `README.md` "Development" pass locally, the MR pipeline is green. Only MR 2c is a
 release. It has to be: `rustls 0.23.43` in `rust/Cargo.lock` has RUSTSEC-2026-0285, and the fix reaches
 Lumen only through a tag (Lumen accepts the finding in `osv-scanner.toml` until 2026-11-06).
 
@@ -186,7 +187,7 @@ tag (its step 12).
 - [x] Protected tags `v*`: create Maintainers. **Check that `v*` is listed before** running any tag test.
 - [x] Bite tests: a direct push to `main` is rejected; an MR with a failing test can't merge;
       `git push --delete origin v1.3.0` is rejected. No force-move test (B1 shows what that costs).
-- [ ] README: `main` and `v*` are protected. That line goes in MR 2.
+- [x] README: `main` and `v*` are protected. Added in step 11.
 
 **Done when:** all three bite tests behave as expected.
 
@@ -204,6 +205,11 @@ MR 2 merged after step 6 alone (`5478d80`), so steps 7–11 continue as MR 2b on
 `release/v1.3.1` off `main`. Pitfall for the devlog: the squash message is "Step 5: main and v*
 protected, bite tests". GitLab takes a new MR's title from the branch's first commit, and the
 `%{title}` template then copies it. Set the MR title by hand when opening the MR.
+
+MR 2b merged after step 8 (`f1d7b93`), so steps 9–11 continue as MR 2c on a fresh `release/v1.3.1`
+off `main`. The same pitfall hit again: the squash message is "Plan: MR 2 merged early with step 6, MR 2b
+for steps 7-11", the branch's first commit, although the MR was opened after the warning above. For
+the devlog: retitle the MR in the UI before merging, and check the squash message in the merge widget.
 
 ### Step 6: `cargo-deny` (`audit`)
 
@@ -247,7 +253,8 @@ protected, bite tests". GitLab takes a new MR's title from the branch's first co
       and Lumen needed a second `scan-gate` job in Dart for that). Locally, with the job's script: both
       locks clean; `v1.3.0`'s `Cargo.lock` prints 4 ids (rustls, anyhow, adler) and passes; a pub lock
       with `http 0.13.0` fails on GHSA-4rgh-jx4f-qfcq, and passes once that id is in `osv-scanner.toml`.
-- [ ] Schedule "Weekly scan" on `main`, `SCHEDULE=scan`. Play it by hand: only `audit` and `scan` run.
+- [x] Schedule "Weekly scan" on `main`, `SCHEDULE=scan`. Play it by hand: only `audit` and `scan` run.
+      Played 2026-10-09 after MR 2b merged: exactly those two jobs ran.
 
 **Done when:** `scan` is green, and the schedule runs exactly those two jobs.
 
@@ -255,33 +262,41 @@ protected, bite tests". GitLab takes a new MR's title from the branch's first co
 
 Must come before MR 4, since the mirror publishes the whole history.
 
-- [ ] Local `gitleaks git --log-opts="--all"` over all 119 commits and every tag. Review each finding
+- [x] Local `gitleaks git --log-opts="--all"` over all 119 commits and every tag. Review each finding
       (frb-generated code, test fixtures in `rust/src`). A real leak means stop and decide before any mirror.
-- [ ] `.gitleaks.toml`: default rules, plus allowlist entries only for reviewed false positives, each with
-      a reason.
-- [ ] `secrets` job copied from gogdl-lib (MR range on MRs, `HEAD --remotes --tags` otherwise).
-- [ ] Bite test: a fake `ghp_` token in a throwaway MR turns it red. Close it and delete the branch.
+      Run 2026-10-08 with the job's image: 155 commits (every branch, `origin/*`, all 43 tags; the
+      history grew past 119), **no findings**.
+- [x] `.gitleaks.toml`: default rules, plus allowlist entries only for reviewed false positives, each with
+      a reason. Nothing to allowlist, so default rules only, as in gogdl-lib.
+- [x] `secrets` job copied from gogdl-lib (MR range on MRs, `HEAD --remotes --tags` otherwise).
+      Locally with the job's command: both ranges exit 0, and a commit with a fake `ghp_` token exits 1.
+- [x] Bite test: a fake `ghp_` token in a throwaway MR turns it red. Close it and delete the branch.
+      !10 went red on `secrets` while !9 (this branch) was green. The branch is deleted.
 
 **Done when:** history is clean or allowlisted with reasons, and the bite test went red.
 
 ### Step 10: `SECURITY.md`
 
-- [ ] From gogdl-lib's: adding a crate (7 days, `cargo add <crate>@=<ver>`, `build.rs`/proc macro named
+- [x] From gogdl-lib's: adding a crate (7 days, `cargo add <crate>@=<ver>`, `build.rs`/proc macro named
       in the MR) **and** a pub package (pub.dev, verified publisher, 7 days, dev dependency where possible:
       Lumen's list). Dev machines. If a package we use is compromised: rotate `GOGDL_LIB_DEPLOY_KEY_B64`,
       the Renovate tokens and the mirror token; pin a known-good version; play the weekly scan; cut a
       patch, which Lumen needs to pick up the fix.
-- [ ] Note that `hook/build.dart` runs cargo in every consuming app's build, so a `build.rs` here runs on
+- [x] Note that `hook/build.dart` runs cargo in every consuming app's build, so a `build.rs` here runs on
       Lumen's machines and CI.
-- [ ] MR template: the dependency checkbox links it. README "Layout": `SECURITY.md`, `deny.toml`,
+- [x] MR template: the dependency checkbox links it. README "Layout": `SECURITY.md`, `deny.toml`,
       `.gitleaks.toml`, `osv-scanner.toml`, `.githooks/`.
+
+*Done 2026-10-08.* The secrets list names only `GOGDL_LIB_DEPLOY_KEY_B64` for now: the Renovate tokens join
+it in step 13 and the mirror token in step 17. 64 crates have a `build.rs` or proc macro.
 
 ### Step 11: The `v1.3.1` release
 
-- [ ] `release` `needs`: add `audit`, `scan` and `secrets`.
-- [ ] Bump to `1.3.1` in `pubspec.yaml`, `rust/Cargo.toml`, `rust/Cargo.lock` and `example/pubspec.lock`.
+- [x] `release` `needs`: add `audit`, `scan` and `secrets`.
+- [x] Bump to `1.3.1` in `pubspec.yaml`, `rust/Cargo.toml`, `rust/Cargo.lock` and `example/pubspec.lock`.
       `CHANGELOG.md`: rustls 0.23.45 (RUSTSEC-2026-0285), no API change. GAPS: tick "No release pipeline"
       §6 if this closes it. README "CI and releases": rewrite for the new jobs and protection.
+      It doesn't close it (precompiled binaries are still open), so GAPS gets a line instead.
 - [ ] Merge, tag `v1.3.1` on `main`, and check the tag pipeline: every check job, then `release`. This is
       the first real run of a `needs` + on-`main` release in either repo, which closes gogdl-lib's GAPS
       entry for it in spirit; note it there.
@@ -315,6 +330,7 @@ Must come before MR 4, since the mirror publishes the whole history.
       (Lumen `d9e4b54`).
 - [ ] Variables `RENOVATE_TOKEN` and `GITHUB_COM_TOKEN` (protected, masked, scope `renovate`), with calendar
       reminders. `main` is already protected (step 5).
+- [ ] `SECURITY.md`: both tokens in the rotation list, and `renovate` in the job logs to check.
 - [ ] Schedule "Renovate", `SCHEDULE=renovate`. Do a dry run first (`RENOVATE_DRY_RUN=full`): check the
       pub manager on a root `pubspec.yaml` with no lock file (only `example/pubspec.lock` exists), the
       ignored deps, and the 0.x rule. Then a live run.
