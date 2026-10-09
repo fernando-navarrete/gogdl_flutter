@@ -1,3 +1,18 @@
+## 1.3.3
+
+Same code and dependency versions as `1.3.2`. No change to the Dart API or to the progress events
+Dart receives.
+
+* `gogdl-lib` (still `v1.2.3`, `988011c`) is fetched over HTTPS from its public GitHub mirror
+  instead of `ssh://git@thinkcentre.home:2200`, so a clone of this repo, and any app that depends on
+  it, builds with no SSH key, LAN access or git setting. Only its `source` in `rust/Cargo.lock`
+  changed.
+* The bridge itself can be pinned from GitHub too: `url:
+  https://github.com/fernando-navarrete/gogdl_flutter.git`. Lumen: pin `v1.3.3` and drop the
+  `RUSTSEC-2026-0285` entry from its `osv-scanner.toml`.
+* CI fetches `gogdl-lib` the same way, so its deploy key is gone. `release` also fails if
+  `rust/Cargo.lock` doesn't fetch `gogdl-lib` from GitHub.
+
 ## 1.3.2
 
 Same code and dependencies as `1.3.1`. No change to the Dart API or to the progress events Dart

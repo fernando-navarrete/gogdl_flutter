@@ -12,13 +12,13 @@ yanked = "deny"
 unmaintained = "all"
 unsound = "all"
 
-# crates.io, plus gogdl-lib from the LAN (D10 in devlog/v1.3.x-ci-cd.md). Any other registry or git source
+# crates.io, plus gogdl-lib from its public GitHub mirror over HTTPS. Any other registry or git source
 # fails: the Rust counterpart of a lockfile integrity check.
 [sources]
 unknown-registry = "deny"
 unknown-git = "deny"
 allow-registry = ["https://github.com/rust-lang/crates.io-index"]
-allow-git = ["ssh://git@thinkcentre.home:2200/gogdl/gogdl-lib.git"]
+allow-git = ["https://github.com/fernando-navarrete/gogdl-lib.git"]
 
 # One acceptable side of every `OR` in the dependency graph.
 [licenses]

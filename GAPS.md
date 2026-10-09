@@ -177,9 +177,11 @@ needs it; ROADMAP.md schedules each item to land before that stage starts.
   packaging anyway.
   Since `v1.3.1`, `release` also waits for `audit`, `scan` and `secrets`, and the tag must be on
   `main`.
-- [ ] **P1 — The build isn't reproducible outside the LAN.** `gogdl-lib` is a git dependency over
+- [x] **P1 — The build isn't reproducible outside the LAN.** `gogdl-lib` is a git dependency over
   `ssh://git@thinkcentre.home:2200`, the same situation Lumen documented and deferred in its
   `v1.1.0`. CI on the self-hosted runner works around it with a deploy key.
+  Fixed in `v1.3.3`: `gogdl-lib` comes from its public GitHub mirror over HTTPS, in a clone, in CI
+  and in Lumen's builds, and the deploy key is gone.
 - [x] **P2 — `main` is behind the released tags.** `v1.1.0`–`v1.1.3` only exist on
   `feat/cloud-saves`, which is 5 commits ahead of `main`. Merge it before starting the next stage.
 - [x] **P2 — Template leftovers.** The README describes the FFI plugin template (`src/`, `ffigen`,
@@ -221,8 +223,13 @@ What the CI/CD line (`devlog/v1.3.x-ci-cd.md`) left open.
   compare `git ls-remote` on both sides after any tag incident.
 - [ ] **P2 — `tool/check_lib_pin.sh` hasn't run in a tag pipeline yet.** Tested locally and in the
   `release-cli` image; the next tag is its first real run.
-- [ ] **P1 — Lumen still pins `v1.3.0`.** It should pin `v1.3.2` (not `v1.3.1`, which has no GitLab
+- [ ] **P1 — Lumen still pins `v1.3.0`.** It should pin `v1.3.3` (not `v1.3.1`, which has no GitLab
   release) and drop its `RUSTSEC-2026-0285` entry from `osv-scanner.toml`, which expires 2026-11-06.
+- [ ] **P2 — gogdl-lib's `downstream` job no longer patches the bridge.** It adds
+  `[patch."ssh://git@thinkcentre.home:2200/gogdl/gogdl-lib.git"]` to each consumer, but since
+  `v1.3.3` this repo fetches `gogdl-lib` from `https://github.com/fernando-navarrete/gogdl-lib.git`,
+  so the bridge half builds the pinned tag instead of the lib's commit. Needs a `[patch]` for the
+  GitHub URL there.
 
 ## 7. Requests for `gogdl-lib`
 

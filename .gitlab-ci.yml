@@ -3,14 +3,9 @@
 # and 6): the `check` stage gates everything, and the `release` stage publishes a GitLab
 # release on vX.Y.Z tags.
 #
-# `gogdl-lib` is a private git dependency reachable only over the LAN
-# (ssh://git@thinkcentre.home:2200). cargo fetches it through the git CLI
-# (CARGO_NET_GIT_FETCH_WITH_CLI) so it can use the ssh-agent, which is loaded with a
-# read-only deploy key stored base64-encoded (single line, no whitespace) as the
-# `GOGDL_LIB_DEPLOY_KEY_B64` variable (Settings -> CI/CD -> Variables in this project,
-# Type: Variable, masked, NOT protected: a protected variable comes through empty on
-# unprotected branches). Its public half must be added as a deploy key on the gogdl-lib
-# project.
+# `gogdl-lib` is a git dependency fetched from its public GitHub mirror over HTTPS
+# (https://github.com/fernando-navarrete/gogdl-lib), as a fresh clone of this repo fetches it: no
+# key, no ssh and no git CLI, so CI proves that a clone builds anywhere.
 #
 # Jobs run in a prebuilt image (ci/Dockerfile: apt packages, the pinned rustup toolchain, the frb codegen
 # and Flutter), so none of them touches apt, rustup or the Flutter clone: the network is slow
@@ -62,30 +57,14 @@ default:
 variables:
   PUB_CACHE: "$CI_PROJECT_DIR/.ci/pub-cache"
   CARGO_HOME: "$CI_PROJECT_DIR/.ci/cargo"
-  CARGO_NET_GIT_FETCH_WITH_CLI: "true"
   CARGO_TERM_COLOR: always
 
-# SSH access to gogdl-lib via the base64-encoded deploy key variable.
-.ssh:
+# The Native Assets build hook runs cargo with a stripped environment (only HOME and PATH get
+# through), so CARGO_HOME and RUSTUP_HOME above don't reach it. Point ~/.cargo and ~/.rustup at the
+# same (cached) places instead.
+.cargo-home:
   script:
-    - mkdir -p ~/.ssh
-    - echo "$GOGDL_LIB_DEPLOY_KEY_B64" | base64 -d > ~/.ssh/gogdl_deploy_key
-    - chmod 600 ~/.ssh/gogdl_deploy_key
-    - eval "$(ssh-agent -s)"
-    - ssh-add ~/.ssh/gogdl_deploy_key
-    - ssh-keyscan -p 2200 thinkcentre.home >> ~/.ssh/known_hosts 2>/dev/null
-    # The Native Assets build hook runs cargo with a stripped environment (only HOME and PATH
-    # get through), so the ssh-agent, CARGO_NET_GIT_FETCH_WITH_CLI, CARGO_HOME and RUSTUP_HOME
-    # above don't reach it. Give it the same setup through files under ~ instead.
-    - |
-      cat > ~/.ssh/config <<EOF
-      Host thinkcentre.home
-        Port 2200
-        IdentityFile ~/.ssh/gogdl_deploy_key
-        IdentitiesOnly yes
-      EOF
     - mkdir -p ~/.cargo "$CARGO_HOME/registry" "$CARGO_HOME/git"
-    - printf '[net]\ngit-fetch-with-cli = true\n' > ~/.cargo/config.toml
     - ln -sfn "$CARGO_HOME/registry" ~/.cargo/registry
     - ln -sfn "$CARGO_HOME/git" ~/.cargo/git
     - ln -sfn /opt/rustup ~/.rustup
@@ -160,7 +139,7 @@ rust:
     - *cache-cargo
     - *cache-target
   before_script:
-    - !reference [.ssh, script]
+    - !reference [.cargo-home, script]
     - !reference [.toolchain, script]
   script:
     - cd rust
@@ -170,7 +149,7 @@ rust:
 
 # RustSec advisories, sources (crates.io plus gogdl-lib), licenses and duplicate versions, per
 # rust/deny.toml. cargo-deny is baked into the image (ci/Dockerfile). It reads the metadata of every
-# crate, so gogdl-lib is fetched over ssh. Its advisory database lands under CARGO_HOME, so it is
+# crate, so gogdl-lib is fetched (from GitHub). Its advisory database lands under CARGO_HOME, so it is
 # cached; each run then fetches only the new advisories.
 audit:
   stage: check
@@ -185,7 +164,7 @@ audit:
       paths:
         - .ci/cargo/advisory-dbs/
   before_script:
-    - !reference [.ssh, script]
+    - !reference [.cargo-home, script]
     - !reference [.toolchain, script]
   script:
     - cd rust
@@ -196,7 +175,7 @@ audit:
 # gates the RustSec advisories through deny.toml, so the rest is only printed. On example/pubspec.lock
 # any advisory fails it, since nothing else gates pub packages. Two scanner runs, one per lock file,
 # so the exit code tells them apart: the image has no jq or dart to split one report. Exit codes above
-# 1 are scanner or network errors and fail either way. Only lock files are read: no ssh, no toolchain.
+# 1 are scanner or network errors and fail either way. Only lock files are read: no git fetch, no toolchain.
 scan:
   stage: check
   rules:
@@ -289,12 +268,9 @@ renovate-config:
 # rust/rust-toolchain.toml is ignored) at the versions pinned in renovate.json `constraints`, which
 # must equal rust/rust-toolchain.toml and .fvmrc (the toolchain bump moves all three). Its downloads
 # and the crates index are cached under .ci/renovate for the slow network.
-# Rewriting rust/Cargo.lock makes cargo fetch gogdl-lib over ssh, but Renovate hands its child
-# processes only a few variables (HOME, PATH, ...), so the ssh-agent of the .ssh anchor wouldn't reach
-# them: the deploy key goes in ~/.ssh/config, and cargo uses the git CLI through ~/.cargo/config.toml
-# (as Lumen's job does). Renovate exits 0 when it gives up on the repository (e.g. "Temporary error -
-# aborting" for a token without Developer access), so the job also fails on that in its log (Lumen
-# d9e4b54).
+# Rewriting rust/Cargo.lock makes cargo fetch gogdl-lib, from its public GitHub mirror, so no key.
+# Renovate exits 0 when it gives up on the repository (e.g. "Temporary error - aborting" for a token
+# without Developer access), so the job also fails on that in its log (Lumen d9e4b54).
 renovate:
   stage: check
   rules:
@@ -319,21 +295,6 @@ renovate:
     RENOVATE_REQUIRE_CONFIG: required
     RENOVATE_CACHE_DIR: $CI_PROJECT_DIR/.ci/renovate
     LOG_LEVEL: info
-  before_script:
-    - mkdir -p ~/.ssh ~/.cargo
-    - echo "$GOGDL_LIB_DEPLOY_KEY_B64" | base64 -d > ~/.ssh/gogdl_deploy_key
-    - chmod 600 ~/.ssh/gogdl_deploy_key
-    - ssh-keyscan -p 2200 thinkcentre.home >> ~/.ssh/known_hosts 2>/dev/null
-    - |
-      cat > ~/.ssh/config <<EOF
-      Host thinkcentre.home
-        Port 2200
-        User git
-        IdentityFile ~/.ssh/gogdl_deploy_key
-        IdentitiesOnly yes
-      EOF
-    - chmod 600 ~/.ssh/config
-    - printf '[net]\ngit-fetch-with-cli = true\n' > ~/.cargo/config.toml
   script:
     - '[ -n "$RENOVATE_TOKEN" ] || { echo "RENOVATE_TOKEN is not set (protected, environment scope renovate)"; exit 1; }'
     # thinkcentre.home uses a private CA: the runner's tls-ca-file covers Node (Renovate) and git.
@@ -375,7 +336,7 @@ codegen:
     - *cache-cargo
     - *cache-target
   before_script:
-    - !reference [.ssh, script]
+    - !reference [.cargo-home, script]
     - !reference [.toolchain, script]
   script:
     - flutter pub get
@@ -395,7 +356,7 @@ integration:
     - *cache-cargo
     - *cache-hook-target
   before_script:
-    - !reference [.ssh, script]
+    - !reference [.cargo-home, script]
     - !reference [.toolchain, script]
   script:
     - sh tool/check_lockfile.sh
@@ -407,8 +368,8 @@ integration:
 # merged release commit, never on a branch (README "CI and releases"). tool/release_notes.sh fails
 # if pubspec.yaml, rust/Cargo.toml and the tag disagree, or if CHANGELOG.md has no section for the
 # version, so a tag can't ship without matching versions and notes. tool/check_lib_pin.sh fails
-# unless gogdl-lib's GitHub mirror has the tag rust/Cargo.lock pins, at the locked SHA, so Lumen never
-# pins a bridge tag that can't build off the LAN. The release uses CI_JOB_TOKEN.
+# unless rust/Cargo.lock fetches gogdl-lib from its GitHub mirror and that mirror has the pinned tag at
+# the locked SHA, so Lumen never pins a bridge tag that can't build. The release uses CI_JOB_TOKEN.
 release:
   stage: release
   image:

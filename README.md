@@ -10,9 +10,9 @@ classes (`DownloadGameProgress`, `RepairGameProgress`, ...). Everything public i
 Lumen is the only consumer. Linux is the only platform that is built and tested, and
 frb's web output is turned off (`web: false` in `flutter_rust_bridge.yaml`).
 
-`gogdl-lib` is a git dependency, pinned by tag in `rust/Cargo.toml` and served over the LAN at
-`ssh://git@thinkcentre.home:2200`. Both repositories are mirrored to GitHub: off the LAN, see
-"Building from the GitHub mirror" below.
+`gogdl-lib` is a git dependency, pinned by tag in `rust/Cargo.toml` and fetched over HTTPS from its
+public GitHub mirror, so a clone builds as is: no key, no SSH and no git setting. Both repositories
+are developed on a self-hosted GitLab and mirrored to GitHub with the same commit SHAs.
 
 ## Using it
 
@@ -20,8 +20,8 @@ frb's web output is turned off (`web: false` in `flutter_rust_bridge.yaml`).
 dependencies:
   gogdl_flutter:
     git:
-      url: ssh://git@thinkcentre.home:2200/gogdl/gogdl_flutter.git
-      ref: v1.3.2
+      url: https://github.com/fernando-navarrete/gogdl_flutter.git
+      ref: v1.3.3
 ```
 
 ```dart
@@ -41,24 +41,10 @@ A build needs:
 - Flutter `3.47.2` (`.fvmrc`). Build hooks need no flag.
 - [rustup](https://rustup.rs). `rust/rust-toolchain.toml` pins the toolchain (`1.98.1`, target
   `x86_64-unknown-linux-gnu`) and rustup installs it on the first build.
-- SSH access to `thinkcentre.home:2200` for `gogdl-lib`, with cargo fetching through the git CLI so
-  it can use the ssh-agent: `CARGO_NET_GIT_FETCH_WITH_CLI=true`.
+- Network access to `github.com` (for `gogdl-lib`) and to crates.io on the first build.
 
 There are no precompiled binaries, so every consumer compiles the whole crate. Prebuilt binaries
 are planned for `v1.5.0` (see [ROADMAP.md](ROADMAP.md)).
-
-### Building from the GitHub mirror
-
-The `thinkcentre.home` URLs stay in `rust/Cargo.toml` and in a consumer's `pubspec.yaml`. Off the
-LAN, one git setting rewrites them to the GitHub mirrors:
-
-```sh
-git config --global url."https://github.com/fernando-navarrete/".insteadOf "ssh://git@thinkcentre.home:2200/gogdl/"
-```
-
-The mirrors keep commit SHAs, so `rust/Cargo.lock` and a consumer's `pubspec.lock` still match. No
-SSH key and no `CARGO_NET_GIT_FETCH_WITH_CLI` are needed: pub and the build hook's cargo both go
-through the rewrite.
 
 ## Layout
 
@@ -163,8 +149,8 @@ To release:
 4. Check that the tag pipeline is green: every check job, then `release`.
 
 On a `vX.Y.Z` tag the `release` job waits for every check job, then fails unless the tagged commit
-is on `main`, `tool/check_lib_pin.sh` finds the pinned `gogdl-lib` tag on GitHub at the locked SHA
-(so the tag builds off the LAN), and `tool/release_notes.sh` passes: the tag, the four versions above
+is on `main`, `tool/check_lib_pin.sh` finds `gogdl-lib` locked to its GitHub mirror, and the pinned
+tag there at the locked SHA (so the tag builds from a clone), and `tool/release_notes.sh` passes: the tag, the four versions above
 and a non-empty changelog section must all agree. It then creates a GitLab release from that section.
 If only the `gogdl-lib` check failed, update that repo's mirror and retry the job.
 

@@ -88,8 +88,7 @@ reason = "What it is, why it doesn't apply or can't be fixed yet, and what fixes
    and at local dates (`ls -l --time-style=full-iso ~/.cargo/registry/src/*/<crate>-<version>`, `~/.pub-cache`). Lumen's
    builds ran it too if its pinned tag has it.
 3. **Rotate secrets** if it could have run, for everything the machine or job could reach:
-   `GOGDL_LIB_DEPLOY_KEY_B64` (generate a new key, replace the deploy key on `gogdl-lib`, update the
-   variable), `RENOVATE_TOKEN` (a new project access token) and `GITHUB_COM_TOKEN` (a new GitHub
+   `RENOVATE_TOKEN` (a new project access token) and `GITHUB_COM_TOKEN` (a new GitHub
    token) if `renovate` ran it, the GitHub mirror token (a new fine-grained token, `Contents: read
    and write` on `gogdl_flutter` only, pasted into Settings, Repository, Mirroring), and local tokens
    and SSH keys. The job token expires with the job.

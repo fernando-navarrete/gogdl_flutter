@@ -9,7 +9,7 @@ under.
 - **Patch** (`1.x.y`): one tag per small, self-contained fix or addition.
 - **Minor** (`1.x.0`): a big update, meaning a feature set or cross-cutting refactor. Patches then
   continue from `.1` under that minor.
-- Tags use the existing `vX.Y.Z` format. `v1.3.2` is the newest tag, so the next stage is
+- Tags use the existing `vX.Y.Z` format. `v1.3.3` is the newest tag, so the next stage is
   **`v1.4.0`**.
 - For each release: bump `version:` in `pubspec.yaml` **and** `version` in `rust/Cargo.toml` to
   match, tick the item(s) in `GAPS.md` and add a `CHANGELOG.md` entry on a release branch, merge it
@@ -136,8 +136,7 @@ here and Lumen migrates once.
   `DownloadableProduct.product_type` becomes an enum (GAPS §3).
 - Remove the getters deprecated in `v1.4.0` (GAPS §3).
 - Build and publish a precompiled Linux `.so` from the tag pipeline, and check that Lumen's
-  AppImage/Flatpak release pipeline can consume it (a Flatpak build can't reach the LAN-only
-  `gogdl-lib` repo) (GAPS §6).
+  AppImage/Flatpak release pipeline can consume it (GAPS §6).
 - **Breaking** for Lumen `v1.5.0`: the progress enum field names, the model changes and the removed
   getters.
 
