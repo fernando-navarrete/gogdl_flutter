@@ -16,8 +16,8 @@
 # and Flutter), so none of them touches apt, rustup or the Flutter clone: the network is slow
 # and the runner is small. The runner shares the host's docker through its mounted docker.sock,
 # so the image is built on the host with `ci/build-image.sh` and jobs see it directly. Rebuild
-# it after bumping .fvmrc, rust/rust-toolchain.toml or the frb version, or after changing
-# ci/Dockerfile with a bumped IMAGE_REVISION (update `image:` below to the printed name; the
+# it after bumping .fvmrc, rust/rust-toolchain.toml or the frb version (bump `constraints` in
+# renovate.json with them), or after changing ci/Dockerfile with a bumped IMAGE_REVISION (update `image:` below to the printed name; the
 # `.toolchain` check fails a job whose image has a stale Flutter or Rust). The runner's config.toml
 # (volume `gitlab-runner-config`) must not force pulls, under [runners.docker]:
 #   pull_policy = ["if-not-present"]
@@ -33,7 +33,8 @@
 # (Build -> Pipelines -> Run pipeline, any branch). A branch with an open MR runs only the MR
 # pipeline, and a pushed branch without an MR runs nothing. A scheduled pipeline runs only the jobs
 # that name its SCHEDULE: the "Weekly scan" schedule on main (CI/CD -> Schedules, SCHEDULE=scan) runs
-# `audit` and `scan`, so an advisory published after a dependency landed is noticed.
+# `audit` and `scan`, so an advisory published after a dependency landed is noticed. The "Renovate"
+# schedule on main (SCHEDULE=renovate) runs only `renovate`.
 workflow:
   rules:
     - if: $CI_PIPELINE_SOURCE == "schedule"
@@ -263,6 +264,88 @@ secrets:
     expire_in: 30 days
     paths: [gitleaks.json]
 
+# Validates renovate.json whenever it changes. --strict also fails on options Renovate would
+# migrate. The image is the one the `renovate` job uses.
+renovate-config:
+  stage: check
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "schedule"
+      when: never
+    - changes: [renovate.json]
+  image:
+    name: renovate/renovate:44@sha256:05c512c35c764ef6a179e69c3b30567eca254d67f13a0143479fe3c84852c67a
+    entrypoint: ['']
+    pull_policy: if-not-present
+  cache: []
+  before_script: []
+  script:
+    - renovate-config-validator --strict renovate.json
+
+# Opens the dependency MRs per renovate.json. Only on the SCHEDULE=renovate pipeline schedule.
+# RENOVATE_TOKEN (project access token, api + write_repository, role Developer) and GITHUB_COM_TOKEN
+# (no permissions, for changelog lookups) are protected, masked variables scoped to the `renovate`
+# environment, which only this job uses, so no job that runs cargo (and any build.rs) sees them.
+# The image has no cargo or flutter: Renovate installs them on demand (containerbase, not rustup, so
+# rust/rust-toolchain.toml is ignored) at the versions pinned in renovate.json `constraints`, which
+# must equal rust/rust-toolchain.toml and .fvmrc (the toolchain bump moves all three). Its downloads
+# and the crates index are cached under .ci/renovate for the slow network.
+# Rewriting rust/Cargo.lock makes cargo fetch gogdl-lib over ssh, but Renovate hands its child
+# processes only a few variables (HOME, PATH, ...), so the ssh-agent of the .ssh anchor wouldn't reach
+# them: the deploy key goes in ~/.ssh/config, and cargo uses the git CLI through ~/.cargo/config.toml
+# (as Lumen's job does). Renovate exits 0 when it gives up on the repository (e.g. "Temporary error -
+# aborting" for a token without Developer access), so the job also fails on that in its log (Lumen
+# d9e4b54).
+renovate:
+  stage: check
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "schedule" && $SCHEDULE == "renovate"
+  image:
+    name: renovate/renovate:44@sha256:05c512c35c764ef6a179e69c3b30567eca254d67f13a0143479fe3c84852c67a
+    entrypoint: ['']
+    pull_policy: if-not-present
+  # Variables scoped to the `renovate` environment reach only this job. `access` records no deployment.
+  environment:
+    name: renovate
+    action: access
+  cache:
+    - key: renovate
+      paths:
+        - .ci/renovate/
+  variables:
+    RENOVATE_PLATFORM: gitlab
+    RENOVATE_ENDPOINT: $CI_API_V4_URL
+    RENOVATE_REPOSITORIES: $CI_PROJECT_PATH
+    RENOVATE_ONBOARDING: 'false'
+    RENOVATE_REQUIRE_CONFIG: required
+    RENOVATE_CACHE_DIR: $CI_PROJECT_DIR/.ci/renovate
+    LOG_LEVEL: info
+  before_script:
+    - mkdir -p ~/.ssh ~/.cargo
+    - echo "$GOGDL_LIB_DEPLOY_KEY_B64" | base64 -d > ~/.ssh/gogdl_deploy_key
+    - chmod 600 ~/.ssh/gogdl_deploy_key
+    - ssh-keyscan -p 2200 thinkcentre.home >> ~/.ssh/known_hosts 2>/dev/null
+    - |
+      cat > ~/.ssh/config <<EOF
+      Host thinkcentre.home
+        Port 2200
+        User git
+        IdentityFile ~/.ssh/gogdl_deploy_key
+        IdentitiesOnly yes
+      EOF
+    - chmod 600 ~/.ssh/config
+    - printf '[net]\ngit-fetch-with-cli = true\n' > ~/.cargo/config.toml
+  script:
+    - '[ -n "$RENOVATE_TOKEN" ] || { echo "RENOVATE_TOKEN is not set (protected, environment scope renovate)"; exit 1; }'
+    # thinkcentre.home uses a private CA: the runner's tls-ca-file covers Node (Renovate) and git.
+    - |
+      if [ -n "${CI_SERVER_TLS_CA_FILE:-}" ]; then
+        export NODE_EXTRA_CA_CERTS="$CI_SERVER_TLS_CA_FILE" GIT_SSL_CAINFO="$CI_SERVER_TLS_CA_FILE"
+      fi
+      { renovate 2>&1; echo $? > renovate.rc; } | tee renovate.log
+      [ "$(cat renovate.rc)" = 0 ] || { echo "renovate exited $(cat renovate.rc)"; exit 1; }
+      ! grep -Eq 'Temporary error|"result": "[a-z-]*error"|"exitCode": [1-9]' renovate.log \
+        || { echo "renovate did not complete its repository (see the log above)"; exit 1; }
+
 # tool/check_lockfile.sh fails on a package in example/pubspec.lock from outside pub.dev (or a path
 # other than this bridge) before anything is fetched, and `pub get --enforce-lockfile` fails if that
 # lock is stale or a package's hash changed. The root has no committed lock (it's a package).
@@ -339,6 +422,7 @@ release:
     - { job: audit, artifacts: false }
     - { job: scan, artifacts: false }
     - { job: secrets, artifacts: false }
+    - { job: renovate-config, artifacts: false, optional: true } # only exists when renovate.json changed
   variables:
     GIT_DEPTH: 0 # the ancestry check needs history
   cache: []

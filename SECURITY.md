@@ -83,13 +83,14 @@ reason = "What it is, why it doesn't apply or can't be fixed yet, and what fixes
 
 1. **Find it.** `cargo tree -i <crate>` in `rust/`, and grep `rust/Cargo.lock` and `example/pubspec.lock`
    for the bad name and versions on `main`, on open branches and at the tag Lumen pins.
-2. **Did a build run it?** Look at the job logs of `rust`, `codegen`, `integration`, `audit` and `dart`
-   since the bad version was published, and at local dates
-   (`ls -l --time-style=full-iso ~/.cargo/registry/src/*/<crate>-<version>`, `~/.pub-cache`). Lumen's
+2. **Did a build run it?** Look at the job logs of `rust`, `codegen`, `integration`, `audit`, `dart` and
+   `renovate` (it runs cargo and pub to rewrite the lock files) since the bad version was published,
+   and at local dates (`ls -l --time-style=full-iso ~/.cargo/registry/src/*/<crate>-<version>`, `~/.pub-cache`). Lumen's
    builds ran it too if its pinned tag has it.
 3. **Rotate secrets** if it could have run, for everything the machine or job could reach:
    `GOGDL_LIB_DEPLOY_KEY_B64` (generate a new key, replace the deploy key on `gogdl-lib`, update the
-   variable), and local tokens and SSH keys. The job token expires with the job.
+   variable), `RENOVATE_TOKEN` (a new project access token) and `GITHUB_COM_TOKEN` (a new GitHub
+   token) if `renovate` ran it, and local tokens and SSH keys. The job token expires with the job.
 4. **Pin a known-good version**, through an MR as usual: `cargo update -p <crate> --precise <version>`
    for a crate; an exact version in `pubspec.yaml`, or a `dependency_overrides` entry for a transitive
    one, for a pub package.

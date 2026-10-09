@@ -17,8 +17,8 @@ MRs that are closed unmerged and don't count. Tick each checkbox as it's done.
 | **2** | `release/v1.3.1` | 6 (merged as `5478d80`) | `CI: cargo-deny audit job` | ✅ |
 | **2b** | `release/v1.3.1` | 7–8 (merged as `f1d7b93`) | `CI: pub lockfile check, OSV scan` | ✅ |
 | **2c** | `release/v1.3.1` | 9–11 (merged as `50c48f2`) | `v1.3.1: supply-chain checks, rustls 0.23.45` | ✅ |
-| **2d** | `release/v1.3.2` | 11 (release fix) | `v1.3.2: release job trusts the CA before its fetch` | 🟦 |
-| **3** | `ci/renovate` | 12–13 | `CI: Renovate` | ⬜ |
+| **2d** | `release/v1.3.2` | 11 (merged as `2ee9b4f`) | `v1.3.2: release job trusts the CA before its fetch` | ✅ |
+| **3** | `ci/renovate` | 12–13 | `CI: Renovate` | 🟦 |
 | **4** | `ci/github-mirror` | 14–17 | `CI: GitHub mirror` | ⬜ |
 | **5** | `docs/ci-devlog` | 18 | `Docs: CI/CD devlog, close out the plan` | ⬜ |
 
@@ -298,7 +298,7 @@ it in step 13 and the mirror token in step 17. 64 crates have a `build.rs` or pr
       `CHANGELOG.md`: rustls 0.23.45 (RUSTSEC-2026-0285), no API change. GAPS: tick "No release pipeline"
       §6 if this closes it. README "CI and releases": rewrite for the new jobs and protection.
       It doesn't close it (precompiled binaries are still open), so GAPS gets a line instead.
-- [ ] Merge, tag `v1.3.1` on `main`, and check the tag pipeline: every check job, then `release`. This is
+- [x] Merge, tag `v1.3.1` on `main`, and check the tag pipeline: every check job, then `release`. This is
       the first real run of a `needs` + on-`main` release in either repo, which closes gogdl-lib's GAPS
       entry for it in spirit; note it there.
 - [ ] Tell Lumen: pin `v1.3.2` (see below), and drop its `RUSTSEC-2026-0285` entry from `osv-scanner.toml`.
@@ -311,7 +311,8 @@ CA to the trust store, so git hit "SSL certificate problem: self-signed certific
 MR 2d moves the CA step before the fetch and ships it as `v1.3.2` (same code). Reproduced and checked
 locally in the pinned `release-cli` image: the fetch fails without the CA and gets past TLS with it.
 
-- [ ] MR 2d merged, `v1.3.2` tagged, its `release` green.
+- [x] MR 2d merged, `v1.3.2` tagged, its `release` green. Tagged 2026-10-08 on `2ee9b4f`: every
+      check job, then `release`, green; the GitLab release shows the `1.3.2` notes.
 - [ ] gogdl-lib: the same reorder, plus its GAPS entry ("`needs` and on-`main` rule untested"): first
       real run here, which found this bug.
 - [ ] Lumen pins `v1.3.2` (not `v1.3.1`).
@@ -324,31 +325,44 @@ locally in the pinned `release-cli` image: the fetch fails without the CA and ge
 
 ### Step 12: `renovate.json` and its validation
 
-- [ ] From gogdl-lib's: weekly, `minimumReleaseAge: "7 days"`, security fixes skip the wait, majors off,
+- [x] From gogdl-lib's: weekly, `minimumReleaseAge: "7 days"`, security fixes skip the wait, majors off,
       0.x minors treated as majors (cargo), one grouped minor/patch/digest MR, `lockFileMaintenance` off,
-      `pinDigests` for `gitlabci` and `dockerfile`.
-- [ ] `enabledManagers: ["cargo", "pub", "gitlabci", "dockerfile"]`, `rangeStrategy: "update-lockfile"`.
+      `pinDigests` for `gitlabci` and `dockerfile`. Unlike the lib, `ci/Dockerfile`'s base digest gets
+      its own group (`ci image base`): the image is shared with Lumen, so that MR needs a rebuild with a
+      bumped `IMAGE_REVISION` and a new `image:`, and would otherwise hold up the grouped MR.
+- [x] `enabledManagers: ["cargo", "pub", "gitlabci", "dockerfile"]`, `rangeStrategy: "update-lockfile"`.
       No toolchain regex manager (D4).
-- [ ] `ignoreDeps`: `gogdl-lib`, `gogdl-flutter-ci`, `flutter_rust_bridge`, `flutter_rust_bridge_hooks`
+- [x] `ignoreDeps`: `gogdl-lib`, `gogdl-flutter-ci`, `flutter_rust_bridge`, `flutter_rust_bridge_hooks`
       (D4, D5). `constraints`: `rust` `1.98.1`, `flutter` `3.47.2` (what Renovate installs to run cargo
-      and pub).
-- [ ] `renovate-config` job (`--strict`, on `renovate.json` changes), plus `release`'s optional `needs`.
+      and pub). The `.gitlab-ci.yml` header and README say to bump them with the toolchains.
+- [x] `renovate-config` job (`--strict`, on `renovate.json` changes), plus `release`'s optional `needs`.
+      Locally with the job's image: passes; fails on a migratable option (`stabilityDays`) and on an
+      unknown one.
 
 **Done when:** the validator passes in the MR pipeline.
 
 ### Step 13: Renovate job and schedule
 
+The job is a commit on this branch. A schedule runs `main`'s `.gitlab-ci.yml`, and the protected tokens
+reach only protected refs, so the variables, schedule, runs and bite test come after MR 3 merges and are
+ticked on MR 4's branch.
+
 - [ ] `renovate` job from gogdl-lib (environment `renovate`, CA handling, token check). **And the
       `gogdl-lib` deploy key:** cargo has to fetch the git dependency to rewrite `rust/Cargo.lock`. Copy
       how Lumen's `renovate` job loads its key, and Lumen's guard that fails the job when Renovate aborts
       (Lumen `d9e4b54`).
+      Renovate passes its child processes only a few variables, so no ssh-agent: the key goes in
+      `~/.ssh/config`, and `~/.cargo/config.toml` sets `git-fetch-with-cli` (cargo's built-in git
+      only uses the agent).
 - [ ] Variables `RENOVATE_TOKEN` and `GITHUB_COM_TOKEN` (protected, masked, scope `renovate`), with calendar
       reminders. `main` is already protected (step 5).
 - [ ] `SECURITY.md`: both tokens in the rotation list, and `renovate` in the job logs to check.
 - [ ] Schedule "Renovate", `SCHEDULE=renovate`. Do a dry run first (`RENOVATE_DRY_RUN=full`): check the
       pub manager on a root `pubspec.yaml` with no lock file (only `example/pubspec.lock` exists), the
       ignored deps, and the 0.x rule. Then a live run.
-- [ ] Bite test: a throwaway job prints `${RENOVATE_TOKEN:+set}` on an unprotected branch and prints nothing.
+- [ ] Bite test: throwaway jobs print `${RENOVATE_TOKEN:+set}` on an unprotected branch, with and
+      without `environment: renovate`, and print nothing (with it, so the empty output comes from the
+      protection and not the scope).
 
 **Done when:** a live run opened the grouped MR, its pipeline ran every check job, and it merged through an MR.
 

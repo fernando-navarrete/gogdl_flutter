@@ -62,6 +62,8 @@ are planned for `v1.5.0` (see [ROADMAP.md](ROADMAP.md)).
 - `rust/deny.toml`, `osv-scanner.toml`, `.gitleaks.toml`: config of the `audit`, `scan` and `secrets`
   CI jobs (advisories, sources and licenses; accepted findings; secret rules).
 - `.githooks/`: the pre-commit hook (see "Development").
+- `renovate.json`: the Renovate config (weekly, grouped minor and patch updates of the lock files and CI
+  images; the toolchains, frb and `gogdl-lib` move by hand).
 
 ## Development
 
@@ -109,7 +111,8 @@ regenerates and fails on any diff.
 GitLab CI runs on the self-hosted runner, on merge requests, on `main`, on `vX.Y.Z` tags and for
 manual runs from the web UI. A pushed branch without an MR runs nothing. `main` and the `v*` tags are
 protected: everything lands through an MR with a green pipeline, and only Maintainers create tags.
-The `check` stage has seven jobs:
+The `check` stage has seven jobs, plus one that runs only when its file changes and one that runs only
+on its schedule:
 
 - `rust`: `cargo fmt --check`, clippy and the tests.
 - `dart`: `tool/check_lockfile.sh`, `pub get --enforce-lockfile` and `flutter analyze` in the root
@@ -120,12 +123,15 @@ The `check` stage has seven jobs:
 - `scan`: OSV-Scanner on `rust/Cargo.lock` and `example/pubspec.lock`, minus what
   `osv-scanner.toml` accepts.
 - `secrets`: gitleaks over the MR's commits, or the whole history on `main` and tags.
+- `renovate-config`: `renovate-config-validator --strict`, when `renovate.json` changes.
+- `renovate`: Renovate itself, which opens the dependency MRs per `renovate.json`.
 
 The "Weekly scan" schedule on `main` runs only `audit` and `scan`, so a new advisory for a locked
-package is noticed. The jobs run in a prebuilt image (`ci/Dockerfile`, built with
-`ci/build-image.sh`), which has to be rebuilt after bumping `.fvmrc`, `rust/rust-toolchain.toml` or
-the codegen version, or after changing `ci/Dockerfile` (bump `IMAGE_REVISION`). Every base image is
-pinned by digest, `rustup-init` by sha256 and Flutter by commit. `.gitlab-ci.yml`'s header covers the runner and deploy-key setup.
+package is noticed. The "Renovate" schedule on `main` runs only `renovate`, on Monday mornings;
+its MRs go through the same checks as any other. The jobs run in a prebuilt image (`ci/Dockerfile`,
+built with `ci/build-image.sh`), which has to be rebuilt after bumping `.fvmrc`, `rust/rust-toolchain.toml` or
+the codegen version (bump `constraints` in `renovate.json` with them), or after changing
+`ci/Dockerfile` (bump `IMAGE_REVISION`). Every base image is pinned by digest, `rustup-init` by sha256 and Flutter by commit. `.gitlab-ci.yml`'s header covers the runner and deploy-key setup.
 
 To release:
 
