@@ -32,14 +32,17 @@ the stage it serves, so Lumen can pin it on day one.
 |---|---|---|
 | (none, internal) | Tests, CI/CD | `v1.2.0` ✅ |
 | `v1.3.0` Download management | Cancel/pause, resume path, error kinds, install size, free space | `v1.3.0` ✅ |
-| `v1.4.0` Library and account | Sign out, batched titles/links, DLC product listing, Proton `has_more` | `v1.4.0` |
+| `v1.4.0` Library and account | Clear the cache (Lumen D3), remove a product's files (Lumen D1) | `v1.4.0` |
 | `v1.5.0` UI polish and packaging | Login error kinds, precompiled `.so` for packaging, breaking API cleanups | `v1.5.0` |
 | `v1.6.0` Extras | Nothing | — |
 | Not on Lumen's roadmap yet | Cloud saves support/listing/sync, upstream-driven items | `v1.6.0`, `v1.7.0` |
 
 Lumen items that need no bridge change: uninstall, Proton version removal, downloads page
 dismiss/Retry (Lumen `v1.3.0`); update detection, since `get_game_builds` already returns build ids
-and dates (Lumen `v1.4.0`); everything in Lumen `v1.6.0`.
+and dates, sign out, since a fresh `GogdlApi` is unauthenticated (Lumen's Phase 0 dropped its D2),
+parallel titles (an 8-wide limiter in Lumen), installing DLC on an installed game (`repair_game` with
+the larger product set) and Proton releases in providers (Lumen `v1.4.0`); everything in Lumen
+`v1.6.0`.
 
 **Before `v1.2.0`** (done): merge `feat/cloud-saves` into `main` (GAPS §6). `v1.1.0`–`v1.1.3` only
 existed on that branch.
@@ -110,20 +113,44 @@ upstream first.
 
 ## v1.4.0 — Library and account (for Lumen `v1.4.0`)
 
-- Sign out: `logout` via `gogdl-lib` if it has one by then, otherwise `GogdlApi::reset()` (GAPS §2).
-- Batched, parallel title lookup (`get_game_titles` or `get_library_entries`) for Lumen's parallel
-  titles, caching and refresh. This also fixes untitled games at the source (Lumen `v1.4.1`)
-  (GAPS §2).
-- `get_game_links` returns boxart and background together. The two old getters stay, deprecated,
-  until `v1.5.0` (GAPS §3).
-- `get_downloadable_products` tolerates one failed product lookup and fetches details in parallel,
-  for Lumen's DLC install/remove and DLC tab (GAPS §1, §5). Per-product sizes already come from
-  `v1.3.0`'s `get_install_size`.
-- Not breaking: everything is added, nothing removed.
+Lumen's work plan (`../lumen/v1.4.0-LIBRARY.md`, "Dependency changes") asks for two things, found
+during its stage rather than before it. Its Phases 1–4 need nothing from the bridge and are done, so
+this is tagged before Lumen's **Phase 6** (adopt the new bridge) instead of before the stage. Both
+are **[lib]**: `gogdl-lib` ships them first (GAPS §7.12–7.13) and gets tagged, then this repo pins
+that tag.
 
-Follow-up patches (`v1.4.1+`), one per tag:
-1. `v1.4.1`: `get_proton_releases` validates `page` and reports whether more pages exist, for
-   Lumen's move of Proton release data into providers (GAPS §1).
+- Pin the `gogdl-lib` release that has `clear_cache` and `remove_products` (its `v1.3.0`, if that
+  roadmap takes them). Absorb anything breaking in that release (its `OwnedGames.unresolved` field,
+  `download_game`'s new `VerificationStage`) without changing what Dart sees.
+- `clearCache()` (Lumen D3): forwards to `GogDl::clear_cache()`, which drops the memoized owned
+  products, game builds and downloadable products (details, links, summary and screenshots stay).
+  Without it, Lumen's library refresh re-reads the same owned list and the Builds tab's Refresh is a
+  no-op (GAPS §2).
+- `removeProducts(gameId, path, buildName, keep, remove)` (Lumen D1): deletes the files only
+  `remove`'s depots list (never one `keep`'s list too, compared case-insensitively on normalized
+  paths), prunes directories it emptied and never touches a file outside the manifests. Returns a
+  `ProductRemoval { filesRemoved, bytesFreed }`. A `Future`, not a stream: it's manifest fetches plus
+  deletes. Make it a stream with a `Cancelled` variant only if a large DLC measures slow (GAPS §2).
+- Not breaking: everything is added, nothing removed.
+- **If `remove_products` stalls upstream**, tag `v1.4.0` with `clearCache()` alone so Lumen's Phase 6
+  isn't held up, and ship `removeProducts` as the next patch. Lumen then ships DLC install only and
+  moves removal to its own `v1.4.x` patch (its Phase 8).
+
+Dropped from `v1.4.0`, because Lumen no longer needs them for this stage:
+- Sign out: Lumen's Phase 0 confirmed that a fresh `GogdlApi` starts unauthenticated, so
+  `ref.invalidate` on its backend provider is the sign-out. No `reset()` or `logout` (GAPS §2, §7.5).
+- Batched titles (`get_game_titles`): Lumen runs `getGameTitle` through its own 8-wide limiter and
+  caches it in providers. Left open in GAPS §2 as polish, unscheduled.
+
+Follow-up patches (`v1.4.1+`), one per tag. None blocks Lumen; they make its new screens cheaper:
+1. `v1.4.1`: `get_downloadable_products` fetches details in parallel (bounded) and tolerates one
+   failed product lookup. Lumen measured 2.5 s for 8 products, serially, on its DLC tab (GAPS §1,
+   §5).
+2. `v1.4.2`: `get_game_links` returns boxart and background together. The two old getters stay,
+   deprecated, until `v1.5.0` (GAPS §3).
+3. `v1.4.3`: `get_proton_releases` validates `page` and reports whether more pages exist. Lumen's
+   Proton dialog now watches one provider per page, so a fully filtered page still ends its list
+   early (GAPS §1).
 
 ## v1.5.0 — Polish and API cleanup (for Lumen `v1.5.0`)
 
@@ -134,7 +161,7 @@ here and Lumen migrates once.
   the login screen (GAPS §2).
 - Named fields in every progress enum. `GameBuild` keeps only the timestamp.
   `DownloadableProduct.product_type` becomes an enum (GAPS §3).
-- Remove the getters deprecated in `v1.4.0` (GAPS §3).
+- Remove the getters deprecated in `v1.4.2` (GAPS §3).
 - Build and publish a precompiled Linux `.so` from the tag pipeline, and check that Lumen's
   AppImage/Flatpak release pipeline can consume it (GAPS §6).
 - **Breaking** for Lumen `v1.5.0`: the progress enum field names, the model changes and the removed

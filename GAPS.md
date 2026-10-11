@@ -71,10 +71,24 @@ needs it; ROADMAP.md schedules each item to land before that stage starts.
   `spaceShortfall()` has the free-space numbers. Still open: the login kinds (`v1.5.0`), which need
   upstream to tell a revoked session from an expired one (§7.3). Until then a revoked session is
   `unknown`.
-- [ ] **P1 — Sign out** (Lumen `v1.4.0`). Lumen can delete its stored token, but the `GogDl`
+- [x] **P1 — Sign out** (Lumen `v1.4.0`). Lumen can delete its stored token, but the `GogDl`
   instance keeps the authenticated session in memory until the app restarts. **[lib]** `GogDl`
   has no `logout`/`clear_auth`. Workaround until then: expose `GogdlApi::reset()` that swaps
   `inner` for a fresh `GogDl`, which also drops the token observer.
+  Not needed: Lumen's `v1.4.0` Phase 0 found that `gogdl-lib` has no global auth state, so a fresh
+  `GogdlApi` fails `get_owned_games` with `NotAuthenticated`. Lumen signs out by disposing its
+  backend and building a new one (its D2, dropped). No bridge change.
+- [ ] **P1 — No way to refresh cached library data** (Lumen `v1.4.0`, its D3). `gogdl-lib` memoizes
+  owned products (re-fetched only while empty), game builds and downloadable products for the
+  `GogDl` instance's whole life, so a game bought or a build published after launch never shows up,
+  and Lumen's Builds-tab Refresh has always been a no-op. Recreating `GogdlApi` would drop auth and
+  running jobs. Expose `clearCache()` over **[lib]** `GogDl::clear_cache()` (§7.12).
+- [ ] **P1 — Remove a product's files from an install** (Lumen `v1.4.0` DLC removal, its D1).
+  `repair_game` with a smaller product set never deletes anything (the downloader has no
+  `remove_file`), so a removed DLC's files stay on disk, and some games detect a DLC by its files.
+  Lumen can't do it itself: it has no manifests, and five of Alien: Isolation's DLCs share files
+  with the base game. Expose `removeProducts(gameId, path, buildName, keep, remove)` returning
+  files removed and bytes freed, over **[lib]** `remove_products` (§7.13).
 - [x] **P1 — Install and download size before installing** (Lumen `v1.3.0` disk space check).
   `get_product_bundles` already has everything needed. Expose
   `get_install_size(game_id, build, products)` returning the download size (compressed) and the
@@ -94,7 +108,8 @@ needs it; ROADMAP.md schedules each item to land before that stage starts.
   copy. Picking a direction per file (newer wins, or ask the user) needs local and remote
   timestamps/hashes. **[lib]** ("Save 'sync' is a blind copy", and "Download and upload ignore
   `cloudStorage.enabled`").
-- [ ] **P2 — Batched metadata for the library** (Lumen `v1.4.0`, its 5.1). Lumen fetches titles one
+- [ ] **P2 — Batched metadata for the library** (no longer needed by Lumen `v1.4.0`, which runs
+  `getGameTitle` through its own 8-wide limiter; unscheduled). Lumen used to fetch titles one
   `await` at a time. Add `get_game_titles(ids)` that runs the lookups in parallel (bounded) in Rust,
   or a `get_library_entries` returning title, boxart and background together.
 - [x] **P2 — Resume an interrupted install.** `gogdl-lib` documents that `repair_game`, not
@@ -272,8 +287,9 @@ Consolidated from the **[lib]** items above, in the order this repo needs them (
    Fixed upstream in `gogdl-lib` `v1.1.6`: `GogDl::get_free_space(path)`, the same figure the
    download, repair and Proton checks compare against (`path` needn't exist). The disk lookup now
    picks the longest matching mount point, not the first.
-5. **`logout`/`clear_auth` on `GogDl`**, which also drops the token observer. Bridge `v1.4.0` /
-   Lumen `v1.4.0`, or the bridge falls back to `GogdlApi::reset()`.
+5. **`logout`/`clear_auth` on `GogDl`**, which also drops the token observer. No longer needed:
+   Lumen signs out by building a fresh `GogdlApi`, which is unauthenticated (see §2 "Sign out").
+   Upstream can drop it from its `v1.3.0`.
 6. **Save sync metadata**: local and remote timestamps/hashes per file, and honoring
    `cloudStorage.enabled` (upstream: "Save 'sync' is a blind copy in each direction" and "Download
    and upload ignore `cloudStorage.enabled`"). Also upstream's "`download_save_files` truncates a
@@ -301,3 +317,12 @@ Consolidated from the **[lib]** items above, in the order this repo needs them (
     (`stream_chunk_with_headers`) and saves upload (`put_stream`) fail on the first one. Wanted:
     retry the Proton and saves streams like chunks, and give `put_stream` a timeout that tracks
     upload progress (or a second client without `read_timeout`). Bridge ROADMAP `v1.7.0`.
+12. **`GogDl::clear_cache()`**, dropping the memoized owned products, game builds and downloadable
+    products (not details, links, summary or screenshots, which don't change). An in-flight fetch
+    must not be corrupted by a clear. Lumen's D3. Bridge `v1.4.0` / Lumen `v1.4.0` (its Phase 6).
+13. **`remove_products(game_id, path, build_name, keep, remove)`**: fetch both sets' manifests,
+    delete the files only `remove`'s depots list (never one `keep`'s also list, compared
+    case-insensitively on normalized paths), prune directories the removal emptied, never touch a
+    file outside the manifests, and treat an already-missing file as success. Returns files removed
+    and bytes freed. Lumen's D1. Bridge `v1.4.0` / Lumen `v1.4.0` (its Phase 8); if it slips, the
+    bridge ships it as a `v1.4.x` patch.
