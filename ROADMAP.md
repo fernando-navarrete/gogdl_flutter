@@ -119,8 +119,8 @@ this is tagged before Lumen's **Phase 6** (adopt the new bridge) instead of befo
 are **[lib]**: `gogdl-lib` ships them first (GAPS §7.12–7.13) and gets tagged, then this repo pins
 that tag.
 
-- Pin the `gogdl-lib` release that has `clear_cache` and `remove_products` (its `v1.3.0`, if that
-  roadmap takes them). Absorb anything breaking in that release (its `OwnedGames.unresolved` field,
+- Pin the `gogdl-lib` release that has `clear_cache` and `remove_products` (its `v1.3.0`, pinned as
+  `v1.3.2`). Absorb anything breaking in that release (its `OwnedGames.unresolved` field,
   `download_game`'s new `VerificationStage`) without changing what Dart sees.
 - `clearCache()` (Lumen D3): forwards to `GogDl::clear_cache()`, which drops the memoized owned
   products, game builds and downloadable products (details, links, summary and screenshots stay).

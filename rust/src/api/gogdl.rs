@@ -55,6 +55,21 @@ impl GogdlApi {
         Ok(owned_games.owned)
     }
 
+    /// Drops the cached data that can go stale, so the next call to each getter fetches it again:
+    /// the owned games (`getOwnedGames`), game builds (`getGameBuilds`), downloadable products
+    /// (`getDownloadableProducts`), depot manifests and cloud saves remote configs.
+    ///
+    /// Details, links, summary, screenshots, product details and build metadata stay cached.
+    /// Login, the token refresh callback and running downloads, repairs and checks are untouched.
+    /// A call already in flight may store its own result afterwards, which is current as of its
+    /// fetch.
+    ///
+    /// A library refresh and the Builds tab's Refresh should call it before invalidating their
+    /// state, or they re-read the same data.
+    pub async fn clear_cache(&self) {
+        self.inner.clear_cache().await;
+    }
+
     pub async fn restore_auth(&self, json_str: &str) -> Result<(), GogError> {
         self.inner.restore_auth(json_str).await?;
         Ok(())
@@ -289,13 +304,13 @@ impl GogdlApi {
     }
     /// Downloads `selectedProducts` of `buildName` into `path`.
     ///
-    /// This always starts over: it downloads every chunk again, even when most of the install is
-    /// already on disk from an earlier run. To resume an install that was cancelled, failed or
-    /// interrupted by an app exit, call `repairGame` with the same `path`, `buildName` and
-    /// `selectedProducts` instead.
+    /// Chunks already on disk that verify are skipped, so running it again on a partial install
+    /// resumes it, and on a complete one transfers nothing. The skipped bytes count as
+    /// downloaded, so `downloadProgress` still ends at `started.totalBytes`. `repairGame` runs the
+    /// same pipeline and is the explicit resume path.
     ///
     /// Cancelling `cancel` keeps the files written so far, and the stream ends with `cancelled`.
-    /// Call `repairGame` to resume the install.
+    /// Call `downloadGame` or `repairGame` again to resume the install.
     pub async fn download_game(
         &self,
         game_id: i32,
@@ -349,7 +364,7 @@ impl GogdlApi {
 
         let outcome = progress::run(
             download_future,
-            DownloadTranslator::new(),
+            DownloadTranslator::new(total_bytes),
             rx,
             cancel,
             |p| sink.add(p).is_ok(),

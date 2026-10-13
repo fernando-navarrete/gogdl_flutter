@@ -117,6 +117,12 @@ needs it; ROADMAP.md schedules each item to land before that stage starts.
   a `resume_download` alias) so Lumen `v1.3.0` calls the right one.
   Fixed in `v1.3.0`, as docs only: `repairGame` says it resumes a cancelled, failed or interrupted
   install, and `downloadGame` says it always starts over.
+  Changed in `v1.4.0`: `gogdl-lib` `v1.3.0` made `download_game` skip verified chunks, so it
+  resumes too, and its doc says so.
+- [ ] **P2 — Surface the owned products that failed to resolve.** `gogdl-lib` `v1.3.0` returns
+  `OwnedGames.unresolved` (products whose `gamesdb` lookup failed), but `getOwnedGames` still
+  returns only `owned`, so Lumen's library can be shorter than the account with no way to tell.
+  Not breaking if added as a new method.
 - [ ] **P2 — Language and OS selection.** Builds are always Windows and the language filter is
   hardcoded. **[lib]** ("Language and OS are hardcoded with no selection surface").
 
@@ -289,7 +295,7 @@ Consolidated from the **[lib]** items above, in the order this repo needs them (
    picks the longest matching mount point, not the first.
 5. **`logout`/`clear_auth` on `GogDl`**, which also drops the token observer. No longer needed:
    Lumen signs out by building a fresh `GogdlApi`, which is unauthenticated (see §2 "Sign out").
-   Upstream can drop it from its `v1.3.0`.
+   Upstream dropped it from its `v1.3.0`.
 6. **Save sync metadata**: local and remote timestamps/hashes per file, and honoring
    `cloudStorage.enabled` (upstream: "Save 'sync' is a blind copy in each direction" and "Download
    and upload ignore `cloudStorage.enabled`"). Also upstream's "`download_save_files` truncates a
@@ -320,9 +326,15 @@ Consolidated from the **[lib]** items above, in the order this repo needs them (
 12. **`GogDl::clear_cache()`**, dropping the memoized owned products, game builds and downloadable
     products (not details, links, summary or screenshots, which don't change). An in-flight fetch
     must not be corrupted by a clear. Lumen's D3. Bridge `v1.4.0` / Lumen `v1.4.0` (its Phase 6).
+    Fixed upstream in `gogdl-lib` `v1.3.0`: `clear_cache` is async and infallible. It also drops
+    depot manifests and cloud saves remote configs, and a fetch in flight may store its own result.
+    The bridge pins `v1.3.2` (T2) and exposes `clearCache()` (T3).
 13. **`remove_products(game_id, path, build_name, keep, remove)`**: fetch both sets' manifests,
     delete the files only `remove`'s depots list (never one `keep`'s also list, compared
     case-insensitively on normalized paths), prune directories the removal emptied, never touch a
     file outside the manifests, and treat an already-missing file as success. Returns files removed
     and bytes freed. Lumen's D1. Bridge `v1.4.0` / Lumen `v1.4.0` (its Phase 8); if it slips, the
     bridge ships it as a `v1.4.x` patch.
+    Fixed upstream in `gogdl-lib` `v1.3.0`: `remove_products` returns `ProductRemoval {
+    files_removed, bytes_freed }`; a failed delete is `FileSystemError::FileRemovalError`. The
+    bridge exposes it in T4.

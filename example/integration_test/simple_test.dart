@@ -19,6 +19,10 @@ void main() {
     expect(uri.queryParameters, contains('client_id'));
   });
 
+  test('clearCache completes on a fresh, unauthenticated GogdlApi', () async {
+    await GogdlApi().clearCache();
+  });
+
   testWidgets('example app shows the login link', (tester) async {
     await tester.pumpWidget(const MyApp());
     expect(find.textContaining('auth.gog.com'), findsOneWidget);

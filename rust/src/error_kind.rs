@@ -42,6 +42,8 @@ fn games(e: &GamesError) -> GogErrorKind {
     match e {
         GamesError::NetworkError(_) => GogErrorKind::Network,
         GamesError::Http { status, .. } => http(status.as_u16()),
+        // The downloads and saves methods used to say `BuildNotFound` for a DLC or a pack.
+        GamesError::ProductNotAGame => GogErrorKind::NotFound,
         GamesError::ClientError(e) => client(e),
         _ => GogErrorKind::Unknown,
     }
@@ -209,6 +211,14 @@ mod tests {
                 NotFound,
             ),
             (GogError::SavesError(SavesError::BuildNotFound), NotFound),
+            (
+                download(DownloadError::GamesError(GamesError::ProductNotAGame)),
+                NotFound,
+            ),
+            (
+                GogError::SavesError(SavesError::GamesError(GamesError::ProductNotAGame)),
+                NotFound,
+            ),
             // notEnoughSpace
             (download(not_enough(10, 3)), NotEnoughSpace),
             (

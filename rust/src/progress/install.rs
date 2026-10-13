@@ -186,6 +186,14 @@ impl Install {
         out
     }
 
+    /// Starts the download stage with `already` bytes counted as done: the compressed bytes of
+    /// chunks that verified and won't be transferred, so the counter still ends at the job's total.
+    pub(crate) fn start_download(&mut self, already: u64) {
+        self.stage = Stage::Download;
+        self.downloaded = already;
+        self.dirty = already > 0;
+    }
+
     pub(crate) fn on_download_progress(&mut self, delta: u64) {
         self.downloaded += delta;
         self.dirty = true;
