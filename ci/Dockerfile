@@ -59,3 +59,10 @@ RUN test -n "$FLUTTER_VERSION" && test -n "$FLUTTER_COMMIT" \
 ARG CARGO_DENY_VERSION=0.20.2
 RUN cargo install --locked "cargo-deny@$CARGO_DENY_VERSION" \
  && rm -rf /opt/cargo/registry /opt/cargo/git
+
+# cargo-expand for the `codegen` job: frb's codegen runs `cargo expand` and would otherwise
+# `cargo install` the latest one, unlocked, on every run. When bumping, take a version at least
+# 7 days old from crates.io that builds with the pinned Rust, and bump IMAGE_REVISION in build-image.sh.
+ARG CARGO_EXPAND_VERSION=1.0.126
+RUN cargo install --locked "cargo-expand@$CARGO_EXPAND_VERSION" \
+ && rm -rf /opt/cargo/registry /opt/cargo/git
