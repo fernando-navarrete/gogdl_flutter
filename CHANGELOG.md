@@ -1,3 +1,13 @@
+## 1.4.1
+
+Faster, more tolerant `getDownloadableProducts()`. **Not breaking**: same signature and types.
+
+* Product details are fetched 8 at a time instead of one by one, in upstream's order. Alien: Isolation
+  (8 products) took 755 ms, down from 2.5 s.
+* A product whose lookup fails is left out, so one bad DLC no longer hides the base game and the
+  other DLCs. If the base game's own lookup fails the call fails, as before.
+* Lumen: pin `v1.4.1`.
+
 ## 1.4.0
 
 Library and account for Lumen `v1.4.0`. **Not breaking**: everything is added.

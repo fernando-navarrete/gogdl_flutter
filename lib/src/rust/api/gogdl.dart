@@ -19,6 +19,8 @@ import 'progress_reporting/saves_download.dart';
 import 'progress_reporting/saves_upload.dart';
 import 'progress_reporting/verify_download.dart';
 
+// These functions are ignored because they are not marked as `pub`: `resolve_products`
+
 // Rust type: RustOpaqueMoi<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<GogdlApi>>
 abstract class GogdlApi implements RustOpaqueInterface {
   /// Drops the cached data that can go stale, so the next call to each getter fetches it again:
@@ -72,6 +74,12 @@ abstract class GogdlApi implements RustOpaqueInterface {
 
   Future<String> getBackgroundImageLink({required int gameId});
 
+  /// The products of `buildName` that the account owns (the base game and its DLCs), in
+  /// upstream's order, with their names and types. Their details are fetched 8 at a time.
+  ///
+  /// A product whose lookup fails is left out, so one bad DLC doesn't hide the rest. If the base
+  /// game's own lookup fails the call fails, since the list is meaningless without it: with
+  /// `notFound`, `network` or `sessionExpired` like any lookup.
   Future<List<DownloadableProduct>> getDownloadableProducts({
     required int gameId,
     required String buildName,

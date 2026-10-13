@@ -1,8 +1,10 @@
 use std::collections::HashMap;
+use std::future::Future;
 use std::path::Path;
 use std::sync::Arc;
 
 use flutter_rust_bridge::{DartFnFuture, frb};
+use futures_util::{StreamExt, stream};
 use gogdl_lib::GogDl;
 use tokio::sync::mpsc;
 
@@ -112,6 +114,12 @@ impl GogdlApi {
             .collect::<Vec<GameBuild>>();
         Ok(builds)
     }
+    /// The products of `buildName` that the account owns (the base game and its DLCs), in
+    /// upstream's order, with their names and types. Their details are fetched 8 at a time.
+    ///
+    /// A product whose lookup fails is left out, so one bad DLC doesn't hide the rest. If the base
+    /// game's own lookup fails the call fails, since the list is meaningless without it: with
+    /// `notFound`, `network` or `sessionExpired` like any lookup.
     pub async fn get_downloadable_products(
         &self,
         game_id: i32,
@@ -121,14 +129,16 @@ impl GogdlApi {
             .inner
             .get_downloadable_products(game_id, build_name)
             .await?;
+        let product_ids = downloadable_products
+            .into_iter()
+            .map(|product| product.product_id)
+            .collect();
 
-        let mut products = Vec::new();
-        for product in &downloadable_products {
-            let product_details = self.inner.get_product_details(&product.product_id).await?;
-            products.push(DownloadableProduct::from_gogdl(&product_details));
-        }
-
-        Ok(products)
+        let inner = &self.inner;
+        resolve_products(game_id, product_ids, |id| async move {
+            inner.get_product_details(&id).await
+        })
+        .await
     }
     /// The download and on-disk size of `selectedProducts` of `buildName`, in total and per
     /// product. It's one request for the build's metadata, with no depot manifests, and it equals
@@ -597,9 +607,130 @@ impl GogdlApi {
     }
 }
 
+/// Product detail lookups in flight at once, like Lumen's limiter.
+const PRODUCT_DETAILS_CONCURRENCY: usize = 8;
+
+/// Looks up `product_ids` with `fetch`, keeping their order. A failed lookup drops its product,
+/// except the base game's (the id equal to `game_id`), whose error is returned.
+async fn resolve_products<F, Fut>(
+    game_id: i32,
+    product_ids: Vec<String>,
+    fetch: F,
+) -> Result<Vec<DownloadableProduct>, GogError>
+where
+    F: Fn(String) -> Fut,
+    Fut: Future<Output = Result<gogdl_lib::ProductDetails, gogdl_lib::GogDlError>>,
+{
+    let base_game_id = game_id.to_string();
+    let lookups = stream::iter(product_ids)
+        .map(|id| {
+            let lookup = fetch(id.clone());
+            async move { (id, lookup.await) }
+        })
+        .buffered(PRODUCT_DETAILS_CONCURRENCY)
+        .collect::<Vec<_>>()
+        .await;
+
+    let mut products = Vec::new();
+    for (id, lookup) in lookups {
+        match lookup {
+            Ok(details) => products.push(DownloadableProduct::from_gogdl(&details)),
+            Err(e) if id == base_game_id => return Err(e.into()),
+            Err(_) => {}
+        }
+    }
+    Ok(products)
+}
+
 #[cfg(test)]
 mod tests {
+    use std::sync::atomic::{AtomicUsize, Ordering};
+    use std::time::Duration;
+
+    use gogdl_lib::{ClientError, DepotError, GogDlError, ProductDetails};
+    use reqwest::StatusCode;
+
     use super::*;
+
+    fn details(id: i32) -> ProductDetails {
+        let mut details: ProductDetails = serde_json::from_str(&format!(
+            r#"{{"_embedded": {{"productType": "DLC", "product": {{"id": {id}, "title": "P{id}"}}}}}}"#
+        ))
+        .unwrap();
+        details.title = format!("P{id}");
+        details
+    }
+
+    fn not_found() -> GogDlError {
+        GogDlError::DepotError(DepotError::ClientError(ClientError::HttpError {
+            status: StatusCode::NOT_FOUND,
+            body: String::new(),
+        }))
+    }
+
+    fn ids(range: std::ops::Range<i32>) -> Vec<String> {
+        range.map(|id| id.to_string()).collect()
+    }
+
+    #[tokio::test(start_paused = true)]
+    async fn products_keep_upstreams_order_when_lookups_finish_out_of_order() {
+        let products = resolve_products(1, ids(1..6), |id| async move {
+            let id: i32 = id.parse().unwrap();
+            tokio::time::sleep(Duration::from_millis(100 * (10 - id as u64))).await;
+            Ok(details(id))
+        })
+        .await
+        .unwrap();
+        let got: Vec<i32> = products.iter().map(|p| p.id).collect();
+        assert_eq!(got, vec![1, 2, 3, 4, 5]);
+    }
+
+    #[tokio::test]
+    async fn a_failed_dlc_lookup_is_dropped() {
+        let products = resolve_products(1, ids(1..5), |id| async move {
+            match id.as_str() {
+                "3" => Err(not_found()),
+                _ => Ok(details(id.parse().unwrap())),
+            }
+        })
+        .await
+        .unwrap();
+        let got: Vec<i32> = products.iter().map(|p| p.id).collect();
+        assert_eq!(got, vec![1, 2, 4]);
+    }
+
+    #[tokio::test]
+    async fn a_failed_base_game_lookup_fails_the_call() {
+        let result = resolve_products(1, ids(1..4), |id| async move {
+            match id.as_str() {
+                "1" => Err(not_found()),
+                _ => Ok(details(id.parse().unwrap())),
+            }
+        })
+        .await;
+        let error = result.err().expect("the base game lookup failed");
+        assert_eq!(error.kind(), crate::api::error::GogErrorKind::NotFound);
+    }
+
+    #[tokio::test(start_paused = true)]
+    async fn lookups_run_concurrently_up_to_the_limit() {
+        let in_flight = AtomicUsize::new(0);
+        let peak = AtomicUsize::new(0);
+        let products = resolve_products(1, ids(1..21), |id| {
+            let (in_flight, peak) = (&in_flight, &peak);
+            async move {
+                let now = in_flight.fetch_add(1, Ordering::SeqCst) + 1;
+                peak.fetch_max(now, Ordering::SeqCst);
+                tokio::time::sleep(Duration::from_millis(50)).await;
+                in_flight.fetch_sub(1, Ordering::SeqCst);
+                Ok(details(id.parse().unwrap()))
+            }
+        })
+        .await
+        .unwrap();
+        assert_eq!(products.len(), 20);
+        assert_eq!(peak.load(Ordering::SeqCst), PRODUCT_DETAILS_CONCURRENCY);
+    }
 
     #[tokio::test]
     async fn free_space_of_the_temp_dir_is_positive() {
