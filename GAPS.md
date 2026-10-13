@@ -250,8 +250,9 @@ What the CI/CD line (`devlog/v1.3.x-ci-cd.md`) left open.
 - [ ] **P2 — The GitHub rulesets don't stop the owner moving a tag.** Their bypass is the Repository
   admin role, so the mirror can push a restore (gogdl-lib's B1). GitLab's `v*` protection is the guard;
   compare `git ls-remote` on both sides after any tag incident.
-- [ ] **P2 — `tool/check_lib_pin.sh` hasn't run in a tag pipeline yet.** Tested locally and in the
-  `release-cli` image; the next tag is its first real run.
+- [x] **P2 — `tool/check_lib_pin.sh` hasn't run in a tag pipeline yet.** Tested locally and in the
+  `release-cli` image; the next tag is its first real run. Fixed in `v1.4.0`: the `v1.4.0`–`v1.4.3`
+  tag pipelines ran it green.
 - [x] **P1 — Lumen still pins `v1.3.0`.** It should pin `v1.3.3` (not `v1.3.1`, which has no GitLab
   release) and drop its `RUSTSEC-2026-0285` entry from `osv-scanner.toml`, which expires 2026-11-06.
   Fixed in Lumen's `ci/github-mirror` MR (!7, `7e4e037`): it pins `v1.3.3` from GitHub over HTTPS and the

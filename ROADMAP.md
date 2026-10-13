@@ -9,8 +9,8 @@ under.
 - **Patch** (`1.x.y`): one tag per small, self-contained fix or addition.
 - **Minor** (`1.x.0`): a big update, meaning a feature set or cross-cutting refactor. Patches then
   continue from `.1` under that minor.
-- Tags use the existing `vX.Y.Z` format. `v1.3.3` is the newest tag, so the next stage is
-  **`v1.4.0`**.
+- Tags use the existing `vX.Y.Z` format. `v1.4.3` is the newest tag, so the next stage is
+  **`v1.5.0`**.
 - For each release: bump `version:` in `pubspec.yaml` **and** `version` in `rust/Cargo.toml` to
   match, tick the item(s) in `GAPS.md` and add a `CHANGELOG.md` entry on a release branch, merge it
   through an MR, then tag the merged commit on `main` (README "CI and releases").
@@ -32,7 +32,7 @@ the stage it serves, so Lumen can pin it on day one.
 |---|---|---|
 | (none, internal) | Tests, CI/CD | `v1.2.0` ✅ |
 | `v1.3.0` Download management | Cancel/pause, resume path, error kinds, install size, free space | `v1.3.0` ✅ |
-| `v1.4.0` Library and account | Clear the cache (Lumen D3), remove a product's files (Lumen D1) | `v1.4.0` |
+| `v1.4.0` Library and account | Clear the cache (Lumen D3), remove a product's files (Lumen D1) | `v1.4.0` ✅ |
 | `v1.5.0` UI polish and packaging | Login error kinds, precompiled `.so` for packaging, breaking API cleanups | `v1.5.0` |
 | `v1.6.0` Extras | Nothing | — |
 | Not on Lumen's roadmap yet | Cloud saves support/listing/sync, upstream-driven items | `v1.6.0`, `v1.7.0` |
@@ -111,7 +111,7 @@ upstream first.
 - **Breaking** for Lumen `v1.3.0`: job methods take a `CancelToken`, each progress enum gains a
   `Cancelled` variant, and errors carry a kind.
 
-## v1.4.0 — Library and account (for Lumen `v1.4.0`)
+## v1.4.0 ✅ — Library and account (for Lumen `v1.4.0`)
 
 Lumen's work plan (`../lumen/v1.4.0-LIBRARY.md`, "Dependency changes") asks for two things, found
 during its stage rather than before it. Its Phases 1–4 need nothing from the bridge and are done, so
