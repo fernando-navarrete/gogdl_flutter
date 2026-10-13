@@ -260,6 +260,12 @@ mod tests {
                 FileSystem,
             ),
             (
+                download(DownloadError::FileSystemError(
+                    FileSystemError::FileRemovalError(io_error()),
+                )),
+                FileSystem,
+            ),
+            (
                 download(DownloadError::CouldNotResolveFreeSpace {
                     path: PathBuf::from("/x"),
                 }),

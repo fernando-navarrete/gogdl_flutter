@@ -12,6 +12,7 @@ pub use crate::api::error::GogError;
 pub use crate::api::models::downloadable_product::DownloadableProduct;
 pub use crate::api::models::game_build::GameBuild;
 pub use crate::api::models::install_size::{InstallSize, ProductSize};
+pub use crate::api::models::product_removal::ProductRemoval;
 pub use crate::api::models::proton_release::ProtonRelease;
 use crate::api::progress_reporting::{
     DownloadGameProgress, DownloadSavesProgress, ProtonDownloadProgress, RepairGameProgress,
@@ -145,6 +146,41 @@ impl GogdlApi {
     ) -> Result<InstallSize, GogError> {
         let sizes = self.inner.get_product_sizes(game_id, build_name).await?;
         Ok(InstallSize::from_gogdl(&sizes, selected_products))
+    }
+    /// Deletes a product's files from the install at `path`, for a DLC the player unselected.
+    /// It fetches the depot manifests of `keep` and `remove` for `buildName` of `gameId` (the same
+    /// ones `downloadGame` resolves) and deletes only the files that `remove`'s depots list and
+    /// `keep`'s don't. Files are compared case-insensitively on normalized paths, since DLCs share
+    /// files with the base game: pass every product that stays installed in `keep`, the base game
+    /// included.
+    ///
+    /// - An id in both lists is kept.
+    /// - An empty `remove` returns zeros without fetching anything.
+    /// - Only files the manifests list are touched. Anything else under `path` survives, a
+    ///   directory that leads outside `path` is skipped, and a file that is already gone isn't an
+    ///   error.
+    /// - Directories the removal emptied are pruned, never `path` itself.
+    ///
+    /// It needs a login and the network, since it fetches manifests. Don't call it while a
+    /// download, repair or check runs on `path`.
+    ///
+    /// Fails with `notFound` when the build or a product doesn't exist, `sessionExpired` and
+    /// `network` like any lookup, and `fileSystem` when a delete fails. After a failure, or if the
+    /// caller stops waiting, some files may be removed: call it again to finish. The result counts
+    /// only what that call removed.
+    pub async fn remove_products(
+        &self,
+        game_id: i32,
+        path: &str,
+        build_name: &str,
+        keep: &[i32],
+        remove: &[i32],
+    ) -> Result<ProductRemoval, GogError> {
+        let removal = self
+            .inner
+            .remove_products(game_id, path, build_name, keep, remove)
+            .await?;
+        Ok(ProductRemoval::from_gogdl(&removal))
     }
     /// The free space, in bytes, on the disk `path` is on: the same figure the download, repair
     /// and Proton checks compare against. `path` needn't exist, and isn't created: its nearest
@@ -573,6 +609,25 @@ mod tests {
             .await
             .unwrap();
         assert!(free_space > 0);
+    }
+
+    // The API has no login here, so any manifest lookup would fail: `Ok` proves nothing was fetched.
+    #[tokio::test]
+    async fn removing_nothing_fetches_nothing() {
+        let removal = GogdlApi::new()
+            .remove_products(1, "/nonexistent", "build", &[1], &[])
+            .await
+            .unwrap();
+        assert_eq!((removal.files_removed, removal.bytes_freed), (0, 0));
+    }
+
+    #[tokio::test]
+    async fn an_id_in_both_lists_is_kept_and_fetches_nothing() {
+        let removal = GogdlApi::new()
+            .remove_products(1, "/nonexistent", "build", &[1, 2], &[2])
+            .await
+            .unwrap();
+        assert_eq!((removal.files_removed, removal.bytes_freed), (0, 0));
     }
 
     #[tokio::test]

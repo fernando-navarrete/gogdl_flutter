@@ -1,3 +1,5 @@
+import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:gogdl_flutter/gogdl_flutter.dart';
@@ -21,6 +23,18 @@ void main() {
 
   test('clearCache completes on a fresh, unauthenticated GogdlApi', () async {
     await GogdlApi().clearCache();
+  });
+
+  test('removeProducts with nothing to remove returns zeros, offline', () async {
+    final removal = await GogdlApi().removeProducts(
+      gameId: 1,
+      path: '/nonexistent',
+      buildName: 'build',
+      keep: Int32List.fromList([1]),
+      remove: Int32List(0),
+    );
+    expect(removal.filesRemoved, BigInt.zero);
+    expect(removal.bytesFreed, BigInt.zero);
   });
 
   testWidgets('example app shows the login link', (tester) async {

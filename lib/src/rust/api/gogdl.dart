@@ -9,6 +9,7 @@ import 'error.dart';
 import 'models/downloadable_product.dart';
 import 'models/game_build.dart';
 import 'models/install_size.dart';
+import 'models/product_removal.dart';
 import 'models/proton_release.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 import 'progress_reporting/game_download.dart';
@@ -120,6 +121,35 @@ abstract class GogdlApi implements RustOpaqueInterface {
   /// Proton downloads, saves downloads and uploads, and `loginWithCode` don't: a timeout fails
   /// them with a network error.
   factory GogdlApi() => RustLib.instance.api.crateApiGogdlGogdlApiNew();
+
+  /// Deletes a product's files from the install at `path`, for a DLC the player unselected.
+  /// It fetches the depot manifests of `keep` and `remove` for `buildName` of `gameId` (the same
+  /// ones `downloadGame` resolves) and deletes only the files that `remove`'s depots list and
+  /// `keep`'s don't. Files are compared case-insensitively on normalized paths, since DLCs share
+  /// files with the base game: pass every product that stays installed in `keep`, the base game
+  /// included.
+  ///
+  /// - An id in both lists is kept.
+  /// - An empty `remove` returns zeros without fetching anything.
+  /// - Only files the manifests list are touched. Anything else under `path` survives, a
+  ///   directory that leads outside `path` is skipped, and a file that is already gone isn't an
+  ///   error.
+  /// - Directories the removal emptied are pruned, never `path` itself.
+  ///
+  /// It needs a login and the network, since it fetches manifests. Don't call it while a
+  /// download, repair or check runs on `path`.
+  ///
+  /// Fails with `notFound` when the build or a product doesn't exist, `sessionExpired` and
+  /// `network` like any lookup, and `fileSystem` when a delete fails. After a failure, or if the
+  /// caller stops waiting, some files may be removed: call it again to finish. The result counts
+  /// only what that call removed.
+  Future<ProductRemoval> removeProducts({
+    required int gameId,
+    required String path,
+    required String buildName,
+    required List<int> keep,
+    required List<int> remove,
+  });
 
   Future<void> removeTokenRefreshCallback();
 

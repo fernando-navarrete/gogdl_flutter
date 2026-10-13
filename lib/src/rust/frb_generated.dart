@@ -9,6 +9,7 @@ import 'api/gogdl.dart';
 import 'api/models/downloadable_product.dart';
 import 'api/models/game_build.dart';
 import 'api/models/install_size.dart';
+import 'api/models/product_removal.dart';
 import 'api/models/proton_release.dart';
 import 'api/progress_reporting/game_download.dart';
 import 'api/progress_reporting/game_repair.dart';
@@ -76,7 +77,7 @@ class RustLib extends BaseEntrypoint<RustLibApi, RustLibApiImpl, RustLibWire> {
   String get codegenVersion => '2.13.0';
 
   @override
-  int get rustContentHash => 1165932775;
+  int get rustContentHash => 329354896;
 
   static const kDefaultExternalLibraryLoaderConfig =
       ExternalLibraryLoaderConfig(
@@ -191,6 +192,15 @@ abstract class RustLibApi extends BaseApi {
   });
 
   GogdlApi crateApiGogdlGogdlApiNew();
+
+  Future<ProductRemoval> crateApiGogdlGogdlApiRemoveProducts({
+    required GogdlApi that,
+    required int gameId,
+    required String path,
+    required String buildName,
+    required List<int> keep,
+    required List<int> remove,
+  });
 
   Future<void> crateApiGogdlGogdlApiRemoveTokenRefreshCallback({
     required GogdlApi that,
@@ -1154,6 +1164,53 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       const TaskConstMeta(debugName: "GogdlApi_new", argNames: []);
 
   @override
+  Future<ProductRemoval> crateApiGogdlGogdlApiRemoveProducts({
+    required GogdlApi that,
+    required int gameId,
+    required String path,
+    required String buildName,
+    required List<int> keep,
+    required List<int> remove,
+  }) {
+    return handler.executeNormal(
+      NormalTask(
+        callFfi: (port_) {
+          final serializer = SseSerializer(generalizedFrbRustBinding);
+          sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerGogdlApi(
+            that,
+            serializer,
+          );
+          sse_encode_i_32(gameId, serializer);
+          sse_encode_String(path, serializer);
+          sse_encode_String(buildName, serializer);
+          sse_encode_list_prim_i_32_loose(keep, serializer);
+          sse_encode_list_prim_i_32_loose(remove, serializer);
+          pdeCallFfi(
+            generalizedFrbRustBinding,
+            serializer,
+            funcId: 24,
+            port: port_,
+          );
+        },
+        codec: SseCodec(
+          decodeSuccessData: sse_decode_product_removal,
+          decodeErrorData:
+              sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerGogError,
+        ),
+        constMeta: kCrateApiGogdlGogdlApiRemoveProductsConstMeta,
+        argValues: [that, gameId, path, buildName, keep, remove],
+        apiImpl: this,
+      ),
+    );
+  }
+
+  TaskConstMeta get kCrateApiGogdlGogdlApiRemoveProductsConstMeta =>
+      const TaskConstMeta(
+        debugName: "GogdlApi_remove_products",
+        argNames: ["that", "gameId", "path", "buildName", "keep", "remove"],
+      );
+
+  @override
   Future<void> crateApiGogdlGogdlApiRemoveTokenRefreshCallback({
     required GogdlApi that,
   }) {
@@ -1168,7 +1225,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 24,
+            funcId: 25,
             port: port_,
           );
         },
@@ -1220,7 +1277,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
             pdeCallFfi(
               generalizedFrbRustBinding,
               serializer,
-              funcId: 25,
+              funcId: 26,
               port: port_,
             );
           },
@@ -1277,7 +1334,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 26,
+            funcId: 27,
             port: port_,
           );
         },
@@ -1319,7 +1376,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 27,
+            funcId: 28,
             port: port_,
           );
         },
@@ -1371,7 +1428,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
             pdeCallFfi(
               generalizedFrbRustBinding,
               serializer,
-              funcId: 28,
+              funcId: 29,
               port: port_,
             );
           },
@@ -1445,7 +1502,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
             pdeCallFfi(
               generalizedFrbRustBinding,
               serializer,
-              funcId: 29,
+              funcId: 30,
               port: port_,
             );
           },
@@ -1885,6 +1942,18 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   SpaceShortfall? dco_decode_opt_box_autoadd_space_shortfall(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     return raw == null ? null : dco_decode_box_autoadd_space_shortfall(raw);
+  }
+
+  @protected
+  ProductRemoval dco_decode_product_removal(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    final arr = raw as List<dynamic>;
+    if (arr.length != 2)
+      throw Exception('unexpected arr length: expect 2 but see ${arr.length}');
+    return ProductRemoval(
+      filesRemoved: dco_decode_u_64(arr[0]),
+      bytesFreed: dco_decode_u_64(arr[1]),
+    );
   }
 
   @protected
@@ -2537,6 +2606,17 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     } else {
       return null;
     }
+  }
+
+  @protected
+  ProductRemoval sse_decode_product_removal(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    var var_filesRemoved = sse_decode_u_64(deserializer);
+    var var_bytesFreed = sse_decode_u_64(deserializer);
+    return ProductRemoval(
+      filesRemoved: var_filesRemoved,
+      bytesFreed: var_bytesFreed,
+    );
   }
 
   @protected
@@ -3287,6 +3367,16 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  void sse_encode_product_removal(
+    ProductRemoval self,
+    SseSerializer serializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_u_64(self.filesRemoved, serializer);
+    sse_encode_u_64(self.bytesFreed, serializer);
+  }
+
+  @protected
   void sse_encode_product_size(ProductSize self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     sse_encode_i_32(self.id, serializer);
@@ -3737,6 +3827,42 @@ class GogdlApiImpl extends RustOpaque implements GogdlApi {
 
   Future<String> loginWithCode({required String code}) => RustLib.instance.api
       .crateApiGogdlGogdlApiLoginWithCode(that: this, code: code);
+
+  /// Deletes a product's files from the install at `path`, for a DLC the player unselected.
+  /// It fetches the depot manifests of `keep` and `remove` for `buildName` of `gameId` (the same
+  /// ones `downloadGame` resolves) and deletes only the files that `remove`'s depots list and
+  /// `keep`'s don't. Files are compared case-insensitively on normalized paths, since DLCs share
+  /// files with the base game: pass every product that stays installed in `keep`, the base game
+  /// included.
+  ///
+  /// - An id in both lists is kept.
+  /// - An empty `remove` returns zeros without fetching anything.
+  /// - Only files the manifests list are touched. Anything else under `path` survives, a
+  ///   directory that leads outside `path` is skipped, and a file that is already gone isn't an
+  ///   error.
+  /// - Directories the removal emptied are pruned, never `path` itself.
+  ///
+  /// It needs a login and the network, since it fetches manifests. Don't call it while a
+  /// download, repair or check runs on `path`.
+  ///
+  /// Fails with `notFound` when the build or a product doesn't exist, `sessionExpired` and
+  /// `network` like any lookup, and `fileSystem` when a delete fails. After a failure, or if the
+  /// caller stops waiting, some files may be removed: call it again to finish. The result counts
+  /// only what that call removed.
+  Future<ProductRemoval> removeProducts({
+    required int gameId,
+    required String path,
+    required String buildName,
+    required List<int> keep,
+    required List<int> remove,
+  }) => RustLib.instance.api.crateApiGogdlGogdlApiRemoveProducts(
+    that: this,
+    gameId: gameId,
+    path: path,
+    buildName: buildName,
+    keep: keep,
+    remove: remove,
+  );
 
   Future<void> removeTokenRefreshCallback() => RustLib.instance.api
       .crateApiGogdlGogdlApiRemoveTokenRefreshCallback(that: this);

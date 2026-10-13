@@ -9,6 +9,7 @@ import 'api/gogdl.dart';
 import 'api/models/downloadable_product.dart';
 import 'api/models/game_build.dart';
 import 'api/models/install_size.dart';
+import 'api/models/product_removal.dart';
 import 'api/models/proton_release.dart';
 import 'api/progress_reporting/game_download.dart';
 import 'api/progress_reporting/game_repair.dart';
@@ -189,6 +190,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   SpaceShortfall? dco_decode_opt_box_autoadd_space_shortfall(dynamic raw);
+
+  @protected
+  ProductRemoval dco_decode_product_removal(dynamic raw);
 
   @protected
   ProductSize dco_decode_product_size(dynamic raw);
@@ -388,6 +392,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   SpaceShortfall? sse_decode_opt_box_autoadd_space_shortfall(
     SseDeserializer deserializer,
   );
+
+  @protected
+  ProductRemoval sse_decode_product_removal(SseDeserializer deserializer);
 
   @protected
   ProductSize sse_decode_product_size(SseDeserializer deserializer);
@@ -640,6 +647,12 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   @protected
   void sse_encode_opt_box_autoadd_space_shortfall(
     SpaceShortfall? self,
+    SseSerializer serializer,
+  );
+
+  @protected
+  void sse_encode_product_removal(
+    ProductRemoval self,
     SseSerializer serializer,
   );
 
