@@ -78,17 +78,19 @@ needs it; ROADMAP.md schedules each item to land before that stage starts.
   Not needed: Lumen's `v1.4.0` Phase 0 found that `gogdl-lib` has no global auth state, so a fresh
   `GogdlApi` fails `get_owned_games` with `NotAuthenticated`. Lumen signs out by disposing its
   backend and building a new one (its D2, dropped). No bridge change.
-- [ ] **P1 — No way to refresh cached library data** (Lumen `v1.4.0`, its D3). `gogdl-lib` memoizes
+- [x] **P1 — No way to refresh cached library data** (Lumen `v1.4.0`, its D3). `gogdl-lib` memoizes
   owned products (re-fetched only while empty), game builds and downloadable products for the
   `GogDl` instance's whole life, so a game bought or a build published after launch never shows up,
   and Lumen's Builds-tab Refresh has always been a no-op. Recreating `GogdlApi` would drop auth and
   running jobs. Expose `clearCache()` over **[lib]** `GogDl::clear_cache()` (§7.12).
-- [ ] **P1 — Remove a product's files from an install** (Lumen `v1.4.0` DLC removal, its D1).
+  Fixed in `v1.4.0`: `clearCache()` forwards to it, as a `Future`.
+- [x] **P1 — Remove a product's files from an install** (Lumen `v1.4.0` DLC removal, its D1).
   `repair_game` with a smaller product set never deletes anything (the downloader has no
   `remove_file`), so a removed DLC's files stay on disk, and some games detect a DLC by its files.
   Lumen can't do it itself: it has no manifests, and five of Alien: Isolation's DLCs share files
   with the base game. Expose `removeProducts(gameId, path, buildName, keep, remove)` returning
   files removed and bytes freed, over **[lib]** `remove_products` (§7.13).
+  Fixed in `v1.4.0`: `removeProducts` returns a `ProductRemoval { filesRemoved, bytesFreed }`.
 - [x] **P1 — Install and download size before installing** (Lumen `v1.3.0` disk space check).
   `get_product_bundles` already has everything needed. Expose
   `get_install_size(game_id, build, products)` returning the download size (compressed) and the
@@ -328,7 +330,7 @@ Consolidated from the **[lib]** items above, in the order this repo needs them (
     must not be corrupted by a clear. Lumen's D3. Bridge `v1.4.0` / Lumen `v1.4.0` (its Phase 6).
     Fixed upstream in `gogdl-lib` `v1.3.0`: `clear_cache` is async and infallible. It also drops
     depot manifests and cloud saves remote configs, and a fetch in flight may store its own result.
-    The bridge pins `v1.3.2` (T2) and exposes `clearCache()` (T3).
+    The bridge pins `v1.3.2` and exposes `clearCache()` in `v1.4.0`.
 13. **`remove_products(game_id, path, build_name, keep, remove)`**: fetch both sets' manifests,
     delete the files only `remove`'s depots list (never one `keep`'s also list, compared
     case-insensitively on normalized paths), prune directories the removal emptied, never touch a
@@ -337,4 +339,4 @@ Consolidated from the **[lib]** items above, in the order this repo needs them (
     bridge ships it as a `v1.4.x` patch.
     Fixed upstream in `gogdl-lib` `v1.3.0`: `remove_products` returns `ProductRemoval {
     files_removed, bytes_freed }`; a failed delete is `FileSystemError::FileRemovalError`. The
-    bridge exposes it in T4.
+    bridge exposes it in `v1.4.0`.

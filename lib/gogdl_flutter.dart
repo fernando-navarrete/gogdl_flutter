@@ -6,6 +6,7 @@ export 'src/rust/api/gogdl.dart' show GogdlApi;
 export 'src/rust/api/models/downloadable_product.dart' show DownloadableProduct;
 export 'src/rust/api/models/game_build.dart' show GameBuild;
 export 'src/rust/api/models/install_size.dart' show InstallSize, ProductSize;
+export 'src/rust/api/models/product_removal.dart' show ProductRemoval;
 export 'src/rust/api/models/proton_release.dart' show ProtonRelease;
 export 'src/rust/api/progress_reporting/game_download.dart'
     show

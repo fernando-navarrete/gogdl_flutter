@@ -1,3 +1,22 @@
+## 1.4.0
+
+Library and account for Lumen `v1.4.0`. **Not breaking**: everything is added.
+
+* `clearCache()` drops `gogdl-lib`'s memoized owned products, game builds and downloadable products
+  (and its depot manifests and cloud-saves configs). Details, links, summary and screenshots stay.
+  Auth and running jobs are untouched, and the next call to each cleared getter refetches. Call it
+  before a library refresh or the Builds tab's Refresh.
+* `removeProducts(gameId, path, buildName, keep, remove)` deletes the files only `remove`'s depots
+  list, never one `keep`'s also lists (compared case-insensitively on normalized paths), prunes the
+  directories it emptied, and treats a missing file as success. It returns a `ProductRemoval` with
+  `filesRemoved` and `bytesFreed`, and is exported from `gogdl_flutter.dart`. It's a `Future`:
+  removing one DLC from Alien: Isolation took 6.9 s. It fetches manifests, so it needs a login and
+  the network.
+* `gogdl-lib` `v1.2.3` -> `v1.3.2` (`8df36d0`), with no other change to the Dart API. Downloads skip
+  verified chunks, and `downloadProgress` still ends at `started.totalBytes`.
+  `GamesError::ProductNotAGame` maps to `notFound`.
+* Lumen: pin `v1.4.0`.
+
 ## 1.3.3
 
 Same code and dependency versions as `1.3.2`. No change to the Dart API or to the progress events
