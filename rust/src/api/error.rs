@@ -9,6 +9,9 @@ pub enum GogError {
     GogdlError(#[from] GogDlError),
     #[error("{0}")]
     SavesError(#[from] SavesError),
+    /// An argument the bridge rejected before calling `gogdl-lib`.
+    #[error("invalid argument: {0}")]
+    InvalidArgument(String),
 }
 
 /// What kind of failure a `GogError` is, for code that needs to react to it rather than show
@@ -46,7 +49,7 @@ impl GogError {
         self.to_string()
     }
 
-    /// The error's kind. A revoked session (a refresh token GOG no longer accepts) is `unknown`,
+    /// The error's kind. A rejected argument (`InvalidArgument`) is `unknown`. A revoked session (a refresh token GOG no longer accepts) is `unknown`,
     /// not `sessionExpired`, since `gogdl-lib` doesn't tell it apart from other refresh failures
     /// yet (upstream `v1.5.0`).
     #[frb(sync)]
@@ -54,6 +57,7 @@ impl GogError {
         match self {
             GogError::GogdlError(e) => error_kind::gogdl(e),
             GogError::SavesError(e) => error_kind::saves(e),
+            GogError::InvalidArgument(_) => GogErrorKind::Unknown,
         }
     }
 
@@ -76,5 +80,17 @@ impl GogError {
             }),
             _ => None,
         }
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn invalid_argument_is_unknown_and_names_the_argument() {
+        let e = GogError::InvalidArgument("page must not be negative, got -1".into());
+        assert_eq!(e.kind(), GogErrorKind::Unknown);
+        assert!(e.message().contains("page"));
     }
 }

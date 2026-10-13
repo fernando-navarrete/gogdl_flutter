@@ -8,7 +8,7 @@ export 'src/rust/api/models/game_build.dart' show GameBuild;
 export 'src/rust/api/models/game_links.dart' show GameLinks;
 export 'src/rust/api/models/install_size.dart' show InstallSize, ProductSize;
 export 'src/rust/api/models/product_removal.dart' show ProductRemoval;
-export 'src/rust/api/models/proton_release.dart' show ProtonRelease;
+export 'src/rust/api/models/proton_release.dart' show ProtonRelease, ProtonReleasePage;
 export 'src/rust/api/progress_reporting/game_download.dart'
     show
         DownloadGameProgress,

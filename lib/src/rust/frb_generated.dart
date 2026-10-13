@@ -78,7 +78,7 @@ class RustLib extends BaseEntrypoint<RustLibApi, RustLibApiImpl, RustLibWire> {
   String get codegenVersion => '2.13.0';
 
   @override
-  int get rustContentHash => 1095886527;
+  int get rustContentHash => 1008882147;
 
   static const kDefaultExternalLibraryLoaderConfig =
       ExternalLibraryLoaderConfig(
@@ -185,6 +185,11 @@ abstract class RustLibApi extends BaseApi {
 
   Future<Int32List> crateApiGogdlGogdlApiGetOwnedGames({
     required GogdlApi that,
+  });
+
+  Future<ProtonReleasePage> crateApiGogdlGogdlApiGetProtonReleasePage({
+    required GogdlApi that,
+    required int page,
   });
 
   Future<List<ProtonRelease>> crateApiGogdlGogdlApiGetProtonReleases({
@@ -1108,7 +1113,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       );
 
   @override
-  Future<List<ProtonRelease>> crateApiGogdlGogdlApiGetProtonReleases({
+  Future<ProtonReleasePage> crateApiGogdlGogdlApiGetProtonReleasePage({
     required GogdlApi that,
     required int page,
   }) {
@@ -1125,6 +1130,45 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
             generalizedFrbRustBinding,
             serializer,
             funcId: 22,
+            port: port_,
+          );
+        },
+        codec: SseCodec(
+          decodeSuccessData: sse_decode_proton_release_page,
+          decodeErrorData:
+              sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerGogError,
+        ),
+        constMeta: kCrateApiGogdlGogdlApiGetProtonReleasePageConstMeta,
+        argValues: [that, page],
+        apiImpl: this,
+      ),
+    );
+  }
+
+  TaskConstMeta get kCrateApiGogdlGogdlApiGetProtonReleasePageConstMeta =>
+      const TaskConstMeta(
+        debugName: "GogdlApi_get_proton_release_page",
+        argNames: ["that", "page"],
+      );
+
+  @override
+  Future<List<ProtonRelease>> crateApiGogdlGogdlApiGetProtonReleases({
+    required GogdlApi that,
+    required int page,
+  }) {
+    return handler.executeNormal(
+      NormalTask(
+        callFfi: (port_) {
+          final serializer = SseSerializer(generalizedFrbRustBinding);
+          sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerGogdlApi(
+            that,
+            serializer,
+          );
+          sse_encode_i_32(page, serializer);
+          pdeCallFfi(
+            generalizedFrbRustBinding,
+            serializer,
+            funcId: 23,
             port: port_,
           );
         },
@@ -1163,7 +1207,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 23,
+            funcId: 24,
             port: port_,
           );
         },
@@ -1191,7 +1235,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       SyncTask(
         callFfi: () {
           final serializer = SseSerializer(generalizedFrbRustBinding);
-          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 24)!;
+          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 25)!;
         },
         codec: SseCodec(
           decodeSuccessData:
@@ -1233,7 +1277,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 25,
+            funcId: 26,
             port: port_,
           );
         },
@@ -1270,7 +1314,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 26,
+            funcId: 27,
             port: port_,
           );
         },
@@ -1322,7 +1366,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
             pdeCallFfi(
               generalizedFrbRustBinding,
               serializer,
-              funcId: 27,
+              funcId: 28,
               port: port_,
             );
           },
@@ -1379,7 +1423,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 28,
+            funcId: 29,
             port: port_,
           );
         },
@@ -1421,7 +1465,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 29,
+            funcId: 30,
             port: port_,
           );
         },
@@ -1473,7 +1517,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
             pdeCallFfi(
               generalizedFrbRustBinding,
               serializer,
-              funcId: 30,
+              funcId: 31,
               port: port_,
             );
           },
@@ -1547,7 +1591,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
             pdeCallFfi(
               generalizedFrbRustBinding,
               serializer,
-              funcId: 31,
+              funcId: 32,
               port: port_,
             );
           },
@@ -1792,6 +1836,12 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   String dco_decode_String(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     return raw as String;
+  }
+
+  @protected
+  bool dco_decode_bool(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return raw as bool;
   }
 
   @protected
@@ -2054,6 +2104,18 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     return ProtonRelease(
       tagName: dco_decode_String(arr[0]),
       downloadSize: dco_decode_u_64(arr[1]),
+    );
+  }
+
+  @protected
+  ProtonReleasePage dco_decode_proton_release_page(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    final arr = raw as List<dynamic>;
+    if (arr.length != 2)
+      throw Exception('unexpected arr length: expect 2 but see ${arr.length}');
+    return ProtonReleasePage(
+      releases: dco_decode_list_proton_release(arr[0]),
+      hasMore: dco_decode_bool(arr[1]),
     );
   }
 
@@ -2398,6 +2460,12 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  bool sse_decode_bool(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return deserializer.buffer.getUint8() != 0;
+  }
+
+  @protected
   SpaceShortfall sse_decode_box_autoadd_space_shortfall(
     SseDeserializer deserializer,
   ) {
@@ -2733,6 +2801,16 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  ProtonReleasePage sse_decode_proton_release_page(
+    SseDeserializer deserializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    var var_releases = sse_decode_list_proton_release(deserializer);
+    var var_hasMore = sse_decode_bool(deserializer);
+    return ProtonReleasePage(releases: var_releases, hasMore: var_hasMore);
+  }
+
+  @protected
   RepairGameProgress sse_decode_repair_game_progress(
     SseDeserializer deserializer,
   ) {
@@ -2911,12 +2989,6 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       default:
         throw UnimplementedError('');
     }
-  }
-
-  @protected
-  bool sse_decode_bool(SseDeserializer deserializer) {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    return deserializer.buffer.getUint8() != 0;
   }
 
   @protected
@@ -3178,6 +3250,12 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   void sse_encode_String(String self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     sse_encode_list_prim_u_8_strict(utf8.encoder.convert(self), serializer);
+  }
+
+  @protected
+  void sse_encode_bool(bool self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    serializer.buffer.putUint8(self ? 1 : 0);
   }
 
   @protected
@@ -3488,6 +3566,16 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  void sse_encode_proton_release_page(
+    ProtonReleasePage self,
+    SseSerializer serializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_list_proton_release(self.releases, serializer);
+    sse_encode_bool(self.hasMore, serializer);
+  }
+
+  @protected
   void sse_encode_repair_game_progress(
     RepairGameProgress self,
     SseSerializer serializer,
@@ -3672,12 +3760,6 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         sse_encode_i_32(6, serializer);
     }
   }
-
-  @protected
-  void sse_encode_bool(bool self, SseSerializer serializer) {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    serializer.buffer.putUint8(self ? 1 : 0);
-  }
 }
 
 @sealed
@@ -3722,7 +3804,7 @@ class GogErrorImpl extends RustOpaque implements GogError {
         RustLib.instance.api.rust_arc_decrement_strong_count_GogErrorPtr,
   );
 
-  /// The error's kind. A revoked session (a refresh token GOG no longer accepts) is `unknown`,
+  /// The error's kind. A rejected argument (`InvalidArgument`) is `unknown`. A revoked session (a refresh token GOG no longer accepts) is `unknown`,
   /// not `sessionExpired`, since `gogdl-lib` doesn't tell it apart from other refresh failures
   /// yet (upstream `v1.5.0`).
   GogErrorKind kind() =>
@@ -3904,6 +3986,22 @@ class GogdlApiImpl extends RustOpaque implements GogdlApi {
   Future<Int32List> getOwnedGames() =>
       RustLib.instance.api.crateApiGogdlGogdlApiGetOwnedGames(that: this);
 
+  /// One page of Proton-GE releases, 5 to a page, newest first. Pages start at 1 (GitHub treats
+  /// 0 as 1). Releases with no suitable asset are left out of `releases`, so `hasMore` says
+  /// whether to ask for the next page: it's true when GitHub returned a full page, even if
+  /// `releases` is empty.
+  ///
+  /// A negative `page` fails with `unknown` instead of wrapping around.
+  Future<ProtonReleasePage> getProtonReleasePage({required int page}) => RustLib
+      .instance
+      .api
+      .crateApiGogdlGogdlApiGetProtonReleasePage(that: this, page: page);
+
+  /// Deprecated: use `getProtonReleasePage`, which says whether more pages exist. This can't
+  /// tell a page whose releases were all left out from the end of the list. Removed in
+  /// `v1.5.0`. (flutter_rust_bridge doesn't emit `@Deprecated`, so the analyzer won't warn.)
+  ///
+  /// A negative `page` fails with `unknown` instead of wrapping around.
   Future<List<ProtonRelease>> getProtonReleases({required int page}) => RustLib
       .instance
       .api

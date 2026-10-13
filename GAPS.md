@@ -31,12 +31,15 @@ collects them as the list of things to request upstream.
   longer exists. These are the analyzer's only two errors, so `flutter analyze` can't gate CI until
   they're fixed.
   Fixed in `v1.2.0`: the example is an offline smoke app with a passing Linux integration test.
-- [ ] **P2 — `get_proton_releases` can't tell a filtered page from the end of the list.** It
+- [x] **P2 — `get_proton_releases` can't tell a filtered page from the end of the list.** It
   fetches a fixed page of 5 and silently drops releases with no suitable asset
   (`gogdl.rs:106-112`). A page where every release gets filtered out returns `[]`, which Lumen
   reads as the end of the list. Return the unfiltered count or a `has_more` flag.
-- [ ] **P2 — `get_proton_releases(page)` casts `i32` to `u32` without checking** (`page as u32`). A
+  Fixed in `v1.4.3`: `getProtonReleasePage` returns `hasMore`; `getProtonReleases` is deprecated
+  until `v1.5.0`.
+- [x] **P2 — `get_proton_releases(page)` casts `i32` to `u32` without checking** (`page as u32`). A
   negative page wraps around to a huge page number instead of returning an error.
+  Fixed in `v1.4.3`: both methods fail with `GogError::InvalidArgument` (kind `unknown`).
 - [x] **P2 — `get_downloadable_products` fails the whole call if one product lookup fails.** The
   per-product `get_product_details` loop uses `?`, so one bad DLC hides the base game and every
   other DLC on Lumen's DLC tab (Lumen `v1.4.0` DLC install/remove).

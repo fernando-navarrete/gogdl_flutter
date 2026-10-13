@@ -1,3 +1,19 @@
+## 1.4.3
+
+Proton pages. **Not breaking**: everything is added.
+
+* `getProtonReleasePage(page)` returns a `ProtonReleasePage` with `releases` and `hasMore`.
+  `hasMore` is true when GitHub returned a full page of 5, even if every release on it was left
+  out for having no suitable asset, so a fully filtered page no longer looks like the end of the
+  list. `ProtonReleasePage` is exported from `gogdl_flutter.dart`.
+* `getProtonReleases` is deprecated and removed in `v1.5.0`. flutter_rust_bridge doesn't turn
+  `#[deprecated]` into `@Deprecated`, so the deprecation is only in its doc comment: the analyzer
+  won't warn.
+* A negative `page` fails instead of wrapping around to a huge page number, in both methods. It's
+  a new `GogError` variant (`InvalidArgument`) whose `kind()` is `unknown`, so `GogErrorKind`
+  doesn't change.
+* Lumen: pin `v1.4.3`.
+
 ## 1.4.2
 
 `getGameLinks()`. **Not breaking**: everything is added.

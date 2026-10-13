@@ -16,7 +16,7 @@ pub use crate::api::models::game_build::GameBuild;
 pub use crate::api::models::game_links::GameLinks;
 pub use crate::api::models::install_size::{InstallSize, ProductSize};
 pub use crate::api::models::product_removal::ProductRemoval;
-pub use crate::api::models::proton_release::ProtonRelease;
+pub use crate::api::models::proton_release::{ProtonRelease, ProtonReleasePage};
 use crate::api::progress_reporting::{
     DownloadGameProgress, DownloadSavesProgress, ProtonDownloadProgress, RepairGameProgress,
     UploadSavesProgress, VerifyDownloadProgress,
@@ -31,6 +31,13 @@ use crate::progress::{
     saves::{SavesDownloadTranslator, SavesUploadTranslator},
     verify::VerifyTranslator,
 };
+
+const PROTON_PAGE_SIZE: u32 = 5;
+
+fn proton_page(page: i32) -> Result<u32, GogError> {
+    u32::try_from(page)
+        .map_err(|_| GogError::InvalidArgument(format!("page must not be negative, got {page}")))
+}
 
 #[frb(opaque)]
 pub struct GogdlApi {
@@ -212,16 +219,29 @@ impl GogdlApi {
         let free_space = self.inner.get_free_space(Path::new(path)).await?;
         Ok(free_space)
     }
+    /// One page of Proton-GE releases, 5 to a page, newest first. Pages start at 1 (GitHub treats
+    /// 0 as 1). Releases with no suitable asset are left out of `releases`, so `hasMore` says
+    /// whether to ask for the next page: it's true when GitHub returned a full page, even if
+    /// `releases` is empty.
+    ///
+    /// A negative `page` fails with `unknown` instead of wrapping around.
+    pub async fn get_proton_release_page(&self, page: i32) -> Result<ProtonReleasePage, GogError> {
+        let page = proton_page(page)?;
+        let upstream = self
+            .inner
+            .get_proton_releases(page, PROTON_PAGE_SIZE)
+            .await?;
+        Ok(ProtonReleasePage::from_gogdl(&upstream, PROTON_PAGE_SIZE))
+    }
+
+    /// Deprecated: use `getProtonReleasePage`, which says whether more pages exist. This can't
+    /// tell a page whose releases were all left out from the end of the list. Removed in
+    /// `v1.5.0`. (flutter_rust_bridge doesn't emit `@Deprecated`, so the analyzer won't warn.)
+    ///
+    /// A negative `page` fails with `unknown` instead of wrapping around.
+    #[deprecated(note = "use get_proton_release_page; removed in v1.5.0")]
     pub async fn get_proton_releases(&self, page: i32) -> Result<Vec<ProtonRelease>, GogError> {
-        let proton_releases = self.inner.get_proton_releases(page as u32, 5).await?;
-        let releases = proton_releases
-            .releases()
-            .iter()
-            .filter(|release| release.get_release_size().is_ok())
-            // Unwrap is safe here because we filtered out releases with an invalid size above
-            .map(|release| ProtonRelease::from_gogdl(release).unwrap())
-            .collect::<Vec<ProtonRelease>>();
-        Ok(releases)
+        Ok(self.get_proton_release_page(page).await?.releases)
     }
     /// A 30s stall fails the download with a network error. It isn't retried.
     ///
@@ -662,6 +682,16 @@ mod tests {
     use reqwest::StatusCode;
 
     use super::*;
+
+    #[test]
+    fn a_negative_proton_page_is_rejected() {
+        assert!(matches!(
+            proton_page(-1),
+            Err(GogError::InvalidArgument(m)) if m.contains("-1")
+        ));
+        assert_eq!(proton_page(0).unwrap(), 0);
+        assert_eq!(proton_page(3).unwrap(), 3);
+    }
 
     fn details(id: i32) -> ProductDetails {
         let mut details: ProductDetails = serde_json::from_str(&format!(

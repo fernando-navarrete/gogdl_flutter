@@ -161,7 +161,8 @@ here and Lumen migrates once.
   the login screen (GAPS §2).
 - Named fields in every progress enum. `GameBuild` keeps only the timestamp.
   `DownloadableProduct.product_type` becomes an enum (GAPS §3).
-- Remove the getters deprecated in `v1.4.2` (GAPS §3).
+- Remove the getters deprecated in `v1.4.2` (GAPS §3) and `getProtonReleases`, deprecated in
+  `v1.4.3` (GAPS §1).
 - Build and publish a precompiled Linux `.so` from the tag pipeline, and check that Lumen's
   AppImage/Flatpak release pipeline can consume it (GAPS §6).
 - **Breaking** for Lumen `v1.5.0`: the progress enum field names, the model changes and the removed

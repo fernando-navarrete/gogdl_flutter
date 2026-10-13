@@ -20,7 +20,7 @@ import 'progress_reporting/saves_download.dart';
 import 'progress_reporting/saves_upload.dart';
 import 'progress_reporting/verify_download.dart';
 
-// These functions are ignored because they are not marked as `pub`: `resolve_products`
+// These functions are ignored because they are not marked as `pub`: `proton_page`, `resolve_products`
 
 // Rust type: RustOpaqueMoi<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<GogdlApi>>
 abstract class GogdlApi implements RustOpaqueInterface {
@@ -126,6 +126,19 @@ abstract class GogdlApi implements RustOpaqueInterface {
 
   Future<Int32List> getOwnedGames();
 
+  /// One page of Proton-GE releases, 5 to a page, newest first. Pages start at 1 (GitHub treats
+  /// 0 as 1). Releases with no suitable asset are left out of `releases`, so `hasMore` says
+  /// whether to ask for the next page: it's true when GitHub returned a full page, even if
+  /// `releases` is empty.
+  ///
+  /// A negative `page` fails with `unknown` instead of wrapping around.
+  Future<ProtonReleasePage> getProtonReleasePage({required int page});
+
+  /// Deprecated: use `getProtonReleasePage`, which says whether more pages exist. This can't
+  /// tell a page whose releases were all left out from the end of the list. Removed in
+  /// `v1.5.0`. (flutter_rust_bridge doesn't emit `@Deprecated`, so the analyzer won't warn.)
+  ///
+  /// A negative `page` fails with `unknown` instead of wrapping around.
   Future<List<ProtonRelease>> getProtonReleases({required int page});
 
   Future<String> loginWithCode({required String code});

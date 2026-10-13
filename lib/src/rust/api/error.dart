@@ -10,7 +10,7 @@ import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 
 // Rust type: RustOpaqueMoi<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<GogError>>
 abstract class GogError implements RustOpaqueInterface {
-  /// The error's kind. A revoked session (a refresh token GOG no longer accepts) is `unknown`,
+  /// The error's kind. A rejected argument (`InvalidArgument`) is `unknown`. A revoked session (a refresh token GOG no longer accepts) is `unknown`,
   /// not `sessionExpired`, since `gogdl-lib` doesn't tell it apart from other refresh failures
   /// yet (upstream `v1.5.0`).
   GogErrorKind kind();

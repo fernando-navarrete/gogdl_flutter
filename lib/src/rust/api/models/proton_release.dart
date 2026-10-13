@@ -6,7 +6,7 @@
 import '../../frb_generated.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 
-// These functions are ignored (category: IgnoreBecauseExplicitAttribute): `from_gogdl`
+// These functions are ignored (category: IgnoreBecauseExplicitAttribute): `from_gogdl`, `from_gogdl`
 
 class ProtonRelease {
   final String tagName;
@@ -24,4 +24,27 @@ class ProtonRelease {
           runtimeType == other.runtimeType &&
           tagName == other.tagName &&
           downloadSize == other.downloadSize;
+}
+
+/// One page of Proton-GE releases.
+class ProtonReleasePage {
+  /// The page's releases, newest first, without those that have no suitable asset.
+  final List<ProtonRelease> releases;
+
+  /// Whether there may be a next page: true when GitHub returned a full page, even if every
+  /// release on it was left out of `releases`.
+  final bool hasMore;
+
+  const ProtonReleasePage({required this.releases, required this.hasMore});
+
+  @override
+  int get hashCode => releases.hashCode ^ hasMore.hashCode;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is ProtonReleasePage &&
+          runtimeType == other.runtimeType &&
+          releases == other.releases &&
+          hasMore == other.hasMore;
 }
