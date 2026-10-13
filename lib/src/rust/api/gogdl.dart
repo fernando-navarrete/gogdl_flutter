@@ -8,6 +8,7 @@ import 'cancel_token.dart';
 import 'error.dart';
 import 'models/downloadable_product.dart';
 import 'models/game_build.dart';
+import 'models/game_links.dart';
 import 'models/install_size.dart';
 import 'models/product_removal.dart';
 import 'models/proton_release.dart';
@@ -72,6 +73,7 @@ abstract class GogdlApi implements RustOpaqueInterface {
     required CancelToken cancel,
   });
 
+  /// Deprecated: use `getGameLinks`, which fetches both links in one call. Removed in `v1.5.0`.
   Future<String> getBackgroundImageLink({required int gameId});
 
   /// The products of `buildName` that the account owns (the base game and its DLCs), in
@@ -92,9 +94,13 @@ abstract class GogdlApi implements RustOpaqueInterface {
   /// Fails with `fileSystem` when no ancestor of `path` can be resolved or no disk matches it.
   Future<BigInt> getFreeSpace({required String path});
 
+  /// Deprecated: use `getGameLinks`, which fetches both links in one call. Removed in `v1.5.0`.
   Future<String> getGameBoxartLink({required int gameId});
 
   Future<List<GameBuild>> getGameBuilds({required int gameId});
+
+  /// The box art and background image links of a game, from one request.
+  Future<GameLinks> getGameLinks({required int gameId});
 
   Future<List<String>> getGameScreenshots({required int gameId});
 

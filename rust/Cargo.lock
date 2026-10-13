@@ -719,7 +719,7 @@ dependencies = [
 
 [[package]]
 name = "gogdl_flutter"
-version = "1.4.1"
+version = "1.4.2"
 dependencies = [
  "flutter_rust_bridge",
  "futures-util",

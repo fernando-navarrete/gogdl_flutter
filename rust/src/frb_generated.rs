@@ -42,7 +42,7 @@ flutter_rust_bridge::frb_generated_boilerplate!(
     default_rust_auto_opaque = RustAutoOpaqueMoi,
 );
 pub(crate) const FLUTTER_RUST_BRIDGE_CODEGEN_VERSION: &str = "2.13.0";
-pub(crate) const FLUTTER_RUST_BRIDGE_CODEGEN_CONTENT_HASH: i32 = 329354896;
+pub(crate) const FLUTTER_RUST_BRIDGE_CODEGEN_CONTENT_HASH: i32 = 1095886527;
 
 // Section: executor
 
@@ -875,6 +875,66 @@ fn wire__crate__api__gogdl__GogdlApi_get_game_builds_impl(
                         }
                         let api_that_guard = api_that_guard.unwrap();
                         let output_ok = crate::api::gogdl::GogdlApi::get_game_builds(
+                            &*api_that_guard,
+                            api_game_id,
+                        )
+                        .await?;
+                        std::result::Result::Ok(output_ok)
+                    })()
+                    .await,
+                )
+            }
+        },
+    )
+}
+fn wire__crate__api__gogdl__GogdlApi_get_game_links_impl(
+    port_: flutter_rust_bridge::for_generated::MessagePort,
+    ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
+    rust_vec_len_: i32,
+    data_len_: i32,
+) {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap_async::<flutter_rust_bridge::for_generated::SseCodec, _, _, _>(
+        flutter_rust_bridge::for_generated::TaskInfo {
+            debug_name: "GogdlApi_get_game_links",
+            port: Some(port_),
+            mode: flutter_rust_bridge::for_generated::FfiCallMode::Normal,
+        },
+        move || {
+            let message = unsafe {
+                flutter_rust_bridge::for_generated::Dart2RustMessageSse::from_wire(
+                    ptr_,
+                    rust_vec_len_,
+                    data_len_,
+                )
+            };
+            let mut deserializer =
+                flutter_rust_bridge::for_generated::SseDeserializer::new(message);
+            let api_that = <RustOpaqueMoi<
+                flutter_rust_bridge::for_generated::RustAutoOpaqueInner<GogdlApi>,
+            >>::sse_decode(&mut deserializer);
+            let api_game_id = <i32>::sse_decode(&mut deserializer);
+            deserializer.end();
+            move |context| async move {
+                transform_result_sse::<_, GogError>(
+                    (move || async move {
+                        let mut api_that_guard = None;
+                        let decode_indices_ =
+                            flutter_rust_bridge::for_generated::lockable_compute_decode_order(
+                                vec![flutter_rust_bridge::for_generated::LockableOrderInfo::new(
+                                    &api_that, 0, false,
+                                )],
+                            );
+                        for i in decode_indices_ {
+                            match i {
+                                0 => {
+                                    api_that_guard =
+                                        Some(api_that.lockable_decode_async_ref().await)
+                                }
+                                _ => unreachable!(),
+                            }
+                        }
+                        let api_that_guard = api_that_guard.unwrap();
+                        let output_ok = crate::api::gogdl::GogdlApi::get_game_links(
                             &*api_that_guard,
                             api_game_id,
                         )
@@ -2222,6 +2282,18 @@ impl SseDecode for crate::api::models::game_build::GameBuild {
     }
 }
 
+impl SseDecode for crate::api::models::game_links::GameLinks {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut var_boxart = <String>::sse_decode(deserializer);
+        let mut var_background = <String>::sse_decode(deserializer);
+        return crate::api::models::game_links::GameLinks {
+            boxart: var_boxart,
+            background: var_background,
+        };
+    }
+}
+
 impl SseDecode for crate::api::error::GogErrorKind {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
@@ -2699,74 +2771,77 @@ fn pde_ffi_dispatcher_primary_impl(
             rust_vec_len,
             data_len,
         ),
-        15 => wire__crate__api__gogdl__GogdlApi_get_game_screenshots_impl(
+        15 => {
+            wire__crate__api__gogdl__GogdlApi_get_game_links_impl(port, ptr, rust_vec_len, data_len)
+        }
+        16 => wire__crate__api__gogdl__GogdlApi_get_game_screenshots_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        16 => wire__crate__api__gogdl__GogdlApi_get_game_summary_impl(
+        17 => wire__crate__api__gogdl__GogdlApi_get_game_summary_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        17 => {
+        18 => {
             wire__crate__api__gogdl__GogdlApi_get_game_title_impl(port, ptr, rust_vec_len, data_len)
         }
-        18 => wire__crate__api__gogdl__GogdlApi_get_install_size_impl(
+        19 => wire__crate__api__gogdl__GogdlApi_get_install_size_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        20 => wire__crate__api__gogdl__GogdlApi_get_owned_games_impl(
+        21 => wire__crate__api__gogdl__GogdlApi_get_owned_games_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        21 => wire__crate__api__gogdl__GogdlApi_get_proton_releases_impl(
+        22 => wire__crate__api__gogdl__GogdlApi_get_proton_releases_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        22 => wire__crate__api__gogdl__GogdlApi_login_with_code_impl(
+        23 => wire__crate__api__gogdl__GogdlApi_login_with_code_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        24 => wire__crate__api__gogdl__GogdlApi_remove_products_impl(
+        25 => wire__crate__api__gogdl__GogdlApi_remove_products_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        25 => wire__crate__api__gogdl__GogdlApi_remove_token_refresh_callback_impl(
+        26 => wire__crate__api__gogdl__GogdlApi_remove_token_refresh_callback_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        26 => wire__crate__api__gogdl__GogdlApi_repair_game_impl(port, ptr, rust_vec_len, data_len),
-        27 => {
+        27 => wire__crate__api__gogdl__GogdlApi_repair_game_impl(port, ptr, rust_vec_len, data_len),
+        28 => {
             wire__crate__api__gogdl__GogdlApi_restore_auth_impl(port, ptr, rust_vec_len, data_len)
         }
-        28 => wire__crate__api__gogdl__GogdlApi_set_token_refresh_callback_impl(
+        29 => wire__crate__api__gogdl__GogdlApi_set_token_refresh_callback_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        29 => wire__crate__api__gogdl__GogdlApi_upload_save_files_impl(
+        30 => wire__crate__api__gogdl__GogdlApi_upload_save_files_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        30 => wire__crate__api__gogdl__GogdlApi_verify_download_impl(
+        31 => wire__crate__api__gogdl__GogdlApi_verify_download_impl(
             port,
             ptr,
             rust_vec_len,
@@ -2789,8 +2864,8 @@ fn pde_ffi_dispatcher_sync_impl(
         3 => wire__crate__api__error__GogError_kind_impl(ptr, rust_vec_len, data_len),
         4 => wire__crate__api__error__GogError_message_impl(ptr, rust_vec_len, data_len),
         5 => wire__crate__api__error__GogError_space_shortfall_impl(ptr, rust_vec_len, data_len),
-        19 => wire__crate__api__gogdl__GogdlApi_get_login_link_impl(ptr, rust_vec_len, data_len),
-        23 => wire__crate__api__gogdl__GogdlApi_new_impl(ptr, rust_vec_len, data_len),
+        20 => wire__crate__api__gogdl__GogdlApi_get_login_link_impl(ptr, rust_vec_len, data_len),
+        24 => wire__crate__api__gogdl__GogdlApi_new_impl(ptr, rust_vec_len, data_len),
         _ => unreachable!(),
     }
 }
@@ -2962,6 +3037,27 @@ impl flutter_rust_bridge::IntoIntoDart<crate::api::models::game_build::GameBuild
     for crate::api::models::game_build::GameBuild
 {
     fn into_into_dart(self) -> crate::api::models::game_build::GameBuild {
+        self
+    }
+}
+// Codec=Dco (DartCObject based), see doc to use other codecs
+impl flutter_rust_bridge::IntoDart for crate::api::models::game_links::GameLinks {
+    fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
+        [
+            self.boxart.into_into_dart().into_dart(),
+            self.background.into_into_dart().into_dart(),
+        ]
+        .into_dart()
+    }
+}
+impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive
+    for crate::api::models::game_links::GameLinks
+{
+}
+impl flutter_rust_bridge::IntoIntoDart<crate::api::models::game_links::GameLinks>
+    for crate::api::models::game_links::GameLinks
+{
+    fn into_into_dart(self) -> crate::api::models::game_links::GameLinks {
         self
     }
 }
@@ -3497,6 +3593,14 @@ impl SseEncode for crate::api::models::game_build::GameBuild {
         <String>::sse_encode(self.version_name, serializer);
         <String>::sse_encode(self.release_date, serializer);
         <i64>::sse_encode(self.release_date_timestamp, serializer);
+    }
+}
+
+impl SseEncode for crate::api::models::game_links::GameLinks {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <String>::sse_encode(self.boxart, serializer);
+        <String>::sse_encode(self.background, serializer);
     }
 }
 

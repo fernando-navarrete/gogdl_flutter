@@ -1,6 +1,6 @@
 [package]
 name = "gogdl_flutter"
-version = "1.4.1"
+version = "1.4.2"
 edition = "2024"
 license = "MIT OR Apache-2.0"
 description = "flutter_rust_bridge bindings for gogdl-lib, built into Lumen through Native Assets"

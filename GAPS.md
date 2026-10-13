@@ -131,9 +131,10 @@ needs it; ROADMAP.md schedules each item to land before that stage starts.
 
 ## 3. Bridge API design / consistency
 
-- [ ] **P2 — Boxart and background each fetch `get_game_links` separately** (`gogdl.rs:55-63`).
+- [x] **P2 — Boxart and background each fetch `get_game_links` separately** (`gogdl.rs:55-63`).
   Lumen asks for both per game, so every game costs two identical requests. Return both from one
   `get_game_links`.
+  Fixed in `v1.4.2`: `getGameLinks` returns both; the two old getters are deprecated until `v1.5.0`.
 - [ ] **P2 — Progress enums mix positional and named fields.** `ProtonDownloadProgress` and
   `VerifyDownloadProgress` use tuple variants (`Started(u64)`, `FileNotFound(String, u64)`), while
   the game and saves enums use named fields. Positional fields show up in Dart as `field0`/`field1`.

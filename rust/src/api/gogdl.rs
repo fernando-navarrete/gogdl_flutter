@@ -13,6 +13,7 @@ pub use crate::api::cancel_token::CancelToken;
 pub use crate::api::error::GogError;
 pub use crate::api::models::downloadable_product::DownloadableProduct;
 pub use crate::api::models::game_build::GameBuild;
+pub use crate::api::models::game_links::GameLinks;
 pub use crate::api::models::install_size::{InstallSize, ProductSize};
 pub use crate::api::models::product_removal::ProductRemoval;
 pub use crate::api::models::proton_release::ProtonRelease;
@@ -83,11 +84,21 @@ impl GogdlApi {
         Ok(game_details.title)
     }
 
+    /// The box art and background image links of a game, from one request.
+    pub async fn get_game_links(&self, game_id: i32) -> Result<GameLinks, GogError> {
+        let game_links = self.inner.get_game_links(game_id).await?;
+        Ok(GameLinks::from_gogdl(&game_links))
+    }
+
+    /// Deprecated: use `getGameLinks`, which fetches both links in one call. Removed in `v1.5.0`.
+    #[deprecated(since = "1.4.2", note = "use get_game_links; removed in 1.5.0")]
     pub async fn get_background_image_link(&self, game_id: i32) -> Result<String, GogError> {
         let game_links = self.inner.get_game_links(game_id).await?;
         Ok(game_links.links.background_image.href)
     }
 
+    /// Deprecated: use `getGameLinks`, which fetches both links in one call. Removed in `v1.5.0`.
+    #[deprecated(since = "1.4.2", note = "use get_game_links; removed in 1.5.0")]
     pub async fn get_game_boxart_link(&self, game_id: i32) -> Result<String, GogError> {
         let game_links = self.inner.get_game_links(game_id).await?;
         Ok(game_links.links.box_art_image.href)

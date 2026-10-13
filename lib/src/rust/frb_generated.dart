@@ -8,6 +8,7 @@ import 'api/error.dart';
 import 'api/gogdl.dart';
 import 'api/models/downloadable_product.dart';
 import 'api/models/game_build.dart';
+import 'api/models/game_links.dart';
 import 'api/models/install_size.dart';
 import 'api/models/product_removal.dart';
 import 'api/models/proton_release.dart';
@@ -77,7 +78,7 @@ class RustLib extends BaseEntrypoint<RustLibApi, RustLibApiImpl, RustLibWire> {
   String get codegenVersion => '2.13.0';
 
   @override
-  int get rustContentHash => 329354896;
+  int get rustContentHash => 1095886527;
 
   static const kDefaultExternalLibraryLoaderConfig =
       ExternalLibraryLoaderConfig(
@@ -149,6 +150,11 @@ abstract class RustLibApi extends BaseApi {
   });
 
   Future<List<GameBuild>> crateApiGogdlGogdlApiGetGameBuilds({
+    required GogdlApi that,
+    required int gameId,
+  });
+
+  Future<GameLinks> crateApiGogdlGogdlApiGetGameLinks({
     required GogdlApi that,
     required int gameId,
   });
@@ -837,7 +843,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       );
 
   @override
-  Future<List<String>> crateApiGogdlGogdlApiGetGameScreenshots({
+  Future<GameLinks> crateApiGogdlGogdlApiGetGameLinks({
     required GogdlApi that,
     required int gameId,
   }) {
@@ -854,6 +860,45 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
             generalizedFrbRustBinding,
             serializer,
             funcId: 15,
+            port: port_,
+          );
+        },
+        codec: SseCodec(
+          decodeSuccessData: sse_decode_game_links,
+          decodeErrorData:
+              sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerGogError,
+        ),
+        constMeta: kCrateApiGogdlGogdlApiGetGameLinksConstMeta,
+        argValues: [that, gameId],
+        apiImpl: this,
+      ),
+    );
+  }
+
+  TaskConstMeta get kCrateApiGogdlGogdlApiGetGameLinksConstMeta =>
+      const TaskConstMeta(
+        debugName: "GogdlApi_get_game_links",
+        argNames: ["that", "gameId"],
+      );
+
+  @override
+  Future<List<String>> crateApiGogdlGogdlApiGetGameScreenshots({
+    required GogdlApi that,
+    required int gameId,
+  }) {
+    return handler.executeNormal(
+      NormalTask(
+        callFfi: (port_) {
+          final serializer = SseSerializer(generalizedFrbRustBinding);
+          sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerGogdlApi(
+            that,
+            serializer,
+          );
+          sse_encode_i_32(gameId, serializer);
+          pdeCallFfi(
+            generalizedFrbRustBinding,
+            serializer,
+            funcId: 16,
             port: port_,
           );
         },
@@ -892,7 +937,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 16,
+            funcId: 17,
             port: port_,
           );
         },
@@ -931,7 +976,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 17,
+            funcId: 18,
             port: port_,
           );
         },
@@ -974,7 +1019,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 18,
+            funcId: 19,
             port: port_,
           );
         },
@@ -1006,7 +1051,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
             that,
             serializer,
           );
-          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 19)!;
+          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 20)!;
         },
         codec: SseCodec(
           decodeSuccessData: sse_decode_String,
@@ -1040,7 +1085,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 20,
+            funcId: 21,
             port: port_,
           );
         },
@@ -1079,7 +1124,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 21,
+            funcId: 22,
             port: port_,
           );
         },
@@ -1118,7 +1163,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 22,
+            funcId: 23,
             port: port_,
           );
         },
@@ -1146,7 +1191,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       SyncTask(
         callFfi: () {
           final serializer = SseSerializer(generalizedFrbRustBinding);
-          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 23)!;
+          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 24)!;
         },
         codec: SseCodec(
           decodeSuccessData:
@@ -1188,7 +1233,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 24,
+            funcId: 25,
             port: port_,
           );
         },
@@ -1225,7 +1270,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 25,
+            funcId: 26,
             port: port_,
           );
         },
@@ -1277,7 +1322,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
             pdeCallFfi(
               generalizedFrbRustBinding,
               serializer,
-              funcId: 26,
+              funcId: 27,
               port: port_,
             );
           },
@@ -1334,7 +1379,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 27,
+            funcId: 28,
             port: port_,
           );
         },
@@ -1376,7 +1421,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 28,
+            funcId: 29,
             port: port_,
           );
         },
@@ -1428,7 +1473,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
             pdeCallFfi(
               generalizedFrbRustBinding,
               serializer,
-              funcId: 29,
+              funcId: 30,
               port: port_,
             );
           },
@@ -1502,7 +1547,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
             pdeCallFfi(
               generalizedFrbRustBinding,
               serializer,
-              funcId: 30,
+              funcId: 31,
               port: port_,
             );
           },
@@ -1850,6 +1895,18 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       versionName: dco_decode_String(arr[1]),
       releaseDate: dco_decode_String(arr[2]),
       releaseDateTimestamp: dco_decode_i_64(arr[3]),
+    );
+  }
+
+  @protected
+  GameLinks dco_decode_game_links(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    final arr = raw as List<dynamic>;
+    if (arr.length != 2)
+      throw Exception('unexpected arr length: expect 2 but see ${arr.length}');
+    return GameLinks(
+      boxart: dco_decode_String(arr[0]),
+      background: dco_decode_String(arr[1]),
     );
   }
 
@@ -2470,6 +2527,14 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       releaseDate: var_releaseDate,
       releaseDateTimestamp: var_releaseDateTimestamp,
     );
+  }
+
+  @protected
+  GameLinks sse_decode_game_links(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    var var_boxart = sse_decode_String(deserializer);
+    var var_background = sse_decode_String(deserializer);
+    return GameLinks(boxart: var_boxart, background: var_background);
   }
 
   @protected
@@ -3233,6 +3298,13 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  void sse_encode_game_links(GameLinks self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_String(self.boxart, serializer);
+    sse_encode_String(self.background, serializer);
+  }
+
+  @protected
   void sse_encode_gog_error_kind(GogErrorKind self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     sse_encode_i_32(self.index, serializer);
@@ -3752,6 +3824,7 @@ class GogdlApiImpl extends RustOpaque implements GogdlApi {
     cancel: cancel,
   );
 
+  /// Deprecated: use `getGameLinks`, which fetches both links in one call. Removed in `v1.5.0`.
   Future<String> getBackgroundImageLink({required int gameId}) => RustLib
       .instance
       .api
@@ -3780,6 +3853,7 @@ class GogdlApiImpl extends RustOpaque implements GogdlApi {
   Future<BigInt> getFreeSpace({required String path}) => RustLib.instance.api
       .crateApiGogdlGogdlApiGetFreeSpace(that: this, path: path);
 
+  /// Deprecated: use `getGameLinks`, which fetches both links in one call. Removed in `v1.5.0`.
   Future<String> getGameBoxartLink({required int gameId}) => RustLib
       .instance
       .api
@@ -3789,6 +3863,10 @@ class GogdlApiImpl extends RustOpaque implements GogdlApi {
       .instance
       .api
       .crateApiGogdlGogdlApiGetGameBuilds(that: this, gameId: gameId);
+
+  /// The box art and background image links of a game, from one request.
+  Future<GameLinks> getGameLinks({required int gameId}) => RustLib.instance.api
+      .crateApiGogdlGogdlApiGetGameLinks(that: this, gameId: gameId);
 
   Future<List<String>> getGameScreenshots({required int gameId}) => RustLib
       .instance

@@ -1,3 +1,14 @@
+## 1.4.2
+
+`getGameLinks()`. **Not breaking**: everything is added.
+
+* `getGameLinks(gameId)` returns a `GameLinks` with `boxart` and `background` from one request,
+  where the two old getters made one request each.
+* `getGameBoxartLink` and `getBackgroundImageLink` are deprecated and removed in `v1.5.0`.
+  flutter_rust_bridge doesn't turn `#[deprecated]` into Dart's `@Deprecated`, so the deprecation is
+  only in their doc comments: the analyzer won't warn.
+* Lumen: pin `v1.4.2`.
+
 ## 1.4.1
 
 Faster, more tolerant `getDownloadableProducts()`. **Not breaking**: same signature and types.

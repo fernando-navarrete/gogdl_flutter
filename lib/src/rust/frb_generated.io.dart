@@ -8,6 +8,7 @@ import 'api/error.dart';
 import 'api/gogdl.dart';
 import 'api/models/downloadable_product.dart';
 import 'api/models/game_build.dart';
+import 'api/models/game_links.dart';
 import 'api/models/install_size.dart';
 import 'api/models/product_removal.dart';
 import 'api/models/proton_release.dart';
@@ -148,6 +149,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   GameBuild dco_decode_game_build(dynamic raw);
+
+  @protected
+  GameLinks dco_decode_game_links(dynamic raw);
 
   @protected
   GogErrorKind dco_decode_gog_error_kind(dynamic raw);
@@ -344,6 +348,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   GameBuild sse_decode_game_build(SseDeserializer deserializer);
+
+  @protected
+  GameLinks sse_decode_game_links(SseDeserializer deserializer);
 
   @protected
   GogErrorKind sse_decode_gog_error_kind(SseDeserializer deserializer);
@@ -583,6 +590,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   void sse_encode_game_build(GameBuild self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_game_links(GameLinks self, SseSerializer serializer);
 
   @protected
   void sse_encode_gog_error_kind(GogErrorKind self, SseSerializer serializer);
