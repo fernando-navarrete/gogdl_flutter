@@ -14,7 +14,7 @@
 set -eu
 
 # Bump whenever ci/Dockerfile changes; never reset on a toolchain bump.
-IMAGE_REVISION=3
+IMAGE_REVISION=4
 
 cd "$(dirname "$0")/.."
 

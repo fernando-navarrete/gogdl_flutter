@@ -16,12 +16,12 @@ ARG RUSTUP_VERSION=1.29.1
 ARG RUSTUP_SHA256=dda7234360b7f578ca8b0ddcb80145646fa61a67c1720a5abc7051b35c9fcb71
 
 # build-essential/cmake/pkg-config: aws-lc-sys and friends. The rest builds and runs the Linux
-# desktop example under xvfb.
+# desktop example under xvfb. libsecret-1-dev is for Lumen's `package` job, which builds its Linux bundle in this image.
 RUN apt-get update -qq \
  && apt-get install -qq -y --no-install-recommends \
       git curl unzip xz-utils ca-certificates openssh-client \
       build-essential cmake pkg-config \
-      clang ninja-build libgtk-3-dev liblzma-dev libstdc++-12-dev xvfb xauth \
+      clang ninja-build libgtk-3-dev libsecret-1-dev liblzma-dev libstdc++-12-dev xvfb xauth \
  && rm -rf /var/lib/apt/lists/*
 
 # The toolchain is the one pinned in rust/rust-toolchain.toml (build-image.sh passes it in):
