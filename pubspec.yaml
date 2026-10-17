@@ -1,6 +1,6 @@
 name: gogdl_flutter
 description: "Dart bindings (flutter_rust_bridge) for gogdl-lib: GOG login, library, game and Proton downloads, repair and cloud saves. Used by Lumen."
-version: 1.4.3
+version: 1.5.0
 repository: https://github.com/fernando-navarrete/gogdl_flutter
 publish_to: none
 

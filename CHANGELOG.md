@@ -1,3 +1,50 @@
+## 1.5.0
+
+Login error kinds and API cleanup for Lumen `v1.5.0`. **Breaking**: ships together with the Lumen
+change that adopts it (its Phase 7).
+
+### Breaking
+
+* Every progress enum uses named fields; no variant is positional any more. Old -> new:
+  * `ProtonDownloadProgress`: `started(field0)` -> `started(totalBytes:)`, `progress(field0)` ->
+    `progress(downloadedBytes:)`, `extracted(field0)` -> `extracted(path:)`, `finished(field0)` ->
+    `finished(path:)`. `extracted` is documented now: only the last path per 150ms tick is sent,
+    so it's for a status line, not a list of files.
+  * `VerifyDownloadProgress`: `started(field0)` -> `started(totalBytes:)`, `progress(field0)` ->
+    `progress(checkedBytes:)`, `couldNotResolvePath`, `fileNotFound` and `checksumMismatch`
+    `(field0, field1)` -> `(path:, chunkSize:)`, `finished(field0)` -> `finished(badChunks:)`.
+  * `RepairGameProgress`: `allocationError(field0)` -> `allocationError(path:)`, and the same
+    three path variants as verify, with `(path:, chunkSize:)`.
+  * `DownloadGameProgress`: `allocationError(field0)` -> `allocationError(path:)`.
+  * `chunkSize` is the first failing chunk's uncompressed size, not the file's.
+* `GameBuild.releaseDate` (the RFC 2822 string) is removed. Use `releaseDateTimestamp` (Unix
+  seconds, UTC).
+* `DownloadableProduct.productType` is a `ProductType` (`game`, `dlc` or `other`) instead of a
+  `String`. GOG's value is compared case-insensitively, so `"GAME"` is `game`. `other` is anything
+  else (a pack, a type GOG adds later) and drops the raw string. `ProductType` is exported from
+  `gogdl_flutter.dart`.
+* Removed: `getGameBoxartLink` and `getBackgroundImageLink` (use `getGameLinks`, `v1.4.2`), and
+  `getProtonReleases` (use `getProtonReleasePage`, `v1.4.3`).
+* New `GogErrorKind.invalidLoginCode`: `loginWithCode` fails with it when GOG rejects the code,
+  whether it's mistyped, truncated, already used or expired (GOG doesn't tell them apart;
+  `message()` has its description). A revoked session (a refresh token GOG no longer accepts) is
+  `sessionExpired`, where it was `unknown`, and a network failure on login is `network`, where it
+  was `unknown`. A Dart `switch` over `GogErrorKind` needs the new case.
+* What Lumen changes: the `field0`/`field1` uses in `downloads_state.dart` and `proton_state.dart`,
+  the `productType` label and `== "GAME"` filter, `GameBuild.releaseDate`, and an
+  `invalidLoginCode` case on the login page.
+
+### Changed
+
+* `gogdl-lib` `v1.3.2` -> `v1.4.3` (`ca89691`). Its errors are classified by what GOG answered, and
+  the `Preparing`/`Prepared` download events are gone (they never reached Dart).
+* `repairGame` keeps its signature and `RepairGameProgress`, and calls upstream's `download_game`,
+  since upstream deprecated `repair_game`. Whether it stays past `v1.6.0` is open.
+* `GogError`'s separate saves variant is gone: upstream's saves methods return its main error type.
+  `GogError` is opaque in Dart, so the only visible effect is that a saves failure gets the same
+  kinds as any other call.
+* Lumen: pin `v1.5.0`.
+
 ## 1.4.3
 
 Proton pages. **Not breaking**: everything is added.

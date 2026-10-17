@@ -64,7 +64,7 @@ needs it; ROADMAP.md schedules each item to land before that stage starts.
   Fixed in `v1.3.0`: each job takes a `CancelToken`, and a cancel ends its stream with an in-band
   `Cancelled` event. Pause and cancel are the same on the bridge (stop and leave the files), and
   `repair_game` resumes. Upstream's drop contract (`gogdl-lib` `v1.2.0`) is the [lib] part.
-- [ ] **P1 — Structured errors** (Lumen `v1.3.0` downloads page error text, and `v1.5.0` login
+- [x] **P1 — Structured errors** (Lumen `v1.3.0` downloads page error text, and `v1.5.0` login
   errors). `GogError` exposes only `message()`, a display string, so Lumen
   can't tell "session expired, sign in again" from "offline", "not found", "not enough disk space"
   or "cloud saves not supported" without matching on text. Add a `kind` (a flat enum Dart can
@@ -72,10 +72,9 @@ needs it; ROADMAP.md schedules each item to land before that stage starts.
   expiry come back as the same opaque error, and the free-space check throws away its numbers
   (`gogdl-lib` GAPS, Medium/Low).
   The download kinds shipped in `v1.3.0`: `GogError.kind()` returns a `GogErrorKind`, and
-  `spaceShortfall()` has the free-space numbers. Still open: the login kinds (`v1.5.0`). Upstream's
-  `v1.4.0` tells them apart now (§7.3): `InvalidLoginCode`, `SessionRevoked` and `NetworkError`.
-  Until the bridge pins it, a bad login code, a network failure on login and a revoked session are
-  all `unknown`.
+  `spaceShortfall()` has the free-space numbers.
+  Fixed in `v1.5.0`: the login kinds. A bad, used or expired login code is `invalidLoginCode`, a
+  network failure on login is `network`, and a revoked session is `sessionExpired` (§7.3).
 - [x] **P1 — Sign out** (Lumen `v1.4.0`). Lumen can delete its stored token, but the `GogDl`
   instance keeps the authenticated session in memory until the app restarts. **[lib]** `GogDl`
   has no `logout`/`clear_auth`. Workaround until then: expose `GogdlApi::reset()` that swaps
@@ -139,24 +138,29 @@ needs it; ROADMAP.md schedules each item to land before that stage starts.
   Lumen asks for both per game, so every game costs two identical requests. Return both from one
   `get_game_links`.
   Fixed in `v1.4.2`: `getGameLinks` returns both; the two old getters are deprecated until `v1.5.0`.
-- [ ] **P2 — Progress enums mix positional and named fields.** `ProtonDownloadProgress` and
+- [x] **P2 — Progress enums mix positional and named fields.** `ProtonDownloadProgress` and
   `VerifyDownloadProgress` use tuple variants (`Started(u64)`, `FileNotFound(String, u64)`), while
   the game and saves enums use named fields. Positional fields show up in Dart as `field0`/`field1`.
   Switch everything to named fields. This is a breaking change, so it lands in a minor bump
   alongside a Lumen update.
-- [ ] **P2 — `ProtonDownloadProgress::Extracted` is lossy and undocumented.** Only the last
+  Fixed in `v1.5.0`: every progress enum uses named fields.
+- [x] **P2 — `ProtonDownloadProgress::Extracted` is lossy and undocumented.** Only the last
   extracted path per 150ms tick is forwarded. That's fine for a status line, but the doc comment
   should say so.
-- [ ] **P2 — `GameBuild` carries the release date twice** (an RFC 2822 string and a timestamp).
+  Fixed in `v1.5.0`: documented.
+- [x] **P2 — `GameBuild` carries the release date twice** (an RFC 2822 string and a timestamp).
   Keep the timestamp and let Dart format it.
-- [ ] **P2 — `DownloadableProduct.product_type` is a free-form string.** Expose an enum (game/DLC)
+  Fixed in `v1.5.0`: `releaseDate` is removed.
+- [x] **P2 — `DownloadableProduct.product_type` is a free-form string.** Expose an enum (game/DLC)
   so Lumen doesn't string-compare.
+  Fixed in `v1.5.0`: `ProductType` (`game`, `dlc`, `other`).
 - [ ] **P2 — Game ids are `i32`.** GOG product ids already reach ~1.5 billion, which is close to
   `i32::MAX`. `gogdl-lib` uses `i32` too, so change both together. **[lib]**
-- [ ] **P2 — `GogError` has a separate `SavesError` variant** only because the saves methods in
+- [x] **P2 — `GogError` has a separate `SavesError` variant** only because the saves methods in
   `gogdl-lib` return `SavesError` instead of `GogDlError`. **[lib]**
   Upstream's `v1.4.0` returns `GogDlError` from them (`GogDlError::SavesError`); collapsed in bridge
   `v1.5.0`.
+  Fixed in `v1.5.0`.
 
 ## 4. Code structure
 
@@ -304,7 +308,8 @@ Consolidated from the **[lib]** items above, in the order this repo needs them (
    The rest is fixed upstream in `gogdl-lib` `v1.4.0` (both items; the text above predates it):
    `AuthError::ClientError { inner }` is replaced by `InvalidLoginCode`, `SessionRevoked`,
    `NetworkError`, `Rejected` and `InvalidResponse`, classified by grant, and the saves methods
-   return `GogDlError`. Bridge `v1.5.0` pins it.
+   return `GogDlError`. Shipped in bridge `v1.5.0`
+   (pinning `v1.4.3`): `invalidLoginCode`, and a revoked session is `sessionExpired`.
 4. **A public free-space query** (`PathResolver::get_free_space` is internal today). Bridge
    `v1.3.0` / Lumen `v1.3.0`, or the bridge implements it itself.
    Fixed upstream in `gogdl-lib` `v1.1.6`: `GogDl::get_free_space(path)`, the same figure the
@@ -355,3 +360,8 @@ Consolidated from the **[lib]** items above, in the order this repo needs them (
     Fixed upstream in `gogdl-lib` `v1.3.0`: `remove_products` returns `ProductRemoval {
     files_removed, bytes_freed }`; a failed delete is `FileSystemError::FileRemovalError`. The
     bridge exposes it in `v1.4.0`.
+14. **A bad access token isn't refreshed on `embed.gog.com`.** `embed.gog.com/user/data/games`
+    answers an invalid bearer with a 302 to an HTML login page, not a 401, so the refresh-on-401
+    never runs and `get_owned_games` fails with a deserialization error (`unknown` in the bridge).
+    It only matters when GOG kills an access token before its `valid_until`. Found in bridge
+    `v1.5.0`'s manual check of the login kinds. Wanted: treat that redirect as an expired session.

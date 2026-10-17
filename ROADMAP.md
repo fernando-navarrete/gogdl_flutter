@@ -33,7 +33,7 @@ the stage it serves, so Lumen can pin it on day one.
 | (none, internal) | Tests, CI/CD | `v1.2.0` ✅ |
 | `v1.3.0` Download management | Cancel/pause, resume path, error kinds, install size, free space | `v1.3.0` ✅ |
 | `v1.4.0` Library and account | Clear the cache (Lumen D3), remove a product's files (Lumen D1) | `v1.4.0` ✅ |
-| `v1.5.0` UI polish and packaging | Login error kinds (Lumen D1), breaking API cleanups (Lumen D3) | `v1.5.0` |
+| `v1.5.0` UI polish and packaging | Login error kinds (Lumen D1), breaking API cleanups (Lumen D3) | `v1.5.0` ✅ |
 | `v1.6.0` Extras | Nothing | — |
 | Not on Lumen's roadmap yet | Cloud saves support/listing/sync, upstream-driven items | `v1.6.0`, `v1.7.0` |
 
@@ -152,7 +152,7 @@ Follow-up patches (`v1.4.1+`), one per tag. None blocks Lumen; they make its new
    Proton dialog now watches one provider per page, so a fully filtered page still ends its list
    early (GAPS §1).
 
-## v1.5.0 — Polish and API cleanup (for Lumen `v1.5.0`)
+## v1.5.0 ✅ — Polish and API cleanup (for Lumen `v1.5.0`)
 
 Work plan: [v1.5.0-POLISH-AND-CLEANUP.md](v1.5.0-POLISH-AND-CLEANUP.md). Lumen's polish and packaging
 stage is its cleanup release, so the bridge's breaking cleanups ship here and Lumen migrates once (its
