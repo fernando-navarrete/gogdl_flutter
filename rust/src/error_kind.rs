@@ -16,12 +16,16 @@ pub(crate) fn gogdl(e: &GogDlError) -> GogErrorKind {
         GogDlError::DownloadError(e) => download(e),
         GogDlError::ClientError(e) => client(e),
         GogDlError::ProtonError(e) => proton(e),
+        GogDlError::SavesError(e) => saves(e),
+        _ => GogErrorKind::Unknown,
     }
 }
 
 fn client(e: &ClientError) -> GogErrorKind {
     match e {
-        ClientError::NetworkError(_) | ClientError::MaxRetriesReached => GogErrorKind::Network,
+        ClientError::NetworkError(_)
+        | ClientError::MaxRetriesReached
+        | ClientError::AuthError(AuthError::NetworkError(_)) => GogErrorKind::Network,
         ClientError::HttpError { status, .. } => http(status.as_u16()),
         ClientError::AuthError(AuthError::NotAuthenticated | AuthError::TokenExpired) => {
             GogErrorKind::SessionExpired
@@ -40,8 +44,6 @@ fn http(status: u16) -> GogErrorKind {
 
 fn games(e: &GamesError) -> GogErrorKind {
     match e {
-        GamesError::NetworkError(_) => GogErrorKind::Network,
-        GamesError::Http { status, .. } => http(status.as_u16()),
         // The downloads and saves methods used to say `BuildNotFound` for a DLC or a pack.
         GamesError::ProductNotAGame => GogErrorKind::NotFound,
         GamesError::ClientError(e) => client(e),
@@ -51,8 +53,6 @@ fn games(e: &GamesError) -> GogErrorKind {
 
 fn depot(e: &DepotError) -> GogErrorKind {
     match e {
-        DepotError::NetworkError(_) => GogErrorKind::Network,
-        DepotError::Http { status, .. } => http(status.as_u16()),
         DepotError::ClientError(e) => client(e),
         _ => GogErrorKind::Unknown,
     }
@@ -60,8 +60,6 @@ fn depot(e: &DepotError) -> GogErrorKind {
 
 fn secure_links(e: &SecureLinksError) -> GogErrorKind {
     match e {
-        SecureLinksError::NetworkError(_) => GogErrorKind::Network,
-        SecureLinksError::Http { status, .. } => http(status.as_u16()),
         SecureLinksError::GamesError(e) => games(e),
         SecureLinksError::ClientError(e) => client(e),
         _ => GogErrorKind::Unknown,
@@ -70,8 +68,6 @@ fn secure_links(e: &SecureLinksError) -> GogErrorKind {
 
 fn download(e: &DownloadError) -> GogErrorKind {
     match e {
-        DownloadError::NetworkError(_) => GogErrorKind::Network,
-        DownloadError::Http { status, .. } => http(status.as_u16()),
         DownloadError::GamesError(e) => games(e),
         DownloadError::DepotError(e) => depot(e),
         DownloadError::SecureLinksError(e) => secure_links(e),
@@ -99,7 +95,7 @@ fn proton(e: &ProtonError) -> GogErrorKind {
     }
 }
 
-pub(crate) fn saves(e: &SavesError) -> GogErrorKind {
+fn saves(e: &SavesError) -> GogErrorKind {
     match e {
         SavesError::ClientError(e) => client(e),
         SavesError::GamesError(e) => games(e),
@@ -174,8 +170,8 @@ mod tests {
                 SessionExpired,
             ),
             (
-                GogError::SavesError(SavesError::ClientError(ClientError::AuthError(
-                    AuthError::TokenExpired,
+                GogError::GogdlError(GogDlError::SavesError(SavesError::ClientError(
+                    ClientError::AuthError(AuthError::TokenExpired),
                 ))),
                 SessionExpired,
             ),
@@ -190,9 +186,10 @@ mod tests {
                 download(DownloadError::ClientError(ClientError::MaxRetriesReached)),
                 Network,
             ),
-            (download(DownloadError::NetworkError(network())), Network),
             (
-                GogError::GogdlError(GogDlError::GameError(GamesError::NetworkError(network()))),
+                download(DownloadError::ClientError(ClientError::AuthError(
+                    AuthError::NetworkError(network()),
+                ))),
                 Network,
             ),
             (
@@ -210,13 +207,18 @@ mod tests {
                 )),
                 NotFound,
             ),
-            (GogError::SavesError(SavesError::BuildNotFound), NotFound),
+            (
+                GogError::GogdlError(GogDlError::SavesError(SavesError::BuildNotFound)),
+                NotFound,
+            ),
             (
                 download(DownloadError::GamesError(GamesError::ProductNotAGame)),
                 NotFound,
             ),
             (
-                GogError::SavesError(SavesError::GamesError(GamesError::ProductNotAGame)),
+                GogError::GogdlError(GogDlError::SavesError(SavesError::GamesError(
+                    GamesError::ProductNotAGame,
+                ))),
                 NotFound,
             ),
             // notEnoughSpace
@@ -244,21 +246,15 @@ mod tests {
             ),
             (download(DownloadError::DeflateError(io_error())), Integrity),
             (
-                GogError::SavesError(SavesError::HashMismatch {
+                GogError::GogdlError(GogDlError::SavesError(SavesError::HashMismatch {
                     name: "a".into(),
                     expected: "x".into(),
                     actual: "y".into(),
-                }),
+                })),
                 Integrity,
             ),
             // fileSystem
             (download(DownloadError::FileAllocationError), FileSystem),
-            (
-                download(DownloadError::FileSystemError(
-                    FileSystemError::FileCreationError(io_error()),
-                )),
-                FileSystem,
-            ),
             (
                 download(DownloadError::FileSystemError(
                     FileSystemError::FileRemovalError(io_error()),
@@ -278,10 +274,13 @@ mod tests {
                 FileSystem,
             ),
             (proton(ProtonError::Io(io_error())), FileSystem),
-            (GogError::SavesError(SavesError::Io(io_error())), FileSystem),
+            (
+                GogError::GogdlError(GogDlError::SavesError(SavesError::Io(io_error()))),
+                FileSystem,
+            ),
             // cloudSavesUnsupported
             (
-                GogError::SavesError(SavesError::CloudStorageNotSupported),
+                GogError::GogdlError(GogDlError::SavesError(SavesError::CloudStorageNotSupported)),
                 CloudSavesUnsupported,
             ),
         ];
@@ -291,12 +290,31 @@ mod tests {
     }
 
     #[test]
+    fn a_saves_error_maps_like_the_same_error_from_a_download() {
+        let revoked = || AuthError::SessionRevoked {
+            description: "Invalid refresh token".into(),
+        };
+        let from_saves = GogError::GogdlError(GogDlError::SavesError(SavesError::ClientError(
+            ClientError::AuthError(revoked()),
+        )));
+        let from_download = download(DownloadError::ClientError(
+            ClientError::AuthError(revoked()),
+        ));
+        assert_eq!(from_saves.kind(), from_download.kind());
+    }
+
+    #[test]
     fn anything_unmapped_is_unknown() {
         let cases = [
-            // A revoked refresh token, until upstream tells it apart (§7.3).
+            // The login kinds, until Step 4 maps them.
             download(DownloadError::ClientError(ClientError::AuthError(
-                AuthError::ClientError {
-                    inner: "invalid_grant".into(),
+                AuthError::SessionRevoked {
+                    description: "Invalid refresh token".into(),
+                },
+            ))),
+            download(DownloadError::ClientError(ClientError::AuthError(
+                AuthError::InvalidLoginCode {
+                    description: "Code doesn't exist".into(),
                 },
             ))),
             download(DownloadError::ClientError(http(500))),

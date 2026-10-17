@@ -72,9 +72,10 @@ needs it; ROADMAP.md schedules each item to land before that stage starts.
   expiry come back as the same opaque error, and the free-space check throws away its numbers
   (`gogdl-lib` GAPS, Medium/Low).
   The download kinds shipped in `v1.3.0`: `GogError.kind()` returns a `GogErrorKind`, and
-  `spaceShortfall()` has the free-space numbers. Still open: the login kinds (`v1.5.0`), which need
-  upstream to tell a revoked session from an expired one (§7.3). Until then a revoked session is
-  `unknown`.
+  `spaceShortfall()` has the free-space numbers. Still open: the login kinds (`v1.5.0`). Upstream's
+  `v1.4.0` tells them apart now (§7.3): `InvalidLoginCode`, `SessionRevoked` and `NetworkError`.
+  Until the bridge pins it, a bad login code, a network failure on login and a revoked session are
+  all `unknown`.
 - [x] **P1 — Sign out** (Lumen `v1.4.0`). Lumen can delete its stored token, but the `GogDl`
   instance keeps the authenticated session in memory until the app restarts. **[lib]** `GogDl`
   has no `logout`/`clear_auth`. Workaround until then: expose `GogdlApi::reset()` that swaps
@@ -154,6 +155,8 @@ needs it; ROADMAP.md schedules each item to land before that stage starts.
   `i32::MAX`. `gogdl-lib` uses `i32` too, so change both together. **[lib]**
 - [ ] **P2 — `GogError` has a separate `SavesError` variant** only because the saves methods in
   `gogdl-lib` return `SavesError` instead of `GogDlError`. **[lib]**
+  Upstream's `v1.4.0` returns `GogDlError` from them (`GogDlError::SavesError`); collapsed in bridge
+  `v1.5.0`.
 
 ## 4. Code structure
 
@@ -202,8 +205,9 @@ needs it; ROADMAP.md schedules each item to land before that stage starts.
   crate from source, which is slow.
   Partly fixed in `v1.2.0`: the version check and GitLab release on tags. Precompiled binaries are
   still open: the cargokit mechanism this pointed to is gone, and `native_toolchain_rust` has no
-  precompiled-binary support. Deferred to `v1.5.0`, which needs a prebuilt `.so` for Lumen's
-  packaging anyway.
+  precompiled-binary support. Was deferred to `v1.5.0` for Lumen's packaging, but Lumen's `v1.5.0`
+  Phase 0 dropped it (its D2): the AppImage wraps the bundle its CI image already builds. Unscheduled;
+  it's a build-time speedup now, not a Lumen blocker.
   Since `v1.3.1`, `release` also waits for `audit`, `scan` and `secrets`, and the tag must be on
   `main`.
 - [x] **P1 — The build isn't reproducible outside the LAN.** `gogdl-lib` is a git dependency over
@@ -297,6 +301,10 @@ Consolidated from the **[lib]** items above, in the order this repo needs them (
    and `FileSystemError` is exported. Still open: a revoked refresh token is still an opaque
    `AuthError::ClientError` (upstream plans it for its `v1.5.0`, which lines up with this repo's
    `v1.5.0` login kinds), and the saves methods still return `SavesError` (ROADMAP `v1.7.0`).
+   The rest is fixed upstream in `gogdl-lib` `v1.4.0` (both items; the text above predates it):
+   `AuthError::ClientError { inner }` is replaced by `InvalidLoginCode`, `SessionRevoked`,
+   `NetworkError`, `Rejected` and `InvalidResponse`, classified by grant, and the saves methods
+   return `GogDlError`. Bridge `v1.5.0` pins it.
 4. **A public free-space query** (`PathResolver::get_free_space` is internal today). Bridge
    `v1.3.0` / Lumen `v1.3.0`, or the bridge implements it itself.
    Fixed upstream in `gogdl-lib` `v1.1.6`: `GogDl::get_free_space(path)`, the same figure the

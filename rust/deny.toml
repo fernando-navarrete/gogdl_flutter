@@ -32,13 +32,6 @@ allow = [
     "CDLA-Permissive-2.0", # webpki-root-certs
 ]
 
-# gogdl-lib v1.2.3 predates its `license` field (added in gogdl-lib 40cceb1, after the tag) but is the
-# same author's MIT OR Apache-2.0 crate. Drop this when the pin moves to a tag that has the field.
-[[licenses.clarify]]
-crate = "gogdl-lib"
-expression = "MIT OR Apache-2.0"
-license-files = []
-
 [bans]
 multiple-versions = "warn"
 wildcards = "allow"

@@ -469,6 +469,9 @@ impl GogdlApi {
     ///
     /// Cancelling `cancel` keeps the files written so far, and the stream ends with `cancelled`.
     /// Call `repairGame` again to resume the install.
+    // This is `gogdl-lib`'s `download_game` (which verifies and resumes) with repair's progress
+    // shape: verification first, then only the failed chunks. It is kept for Lumen's resume path,
+    // and whether it stays past `v1.6.0` is open. (A plain comment, so MR 1 changes no Dart docs.)
     pub async fn repair_game(
         &self,
         game_id: i32,
@@ -532,7 +535,7 @@ impl GogdlApi {
         }
 
         let (tx, rx) = mpsc::unbounded_channel();
-        let repair_future = self.inner.repair_game(bundles, path, tx);
+        let repair_future = self.inner.download_game(bundles, path, tx);
 
         let translator = RepairTranslator::new(compressed_sizes);
         let outcome = progress::run(repair_future, translator, rx, cancel, |p| {

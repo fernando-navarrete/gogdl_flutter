@@ -1,5 +1,5 @@
 use flutter_rust_bridge::frb;
-use gogdl_lib::{DownloadError, GogDlError, ProtonError, SavesError};
+use gogdl_lib::{DownloadError, GogDlError, ProtonError};
 
 use crate::error_kind;
 
@@ -7,8 +7,6 @@ use crate::error_kind;
 pub enum GogError {
     #[error("{0}")]
     GogdlError(#[from] GogDlError),
-    #[error("{0}")]
-    SavesError(#[from] SavesError),
     /// An argument the bridge rejected before calling `gogdl-lib`.
     #[error("invalid argument: {0}")]
     InvalidArgument(String),
@@ -56,7 +54,6 @@ impl GogError {
     pub fn kind(&self) -> GogErrorKind {
         match self {
             GogError::GogdlError(e) => error_kind::gogdl(e),
-            GogError::SavesError(e) => error_kind::saves(e),
             GogError::InvalidArgument(_) => GogErrorKind::Unknown,
         }
     }

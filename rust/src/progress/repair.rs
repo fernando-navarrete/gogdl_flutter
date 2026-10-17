@@ -109,8 +109,7 @@ impl Translator for RepairTranslator {
                 self.install.on_download_regression(delta as u64);
                 Vec::new()
             }
-            // `Downloading`, the deprecated `Preparing`/`Prepared` (still sent
-            // just before `Started`) and anything upstream adds later.
+            // `Downloading` and anything upstream adds later.
             _ => Vec::new(),
         }
     }
@@ -263,29 +262,6 @@ mod tests {
         t.on_event(verified(1));
         t.on_event(started());
         assert!(t.on_tick().is_empty());
-    }
-
-    #[test]
-    #[allow(deprecated)]
-    fn deprecated_preparing_and_prepared_leave_the_stage_to_started() {
-        let mut t = RepairTranslator::new(sizes(&[("a", 100, &[40])]));
-        t.on_event(mismatch("a", 100));
-        // still sent back-to-back just before `Started`: no `DownloadStarted` yet
-        assert!(
-            t.on_event(DownloadStageEvent::DownloadStage(DownloadEvent::Preparing))
-                .is_empty()
-        );
-        assert!(
-            t.on_event(DownloadStageEvent::DownloadStage(DownloadEvent::Prepared))
-                .is_empty()
-        );
-        assert_eq!(
-            t.on_event(started()),
-            vec![
-                P::Verification { checked_bytes: 100 },
-                P::DownloadStarted { total_bytes: 40 },
-            ]
-        );
     }
 
     #[test]

@@ -33,7 +33,7 @@ the stage it serves, so Lumen can pin it on day one.
 | (none, internal) | Tests, CI/CD | `v1.2.0` ✅ |
 | `v1.3.0` Download management | Cancel/pause, resume path, error kinds, install size, free space | `v1.3.0` ✅ |
 | `v1.4.0` Library and account | Clear the cache (Lumen D3), remove a product's files (Lumen D1) | `v1.4.0` ✅ |
-| `v1.5.0` UI polish and packaging | Login error kinds, precompiled `.so` for packaging, breaking API cleanups | `v1.5.0` |
+| `v1.5.0` UI polish and packaging | Login error kinds (Lumen D1), breaking API cleanups (Lumen D3) | `v1.5.0` |
 | `v1.6.0` Extras | Nothing | — |
 | Not on Lumen's roadmap yet | Cloud saves support/listing/sync, upstream-driven items | `v1.6.0`, `v1.7.0` |
 
@@ -154,23 +154,35 @@ Follow-up patches (`v1.4.1+`), one per tag. None blocks Lumen; they make its new
 
 ## v1.5.0 — Polish and API cleanup (for Lumen `v1.5.0`)
 
-Lumen's polish and packaging stage is its cleanup release, so the bridge's breaking cleanups ship
-here and Lumen migrates once.
+Work plan: [v1.5.0-POLISH-AND-CLEANUP.md](v1.5.0-POLISH-AND-CLEANUP.md). Lumen's polish and packaging
+stage is its cleanup release, so the bridge's breaking cleanups ship here and Lumen migrates once (its
+Phase 7). Lumen's work plan (`../lumen/v1.5.0-POLISH-AND-PACKAGING.md`) asks for D1 and D3 below.
+Upstream's half is `gogdl-lib` `v1.4.0` (GAPS §7.3), already tagged.
 
-- Login error kinds (invalid or expired code vs network failure) for Lumen's "accurate errors" on
-  the login screen (GAPS §2).
-- Named fields in every progress enum. `GameBuild` keeps only the timestamp.
+- Pin `gogdl-lib` `v1.4.3` (its breaking `v1.4.0` plus three internal patches). Absorb its error
+  enum cleanup, the removed `Preparing`/`Prepared` events and the deprecated `repair_game` without a
+  Dart change: `repairGame` keeps its signature and calls upstream's `download_game`.
+- Login error kinds (Lumen D1): `GogErrorKind.invalidLoginCode` for a bad, used or expired code, a
+  network failure on login as `network`, and a revoked session as `sessionExpired` (GAPS §2).
+- Named fields in every progress enum, documenting `ProtonDownloadProgress::Extracted`'s per-tick
+  coalescing on the way (was `v1.5.1`). `GameBuild` keeps only the timestamp.
   `DownloadableProduct.product_type` becomes an enum (GAPS §3).
 - Remove the getters deprecated in `v1.4.2` (GAPS §3) and `getProtonReleases`, deprecated in
   `v1.4.3` (GAPS §1).
-- Build and publish a precompiled Linux `.so` from the tag pipeline, and check that Lumen's
-  AppImage/Flatpak release pipeline can consume it (GAPS §6).
-- **Breaking** for Lumen `v1.5.0`: the progress enum field names, the model changes and the removed
-  getters.
+- Collapse `GogError::SavesError` into the main variant: upstream's saves methods return
+  `GogDlError` since its `v1.4.0` (GAPS §3; was `v1.7.0`). `GogError` is opaque in Dart, so this
+  isn't visible there.
+- **Breaking** for Lumen `v1.5.0`: the new error kind, the progress enum field names, the model
+  changes and the removed getters.
+
+Dropped from `v1.5.0`: the precompiled Linux `.so`. Lumen's Phase 0 chose an AppImage built from
+the bundle its CI image already compiles, so nothing consumes one. It stays open in GAPS §6 as a
+build-time speedup, unscheduled.
 
 Follow-up patches (`v1.5.1+`), one per tag:
-1. `v1.5.1`: document `ProtonDownloadProgress::Extracted`'s per-tick coalescing (GAPS §3).
-2. `v1.5.2`: revisit bounded progress channels (GAPS §5).
+1. `v1.5.1`: revisit bounded progress channels (GAPS §5). Upstream's senders are unbounded by
+   signature, so this measures the bridge's own hops first, and ships a tag only if something here
+   changes.
 
 ## v1.6.0 — Cloud saves (not on Lumen's roadmap yet)
 
@@ -182,6 +194,8 @@ to Lumen's `GAPS.md` and `ROADMAP.md` before starting, so both sides agree on wh
 - Per-file sync direction and conflict detection once `gogdl-lib` exposes timestamps/hashes and
   honors `cloudStorage.enabled`. Also pick up upstream's fix for the save-truncation data loss
   (GAPS §2, §7.6).
+- Upstream removes `repair_game` in its `v1.5.0`. The bridge's `repairGame` already calls
+  `download_game` (`v1.5.0`), so decide then whether it stays as a name for Lumen's resume path.
 
 ## v1.7.0 — Upstream-driven
 
@@ -190,5 +204,3 @@ upstream change lands.
 
 - Language and OS selection for builds (GAPS §2, §7.7).
 - `i64` product ids (**breaking**, lockstep with `gogdl-lib` and Lumen) (GAPS §3, §7.9).
-- Collapse `GogError::SavesError` into the main variant once the saves methods return `GogDlError`
-  (GAPS §3).

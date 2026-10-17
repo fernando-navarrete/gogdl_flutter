@@ -53,8 +53,7 @@ impl Translator for DownloadTranslator {
                 self.install.on_download_regression(delta as u64);
                 Vec::new()
             }
-            // `Downloading`, the deprecated `Preparing`/`Prepared` (still sent
-            // just before `Started`) and anything upstream adds later.
+            // `Downloading` and anything upstream adds later.
             _ => Vec::new(),
         }
     }
@@ -313,26 +312,6 @@ mod tests {
             .is_empty()
         );
         assert!(t.on_tick().is_empty());
-    }
-
-    #[test]
-    #[allow(deprecated)]
-    fn deprecated_preparing_and_prepared_leave_the_stage_to_started() {
-        let mut t = DownloadTranslator::new(0);
-        t.on_event(size_ok("a"));
-        // still sent back-to-back just before `Started`: no flush yet
-        assert!(
-            t.on_event(DownloadStageEvent::DownloadStage(DownloadEvent::Preparing))
-                .is_empty()
-        );
-        assert!(
-            t.on_event(DownloadStageEvent::DownloadStage(DownloadEvent::Prepared))
-                .is_empty()
-        );
-        assert_eq!(
-            t.on_event(started()),
-            vec![P::FileSizeVerification { checked_files: 1 }]
-        );
     }
 
     #[test]
