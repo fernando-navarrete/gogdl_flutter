@@ -53,7 +53,7 @@ impl InstallProgress for DownloadGameProgress {
         }
     }
     fn allocation_error(path: String) -> Self {
-        Self::AllocationError(path)
+        Self::AllocationError { path }
     }
     fn download_progress(downloaded_bytes: u64) -> Self {
         Self::DownloadProgress { downloaded_bytes }
@@ -77,7 +77,7 @@ impl InstallProgress for RepairGameProgress {
         }
     }
     fn allocation_error(path: String) -> Self {
-        Self::AllocationError(path)
+        Self::AllocationError { path }
     }
     fn download_progress(downloaded_bytes: u64) -> Self {
         Self::DownloadProgress { downloaded_bytes }

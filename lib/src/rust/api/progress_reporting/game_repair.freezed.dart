@@ -153,18 +153,18 @@ return cancelled(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( BigInt totalFiles,  BigInt totalBytes)?  started,TResult Function( BigInt checkedFiles)?  fileSizeVerification,TResult Function( BigInt totalFiles,  BigInt totalBytes)?  fileAllocationStarted,TResult Function( BigInt allocatedFiles,  BigInt allocatedBytes)?  fileAllocation,TResult Function( String field0)?  allocationError,TResult Function( BigInt checkedBytes)?  verification,TResult Function( String field0,  BigInt field1)?  couldNotResolvePath,TResult Function( String field0,  BigInt field1)?  fileNotFound,TResult Function( String field0,  BigInt field1)?  checksumMismatch,TResult Function( BigInt totalBytes)?  downloadStarted,TResult Function( BigInt downloadedBytes)?  downloadProgress,TResult Function()?  finished,TResult Function()?  cancelled,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( BigInt totalFiles,  BigInt totalBytes)?  started,TResult Function( BigInt checkedFiles)?  fileSizeVerification,TResult Function( BigInt totalFiles,  BigInt totalBytes)?  fileAllocationStarted,TResult Function( BigInt allocatedFiles,  BigInt allocatedBytes)?  fileAllocation,TResult Function( String path)?  allocationError,TResult Function( BigInt checkedBytes)?  verification,TResult Function( String path,  BigInt chunkSize)?  couldNotResolvePath,TResult Function( String path,  BigInt chunkSize)?  fileNotFound,TResult Function( String path,  BigInt chunkSize)?  checksumMismatch,TResult Function( BigInt totalBytes)?  downloadStarted,TResult Function( BigInt downloadedBytes)?  downloadProgress,TResult Function()?  finished,TResult Function()?  cancelled,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case RepairGameProgress_Started() when started != null:
 return started(_that.totalFiles,_that.totalBytes);case RepairGameProgress_FileSizeVerification() when fileSizeVerification != null:
 return fileSizeVerification(_that.checkedFiles);case RepairGameProgress_FileAllocationStarted() when fileAllocationStarted != null:
 return fileAllocationStarted(_that.totalFiles,_that.totalBytes);case RepairGameProgress_FileAllocation() when fileAllocation != null:
 return fileAllocation(_that.allocatedFiles,_that.allocatedBytes);case RepairGameProgress_AllocationError() when allocationError != null:
-return allocationError(_that.field0);case RepairGameProgress_Verification() when verification != null:
+return allocationError(_that.path);case RepairGameProgress_Verification() when verification != null:
 return verification(_that.checkedBytes);case RepairGameProgress_CouldNotResolvePath() when couldNotResolvePath != null:
-return couldNotResolvePath(_that.field0,_that.field1);case RepairGameProgress_FileNotFound() when fileNotFound != null:
-return fileNotFound(_that.field0,_that.field1);case RepairGameProgress_ChecksumMismatch() when checksumMismatch != null:
-return checksumMismatch(_that.field0,_that.field1);case RepairGameProgress_DownloadStarted() when downloadStarted != null:
+return couldNotResolvePath(_that.path,_that.chunkSize);case RepairGameProgress_FileNotFound() when fileNotFound != null:
+return fileNotFound(_that.path,_that.chunkSize);case RepairGameProgress_ChecksumMismatch() when checksumMismatch != null:
+return checksumMismatch(_that.path,_that.chunkSize);case RepairGameProgress_DownloadStarted() when downloadStarted != null:
 return downloadStarted(_that.totalBytes);case RepairGameProgress_DownloadProgress() when downloadProgress != null:
 return downloadProgress(_that.downloadedBytes);case RepairGameProgress_Finished() when finished != null:
 return finished();case RepairGameProgress_Cancelled() when cancelled != null:
@@ -186,18 +186,18 @@ return cancelled();case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( BigInt totalFiles,  BigInt totalBytes)  started,required TResult Function( BigInt checkedFiles)  fileSizeVerification,required TResult Function( BigInt totalFiles,  BigInt totalBytes)  fileAllocationStarted,required TResult Function( BigInt allocatedFiles,  BigInt allocatedBytes)  fileAllocation,required TResult Function( String field0)  allocationError,required TResult Function( BigInt checkedBytes)  verification,required TResult Function( String field0,  BigInt field1)  couldNotResolvePath,required TResult Function( String field0,  BigInt field1)  fileNotFound,required TResult Function( String field0,  BigInt field1)  checksumMismatch,required TResult Function( BigInt totalBytes)  downloadStarted,required TResult Function( BigInt downloadedBytes)  downloadProgress,required TResult Function()  finished,required TResult Function()  cancelled,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( BigInt totalFiles,  BigInt totalBytes)  started,required TResult Function( BigInt checkedFiles)  fileSizeVerification,required TResult Function( BigInt totalFiles,  BigInt totalBytes)  fileAllocationStarted,required TResult Function( BigInt allocatedFiles,  BigInt allocatedBytes)  fileAllocation,required TResult Function( String path)  allocationError,required TResult Function( BigInt checkedBytes)  verification,required TResult Function( String path,  BigInt chunkSize)  couldNotResolvePath,required TResult Function( String path,  BigInt chunkSize)  fileNotFound,required TResult Function( String path,  BigInt chunkSize)  checksumMismatch,required TResult Function( BigInt totalBytes)  downloadStarted,required TResult Function( BigInt downloadedBytes)  downloadProgress,required TResult Function()  finished,required TResult Function()  cancelled,}) {final _that = this;
 switch (_that) {
 case RepairGameProgress_Started():
 return started(_that.totalFiles,_that.totalBytes);case RepairGameProgress_FileSizeVerification():
 return fileSizeVerification(_that.checkedFiles);case RepairGameProgress_FileAllocationStarted():
 return fileAllocationStarted(_that.totalFiles,_that.totalBytes);case RepairGameProgress_FileAllocation():
 return fileAllocation(_that.allocatedFiles,_that.allocatedBytes);case RepairGameProgress_AllocationError():
-return allocationError(_that.field0);case RepairGameProgress_Verification():
+return allocationError(_that.path);case RepairGameProgress_Verification():
 return verification(_that.checkedBytes);case RepairGameProgress_CouldNotResolvePath():
-return couldNotResolvePath(_that.field0,_that.field1);case RepairGameProgress_FileNotFound():
-return fileNotFound(_that.field0,_that.field1);case RepairGameProgress_ChecksumMismatch():
-return checksumMismatch(_that.field0,_that.field1);case RepairGameProgress_DownloadStarted():
+return couldNotResolvePath(_that.path,_that.chunkSize);case RepairGameProgress_FileNotFound():
+return fileNotFound(_that.path,_that.chunkSize);case RepairGameProgress_ChecksumMismatch():
+return checksumMismatch(_that.path,_that.chunkSize);case RepairGameProgress_DownloadStarted():
 return downloadStarted(_that.totalBytes);case RepairGameProgress_DownloadProgress():
 return downloadProgress(_that.downloadedBytes);case RepairGameProgress_Finished():
 return finished();case RepairGameProgress_Cancelled():
@@ -215,18 +215,18 @@ return cancelled();}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( BigInt totalFiles,  BigInt totalBytes)?  started,TResult? Function( BigInt checkedFiles)?  fileSizeVerification,TResult? Function( BigInt totalFiles,  BigInt totalBytes)?  fileAllocationStarted,TResult? Function( BigInt allocatedFiles,  BigInt allocatedBytes)?  fileAllocation,TResult? Function( String field0)?  allocationError,TResult? Function( BigInt checkedBytes)?  verification,TResult? Function( String field0,  BigInt field1)?  couldNotResolvePath,TResult? Function( String field0,  BigInt field1)?  fileNotFound,TResult? Function( String field0,  BigInt field1)?  checksumMismatch,TResult? Function( BigInt totalBytes)?  downloadStarted,TResult? Function( BigInt downloadedBytes)?  downloadProgress,TResult? Function()?  finished,TResult? Function()?  cancelled,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( BigInt totalFiles,  BigInt totalBytes)?  started,TResult? Function( BigInt checkedFiles)?  fileSizeVerification,TResult? Function( BigInt totalFiles,  BigInt totalBytes)?  fileAllocationStarted,TResult? Function( BigInt allocatedFiles,  BigInt allocatedBytes)?  fileAllocation,TResult? Function( String path)?  allocationError,TResult? Function( BigInt checkedBytes)?  verification,TResult? Function( String path,  BigInt chunkSize)?  couldNotResolvePath,TResult? Function( String path,  BigInt chunkSize)?  fileNotFound,TResult? Function( String path,  BigInt chunkSize)?  checksumMismatch,TResult? Function( BigInt totalBytes)?  downloadStarted,TResult? Function( BigInt downloadedBytes)?  downloadProgress,TResult? Function()?  finished,TResult? Function()?  cancelled,}) {final _that = this;
 switch (_that) {
 case RepairGameProgress_Started() when started != null:
 return started(_that.totalFiles,_that.totalBytes);case RepairGameProgress_FileSizeVerification() when fileSizeVerification != null:
 return fileSizeVerification(_that.checkedFiles);case RepairGameProgress_FileAllocationStarted() when fileAllocationStarted != null:
 return fileAllocationStarted(_that.totalFiles,_that.totalBytes);case RepairGameProgress_FileAllocation() when fileAllocation != null:
 return fileAllocation(_that.allocatedFiles,_that.allocatedBytes);case RepairGameProgress_AllocationError() when allocationError != null:
-return allocationError(_that.field0);case RepairGameProgress_Verification() when verification != null:
+return allocationError(_that.path);case RepairGameProgress_Verification() when verification != null:
 return verification(_that.checkedBytes);case RepairGameProgress_CouldNotResolvePath() when couldNotResolvePath != null:
-return couldNotResolvePath(_that.field0,_that.field1);case RepairGameProgress_FileNotFound() when fileNotFound != null:
-return fileNotFound(_that.field0,_that.field1);case RepairGameProgress_ChecksumMismatch() when checksumMismatch != null:
-return checksumMismatch(_that.field0,_that.field1);case RepairGameProgress_DownloadStarted() when downloadStarted != null:
+return couldNotResolvePath(_that.path,_that.chunkSize);case RepairGameProgress_FileNotFound() when fileNotFound != null:
+return fileNotFound(_that.path,_that.chunkSize);case RepairGameProgress_ChecksumMismatch() when checksumMismatch != null:
+return checksumMismatch(_that.path,_that.chunkSize);case RepairGameProgress_DownloadStarted() when downloadStarted != null:
 return downloadStarted(_that.totalBytes);case RepairGameProgress_DownloadProgress() when downloadProgress != null:
 return downloadProgress(_that.downloadedBytes);case RepairGameProgress_Finished() when finished != null:
 return finished();case RepairGameProgress_Cancelled() when cancelled != null:
@@ -520,10 +520,10 @@ as BigInt,
 
 
 class RepairGameProgress_AllocationError extends RepairGameProgress {
-  const RepairGameProgress_AllocationError(this.field0): super._();
+  const RepairGameProgress_AllocationError({required this.path}): super._();
   
 
- final  String field0;
+ final  String path;
 
 /// Create a copy of RepairGameProgress
 /// with the given fields replaced by the non-null parameter values.
@@ -535,18 +535,18 @@ $RepairGameProgress_AllocationErrorCopyWith<RepairGameProgress_AllocationError> 
 
 @override
 bool operator ==(Object other) {
-    return identical(this, other) || (other.runtimeType == runtimeType&&other is RepairGameProgress_AllocationError&&(identical(other.field0, field0) || other.field0 == field0));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is RepairGameProgress_AllocationError&&(identical(other.path, path) || other.path == path));
 }
 
 
 @override
 int get hashCode {
-    return Object.hash(runtimeType,field0);
+    return Object.hash(runtimeType,path);
 }
 
 @override
 String toString() {
-    return 'RepairGameProgress.allocationError(field0: $field0)';
+    return 'RepairGameProgress.allocationError(path: $path)';
 }
 
 
@@ -557,7 +557,7 @@ abstract mixin class $RepairGameProgress_AllocationErrorCopyWith<$Res> implement
   factory $RepairGameProgress_AllocationErrorCopyWith(RepairGameProgress_AllocationError value, $Res Function(RepairGameProgress_AllocationError) _then) = _$RepairGameProgress_AllocationErrorCopyWithImpl;
 @useResult
 $Res call({
- String field0
+ String path
 });
 
 
@@ -574,9 +574,9 @@ class _$RepairGameProgress_AllocationErrorCopyWithImpl<$Res>
 
 /// Create a copy of RepairGameProgress
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') $Res call({Object? field0 = null,}) {
+@pragma('vm:prefer-inline') $Res call({Object? path = null,}) {
   return _then(RepairGameProgress_AllocationError(
-null == field0 ? _self.field0 : field0 // ignore: cast_nullable_to_non_nullable
+path: null == path ? _self.path : path // ignore: cast_nullable_to_non_nullable
 as String,
   ));
 }
@@ -656,11 +656,11 @@ as BigInt,
 
 
 class RepairGameProgress_CouldNotResolvePath extends RepairGameProgress {
-  const RepairGameProgress_CouldNotResolvePath(this.field0, this.field1): super._();
+  const RepairGameProgress_CouldNotResolvePath({required this.path, required this.chunkSize}): super._();
   
 
- final  String field0;
- final  BigInt field1;
+ final  String path;
+ final  BigInt chunkSize;
 
 /// Create a copy of RepairGameProgress
 /// with the given fields replaced by the non-null parameter values.
@@ -672,18 +672,18 @@ $RepairGameProgress_CouldNotResolvePathCopyWith<RepairGameProgress_CouldNotResol
 
 @override
 bool operator ==(Object other) {
-    return identical(this, other) || (other.runtimeType == runtimeType&&other is RepairGameProgress_CouldNotResolvePath&&(identical(other.field0, field0) || other.field0 == field0)&&(identical(other.field1, field1) || other.field1 == field1));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is RepairGameProgress_CouldNotResolvePath&&(identical(other.path, path) || other.path == path)&&(identical(other.chunkSize, chunkSize) || other.chunkSize == chunkSize));
 }
 
 
 @override
 int get hashCode {
-    return Object.hash(runtimeType,field0,field1);
+    return Object.hash(runtimeType,path,chunkSize);
 }
 
 @override
 String toString() {
-    return 'RepairGameProgress.couldNotResolvePath(field0: $field0, field1: $field1)';
+    return 'RepairGameProgress.couldNotResolvePath(path: $path, chunkSize: $chunkSize)';
 }
 
 
@@ -694,7 +694,7 @@ abstract mixin class $RepairGameProgress_CouldNotResolvePathCopyWith<$Res> imple
   factory $RepairGameProgress_CouldNotResolvePathCopyWith(RepairGameProgress_CouldNotResolvePath value, $Res Function(RepairGameProgress_CouldNotResolvePath) _then) = _$RepairGameProgress_CouldNotResolvePathCopyWithImpl;
 @useResult
 $Res call({
- String field0, BigInt field1
+ String path, BigInt chunkSize
 });
 
 
@@ -711,10 +711,10 @@ class _$RepairGameProgress_CouldNotResolvePathCopyWithImpl<$Res>
 
 /// Create a copy of RepairGameProgress
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') $Res call({Object? field0 = null,Object? field1 = null,}) {
+@pragma('vm:prefer-inline') $Res call({Object? path = null,Object? chunkSize = null,}) {
   return _then(RepairGameProgress_CouldNotResolvePath(
-null == field0 ? _self.field0 : field0 // ignore: cast_nullable_to_non_nullable
-as String,null == field1 ? _self.field1 : field1 // ignore: cast_nullable_to_non_nullable
+path: null == path ? _self.path : path // ignore: cast_nullable_to_non_nullable
+as String,chunkSize: null == chunkSize ? _self.chunkSize : chunkSize // ignore: cast_nullable_to_non_nullable
 as BigInt,
   ));
 }
@@ -726,11 +726,11 @@ as BigInt,
 
 
 class RepairGameProgress_FileNotFound extends RepairGameProgress {
-  const RepairGameProgress_FileNotFound(this.field0, this.field1): super._();
+  const RepairGameProgress_FileNotFound({required this.path, required this.chunkSize}): super._();
   
 
- final  String field0;
- final  BigInt field1;
+ final  String path;
+ final  BigInt chunkSize;
 
 /// Create a copy of RepairGameProgress
 /// with the given fields replaced by the non-null parameter values.
@@ -742,18 +742,18 @@ $RepairGameProgress_FileNotFoundCopyWith<RepairGameProgress_FileNotFound> get co
 
 @override
 bool operator ==(Object other) {
-    return identical(this, other) || (other.runtimeType == runtimeType&&other is RepairGameProgress_FileNotFound&&(identical(other.field0, field0) || other.field0 == field0)&&(identical(other.field1, field1) || other.field1 == field1));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is RepairGameProgress_FileNotFound&&(identical(other.path, path) || other.path == path)&&(identical(other.chunkSize, chunkSize) || other.chunkSize == chunkSize));
 }
 
 
 @override
 int get hashCode {
-    return Object.hash(runtimeType,field0,field1);
+    return Object.hash(runtimeType,path,chunkSize);
 }
 
 @override
 String toString() {
-    return 'RepairGameProgress.fileNotFound(field0: $field0, field1: $field1)';
+    return 'RepairGameProgress.fileNotFound(path: $path, chunkSize: $chunkSize)';
 }
 
 
@@ -764,7 +764,7 @@ abstract mixin class $RepairGameProgress_FileNotFoundCopyWith<$Res> implements $
   factory $RepairGameProgress_FileNotFoundCopyWith(RepairGameProgress_FileNotFound value, $Res Function(RepairGameProgress_FileNotFound) _then) = _$RepairGameProgress_FileNotFoundCopyWithImpl;
 @useResult
 $Res call({
- String field0, BigInt field1
+ String path, BigInt chunkSize
 });
 
 
@@ -781,10 +781,10 @@ class _$RepairGameProgress_FileNotFoundCopyWithImpl<$Res>
 
 /// Create a copy of RepairGameProgress
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') $Res call({Object? field0 = null,Object? field1 = null,}) {
+@pragma('vm:prefer-inline') $Res call({Object? path = null,Object? chunkSize = null,}) {
   return _then(RepairGameProgress_FileNotFound(
-null == field0 ? _self.field0 : field0 // ignore: cast_nullable_to_non_nullable
-as String,null == field1 ? _self.field1 : field1 // ignore: cast_nullable_to_non_nullable
+path: null == path ? _self.path : path // ignore: cast_nullable_to_non_nullable
+as String,chunkSize: null == chunkSize ? _self.chunkSize : chunkSize // ignore: cast_nullable_to_non_nullable
 as BigInt,
   ));
 }
@@ -796,11 +796,11 @@ as BigInt,
 
 
 class RepairGameProgress_ChecksumMismatch extends RepairGameProgress {
-  const RepairGameProgress_ChecksumMismatch(this.field0, this.field1): super._();
+  const RepairGameProgress_ChecksumMismatch({required this.path, required this.chunkSize}): super._();
   
 
- final  String field0;
- final  BigInt field1;
+ final  String path;
+ final  BigInt chunkSize;
 
 /// Create a copy of RepairGameProgress
 /// with the given fields replaced by the non-null parameter values.
@@ -812,18 +812,18 @@ $RepairGameProgress_ChecksumMismatchCopyWith<RepairGameProgress_ChecksumMismatch
 
 @override
 bool operator ==(Object other) {
-    return identical(this, other) || (other.runtimeType == runtimeType&&other is RepairGameProgress_ChecksumMismatch&&(identical(other.field0, field0) || other.field0 == field0)&&(identical(other.field1, field1) || other.field1 == field1));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is RepairGameProgress_ChecksumMismatch&&(identical(other.path, path) || other.path == path)&&(identical(other.chunkSize, chunkSize) || other.chunkSize == chunkSize));
 }
 
 
 @override
 int get hashCode {
-    return Object.hash(runtimeType,field0,field1);
+    return Object.hash(runtimeType,path,chunkSize);
 }
 
 @override
 String toString() {
-    return 'RepairGameProgress.checksumMismatch(field0: $field0, field1: $field1)';
+    return 'RepairGameProgress.checksumMismatch(path: $path, chunkSize: $chunkSize)';
 }
 
 
@@ -834,7 +834,7 @@ abstract mixin class $RepairGameProgress_ChecksumMismatchCopyWith<$Res> implemen
   factory $RepairGameProgress_ChecksumMismatchCopyWith(RepairGameProgress_ChecksumMismatch value, $Res Function(RepairGameProgress_ChecksumMismatch) _then) = _$RepairGameProgress_ChecksumMismatchCopyWithImpl;
 @useResult
 $Res call({
- String field0, BigInt field1
+ String path, BigInt chunkSize
 });
 
 
@@ -851,10 +851,10 @@ class _$RepairGameProgress_ChecksumMismatchCopyWithImpl<$Res>
 
 /// Create a copy of RepairGameProgress
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') $Res call({Object? field0 = null,Object? field1 = null,}) {
+@pragma('vm:prefer-inline') $Res call({Object? path = null,Object? chunkSize = null,}) {
   return _then(RepairGameProgress_ChecksumMismatch(
-null == field0 ? _self.field0 : field0 // ignore: cast_nullable_to_non_nullable
-as String,null == field1 ? _self.field1 : field1 // ignore: cast_nullable_to_non_nullable
+path: null == path ? _self.path : path // ignore: cast_nullable_to_non_nullable
+as String,chunkSize: null == chunkSize ? _self.chunkSize : chunkSize // ignore: cast_nullable_to_non_nullable
 as BigInt,
   ));
 }

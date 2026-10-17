@@ -46,11 +46,15 @@ impl RepairTranslator {
                 self.install.dirty = true;
                 return out;
             }
-            E::CouldNotResolvePath(path, size) => {
-                (path, size, RepairGameProgress::CouldNotResolvePath)
-            }
-            E::FileNotFound(path, size) => (path, size, RepairGameProgress::FileNotFound),
-            E::ChecksumMismatch(path, size) => (path, size, RepairGameProgress::ChecksumMismatch),
+            E::CouldNotResolvePath(path, size) => (path, size, |path, chunk_size| {
+                RepairGameProgress::CouldNotResolvePath { path, chunk_size }
+            }),
+            E::FileNotFound(path, size) => (path, size, |path, chunk_size| {
+                RepairGameProgress::FileNotFound { path, chunk_size }
+            }),
+            E::ChecksumMismatch(path, size) => (path, size, |path, chunk_size| {
+                RepairGameProgress::ChecksumMismatch { path, chunk_size }
+            }),
             // a variant added upstream later has nothing to report yet
             _ => return out,
         };
@@ -204,19 +208,28 @@ mod tests {
         t.on_event(verified(0)); // enter the verification stage
         assert_eq!(
             t.on_event(mismatch("a", 5)),
-            vec![P::ChecksumMismatch("a".into(), 5)]
+            vec![P::ChecksumMismatch {
+                path: "a".into(),
+                chunk_size: 5
+            }]
         );
         assert!(t.on_event(mismatch("a", 6)).is_empty());
         assert_eq!(
             t.on_event(verify(VerificationEvent::FileNotFound("b".into(), 1))),
-            vec![P::FileNotFound("b".into(), 1)]
+            vec![P::FileNotFound {
+                path: "b".into(),
+                chunk_size: 1
+            }]
         );
         assert_eq!(
             t.on_event(verify(VerificationEvent::CouldNotResolvePath(
                 "c".into(),
                 2
             ))),
-            vec![P::CouldNotResolvePath("c".into(), 2)]
+            vec![P::CouldNotResolvePath {
+                path: "c".into(),
+                chunk_size: 2
+            }]
         );
     }
 
@@ -229,9 +242,12 @@ mod tests {
         let out = t.on_event(DownloadStageEvent::FileAllocationStage(
             FileAllocationEvent::CouldNotResolvePath("a".into(), 1),
         ));
-        assert!(out.contains(&P::AllocationError("a".into())));
+        assert!(out.contains(&P::AllocationError { path: "a".into() }));
         let out = t.on_event(mismatch("a", 1));
-        assert!(out.contains(&P::ChecksumMismatch("a".into(), 1)));
+        assert!(out.contains(&P::ChecksumMismatch {
+            path: "a".into(),
+            chunk_size: 1
+        }));
     }
 
     #[test]

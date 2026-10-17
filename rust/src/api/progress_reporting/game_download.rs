@@ -24,7 +24,7 @@ pub enum DownloadGameProgress {
     },
     /// A file's path could not be resolved on disk; the download is aborting
     /// with a file-allocation error. Sent once per path, immediately.
-    AllocationError(String),
+    AllocationError { path: String },
     /// Compressed bytes received so far, out of `Started.total_bytes`. Failed
     /// attempts are already subtracted, so this can stall or move backwards.
     /// Coalesced on a 150ms ticker.

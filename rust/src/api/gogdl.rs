@@ -11,7 +11,7 @@ use tokio::sync::mpsc;
 use crate::api::auth_refresh_observer::AuthRefreshObserver;
 pub use crate::api::cancel_token::CancelToken;
 pub use crate::api::error::GogError;
-pub use crate::api::models::downloadable_product::DownloadableProduct;
+pub use crate::api::models::downloadable_product::{DownloadableProduct, ProductType};
 pub use crate::api::models::game_build::GameBuild;
 pub use crate::api::models::game_links::GameLinks;
 pub use crate::api::models::install_size::{InstallSize, ProductSize};
@@ -95,20 +95,6 @@ impl GogdlApi {
     pub async fn get_game_links(&self, game_id: i32) -> Result<GameLinks, GogError> {
         let game_links = self.inner.get_game_links(game_id).await?;
         Ok(GameLinks::from_gogdl(&game_links))
-    }
-
-    /// Deprecated: use `getGameLinks`, which fetches both links in one call. Removed in `v1.5.0`.
-    #[deprecated(since = "1.4.2", note = "use get_game_links; removed in 1.5.0")]
-    pub async fn get_background_image_link(&self, game_id: i32) -> Result<String, GogError> {
-        let game_links = self.inner.get_game_links(game_id).await?;
-        Ok(game_links.links.background_image.href)
-    }
-
-    /// Deprecated: use `getGameLinks`, which fetches both links in one call. Removed in `v1.5.0`.
-    #[deprecated(since = "1.4.2", note = "use get_game_links; removed in 1.5.0")]
-    pub async fn get_game_boxart_link(&self, game_id: i32) -> Result<String, GogError> {
-        let game_links = self.inner.get_game_links(game_id).await?;
-        Ok(game_links.links.box_art_image.href)
     }
 
     pub async fn get_game_summary(&self, game_id: i32) -> Result<String, GogError> {
@@ -233,16 +219,6 @@ impl GogdlApi {
             .await?;
         Ok(ProtonReleasePage::from_gogdl(&upstream, PROTON_PAGE_SIZE))
     }
-
-    /// Deprecated: use `getProtonReleasePage`, which says whether more pages exist. This can't
-    /// tell a page whose releases were all left out from the end of the list. Removed in
-    /// `v1.5.0`. (flutter_rust_bridge doesn't emit `@Deprecated`, so the analyzer won't warn.)
-    ///
-    /// A negative `page` fails with `unknown` instead of wrapping around.
-    #[deprecated(note = "use get_proton_release_page; removed in v1.5.0")]
-    pub async fn get_proton_releases(&self, page: i32) -> Result<Vec<ProtonRelease>, GogError> {
-        Ok(self.get_proton_release_page(page).await?.releases)
-    }
     /// A 30s stall fails the download with a network error. It isn't retried.
     ///
     /// Cancelling `cancel` leaves `path` as it was, and the stream ends with `cancelled`.
@@ -275,9 +251,9 @@ impl GogdlApi {
         match outcome {
             Outcome::Finished(result) => {
                 let extracted_path = result?;
-                let _ = sink.add(ProtonDownloadProgress::Finished(
-                    extracted_path.to_string_lossy().into_owned(),
-                ));
+                let _ = sink.add(ProtonDownloadProgress::Finished {
+                    path: extracted_path.to_string_lossy().into_owned(),
+                });
             }
             Outcome::Cancelled => {
                 let _ = sink.add(ProtonDownloadProgress::Cancelled);
@@ -286,6 +262,11 @@ impl GogdlApi {
         }
         Ok(())
     }
+    /// Exchanges the code from the login redirect for a session, and returns the string to persist
+    /// and give back to `restoreAuth`.
+    ///
+    /// Fails with `invalidLoginCode` when GOG rejects the code, and `network` when it can't be
+    /// reached.
     pub async fn login_with_code(&self, code: &str) -> Result<String, GogError> {
         let auth = self.inner.login_with_code(code).await?;
         Ok(auth)
@@ -344,7 +325,7 @@ impl GogdlApi {
             .sum();
 
         if sink
-            .add(VerifyDownloadProgress::Started(total_bytes))
+            .add(VerifyDownloadProgress::Started { total_bytes })
             .is_err()
         {
             return Ok(()); // listener gone before the job started
@@ -368,12 +349,14 @@ impl GogdlApi {
 
         match result {
             Ok(()) => {
-                let _ = sink.add(VerifyDownloadProgress::Finished(0));
+                let _ = sink.add(VerifyDownloadProgress::Finished { bad_chunks: 0 });
             }
             Err(gogdl_lib::GogDlError::DownloadError(
                 gogdl_lib::DownloadError::ChunkIntegrityCheckFailed(failed),
             )) => {
-                let _ = sink.add(VerifyDownloadProgress::Finished(failed as u64));
+                let _ = sink.add(VerifyDownloadProgress::Finished {
+                    bad_chunks: failed as u64,
+                });
             }
             Err(e) => return Err(e.into()),
         }

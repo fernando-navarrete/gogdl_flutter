@@ -6,12 +6,13 @@
 import '../../frb_generated.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 
-// These functions are ignored (category: IgnoreBecauseExplicitAttribute): `from_gogdl`
+// These function are ignored because they are on traits that is not defined in current crate (put an empty `#[frb]` on it to unignore): `assert_fields_are_eq`, `clone`, `eq`, `fmt`
+// These functions are ignored (category: IgnoreBecauseExplicitAttribute): `from_gogdl`, `from_gogdl`
 
 class DownloadableProduct {
   final int id;
   final String name;
-  final String productType;
+  final ProductType productType;
 
   const DownloadableProduct({
     required this.id,
@@ -30,4 +31,13 @@ class DownloadableProduct {
           id == other.id &&
           name == other.name &&
           productType == other.productType;
+}
+
+/// What GOG says a downloadable product is.
+enum ProductType {
+  game,
+  dlc,
+
+  /// Anything else, such as a pack or a type GOG adds later. The raw string isn't kept.
+  other,
 }

@@ -205,6 +205,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   ProductSize dco_decode_product_size(dynamic raw);
 
   @protected
+  ProductType dco_decode_product_type(dynamic raw);
+
+  @protected
   ProtonDownloadProgress dco_decode_proton_download_progress(dynamic raw);
 
   @protected
@@ -414,6 +417,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   ProductSize sse_decode_product_size(SseDeserializer deserializer);
+
+  @protected
+  ProductType sse_decode_product_type(SseDeserializer deserializer);
 
   @protected
   ProtonDownloadProgress sse_decode_proton_download_progress(
@@ -682,6 +688,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   void sse_encode_product_size(ProductSize self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_product_type(ProductType self, SseSerializer serializer);
 
   @protected
   void sse_encode_proton_download_progress(

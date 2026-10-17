@@ -129,13 +129,13 @@ return cancelled(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( BigInt field0)?  started,TResult Function( BigInt field0)?  progress,TResult Function( String field0)?  extracted,TResult Function( String field0)?  finished,TResult Function()?  cancelled,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( BigInt totalBytes)?  started,TResult Function( BigInt downloadedBytes)?  progress,TResult Function( String path)?  extracted,TResult Function( String path)?  finished,TResult Function()?  cancelled,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case ProtonDownloadProgress_Started() when started != null:
-return started(_that.field0);case ProtonDownloadProgress_Progress() when progress != null:
-return progress(_that.field0);case ProtonDownloadProgress_Extracted() when extracted != null:
-return extracted(_that.field0);case ProtonDownloadProgress_Finished() when finished != null:
-return finished(_that.field0);case ProtonDownloadProgress_Cancelled() when cancelled != null:
+return started(_that.totalBytes);case ProtonDownloadProgress_Progress() when progress != null:
+return progress(_that.downloadedBytes);case ProtonDownloadProgress_Extracted() when extracted != null:
+return extracted(_that.path);case ProtonDownloadProgress_Finished() when finished != null:
+return finished(_that.path);case ProtonDownloadProgress_Cancelled() when cancelled != null:
 return cancelled();case _:
   return orElse();
 
@@ -154,13 +154,13 @@ return cancelled();case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( BigInt field0)  started,required TResult Function( BigInt field0)  progress,required TResult Function( String field0)  extracted,required TResult Function( String field0)  finished,required TResult Function()  cancelled,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( BigInt totalBytes)  started,required TResult Function( BigInt downloadedBytes)  progress,required TResult Function( String path)  extracted,required TResult Function( String path)  finished,required TResult Function()  cancelled,}) {final _that = this;
 switch (_that) {
 case ProtonDownloadProgress_Started():
-return started(_that.field0);case ProtonDownloadProgress_Progress():
-return progress(_that.field0);case ProtonDownloadProgress_Extracted():
-return extracted(_that.field0);case ProtonDownloadProgress_Finished():
-return finished(_that.field0);case ProtonDownloadProgress_Cancelled():
+return started(_that.totalBytes);case ProtonDownloadProgress_Progress():
+return progress(_that.downloadedBytes);case ProtonDownloadProgress_Extracted():
+return extracted(_that.path);case ProtonDownloadProgress_Finished():
+return finished(_that.path);case ProtonDownloadProgress_Cancelled():
 return cancelled();}
 }
 /// A variant of `when` that fallback to returning `null`
@@ -175,13 +175,13 @@ return cancelled();}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( BigInt field0)?  started,TResult? Function( BigInt field0)?  progress,TResult? Function( String field0)?  extracted,TResult? Function( String field0)?  finished,TResult? Function()?  cancelled,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( BigInt totalBytes)?  started,TResult? Function( BigInt downloadedBytes)?  progress,TResult? Function( String path)?  extracted,TResult? Function( String path)?  finished,TResult? Function()?  cancelled,}) {final _that = this;
 switch (_that) {
 case ProtonDownloadProgress_Started() when started != null:
-return started(_that.field0);case ProtonDownloadProgress_Progress() when progress != null:
-return progress(_that.field0);case ProtonDownloadProgress_Extracted() when extracted != null:
-return extracted(_that.field0);case ProtonDownloadProgress_Finished() when finished != null:
-return finished(_that.field0);case ProtonDownloadProgress_Cancelled() when cancelled != null:
+return started(_that.totalBytes);case ProtonDownloadProgress_Progress() when progress != null:
+return progress(_that.downloadedBytes);case ProtonDownloadProgress_Extracted() when extracted != null:
+return extracted(_that.path);case ProtonDownloadProgress_Finished() when finished != null:
+return finished(_that.path);case ProtonDownloadProgress_Cancelled() when cancelled != null:
 return cancelled();case _:
   return null;
 
@@ -194,10 +194,10 @@ return cancelled();case _:
 
 
 class ProtonDownloadProgress_Started extends ProtonDownloadProgress {
-  const ProtonDownloadProgress_Started(this.field0): super._();
+  const ProtonDownloadProgress_Started({required this.totalBytes}): super._();
   
 
- final  BigInt field0;
+ final  BigInt totalBytes;
 
 /// Create a copy of ProtonDownloadProgress
 /// with the given fields replaced by the non-null parameter values.
@@ -209,18 +209,18 @@ $ProtonDownloadProgress_StartedCopyWith<ProtonDownloadProgress_Started> get copy
 
 @override
 bool operator ==(Object other) {
-    return identical(this, other) || (other.runtimeType == runtimeType&&other is ProtonDownloadProgress_Started&&(identical(other.field0, field0) || other.field0 == field0));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is ProtonDownloadProgress_Started&&(identical(other.totalBytes, totalBytes) || other.totalBytes == totalBytes));
 }
 
 
 @override
 int get hashCode {
-    return Object.hash(runtimeType,field0);
+    return Object.hash(runtimeType,totalBytes);
 }
 
 @override
 String toString() {
-    return 'ProtonDownloadProgress.started(field0: $field0)';
+    return 'ProtonDownloadProgress.started(totalBytes: $totalBytes)';
 }
 
 
@@ -231,7 +231,7 @@ abstract mixin class $ProtonDownloadProgress_StartedCopyWith<$Res> implements $P
   factory $ProtonDownloadProgress_StartedCopyWith(ProtonDownloadProgress_Started value, $Res Function(ProtonDownloadProgress_Started) _then) = _$ProtonDownloadProgress_StartedCopyWithImpl;
 @useResult
 $Res call({
- BigInt field0
+ BigInt totalBytes
 });
 
 
@@ -248,9 +248,9 @@ class _$ProtonDownloadProgress_StartedCopyWithImpl<$Res>
 
 /// Create a copy of ProtonDownloadProgress
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') $Res call({Object? field0 = null,}) {
+@pragma('vm:prefer-inline') $Res call({Object? totalBytes = null,}) {
   return _then(ProtonDownloadProgress_Started(
-null == field0 ? _self.field0 : field0 // ignore: cast_nullable_to_non_nullable
+totalBytes: null == totalBytes ? _self.totalBytes : totalBytes // ignore: cast_nullable_to_non_nullable
 as BigInt,
   ));
 }
@@ -262,10 +262,10 @@ as BigInt,
 
 
 class ProtonDownloadProgress_Progress extends ProtonDownloadProgress {
-  const ProtonDownloadProgress_Progress(this.field0): super._();
+  const ProtonDownloadProgress_Progress({required this.downloadedBytes}): super._();
   
 
- final  BigInt field0;
+ final  BigInt downloadedBytes;
 
 /// Create a copy of ProtonDownloadProgress
 /// with the given fields replaced by the non-null parameter values.
@@ -277,18 +277,18 @@ $ProtonDownloadProgress_ProgressCopyWith<ProtonDownloadProgress_Progress> get co
 
 @override
 bool operator ==(Object other) {
-    return identical(this, other) || (other.runtimeType == runtimeType&&other is ProtonDownloadProgress_Progress&&(identical(other.field0, field0) || other.field0 == field0));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is ProtonDownloadProgress_Progress&&(identical(other.downloadedBytes, downloadedBytes) || other.downloadedBytes == downloadedBytes));
 }
 
 
 @override
 int get hashCode {
-    return Object.hash(runtimeType,field0);
+    return Object.hash(runtimeType,downloadedBytes);
 }
 
 @override
 String toString() {
-    return 'ProtonDownloadProgress.progress(field0: $field0)';
+    return 'ProtonDownloadProgress.progress(downloadedBytes: $downloadedBytes)';
 }
 
 
@@ -299,7 +299,7 @@ abstract mixin class $ProtonDownloadProgress_ProgressCopyWith<$Res> implements $
   factory $ProtonDownloadProgress_ProgressCopyWith(ProtonDownloadProgress_Progress value, $Res Function(ProtonDownloadProgress_Progress) _then) = _$ProtonDownloadProgress_ProgressCopyWithImpl;
 @useResult
 $Res call({
- BigInt field0
+ BigInt downloadedBytes
 });
 
 
@@ -316,9 +316,9 @@ class _$ProtonDownloadProgress_ProgressCopyWithImpl<$Res>
 
 /// Create a copy of ProtonDownloadProgress
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') $Res call({Object? field0 = null,}) {
+@pragma('vm:prefer-inline') $Res call({Object? downloadedBytes = null,}) {
   return _then(ProtonDownloadProgress_Progress(
-null == field0 ? _self.field0 : field0 // ignore: cast_nullable_to_non_nullable
+downloadedBytes: null == downloadedBytes ? _self.downloadedBytes : downloadedBytes // ignore: cast_nullable_to_non_nullable
 as BigInt,
   ));
 }
@@ -330,10 +330,10 @@ as BigInt,
 
 
 class ProtonDownloadProgress_Extracted extends ProtonDownloadProgress {
-  const ProtonDownloadProgress_Extracted(this.field0): super._();
+  const ProtonDownloadProgress_Extracted({required this.path}): super._();
   
 
- final  String field0;
+ final  String path;
 
 /// Create a copy of ProtonDownloadProgress
 /// with the given fields replaced by the non-null parameter values.
@@ -345,18 +345,18 @@ $ProtonDownloadProgress_ExtractedCopyWith<ProtonDownloadProgress_Extracted> get 
 
 @override
 bool operator ==(Object other) {
-    return identical(this, other) || (other.runtimeType == runtimeType&&other is ProtonDownloadProgress_Extracted&&(identical(other.field0, field0) || other.field0 == field0));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is ProtonDownloadProgress_Extracted&&(identical(other.path, path) || other.path == path));
 }
 
 
 @override
 int get hashCode {
-    return Object.hash(runtimeType,field0);
+    return Object.hash(runtimeType,path);
 }
 
 @override
 String toString() {
-    return 'ProtonDownloadProgress.extracted(field0: $field0)';
+    return 'ProtonDownloadProgress.extracted(path: $path)';
 }
 
 
@@ -367,7 +367,7 @@ abstract mixin class $ProtonDownloadProgress_ExtractedCopyWith<$Res> implements 
   factory $ProtonDownloadProgress_ExtractedCopyWith(ProtonDownloadProgress_Extracted value, $Res Function(ProtonDownloadProgress_Extracted) _then) = _$ProtonDownloadProgress_ExtractedCopyWithImpl;
 @useResult
 $Res call({
- String field0
+ String path
 });
 
 
@@ -384,9 +384,9 @@ class _$ProtonDownloadProgress_ExtractedCopyWithImpl<$Res>
 
 /// Create a copy of ProtonDownloadProgress
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') $Res call({Object? field0 = null,}) {
+@pragma('vm:prefer-inline') $Res call({Object? path = null,}) {
   return _then(ProtonDownloadProgress_Extracted(
-null == field0 ? _self.field0 : field0 // ignore: cast_nullable_to_non_nullable
+path: null == path ? _self.path : path // ignore: cast_nullable_to_non_nullable
 as String,
   ));
 }
@@ -398,10 +398,10 @@ as String,
 
 
 class ProtonDownloadProgress_Finished extends ProtonDownloadProgress {
-  const ProtonDownloadProgress_Finished(this.field0): super._();
+  const ProtonDownloadProgress_Finished({required this.path}): super._();
   
 
- final  String field0;
+ final  String path;
 
 /// Create a copy of ProtonDownloadProgress
 /// with the given fields replaced by the non-null parameter values.
@@ -413,18 +413,18 @@ $ProtonDownloadProgress_FinishedCopyWith<ProtonDownloadProgress_Finished> get co
 
 @override
 bool operator ==(Object other) {
-    return identical(this, other) || (other.runtimeType == runtimeType&&other is ProtonDownloadProgress_Finished&&(identical(other.field0, field0) || other.field0 == field0));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is ProtonDownloadProgress_Finished&&(identical(other.path, path) || other.path == path));
 }
 
 
 @override
 int get hashCode {
-    return Object.hash(runtimeType,field0);
+    return Object.hash(runtimeType,path);
 }
 
 @override
 String toString() {
-    return 'ProtonDownloadProgress.finished(field0: $field0)';
+    return 'ProtonDownloadProgress.finished(path: $path)';
 }
 
 
@@ -435,7 +435,7 @@ abstract mixin class $ProtonDownloadProgress_FinishedCopyWith<$Res> implements $
   factory $ProtonDownloadProgress_FinishedCopyWith(ProtonDownloadProgress_Finished value, $Res Function(ProtonDownloadProgress_Finished) _then) = _$ProtonDownloadProgress_FinishedCopyWithImpl;
 @useResult
 $Res call({
- String field0
+ String path
 });
 
 
@@ -452,9 +452,9 @@ class _$ProtonDownloadProgress_FinishedCopyWithImpl<$Res>
 
 /// Create a copy of ProtonDownloadProgress
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') $Res call({Object? field0 = null,}) {
+@pragma('vm:prefer-inline') $Res call({Object? path = null,}) {
   return _then(ProtonDownloadProgress_Finished(
-null == field0 ? _self.field0 : field0 // ignore: cast_nullable_to_non_nullable
+path: null == path ? _self.path : path // ignore: cast_nullable_to_non_nullable
 as String,
   ));
 }

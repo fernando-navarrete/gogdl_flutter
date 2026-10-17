@@ -24,18 +24,20 @@ pub enum RepairGameProgress {
     },
     /// A file's path could not be resolved on disk; the repair is aborting
     /// with a file-allocation error. Sent once per path, immediately.
-    AllocationError(String),
+    AllocationError { path: String },
     /// Bytes checksummed so far, verified and failed alike, out of
     /// `Started.total_bytes`. Coalesced on a 150ms ticker.
     Verification { checked_bytes: u64 },
     /// The file's relative path could not be resolved on disk. Sent once
-    /// per path; the `u64` is the first failing chunk's size, not the
-    /// file's.
-    CouldNotResolvePath(String, u64),
-    /// No file exists yet at the resolved path. Sent once per path.
-    FileNotFound(String, u64),
-    /// A chunk's on-disk MD5 didn't match the manifest. Sent once per path.
-    ChecksumMismatch(String, u64),
+    /// per path; `chunk_size` is the first failing chunk's uncompressed
+    /// size, not the file's.
+    CouldNotResolvePath { path: String, chunk_size: u64 },
+    /// No file exists yet at the resolved path. Sent once per path;
+    /// `chunk_size` is as in `CouldNotResolvePath`.
+    FileNotFound { path: String, chunk_size: u64 },
+    /// A chunk's on-disk MD5 didn't match the manifest. Sent once per path;
+    /// `chunk_size` is as in `CouldNotResolvePath`.
+    ChecksumMismatch { path: String, chunk_size: u64 },
     /// The re-download stage is starting; `total_bytes` is the *compressed*
     /// size of the chunks that failed verification. Sent once, and skipped
     /// entirely when the install was already intact.

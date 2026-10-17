@@ -135,15 +135,15 @@ return cancelled(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( BigInt field0)?  started,TResult Function( BigInt field0)?  progress,TResult Function( String field0,  BigInt field1)?  couldNotResolvePath,TResult Function( String field0,  BigInt field1)?  fileNotFound,TResult Function( String field0,  BigInt field1)?  checksumMismatch,TResult Function( BigInt field0)?  finished,TResult Function()?  cancelled,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( BigInt totalBytes)?  started,TResult Function( BigInt checkedBytes)?  progress,TResult Function( String path,  BigInt chunkSize)?  couldNotResolvePath,TResult Function( String path,  BigInt chunkSize)?  fileNotFound,TResult Function( String path,  BigInt chunkSize)?  checksumMismatch,TResult Function( BigInt badChunks)?  finished,TResult Function()?  cancelled,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case VerifyDownloadProgress_Started() when started != null:
-return started(_that.field0);case VerifyDownloadProgress_Progress() when progress != null:
-return progress(_that.field0);case VerifyDownloadProgress_CouldNotResolvePath() when couldNotResolvePath != null:
-return couldNotResolvePath(_that.field0,_that.field1);case VerifyDownloadProgress_FileNotFound() when fileNotFound != null:
-return fileNotFound(_that.field0,_that.field1);case VerifyDownloadProgress_ChecksumMismatch() when checksumMismatch != null:
-return checksumMismatch(_that.field0,_that.field1);case VerifyDownloadProgress_Finished() when finished != null:
-return finished(_that.field0);case VerifyDownloadProgress_Cancelled() when cancelled != null:
+return started(_that.totalBytes);case VerifyDownloadProgress_Progress() when progress != null:
+return progress(_that.checkedBytes);case VerifyDownloadProgress_CouldNotResolvePath() when couldNotResolvePath != null:
+return couldNotResolvePath(_that.path,_that.chunkSize);case VerifyDownloadProgress_FileNotFound() when fileNotFound != null:
+return fileNotFound(_that.path,_that.chunkSize);case VerifyDownloadProgress_ChecksumMismatch() when checksumMismatch != null:
+return checksumMismatch(_that.path,_that.chunkSize);case VerifyDownloadProgress_Finished() when finished != null:
+return finished(_that.badChunks);case VerifyDownloadProgress_Cancelled() when cancelled != null:
 return cancelled();case _:
   return orElse();
 
@@ -162,15 +162,15 @@ return cancelled();case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( BigInt field0)  started,required TResult Function( BigInt field0)  progress,required TResult Function( String field0,  BigInt field1)  couldNotResolvePath,required TResult Function( String field0,  BigInt field1)  fileNotFound,required TResult Function( String field0,  BigInt field1)  checksumMismatch,required TResult Function( BigInt field0)  finished,required TResult Function()  cancelled,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( BigInt totalBytes)  started,required TResult Function( BigInt checkedBytes)  progress,required TResult Function( String path,  BigInt chunkSize)  couldNotResolvePath,required TResult Function( String path,  BigInt chunkSize)  fileNotFound,required TResult Function( String path,  BigInt chunkSize)  checksumMismatch,required TResult Function( BigInt badChunks)  finished,required TResult Function()  cancelled,}) {final _that = this;
 switch (_that) {
 case VerifyDownloadProgress_Started():
-return started(_that.field0);case VerifyDownloadProgress_Progress():
-return progress(_that.field0);case VerifyDownloadProgress_CouldNotResolvePath():
-return couldNotResolvePath(_that.field0,_that.field1);case VerifyDownloadProgress_FileNotFound():
-return fileNotFound(_that.field0,_that.field1);case VerifyDownloadProgress_ChecksumMismatch():
-return checksumMismatch(_that.field0,_that.field1);case VerifyDownloadProgress_Finished():
-return finished(_that.field0);case VerifyDownloadProgress_Cancelled():
+return started(_that.totalBytes);case VerifyDownloadProgress_Progress():
+return progress(_that.checkedBytes);case VerifyDownloadProgress_CouldNotResolvePath():
+return couldNotResolvePath(_that.path,_that.chunkSize);case VerifyDownloadProgress_FileNotFound():
+return fileNotFound(_that.path,_that.chunkSize);case VerifyDownloadProgress_ChecksumMismatch():
+return checksumMismatch(_that.path,_that.chunkSize);case VerifyDownloadProgress_Finished():
+return finished(_that.badChunks);case VerifyDownloadProgress_Cancelled():
 return cancelled();}
 }
 /// A variant of `when` that fallback to returning `null`
@@ -185,15 +185,15 @@ return cancelled();}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( BigInt field0)?  started,TResult? Function( BigInt field0)?  progress,TResult? Function( String field0,  BigInt field1)?  couldNotResolvePath,TResult? Function( String field0,  BigInt field1)?  fileNotFound,TResult? Function( String field0,  BigInt field1)?  checksumMismatch,TResult? Function( BigInt field0)?  finished,TResult? Function()?  cancelled,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( BigInt totalBytes)?  started,TResult? Function( BigInt checkedBytes)?  progress,TResult? Function( String path,  BigInt chunkSize)?  couldNotResolvePath,TResult? Function( String path,  BigInt chunkSize)?  fileNotFound,TResult? Function( String path,  BigInt chunkSize)?  checksumMismatch,TResult? Function( BigInt badChunks)?  finished,TResult? Function()?  cancelled,}) {final _that = this;
 switch (_that) {
 case VerifyDownloadProgress_Started() when started != null:
-return started(_that.field0);case VerifyDownloadProgress_Progress() when progress != null:
-return progress(_that.field0);case VerifyDownloadProgress_CouldNotResolvePath() when couldNotResolvePath != null:
-return couldNotResolvePath(_that.field0,_that.field1);case VerifyDownloadProgress_FileNotFound() when fileNotFound != null:
-return fileNotFound(_that.field0,_that.field1);case VerifyDownloadProgress_ChecksumMismatch() when checksumMismatch != null:
-return checksumMismatch(_that.field0,_that.field1);case VerifyDownloadProgress_Finished() when finished != null:
-return finished(_that.field0);case VerifyDownloadProgress_Cancelled() when cancelled != null:
+return started(_that.totalBytes);case VerifyDownloadProgress_Progress() when progress != null:
+return progress(_that.checkedBytes);case VerifyDownloadProgress_CouldNotResolvePath() when couldNotResolvePath != null:
+return couldNotResolvePath(_that.path,_that.chunkSize);case VerifyDownloadProgress_FileNotFound() when fileNotFound != null:
+return fileNotFound(_that.path,_that.chunkSize);case VerifyDownloadProgress_ChecksumMismatch() when checksumMismatch != null:
+return checksumMismatch(_that.path,_that.chunkSize);case VerifyDownloadProgress_Finished() when finished != null:
+return finished(_that.badChunks);case VerifyDownloadProgress_Cancelled() when cancelled != null:
 return cancelled();case _:
   return null;
 
@@ -206,10 +206,10 @@ return cancelled();case _:
 
 
 class VerifyDownloadProgress_Started extends VerifyDownloadProgress {
-  const VerifyDownloadProgress_Started(this.field0): super._();
+  const VerifyDownloadProgress_Started({required this.totalBytes}): super._();
   
 
- final  BigInt field0;
+ final  BigInt totalBytes;
 
 /// Create a copy of VerifyDownloadProgress
 /// with the given fields replaced by the non-null parameter values.
@@ -221,18 +221,18 @@ $VerifyDownloadProgress_StartedCopyWith<VerifyDownloadProgress_Started> get copy
 
 @override
 bool operator ==(Object other) {
-    return identical(this, other) || (other.runtimeType == runtimeType&&other is VerifyDownloadProgress_Started&&(identical(other.field0, field0) || other.field0 == field0));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is VerifyDownloadProgress_Started&&(identical(other.totalBytes, totalBytes) || other.totalBytes == totalBytes));
 }
 
 
 @override
 int get hashCode {
-    return Object.hash(runtimeType,field0);
+    return Object.hash(runtimeType,totalBytes);
 }
 
 @override
 String toString() {
-    return 'VerifyDownloadProgress.started(field0: $field0)';
+    return 'VerifyDownloadProgress.started(totalBytes: $totalBytes)';
 }
 
 
@@ -243,7 +243,7 @@ abstract mixin class $VerifyDownloadProgress_StartedCopyWith<$Res> implements $V
   factory $VerifyDownloadProgress_StartedCopyWith(VerifyDownloadProgress_Started value, $Res Function(VerifyDownloadProgress_Started) _then) = _$VerifyDownloadProgress_StartedCopyWithImpl;
 @useResult
 $Res call({
- BigInt field0
+ BigInt totalBytes
 });
 
 
@@ -260,9 +260,9 @@ class _$VerifyDownloadProgress_StartedCopyWithImpl<$Res>
 
 /// Create a copy of VerifyDownloadProgress
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') $Res call({Object? field0 = null,}) {
+@pragma('vm:prefer-inline') $Res call({Object? totalBytes = null,}) {
   return _then(VerifyDownloadProgress_Started(
-null == field0 ? _self.field0 : field0 // ignore: cast_nullable_to_non_nullable
+totalBytes: null == totalBytes ? _self.totalBytes : totalBytes // ignore: cast_nullable_to_non_nullable
 as BigInt,
   ));
 }
@@ -274,10 +274,10 @@ as BigInt,
 
 
 class VerifyDownloadProgress_Progress extends VerifyDownloadProgress {
-  const VerifyDownloadProgress_Progress(this.field0): super._();
+  const VerifyDownloadProgress_Progress({required this.checkedBytes}): super._();
   
 
- final  BigInt field0;
+ final  BigInt checkedBytes;
 
 /// Create a copy of VerifyDownloadProgress
 /// with the given fields replaced by the non-null parameter values.
@@ -289,18 +289,18 @@ $VerifyDownloadProgress_ProgressCopyWith<VerifyDownloadProgress_Progress> get co
 
 @override
 bool operator ==(Object other) {
-    return identical(this, other) || (other.runtimeType == runtimeType&&other is VerifyDownloadProgress_Progress&&(identical(other.field0, field0) || other.field0 == field0));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is VerifyDownloadProgress_Progress&&(identical(other.checkedBytes, checkedBytes) || other.checkedBytes == checkedBytes));
 }
 
 
 @override
 int get hashCode {
-    return Object.hash(runtimeType,field0);
+    return Object.hash(runtimeType,checkedBytes);
 }
 
 @override
 String toString() {
-    return 'VerifyDownloadProgress.progress(field0: $field0)';
+    return 'VerifyDownloadProgress.progress(checkedBytes: $checkedBytes)';
 }
 
 
@@ -311,7 +311,7 @@ abstract mixin class $VerifyDownloadProgress_ProgressCopyWith<$Res> implements $
   factory $VerifyDownloadProgress_ProgressCopyWith(VerifyDownloadProgress_Progress value, $Res Function(VerifyDownloadProgress_Progress) _then) = _$VerifyDownloadProgress_ProgressCopyWithImpl;
 @useResult
 $Res call({
- BigInt field0
+ BigInt checkedBytes
 });
 
 
@@ -328,9 +328,9 @@ class _$VerifyDownloadProgress_ProgressCopyWithImpl<$Res>
 
 /// Create a copy of VerifyDownloadProgress
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') $Res call({Object? field0 = null,}) {
+@pragma('vm:prefer-inline') $Res call({Object? checkedBytes = null,}) {
   return _then(VerifyDownloadProgress_Progress(
-null == field0 ? _self.field0 : field0 // ignore: cast_nullable_to_non_nullable
+checkedBytes: null == checkedBytes ? _self.checkedBytes : checkedBytes // ignore: cast_nullable_to_non_nullable
 as BigInt,
   ));
 }
@@ -342,11 +342,11 @@ as BigInt,
 
 
 class VerifyDownloadProgress_CouldNotResolvePath extends VerifyDownloadProgress {
-  const VerifyDownloadProgress_CouldNotResolvePath(this.field0, this.field1): super._();
+  const VerifyDownloadProgress_CouldNotResolvePath({required this.path, required this.chunkSize}): super._();
   
 
- final  String field0;
- final  BigInt field1;
+ final  String path;
+ final  BigInt chunkSize;
 
 /// Create a copy of VerifyDownloadProgress
 /// with the given fields replaced by the non-null parameter values.
@@ -358,18 +358,18 @@ $VerifyDownloadProgress_CouldNotResolvePathCopyWith<VerifyDownloadProgress_Could
 
 @override
 bool operator ==(Object other) {
-    return identical(this, other) || (other.runtimeType == runtimeType&&other is VerifyDownloadProgress_CouldNotResolvePath&&(identical(other.field0, field0) || other.field0 == field0)&&(identical(other.field1, field1) || other.field1 == field1));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is VerifyDownloadProgress_CouldNotResolvePath&&(identical(other.path, path) || other.path == path)&&(identical(other.chunkSize, chunkSize) || other.chunkSize == chunkSize));
 }
 
 
 @override
 int get hashCode {
-    return Object.hash(runtimeType,field0,field1);
+    return Object.hash(runtimeType,path,chunkSize);
 }
 
 @override
 String toString() {
-    return 'VerifyDownloadProgress.couldNotResolvePath(field0: $field0, field1: $field1)';
+    return 'VerifyDownloadProgress.couldNotResolvePath(path: $path, chunkSize: $chunkSize)';
 }
 
 
@@ -380,7 +380,7 @@ abstract mixin class $VerifyDownloadProgress_CouldNotResolvePathCopyWith<$Res> i
   factory $VerifyDownloadProgress_CouldNotResolvePathCopyWith(VerifyDownloadProgress_CouldNotResolvePath value, $Res Function(VerifyDownloadProgress_CouldNotResolvePath) _then) = _$VerifyDownloadProgress_CouldNotResolvePathCopyWithImpl;
 @useResult
 $Res call({
- String field0, BigInt field1
+ String path, BigInt chunkSize
 });
 
 
@@ -397,10 +397,10 @@ class _$VerifyDownloadProgress_CouldNotResolvePathCopyWithImpl<$Res>
 
 /// Create a copy of VerifyDownloadProgress
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') $Res call({Object? field0 = null,Object? field1 = null,}) {
+@pragma('vm:prefer-inline') $Res call({Object? path = null,Object? chunkSize = null,}) {
   return _then(VerifyDownloadProgress_CouldNotResolvePath(
-null == field0 ? _self.field0 : field0 // ignore: cast_nullable_to_non_nullable
-as String,null == field1 ? _self.field1 : field1 // ignore: cast_nullable_to_non_nullable
+path: null == path ? _self.path : path // ignore: cast_nullable_to_non_nullable
+as String,chunkSize: null == chunkSize ? _self.chunkSize : chunkSize // ignore: cast_nullable_to_non_nullable
 as BigInt,
   ));
 }
@@ -412,11 +412,11 @@ as BigInt,
 
 
 class VerifyDownloadProgress_FileNotFound extends VerifyDownloadProgress {
-  const VerifyDownloadProgress_FileNotFound(this.field0, this.field1): super._();
+  const VerifyDownloadProgress_FileNotFound({required this.path, required this.chunkSize}): super._();
   
 
- final  String field0;
- final  BigInt field1;
+ final  String path;
+ final  BigInt chunkSize;
 
 /// Create a copy of VerifyDownloadProgress
 /// with the given fields replaced by the non-null parameter values.
@@ -428,18 +428,18 @@ $VerifyDownloadProgress_FileNotFoundCopyWith<VerifyDownloadProgress_FileNotFound
 
 @override
 bool operator ==(Object other) {
-    return identical(this, other) || (other.runtimeType == runtimeType&&other is VerifyDownloadProgress_FileNotFound&&(identical(other.field0, field0) || other.field0 == field0)&&(identical(other.field1, field1) || other.field1 == field1));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is VerifyDownloadProgress_FileNotFound&&(identical(other.path, path) || other.path == path)&&(identical(other.chunkSize, chunkSize) || other.chunkSize == chunkSize));
 }
 
 
 @override
 int get hashCode {
-    return Object.hash(runtimeType,field0,field1);
+    return Object.hash(runtimeType,path,chunkSize);
 }
 
 @override
 String toString() {
-    return 'VerifyDownloadProgress.fileNotFound(field0: $field0, field1: $field1)';
+    return 'VerifyDownloadProgress.fileNotFound(path: $path, chunkSize: $chunkSize)';
 }
 
 
@@ -450,7 +450,7 @@ abstract mixin class $VerifyDownloadProgress_FileNotFoundCopyWith<$Res> implemen
   factory $VerifyDownloadProgress_FileNotFoundCopyWith(VerifyDownloadProgress_FileNotFound value, $Res Function(VerifyDownloadProgress_FileNotFound) _then) = _$VerifyDownloadProgress_FileNotFoundCopyWithImpl;
 @useResult
 $Res call({
- String field0, BigInt field1
+ String path, BigInt chunkSize
 });
 
 
@@ -467,10 +467,10 @@ class _$VerifyDownloadProgress_FileNotFoundCopyWithImpl<$Res>
 
 /// Create a copy of VerifyDownloadProgress
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') $Res call({Object? field0 = null,Object? field1 = null,}) {
+@pragma('vm:prefer-inline') $Res call({Object? path = null,Object? chunkSize = null,}) {
   return _then(VerifyDownloadProgress_FileNotFound(
-null == field0 ? _self.field0 : field0 // ignore: cast_nullable_to_non_nullable
-as String,null == field1 ? _self.field1 : field1 // ignore: cast_nullable_to_non_nullable
+path: null == path ? _self.path : path // ignore: cast_nullable_to_non_nullable
+as String,chunkSize: null == chunkSize ? _self.chunkSize : chunkSize // ignore: cast_nullable_to_non_nullable
 as BigInt,
   ));
 }
@@ -482,11 +482,11 @@ as BigInt,
 
 
 class VerifyDownloadProgress_ChecksumMismatch extends VerifyDownloadProgress {
-  const VerifyDownloadProgress_ChecksumMismatch(this.field0, this.field1): super._();
+  const VerifyDownloadProgress_ChecksumMismatch({required this.path, required this.chunkSize}): super._();
   
 
- final  String field0;
- final  BigInt field1;
+ final  String path;
+ final  BigInt chunkSize;
 
 /// Create a copy of VerifyDownloadProgress
 /// with the given fields replaced by the non-null parameter values.
@@ -498,18 +498,18 @@ $VerifyDownloadProgress_ChecksumMismatchCopyWith<VerifyDownloadProgress_Checksum
 
 @override
 bool operator ==(Object other) {
-    return identical(this, other) || (other.runtimeType == runtimeType&&other is VerifyDownloadProgress_ChecksumMismatch&&(identical(other.field0, field0) || other.field0 == field0)&&(identical(other.field1, field1) || other.field1 == field1));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is VerifyDownloadProgress_ChecksumMismatch&&(identical(other.path, path) || other.path == path)&&(identical(other.chunkSize, chunkSize) || other.chunkSize == chunkSize));
 }
 
 
 @override
 int get hashCode {
-    return Object.hash(runtimeType,field0,field1);
+    return Object.hash(runtimeType,path,chunkSize);
 }
 
 @override
 String toString() {
-    return 'VerifyDownloadProgress.checksumMismatch(field0: $field0, field1: $field1)';
+    return 'VerifyDownloadProgress.checksumMismatch(path: $path, chunkSize: $chunkSize)';
 }
 
 
@@ -520,7 +520,7 @@ abstract mixin class $VerifyDownloadProgress_ChecksumMismatchCopyWith<$Res> impl
   factory $VerifyDownloadProgress_ChecksumMismatchCopyWith(VerifyDownloadProgress_ChecksumMismatch value, $Res Function(VerifyDownloadProgress_ChecksumMismatch) _then) = _$VerifyDownloadProgress_ChecksumMismatchCopyWithImpl;
 @useResult
 $Res call({
- String field0, BigInt field1
+ String path, BigInt chunkSize
 });
 
 
@@ -537,10 +537,10 @@ class _$VerifyDownloadProgress_ChecksumMismatchCopyWithImpl<$Res>
 
 /// Create a copy of VerifyDownloadProgress
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') $Res call({Object? field0 = null,Object? field1 = null,}) {
+@pragma('vm:prefer-inline') $Res call({Object? path = null,Object? chunkSize = null,}) {
   return _then(VerifyDownloadProgress_ChecksumMismatch(
-null == field0 ? _self.field0 : field0 // ignore: cast_nullable_to_non_nullable
-as String,null == field1 ? _self.field1 : field1 // ignore: cast_nullable_to_non_nullable
+path: null == path ? _self.path : path // ignore: cast_nullable_to_non_nullable
+as String,chunkSize: null == chunkSize ? _self.chunkSize : chunkSize // ignore: cast_nullable_to_non_nullable
 as BigInt,
   ));
 }
@@ -552,10 +552,10 @@ as BigInt,
 
 
 class VerifyDownloadProgress_Finished extends VerifyDownloadProgress {
-  const VerifyDownloadProgress_Finished(this.field0): super._();
+  const VerifyDownloadProgress_Finished({required this.badChunks}): super._();
   
 
- final  BigInt field0;
+ final  BigInt badChunks;
 
 /// Create a copy of VerifyDownloadProgress
 /// with the given fields replaced by the non-null parameter values.
@@ -567,18 +567,18 @@ $VerifyDownloadProgress_FinishedCopyWith<VerifyDownloadProgress_Finished> get co
 
 @override
 bool operator ==(Object other) {
-    return identical(this, other) || (other.runtimeType == runtimeType&&other is VerifyDownloadProgress_Finished&&(identical(other.field0, field0) || other.field0 == field0));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is VerifyDownloadProgress_Finished&&(identical(other.badChunks, badChunks) || other.badChunks == badChunks));
 }
 
 
 @override
 int get hashCode {
-    return Object.hash(runtimeType,field0);
+    return Object.hash(runtimeType,badChunks);
 }
 
 @override
 String toString() {
-    return 'VerifyDownloadProgress.finished(field0: $field0)';
+    return 'VerifyDownloadProgress.finished(badChunks: $badChunks)';
 }
 
 
@@ -589,7 +589,7 @@ abstract mixin class $VerifyDownloadProgress_FinishedCopyWith<$Res> implements $
   factory $VerifyDownloadProgress_FinishedCopyWith(VerifyDownloadProgress_Finished value, $Res Function(VerifyDownloadProgress_Finished) _then) = _$VerifyDownloadProgress_FinishedCopyWithImpl;
 @useResult
 $Res call({
- BigInt field0
+ BigInt badChunks
 });
 
 
@@ -606,9 +606,9 @@ class _$VerifyDownloadProgress_FinishedCopyWithImpl<$Res>
 
 /// Create a copy of VerifyDownloadProgress
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') $Res call({Object? field0 = null,}) {
+@pragma('vm:prefer-inline') $Res call({Object? badChunks = null,}) {
   return _then(VerifyDownloadProgress_Finished(
-null == field0 ? _self.field0 : field0 // ignore: cast_nullable_to_non_nullable
+badChunks: null == badChunks ? _self.badChunks : badChunks // ignore: cast_nullable_to_non_nullable
 as BigInt,
   ));
 }

@@ -138,14 +138,14 @@ return cancelled(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( BigInt totalFiles,  BigInt totalBytes)?  started,TResult Function( BigInt checkedFiles)?  fileSizeVerification,TResult Function( BigInt totalFiles,  BigInt totalBytes)?  fileAllocationStarted,TResult Function( BigInt allocatedFiles,  BigInt allocatedBytes)?  fileAllocation,TResult Function( String field0)?  allocationError,TResult Function( BigInt downloadedBytes)?  downloadProgress,TResult Function()?  finished,TResult Function()?  cancelled,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( BigInt totalFiles,  BigInt totalBytes)?  started,TResult Function( BigInt checkedFiles)?  fileSizeVerification,TResult Function( BigInt totalFiles,  BigInt totalBytes)?  fileAllocationStarted,TResult Function( BigInt allocatedFiles,  BigInt allocatedBytes)?  fileAllocation,TResult Function( String path)?  allocationError,TResult Function( BigInt downloadedBytes)?  downloadProgress,TResult Function()?  finished,TResult Function()?  cancelled,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case DownloadGameProgress_Started() when started != null:
 return started(_that.totalFiles,_that.totalBytes);case DownloadGameProgress_FileSizeVerification() when fileSizeVerification != null:
 return fileSizeVerification(_that.checkedFiles);case DownloadGameProgress_FileAllocationStarted() when fileAllocationStarted != null:
 return fileAllocationStarted(_that.totalFiles,_that.totalBytes);case DownloadGameProgress_FileAllocation() when fileAllocation != null:
 return fileAllocation(_that.allocatedFiles,_that.allocatedBytes);case DownloadGameProgress_AllocationError() when allocationError != null:
-return allocationError(_that.field0);case DownloadGameProgress_DownloadProgress() when downloadProgress != null:
+return allocationError(_that.path);case DownloadGameProgress_DownloadProgress() when downloadProgress != null:
 return downloadProgress(_that.downloadedBytes);case DownloadGameProgress_Finished() when finished != null:
 return finished();case DownloadGameProgress_Cancelled() when cancelled != null:
 return cancelled();case _:
@@ -166,14 +166,14 @@ return cancelled();case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( BigInt totalFiles,  BigInt totalBytes)  started,required TResult Function( BigInt checkedFiles)  fileSizeVerification,required TResult Function( BigInt totalFiles,  BigInt totalBytes)  fileAllocationStarted,required TResult Function( BigInt allocatedFiles,  BigInt allocatedBytes)  fileAllocation,required TResult Function( String field0)  allocationError,required TResult Function( BigInt downloadedBytes)  downloadProgress,required TResult Function()  finished,required TResult Function()  cancelled,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( BigInt totalFiles,  BigInt totalBytes)  started,required TResult Function( BigInt checkedFiles)  fileSizeVerification,required TResult Function( BigInt totalFiles,  BigInt totalBytes)  fileAllocationStarted,required TResult Function( BigInt allocatedFiles,  BigInt allocatedBytes)  fileAllocation,required TResult Function( String path)  allocationError,required TResult Function( BigInt downloadedBytes)  downloadProgress,required TResult Function()  finished,required TResult Function()  cancelled,}) {final _that = this;
 switch (_that) {
 case DownloadGameProgress_Started():
 return started(_that.totalFiles,_that.totalBytes);case DownloadGameProgress_FileSizeVerification():
 return fileSizeVerification(_that.checkedFiles);case DownloadGameProgress_FileAllocationStarted():
 return fileAllocationStarted(_that.totalFiles,_that.totalBytes);case DownloadGameProgress_FileAllocation():
 return fileAllocation(_that.allocatedFiles,_that.allocatedBytes);case DownloadGameProgress_AllocationError():
-return allocationError(_that.field0);case DownloadGameProgress_DownloadProgress():
+return allocationError(_that.path);case DownloadGameProgress_DownloadProgress():
 return downloadProgress(_that.downloadedBytes);case DownloadGameProgress_Finished():
 return finished();case DownloadGameProgress_Cancelled():
 return cancelled();}
@@ -190,14 +190,14 @@ return cancelled();}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( BigInt totalFiles,  BigInt totalBytes)?  started,TResult? Function( BigInt checkedFiles)?  fileSizeVerification,TResult? Function( BigInt totalFiles,  BigInt totalBytes)?  fileAllocationStarted,TResult? Function( BigInt allocatedFiles,  BigInt allocatedBytes)?  fileAllocation,TResult? Function( String field0)?  allocationError,TResult? Function( BigInt downloadedBytes)?  downloadProgress,TResult? Function()?  finished,TResult? Function()?  cancelled,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( BigInt totalFiles,  BigInt totalBytes)?  started,TResult? Function( BigInt checkedFiles)?  fileSizeVerification,TResult? Function( BigInt totalFiles,  BigInt totalBytes)?  fileAllocationStarted,TResult? Function( BigInt allocatedFiles,  BigInt allocatedBytes)?  fileAllocation,TResult? Function( String path)?  allocationError,TResult? Function( BigInt downloadedBytes)?  downloadProgress,TResult? Function()?  finished,TResult? Function()?  cancelled,}) {final _that = this;
 switch (_that) {
 case DownloadGameProgress_Started() when started != null:
 return started(_that.totalFiles,_that.totalBytes);case DownloadGameProgress_FileSizeVerification() when fileSizeVerification != null:
 return fileSizeVerification(_that.checkedFiles);case DownloadGameProgress_FileAllocationStarted() when fileAllocationStarted != null:
 return fileAllocationStarted(_that.totalFiles,_that.totalBytes);case DownloadGameProgress_FileAllocation() when fileAllocation != null:
 return fileAllocation(_that.allocatedFiles,_that.allocatedBytes);case DownloadGameProgress_AllocationError() when allocationError != null:
-return allocationError(_that.field0);case DownloadGameProgress_DownloadProgress() when downloadProgress != null:
+return allocationError(_that.path);case DownloadGameProgress_DownloadProgress() when downloadProgress != null:
 return downloadProgress(_that.downloadedBytes);case DownloadGameProgress_Finished() when finished != null:
 return finished();case DownloadGameProgress_Cancelled() when cancelled != null:
 return cancelled();case _:
@@ -490,10 +490,10 @@ as BigInt,
 
 
 class DownloadGameProgress_AllocationError extends DownloadGameProgress {
-  const DownloadGameProgress_AllocationError(this.field0): super._();
+  const DownloadGameProgress_AllocationError({required this.path}): super._();
   
 
- final  String field0;
+ final  String path;
 
 /// Create a copy of DownloadGameProgress
 /// with the given fields replaced by the non-null parameter values.
@@ -505,18 +505,18 @@ $DownloadGameProgress_AllocationErrorCopyWith<DownloadGameProgress_AllocationErr
 
 @override
 bool operator ==(Object other) {
-    return identical(this, other) || (other.runtimeType == runtimeType&&other is DownloadGameProgress_AllocationError&&(identical(other.field0, field0) || other.field0 == field0));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is DownloadGameProgress_AllocationError&&(identical(other.path, path) || other.path == path));
 }
 
 
 @override
 int get hashCode {
-    return Object.hash(runtimeType,field0);
+    return Object.hash(runtimeType,path);
 }
 
 @override
 String toString() {
-    return 'DownloadGameProgress.allocationError(field0: $field0)';
+    return 'DownloadGameProgress.allocationError(path: $path)';
 }
 
 
@@ -527,7 +527,7 @@ abstract mixin class $DownloadGameProgress_AllocationErrorCopyWith<$Res> impleme
   factory $DownloadGameProgress_AllocationErrorCopyWith(DownloadGameProgress_AllocationError value, $Res Function(DownloadGameProgress_AllocationError) _then) = _$DownloadGameProgress_AllocationErrorCopyWithImpl;
 @useResult
 $Res call({
- String field0
+ String path
 });
 
 
@@ -544,9 +544,9 @@ class _$DownloadGameProgress_AllocationErrorCopyWithImpl<$Res>
 
 /// Create a copy of DownloadGameProgress
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') $Res call({Object? field0 = null,}) {
+@pragma('vm:prefer-inline') $Res call({Object? path = null,}) {
   return _then(DownloadGameProgress_AllocationError(
-null == field0 ? _self.field0 : field0 // ignore: cast_nullable_to_non_nullable
+path: null == path ? _self.path : path // ignore: cast_nullable_to_non_nullable
 as String,
   ));
 }

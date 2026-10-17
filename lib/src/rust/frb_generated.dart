@@ -78,7 +78,7 @@ class RustLib extends BaseEntrypoint<RustLibApi, RustLibApiImpl, RustLibWire> {
   String get codegenVersion => '2.13.0';
 
   @override
-  int get rustContentHash => 1008882147;
+  int get rustContentHash => 2134617427;
 
   static const kDefaultExternalLibraryLoaderConfig =
       ExternalLibraryLoaderConfig(
@@ -127,11 +127,6 @@ abstract class RustLibApi extends BaseApi {
     required CancelToken cancel,
   });
 
-  Future<String> crateApiGogdlGogdlApiGetBackgroundImageLink({
-    required GogdlApi that,
-    required int gameId,
-  });
-
   Future<List<DownloadableProduct>>
   crateApiGogdlGogdlApiGetDownloadableProducts({
     required GogdlApi that,
@@ -142,11 +137,6 @@ abstract class RustLibApi extends BaseApi {
   Future<BigInt> crateApiGogdlGogdlApiGetFreeSpace({
     required GogdlApi that,
     required String path,
-  });
-
-  Future<String> crateApiGogdlGogdlApiGetGameBoxartLink({
-    required GogdlApi that,
-    required int gameId,
   });
 
   Future<List<GameBuild>> crateApiGogdlGogdlApiGetGameBuilds({
@@ -188,11 +178,6 @@ abstract class RustLibApi extends BaseApi {
   });
 
   Future<ProtonReleasePage> crateApiGogdlGogdlApiGetProtonReleasePage({
-    required GogdlApi that,
-    required int page,
-  });
-
-  Future<List<ProtonRelease>> crateApiGogdlGogdlApiGetProtonReleases({
     required GogdlApi that,
     required int page,
   });
@@ -650,45 +635,6 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       );
 
   @override
-  Future<String> crateApiGogdlGogdlApiGetBackgroundImageLink({
-    required GogdlApi that,
-    required int gameId,
-  }) {
-    return handler.executeNormal(
-      NormalTask(
-        callFfi: (port_) {
-          final serializer = SseSerializer(generalizedFrbRustBinding);
-          sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerGogdlApi(
-            that,
-            serializer,
-          );
-          sse_encode_i_32(gameId, serializer);
-          pdeCallFfi(
-            generalizedFrbRustBinding,
-            serializer,
-            funcId: 10,
-            port: port_,
-          );
-        },
-        codec: SseCodec(
-          decodeSuccessData: sse_decode_String,
-          decodeErrorData:
-              sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerGogError,
-        ),
-        constMeta: kCrateApiGogdlGogdlApiGetBackgroundImageLinkConstMeta,
-        argValues: [that, gameId],
-        apiImpl: this,
-      ),
-    );
-  }
-
-  TaskConstMeta get kCrateApiGogdlGogdlApiGetBackgroundImageLinkConstMeta =>
-      const TaskConstMeta(
-        debugName: "GogdlApi_get_background_image_link",
-        argNames: ["that", "gameId"],
-      );
-
-  @override
   Future<List<DownloadableProduct>>
   crateApiGogdlGogdlApiGetDownloadableProducts({
     required GogdlApi that,
@@ -708,7 +654,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 11,
+            funcId: 10,
             port: port_,
           );
         },
@@ -747,7 +693,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 12,
+            funcId: 11,
             port: port_,
           );
         },
@@ -770,45 +716,6 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       );
 
   @override
-  Future<String> crateApiGogdlGogdlApiGetGameBoxartLink({
-    required GogdlApi that,
-    required int gameId,
-  }) {
-    return handler.executeNormal(
-      NormalTask(
-        callFfi: (port_) {
-          final serializer = SseSerializer(generalizedFrbRustBinding);
-          sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerGogdlApi(
-            that,
-            serializer,
-          );
-          sse_encode_i_32(gameId, serializer);
-          pdeCallFfi(
-            generalizedFrbRustBinding,
-            serializer,
-            funcId: 13,
-            port: port_,
-          );
-        },
-        codec: SseCodec(
-          decodeSuccessData: sse_decode_String,
-          decodeErrorData:
-              sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerGogError,
-        ),
-        constMeta: kCrateApiGogdlGogdlApiGetGameBoxartLinkConstMeta,
-        argValues: [that, gameId],
-        apiImpl: this,
-      ),
-    );
-  }
-
-  TaskConstMeta get kCrateApiGogdlGogdlApiGetGameBoxartLinkConstMeta =>
-      const TaskConstMeta(
-        debugName: "GogdlApi_get_game_boxart_link",
-        argNames: ["that", "gameId"],
-      );
-
-  @override
   Future<List<GameBuild>> crateApiGogdlGogdlApiGetGameBuilds({
     required GogdlApi that,
     required int gameId,
@@ -825,7 +732,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 14,
+            funcId: 12,
             port: port_,
           );
         },
@@ -864,7 +771,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 15,
+            funcId: 13,
             port: port_,
           );
         },
@@ -903,7 +810,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 16,
+            funcId: 14,
             port: port_,
           );
         },
@@ -942,7 +849,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 17,
+            funcId: 15,
             port: port_,
           );
         },
@@ -981,7 +888,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 18,
+            funcId: 16,
             port: port_,
           );
         },
@@ -1024,7 +931,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 19,
+            funcId: 17,
             port: port_,
           );
         },
@@ -1056,7 +963,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
             that,
             serializer,
           );
-          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 20)!;
+          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 18)!;
         },
         codec: SseCodec(
           decodeSuccessData: sse_decode_String,
@@ -1090,7 +997,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 21,
+            funcId: 19,
             port: port_,
           );
         },
@@ -1129,7 +1036,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 22,
+            funcId: 20,
             port: port_,
           );
         },
@@ -1152,45 +1059,6 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       );
 
   @override
-  Future<List<ProtonRelease>> crateApiGogdlGogdlApiGetProtonReleases({
-    required GogdlApi that,
-    required int page,
-  }) {
-    return handler.executeNormal(
-      NormalTask(
-        callFfi: (port_) {
-          final serializer = SseSerializer(generalizedFrbRustBinding);
-          sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerGogdlApi(
-            that,
-            serializer,
-          );
-          sse_encode_i_32(page, serializer);
-          pdeCallFfi(
-            generalizedFrbRustBinding,
-            serializer,
-            funcId: 23,
-            port: port_,
-          );
-        },
-        codec: SseCodec(
-          decodeSuccessData: sse_decode_list_proton_release,
-          decodeErrorData:
-              sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerGogError,
-        ),
-        constMeta: kCrateApiGogdlGogdlApiGetProtonReleasesConstMeta,
-        argValues: [that, page],
-        apiImpl: this,
-      ),
-    );
-  }
-
-  TaskConstMeta get kCrateApiGogdlGogdlApiGetProtonReleasesConstMeta =>
-      const TaskConstMeta(
-        debugName: "GogdlApi_get_proton_releases",
-        argNames: ["that", "page"],
-      );
-
-  @override
   Future<String> crateApiGogdlGogdlApiLoginWithCode({
     required GogdlApi that,
     required String code,
@@ -1207,7 +1075,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 24,
+            funcId: 21,
             port: port_,
           );
         },
@@ -1235,7 +1103,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       SyncTask(
         callFfi: () {
           final serializer = SseSerializer(generalizedFrbRustBinding);
-          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 25)!;
+          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 22)!;
         },
         codec: SseCodec(
           decodeSuccessData:
@@ -1277,7 +1145,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 26,
+            funcId: 23,
             port: port_,
           );
         },
@@ -1314,7 +1182,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 27,
+            funcId: 24,
             port: port_,
           );
         },
@@ -1366,7 +1234,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
             pdeCallFfi(
               generalizedFrbRustBinding,
               serializer,
-              funcId: 28,
+              funcId: 25,
               port: port_,
             );
           },
@@ -1423,7 +1291,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 29,
+            funcId: 26,
             port: port_,
           );
         },
@@ -1465,7 +1333,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 30,
+            funcId: 27,
             port: port_,
           );
         },
@@ -1517,7 +1385,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
             pdeCallFfi(
               generalizedFrbRustBinding,
               serializer,
-              funcId: 31,
+              funcId: 28,
               port: port_,
             );
           },
@@ -1591,7 +1459,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
             pdeCallFfi(
               generalizedFrbRustBinding,
               serializer,
-              funcId: 32,
+              funcId: 29,
               port: port_,
             );
           },
@@ -1874,7 +1742,9 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           allocatedBytes: dco_decode_u_64(raw[2]),
         );
       case 4:
-        return DownloadGameProgress_AllocationError(dco_decode_String(raw[1]));
+        return DownloadGameProgress_AllocationError(
+          path: dco_decode_String(raw[1]),
+        );
       case 5:
         return DownloadGameProgress_DownloadProgress(
           downloadedBytes: dco_decode_u_64(raw[1]),
@@ -1930,7 +1800,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     return DownloadableProduct(
       id: dco_decode_i_32(arr[0]),
       name: dco_decode_String(arr[1]),
-      productType: dco_decode_String(arr[2]),
+      productType: dco_decode_product_type(arr[2]),
     );
   }
 
@@ -1938,13 +1808,12 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   GameBuild dco_decode_game_build(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     final arr = raw as List<dynamic>;
-    if (arr.length != 4)
-      throw Exception('unexpected arr length: expect 4 but see ${arr.length}');
+    if (arr.length != 3)
+      throw Exception('unexpected arr length: expect 3 but see ${arr.length}');
     return GameBuild(
       buildId: dco_decode_String(arr[0]),
       versionName: dco_decode_String(arr[1]),
-      releaseDate: dco_decode_String(arr[2]),
-      releaseDateTimestamp: dco_decode_i_64(arr[3]),
+      releaseDateTimestamp: dco_decode_i_64(arr[2]),
     );
   }
 
@@ -2077,17 +1946,29 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  ProductType dco_decode_product_type(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return ProductType.values[raw as int];
+  }
+
+  @protected
   ProtonDownloadProgress dco_decode_proton_download_progress(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     switch (raw[0]) {
       case 0:
-        return ProtonDownloadProgress_Started(dco_decode_u_64(raw[1]));
+        return ProtonDownloadProgress_Started(
+          totalBytes: dco_decode_u_64(raw[1]),
+        );
       case 1:
-        return ProtonDownloadProgress_Progress(dco_decode_u_64(raw[1]));
+        return ProtonDownloadProgress_Progress(
+          downloadedBytes: dco_decode_u_64(raw[1]),
+        );
       case 2:
-        return ProtonDownloadProgress_Extracted(dco_decode_String(raw[1]));
+        return ProtonDownloadProgress_Extracted(
+          path: dco_decode_String(raw[1]),
+        );
       case 3:
-        return ProtonDownloadProgress_Finished(dco_decode_String(raw[1]));
+        return ProtonDownloadProgress_Finished(path: dco_decode_String(raw[1]));
       case 4:
         return ProtonDownloadProgress_Cancelled();
       default:
@@ -2143,25 +2024,27 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           allocatedBytes: dco_decode_u_64(raw[2]),
         );
       case 4:
-        return RepairGameProgress_AllocationError(dco_decode_String(raw[1]));
+        return RepairGameProgress_AllocationError(
+          path: dco_decode_String(raw[1]),
+        );
       case 5:
         return RepairGameProgress_Verification(
           checkedBytes: dco_decode_u_64(raw[1]),
         );
       case 6:
         return RepairGameProgress_CouldNotResolvePath(
-          dco_decode_String(raw[1]),
-          dco_decode_u_64(raw[2]),
+          path: dco_decode_String(raw[1]),
+          chunkSize: dco_decode_u_64(raw[2]),
         );
       case 7:
         return RepairGameProgress_FileNotFound(
-          dco_decode_String(raw[1]),
-          dco_decode_u_64(raw[2]),
+          path: dco_decode_String(raw[1]),
+          chunkSize: dco_decode_u_64(raw[2]),
         );
       case 8:
         return RepairGameProgress_ChecksumMismatch(
-          dco_decode_String(raw[1]),
-          dco_decode_u_64(raw[2]),
+          path: dco_decode_String(raw[1]),
+          chunkSize: dco_decode_u_64(raw[2]),
         );
       case 9:
         return RepairGameProgress_DownloadStarted(
@@ -2251,26 +2134,32 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     switch (raw[0]) {
       case 0:
-        return VerifyDownloadProgress_Started(dco_decode_u_64(raw[1]));
+        return VerifyDownloadProgress_Started(
+          totalBytes: dco_decode_u_64(raw[1]),
+        );
       case 1:
-        return VerifyDownloadProgress_Progress(dco_decode_u_64(raw[1]));
+        return VerifyDownloadProgress_Progress(
+          checkedBytes: dco_decode_u_64(raw[1]),
+        );
       case 2:
         return VerifyDownloadProgress_CouldNotResolvePath(
-          dco_decode_String(raw[1]),
-          dco_decode_u_64(raw[2]),
+          path: dco_decode_String(raw[1]),
+          chunkSize: dco_decode_u_64(raw[2]),
         );
       case 3:
         return VerifyDownloadProgress_FileNotFound(
-          dco_decode_String(raw[1]),
-          dco_decode_u_64(raw[2]),
+          path: dco_decode_String(raw[1]),
+          chunkSize: dco_decode_u_64(raw[2]),
         );
       case 4:
         return VerifyDownloadProgress_ChecksumMismatch(
-          dco_decode_String(raw[1]),
-          dco_decode_u_64(raw[2]),
+          path: dco_decode_String(raw[1]),
+          chunkSize: dco_decode_u_64(raw[2]),
         );
       case 5:
-        return VerifyDownloadProgress_Finished(dco_decode_u_64(raw[1]));
+        return VerifyDownloadProgress_Finished(
+          badChunks: dco_decode_u_64(raw[1]),
+        );
       case 6:
         return VerifyDownloadProgress_Cancelled();
       default:
@@ -2508,8 +2397,8 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           allocatedBytes: var_allocatedBytes,
         );
       case 4:
-        var var_field0 = sse_decode_String(deserializer);
-        return DownloadGameProgress_AllocationError(var_field0);
+        var var_path = sse_decode_String(deserializer);
+        return DownloadGameProgress_AllocationError(path: var_path);
       case 5:
         var var_downloadedBytes = sse_decode_u_64(deserializer);
         return DownloadGameProgress_DownloadProgress(
@@ -2574,7 +2463,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     // Codec=Sse (Serialization based), see doc to use other codecs
     var var_id = sse_decode_i_32(deserializer);
     var var_name = sse_decode_String(deserializer);
-    var var_productType = sse_decode_String(deserializer);
+    var var_productType = sse_decode_product_type(deserializer);
     return DownloadableProduct(
       id: var_id,
       name: var_name,
@@ -2587,12 +2476,10 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     // Codec=Sse (Serialization based), see doc to use other codecs
     var var_buildId = sse_decode_String(deserializer);
     var var_versionName = sse_decode_String(deserializer);
-    var var_releaseDate = sse_decode_String(deserializer);
     var var_releaseDateTimestamp = sse_decode_i_64(deserializer);
     return GameBuild(
       buildId: var_buildId,
       versionName: var_versionName,
-      releaseDate: var_releaseDate,
       releaseDateTimestamp: var_releaseDateTimestamp,
     );
   }
@@ -2766,6 +2653,13 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  ProductType sse_decode_product_type(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    var inner = sse_decode_i_32(deserializer);
+    return ProductType.values[inner];
+  }
+
+  @protected
   ProtonDownloadProgress sse_decode_proton_download_progress(
     SseDeserializer deserializer,
   ) {
@@ -2774,17 +2668,19 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     var tag_ = sse_decode_i_32(deserializer);
     switch (tag_) {
       case 0:
-        var var_field0 = sse_decode_u_64(deserializer);
-        return ProtonDownloadProgress_Started(var_field0);
+        var var_totalBytes = sse_decode_u_64(deserializer);
+        return ProtonDownloadProgress_Started(totalBytes: var_totalBytes);
       case 1:
-        var var_field0 = sse_decode_u_64(deserializer);
-        return ProtonDownloadProgress_Progress(var_field0);
+        var var_downloadedBytes = sse_decode_u_64(deserializer);
+        return ProtonDownloadProgress_Progress(
+          downloadedBytes: var_downloadedBytes,
+        );
       case 2:
-        var var_field0 = sse_decode_String(deserializer);
-        return ProtonDownloadProgress_Extracted(var_field0);
+        var var_path = sse_decode_String(deserializer);
+        return ProtonDownloadProgress_Extracted(path: var_path);
       case 3:
-        var var_field0 = sse_decode_String(deserializer);
-        return ProtonDownloadProgress_Finished(var_field0);
+        var var_path = sse_decode_String(deserializer);
+        return ProtonDownloadProgress_Finished(path: var_path);
       case 4:
         return ProtonDownloadProgress_Cancelled();
       default:
@@ -2845,23 +2741,32 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           allocatedBytes: var_allocatedBytes,
         );
       case 4:
-        var var_field0 = sse_decode_String(deserializer);
-        return RepairGameProgress_AllocationError(var_field0);
+        var var_path = sse_decode_String(deserializer);
+        return RepairGameProgress_AllocationError(path: var_path);
       case 5:
         var var_checkedBytes = sse_decode_u_64(deserializer);
         return RepairGameProgress_Verification(checkedBytes: var_checkedBytes);
       case 6:
-        var var_field0 = sse_decode_String(deserializer);
-        var var_field1 = sse_decode_u_64(deserializer);
-        return RepairGameProgress_CouldNotResolvePath(var_field0, var_field1);
+        var var_path = sse_decode_String(deserializer);
+        var var_chunkSize = sse_decode_u_64(deserializer);
+        return RepairGameProgress_CouldNotResolvePath(
+          path: var_path,
+          chunkSize: var_chunkSize,
+        );
       case 7:
-        var var_field0 = sse_decode_String(deserializer);
-        var var_field1 = sse_decode_u_64(deserializer);
-        return RepairGameProgress_FileNotFound(var_field0, var_field1);
+        var var_path = sse_decode_String(deserializer);
+        var var_chunkSize = sse_decode_u_64(deserializer);
+        return RepairGameProgress_FileNotFound(
+          path: var_path,
+          chunkSize: var_chunkSize,
+        );
       case 8:
-        var var_field0 = sse_decode_String(deserializer);
-        var var_field1 = sse_decode_u_64(deserializer);
-        return RepairGameProgress_ChecksumMismatch(var_field0, var_field1);
+        var var_path = sse_decode_String(deserializer);
+        var var_chunkSize = sse_decode_u_64(deserializer);
+        return RepairGameProgress_ChecksumMismatch(
+          path: var_path,
+          chunkSize: var_chunkSize,
+        );
       case 9:
         var var_totalBytes = sse_decode_u_64(deserializer);
         return RepairGameProgress_DownloadStarted(totalBytes: var_totalBytes);
@@ -2961,29 +2866,35 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     var tag_ = sse_decode_i_32(deserializer);
     switch (tag_) {
       case 0:
-        var var_field0 = sse_decode_u_64(deserializer);
-        return VerifyDownloadProgress_Started(var_field0);
+        var var_totalBytes = sse_decode_u_64(deserializer);
+        return VerifyDownloadProgress_Started(totalBytes: var_totalBytes);
       case 1:
-        var var_field0 = sse_decode_u_64(deserializer);
-        return VerifyDownloadProgress_Progress(var_field0);
+        var var_checkedBytes = sse_decode_u_64(deserializer);
+        return VerifyDownloadProgress_Progress(checkedBytes: var_checkedBytes);
       case 2:
-        var var_field0 = sse_decode_String(deserializer);
-        var var_field1 = sse_decode_u_64(deserializer);
+        var var_path = sse_decode_String(deserializer);
+        var var_chunkSize = sse_decode_u_64(deserializer);
         return VerifyDownloadProgress_CouldNotResolvePath(
-          var_field0,
-          var_field1,
+          path: var_path,
+          chunkSize: var_chunkSize,
         );
       case 3:
-        var var_field0 = sse_decode_String(deserializer);
-        var var_field1 = sse_decode_u_64(deserializer);
-        return VerifyDownloadProgress_FileNotFound(var_field0, var_field1);
+        var var_path = sse_decode_String(deserializer);
+        var var_chunkSize = sse_decode_u_64(deserializer);
+        return VerifyDownloadProgress_FileNotFound(
+          path: var_path,
+          chunkSize: var_chunkSize,
+        );
       case 4:
-        var var_field0 = sse_decode_String(deserializer);
-        var var_field1 = sse_decode_u_64(deserializer);
-        return VerifyDownloadProgress_ChecksumMismatch(var_field0, var_field1);
+        var var_path = sse_decode_String(deserializer);
+        var var_chunkSize = sse_decode_u_64(deserializer);
+        return VerifyDownloadProgress_ChecksumMismatch(
+          path: var_path,
+          chunkSize: var_chunkSize,
+        );
       case 5:
-        var var_field0 = sse_decode_u_64(deserializer);
-        return VerifyDownloadProgress_Finished(var_field0);
+        var var_badChunks = sse_decode_u_64(deserializer);
+        return VerifyDownloadProgress_Finished(badChunks: var_badChunks);
       case 6:
         return VerifyDownloadProgress_Cancelled();
       default:
@@ -3300,9 +3211,9 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         sse_encode_i_32(3, serializer);
         sse_encode_u_64(allocatedFiles, serializer);
         sse_encode_u_64(allocatedBytes, serializer);
-      case DownloadGameProgress_AllocationError(field0: final field0):
+      case DownloadGameProgress_AllocationError(path: final path):
         sse_encode_i_32(4, serializer);
-        sse_encode_String(field0, serializer);
+        sse_encode_String(path, serializer);
       case DownloadGameProgress_DownloadProgress(
         downloadedBytes: final downloadedBytes,
       ):
@@ -3363,7 +3274,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     // Codec=Sse (Serialization based), see doc to use other codecs
     sse_encode_i_32(self.id, serializer);
     sse_encode_String(self.name, serializer);
-    sse_encode_String(self.productType, serializer);
+    sse_encode_product_type(self.productType, serializer);
   }
 
   @protected
@@ -3371,7 +3282,6 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     // Codec=Sse (Serialization based), see doc to use other codecs
     sse_encode_String(self.buildId, serializer);
     sse_encode_String(self.versionName, serializer);
-    sse_encode_String(self.releaseDate, serializer);
     sse_encode_i_64(self.releaseDateTimestamp, serializer);
   }
 
@@ -3535,24 +3445,32 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  void sse_encode_product_type(ProductType self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_i_32(self.index, serializer);
+  }
+
+  @protected
   void sse_encode_proton_download_progress(
     ProtonDownloadProgress self,
     SseSerializer serializer,
   ) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     switch (self) {
-      case ProtonDownloadProgress_Started(field0: final field0):
+      case ProtonDownloadProgress_Started(totalBytes: final totalBytes):
         sse_encode_i_32(0, serializer);
-        sse_encode_u_64(field0, serializer);
-      case ProtonDownloadProgress_Progress(field0: final field0):
+        sse_encode_u_64(totalBytes, serializer);
+      case ProtonDownloadProgress_Progress(
+        downloadedBytes: final downloadedBytes,
+      ):
         sse_encode_i_32(1, serializer);
-        sse_encode_u_64(field0, serializer);
-      case ProtonDownloadProgress_Extracted(field0: final field0):
+        sse_encode_u_64(downloadedBytes, serializer);
+      case ProtonDownloadProgress_Extracted(path: final path):
         sse_encode_i_32(2, serializer);
-        sse_encode_String(field0, serializer);
-      case ProtonDownloadProgress_Finished(field0: final field0):
+        sse_encode_String(path, serializer);
+      case ProtonDownloadProgress_Finished(path: final path):
         sse_encode_i_32(3, serializer);
-        sse_encode_String(field0, serializer);
+        sse_encode_String(path, serializer);
       case ProtonDownloadProgress_Cancelled():
         sse_encode_i_32(4, serializer);
     }
@@ -3608,33 +3526,33 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         sse_encode_i_32(3, serializer);
         sse_encode_u_64(allocatedFiles, serializer);
         sse_encode_u_64(allocatedBytes, serializer);
-      case RepairGameProgress_AllocationError(field0: final field0):
+      case RepairGameProgress_AllocationError(path: final path):
         sse_encode_i_32(4, serializer);
-        sse_encode_String(field0, serializer);
+        sse_encode_String(path, serializer);
       case RepairGameProgress_Verification(checkedBytes: final checkedBytes):
         sse_encode_i_32(5, serializer);
         sse_encode_u_64(checkedBytes, serializer);
       case RepairGameProgress_CouldNotResolvePath(
-        field0: final field0,
-        field1: final field1,
+        path: final path,
+        chunkSize: final chunkSize,
       ):
         sse_encode_i_32(6, serializer);
-        sse_encode_String(field0, serializer);
-        sse_encode_u_64(field1, serializer);
+        sse_encode_String(path, serializer);
+        sse_encode_u_64(chunkSize, serializer);
       case RepairGameProgress_FileNotFound(
-        field0: final field0,
-        field1: final field1,
+        path: final path,
+        chunkSize: final chunkSize,
       ):
         sse_encode_i_32(7, serializer);
-        sse_encode_String(field0, serializer);
-        sse_encode_u_64(field1, serializer);
+        sse_encode_String(path, serializer);
+        sse_encode_u_64(chunkSize, serializer);
       case RepairGameProgress_ChecksumMismatch(
-        field0: final field0,
-        field1: final field1,
+        path: final path,
+        chunkSize: final chunkSize,
       ):
         sse_encode_i_32(8, serializer);
-        sse_encode_String(field0, serializer);
-        sse_encode_u_64(field1, serializer);
+        sse_encode_String(path, serializer);
+        sse_encode_u_64(chunkSize, serializer);
       case RepairGameProgress_DownloadStarted(totalBytes: final totalBytes):
         sse_encode_i_32(9, serializer);
         sse_encode_u_64(totalBytes, serializer);
@@ -3726,36 +3644,36 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   ) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     switch (self) {
-      case VerifyDownloadProgress_Started(field0: final field0):
+      case VerifyDownloadProgress_Started(totalBytes: final totalBytes):
         sse_encode_i_32(0, serializer);
-        sse_encode_u_64(field0, serializer);
-      case VerifyDownloadProgress_Progress(field0: final field0):
+        sse_encode_u_64(totalBytes, serializer);
+      case VerifyDownloadProgress_Progress(checkedBytes: final checkedBytes):
         sse_encode_i_32(1, serializer);
-        sse_encode_u_64(field0, serializer);
+        sse_encode_u_64(checkedBytes, serializer);
       case VerifyDownloadProgress_CouldNotResolvePath(
-        field0: final field0,
-        field1: final field1,
+        path: final path,
+        chunkSize: final chunkSize,
       ):
         sse_encode_i_32(2, serializer);
-        sse_encode_String(field0, serializer);
-        sse_encode_u_64(field1, serializer);
+        sse_encode_String(path, serializer);
+        sse_encode_u_64(chunkSize, serializer);
       case VerifyDownloadProgress_FileNotFound(
-        field0: final field0,
-        field1: final field1,
+        path: final path,
+        chunkSize: final chunkSize,
       ):
         sse_encode_i_32(3, serializer);
-        sse_encode_String(field0, serializer);
-        sse_encode_u_64(field1, serializer);
+        sse_encode_String(path, serializer);
+        sse_encode_u_64(chunkSize, serializer);
       case VerifyDownloadProgress_ChecksumMismatch(
-        field0: final field0,
-        field1: final field1,
+        path: final path,
+        chunkSize: final chunkSize,
       ):
         sse_encode_i_32(4, serializer);
-        sse_encode_String(field0, serializer);
-        sse_encode_u_64(field1, serializer);
-      case VerifyDownloadProgress_Finished(field0: final field0):
+        sse_encode_String(path, serializer);
+        sse_encode_u_64(chunkSize, serializer);
+      case VerifyDownloadProgress_Finished(badChunks: final badChunks):
         sse_encode_i_32(5, serializer);
-        sse_encode_u_64(field0, serializer);
+        sse_encode_u_64(badChunks, serializer);
       case VerifyDownloadProgress_Cancelled():
         sse_encode_i_32(6, serializer);
     }
@@ -3804,9 +3722,9 @@ class GogErrorImpl extends RustOpaque implements GogError {
         RustLib.instance.api.rust_arc_decrement_strong_count_GogErrorPtr,
   );
 
-  /// The error's kind. A rejected argument (`InvalidArgument`) is `unknown`. A revoked session (a refresh token GOG no longer accepts) is `unknown`,
-  /// not `sessionExpired`, since `gogdl-lib` doesn't tell it apart from other refresh failures
-  /// yet (upstream `v1.5.0`).
+  /// The error's kind. A rejected argument (`InvalidArgument`) is `unknown`. A revoked session (a
+  /// refresh token GOG no longer accepts) is `sessionExpired`, and a rejected login code is
+  /// `invalidLoginCode`.
   GogErrorKind kind() =>
       RustLib.instance.api.crateApiErrorGogErrorKind(that: this);
 
@@ -3906,12 +3824,6 @@ class GogdlApiImpl extends RustOpaque implements GogdlApi {
     cancel: cancel,
   );
 
-  /// Deprecated: use `getGameLinks`, which fetches both links in one call. Removed in `v1.5.0`.
-  Future<String> getBackgroundImageLink({required int gameId}) => RustLib
-      .instance
-      .api
-      .crateApiGogdlGogdlApiGetBackgroundImageLink(that: this, gameId: gameId);
-
   /// The products of `buildName` that the account owns (the base game and its DLCs), in
   /// upstream's order, with their names and types. Their details are fetched 8 at a time.
   ///
@@ -3934,12 +3846,6 @@ class GogdlApiImpl extends RustOpaque implements GogdlApi {
   /// Fails with `fileSystem` when no ancestor of `path` can be resolved or no disk matches it.
   Future<BigInt> getFreeSpace({required String path}) => RustLib.instance.api
       .crateApiGogdlGogdlApiGetFreeSpace(that: this, path: path);
-
-  /// Deprecated: use `getGameLinks`, which fetches both links in one call. Removed in `v1.5.0`.
-  Future<String> getGameBoxartLink({required int gameId}) => RustLib
-      .instance
-      .api
-      .crateApiGogdlGogdlApiGetGameBoxartLink(that: this, gameId: gameId);
 
   Future<List<GameBuild>> getGameBuilds({required int gameId}) => RustLib
       .instance
@@ -3997,16 +3903,11 @@ class GogdlApiImpl extends RustOpaque implements GogdlApi {
       .api
       .crateApiGogdlGogdlApiGetProtonReleasePage(that: this, page: page);
 
-  /// Deprecated: use `getProtonReleasePage`, which says whether more pages exist. This can't
-  /// tell a page whose releases were all left out from the end of the list. Removed in
-  /// `v1.5.0`. (flutter_rust_bridge doesn't emit `@Deprecated`, so the analyzer won't warn.)
+  /// Exchanges the code from the login redirect for a session, and returns the string to persist
+  /// and give back to `restoreAuth`.
   ///
-  /// A negative `page` fails with `unknown` instead of wrapping around.
-  Future<List<ProtonRelease>> getProtonReleases({required int page}) => RustLib
-      .instance
-      .api
-      .crateApiGogdlGogdlApiGetProtonReleases(that: this, page: page);
-
+  /// Fails with `invalidLoginCode` when GOG rejects the code, and `network` when it can't be
+  /// reached.
   Future<String> loginWithCode({required String code}) => RustLib.instance.api
       .crateApiGogdlGogdlApiLoginWithCode(that: this, code: code);
 

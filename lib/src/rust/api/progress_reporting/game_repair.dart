@@ -46,7 +46,7 @@ sealed class RepairGameProgress with _$RepairGameProgress {
 
   /// A file's path could not be resolved on disk; the repair is aborting
   /// with a file-allocation error. Sent once per path, immediately.
-  const factory RepairGameProgress.allocationError(String field0) =
+  const factory RepairGameProgress.allocationError({required String path}) =
       RepairGameProgress_AllocationError;
 
   /// Bytes checksummed so far, verified and failed alike, out of
@@ -56,22 +56,26 @@ sealed class RepairGameProgress with _$RepairGameProgress {
   }) = RepairGameProgress_Verification;
 
   /// The file's relative path could not be resolved on disk. Sent once
-  /// per path; the `u64` is the first failing chunk's size, not the
-  /// file's.
-  const factory RepairGameProgress.couldNotResolvePath(
-    String field0,
-    BigInt field1,
-  ) = RepairGameProgress_CouldNotResolvePath;
+  /// per path; `chunk_size` is the first failing chunk's uncompressed
+  /// size, not the file's.
+  const factory RepairGameProgress.couldNotResolvePath({
+    required String path,
+    required BigInt chunkSize,
+  }) = RepairGameProgress_CouldNotResolvePath;
 
-  /// No file exists yet at the resolved path. Sent once per path.
-  const factory RepairGameProgress.fileNotFound(String field0, BigInt field1) =
-      RepairGameProgress_FileNotFound;
+  /// No file exists yet at the resolved path. Sent once per path;
+  /// `chunk_size` is as in `CouldNotResolvePath`.
+  const factory RepairGameProgress.fileNotFound({
+    required String path,
+    required BigInt chunkSize,
+  }) = RepairGameProgress_FileNotFound;
 
-  /// A chunk's on-disk MD5 didn't match the manifest. Sent once per path.
-  const factory RepairGameProgress.checksumMismatch(
-    String field0,
-    BigInt field1,
-  ) = RepairGameProgress_ChecksumMismatch;
+  /// A chunk's on-disk MD5 didn't match the manifest. Sent once per path;
+  /// `chunk_size` is as in `CouldNotResolvePath`.
+  const factory RepairGameProgress.checksumMismatch({
+    required String path,
+    required BigInt chunkSize,
+  }) = RepairGameProgress_ChecksumMismatch;
 
   /// The re-download stage is starting; `total_bytes` is the *compressed*
   /// size of the chunks that failed verification. Sent once, and skipped

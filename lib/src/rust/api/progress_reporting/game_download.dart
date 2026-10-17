@@ -46,7 +46,7 @@ sealed class DownloadGameProgress with _$DownloadGameProgress {
 
   /// A file's path could not be resolved on disk; the download is aborting
   /// with a file-allocation error. Sent once per path, immediately.
-  const factory DownloadGameProgress.allocationError(String field0) =
+  const factory DownloadGameProgress.allocationError({required String path}) =
       DownloadGameProgress_AllocationError;
 
   /// Compressed bytes received so far, out of `Started.total_bytes`. Failed

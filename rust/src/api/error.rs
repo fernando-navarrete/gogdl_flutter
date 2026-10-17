@@ -16,8 +16,12 @@ pub enum GogError {
 /// `message()`.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum GogErrorKind {
-    /// Not logged in, or the session expired and couldn't be refreshed.
+    /// Not logged in, or the session expired and couldn't be refreshed, including a session GOG
+    /// revoked (a refresh token it no longer accepts). The user has to log in again.
     SessionExpired,
+    /// GOG rejected the login code: mistyped, truncated, already used or expired. GOG doesn't tell
+    /// them apart; `message()` has its description.
+    InvalidLoginCode,
     /// A request failed or timed out, including after retrying.
     Network,
     /// The build, or the resource a request asked for, doesn't exist (HTTP 404).
@@ -47,9 +51,9 @@ impl GogError {
         self.to_string()
     }
 
-    /// The error's kind. A rejected argument (`InvalidArgument`) is `unknown`. A revoked session (a refresh token GOG no longer accepts) is `unknown`,
-    /// not `sessionExpired`, since `gogdl-lib` doesn't tell it apart from other refresh failures
-    /// yet (upstream `v1.5.0`).
+    /// The error's kind. A rejected argument (`InvalidArgument`) is `unknown`. A revoked session (a
+    /// refresh token GOG no longer accepts) is `sessionExpired`, and a rejected login code is
+    /// `invalidLoginCode`.
     #[frb(sync)]
     pub fn kind(&self) -> GogErrorKind {
         match self {

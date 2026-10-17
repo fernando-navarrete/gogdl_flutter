@@ -23,7 +23,9 @@ impl VerifyTranslator {
         if !std::mem::take(&mut self.dirty) {
             return Vec::new();
         }
-        vec![VerifyDownloadProgress::Progress(self.checked)]
+        vec![VerifyDownloadProgress::Progress {
+            checked_bytes: self.checked,
+        }]
     }
 
     fn failure(
@@ -55,13 +57,19 @@ impl Translator for VerifyTranslator {
                 Vec::new()
             }
             VerificationEvent::CouldNotResolvePath(path, size) => {
-                self.failure(path, size, VerifyDownloadProgress::CouldNotResolvePath)
+                self.failure(path, size, |path, chunk_size| {
+                    VerifyDownloadProgress::CouldNotResolvePath { path, chunk_size }
+                })
             }
             VerificationEvent::FileNotFound(path, size) => {
-                self.failure(path, size, VerifyDownloadProgress::FileNotFound)
+                self.failure(path, size, |path, chunk_size| {
+                    VerifyDownloadProgress::FileNotFound { path, chunk_size }
+                })
             }
             VerificationEvent::ChecksumMismatch(path, size) => {
-                self.failure(path, size, VerifyDownloadProgress::ChecksumMismatch)
+                self.failure(path, size, |path, chunk_size| {
+                    VerifyDownloadProgress::ChecksumMismatch { path, chunk_size }
+                })
             }
             // a variant added upstream later has nothing to report yet
             _ => Vec::new(),
@@ -90,7 +98,10 @@ mod tests {
         let mut t = VerifyTranslator::new();
         assert!(t.on_event(verified(10)).is_empty());
         assert!(t.on_event(verified(5)).is_empty());
-        assert_eq!(t.on_tick(), vec![VerifyDownloadProgress::Progress(15)]);
+        assert_eq!(
+            t.on_tick(),
+            vec![VerifyDownloadProgress::Progress { checked_bytes: 15 }]
+        );
         assert!(t.on_tick().is_empty());
     }
 
@@ -99,7 +110,10 @@ mod tests {
         let mut t = VerifyTranslator::new();
         assert_eq!(
             t.on_event(VerificationEvent::ChecksumMismatch("f".into(), 4)),
-            vec![VerifyDownloadProgress::ChecksumMismatch("f".into(), 4)]
+            vec![VerifyDownloadProgress::ChecksumMismatch {
+                path: "f".into(),
+                chunk_size: 4
+            }]
         );
         // every chunk of a broken file reports; only the first is forwarded
         assert!(
@@ -108,13 +122,22 @@ mod tests {
         );
         assert_eq!(
             t.on_event(VerificationEvent::FileNotFound("g".into(), 1)),
-            vec![VerifyDownloadProgress::FileNotFound("g".into(), 1)]
+            vec![VerifyDownloadProgress::FileNotFound {
+                path: "g".into(),
+                chunk_size: 1
+            }]
         );
         assert_eq!(
             t.on_event(VerificationEvent::CouldNotResolvePath("h".into(), 2)),
-            vec![VerifyDownloadProgress::CouldNotResolvePath("h".into(), 2)]
+            vec![VerifyDownloadProgress::CouldNotResolvePath {
+                path: "h".into(),
+                chunk_size: 2
+            }]
         );
-        assert_eq!(t.on_tick(), vec![VerifyDownloadProgress::Progress(13)]);
+        assert_eq!(
+            t.on_tick(),
+            vec![VerifyDownloadProgress::Progress { checked_bytes: 13 }]
+        );
     }
 
     #[test]
@@ -122,7 +145,10 @@ mod tests {
         let mut t = VerifyTranslator::new();
         assert!(t.finish().is_empty());
         t.on_event(verified(3));
-        assert_eq!(t.finish(), vec![VerifyDownloadProgress::Progress(3)]);
+        assert_eq!(
+            t.finish(),
+            vec![VerifyDownloadProgress::Progress { checked_bytes: 3 }]
+        );
         assert!(t.finish().is_empty());
     }
 }

@@ -11,22 +11,19 @@ import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 class GameBuild {
   final String buildId;
   final String versionName;
-  final String releaseDate;
+
+  /// When GOG published the build, in Unix seconds (UTC).
   final PlatformInt64 releaseDateTimestamp;
 
   const GameBuild({
     required this.buildId,
     required this.versionName,
-    required this.releaseDate,
     required this.releaseDateTimestamp,
   });
 
   @override
   int get hashCode =>
-      buildId.hashCode ^
-      versionName.hashCode ^
-      releaseDate.hashCode ^
-      releaseDateTimestamp.hashCode;
+      buildId.hashCode ^ versionName.hashCode ^ releaseDateTimestamp.hashCode;
 
   @override
   bool operator ==(Object other) =>
@@ -35,6 +32,5 @@ class GameBuild {
           runtimeType == other.runtimeType &&
           buildId == other.buildId &&
           versionName == other.versionName &&
-          releaseDate == other.releaseDate &&
           releaseDateTimestamp == other.releaseDateTimestamp;
 }

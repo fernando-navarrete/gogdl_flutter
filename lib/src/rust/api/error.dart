@@ -10,9 +10,9 @@ import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 
 // Rust type: RustOpaqueMoi<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<GogError>>
 abstract class GogError implements RustOpaqueInterface {
-  /// The error's kind. A rejected argument (`InvalidArgument`) is `unknown`. A revoked session (a refresh token GOG no longer accepts) is `unknown`,
-  /// not `sessionExpired`, since `gogdl-lib` doesn't tell it apart from other refresh failures
-  /// yet (upstream `v1.5.0`).
+  /// The error's kind. A rejected argument (`InvalidArgument`) is `unknown`. A revoked session (a
+  /// refresh token GOG no longer accepts) is `sessionExpired`, and a rejected login code is
+  /// `invalidLoginCode`.
   GogErrorKind kind();
 
   String message();
@@ -24,8 +24,13 @@ abstract class GogError implements RustOpaqueInterface {
 /// What kind of failure a `GogError` is, for code that needs to react to it rather than show
 /// `message()`.
 enum GogErrorKind {
-  /// Not logged in, or the session expired and couldn't be refreshed.
+  /// Not logged in, or the session expired and couldn't be refreshed, including a session GOG
+  /// revoked (a refresh token it no longer accepts). The user has to log in again.
   sessionExpired,
+
+  /// GOG rejected the login code: mistyped, truncated, already used or expired. GOG doesn't tell
+  /// them apart; `message()` has its description.
+  invalidLoginCode,
 
   /// A request failed or timed out, including after retrying.
   network,

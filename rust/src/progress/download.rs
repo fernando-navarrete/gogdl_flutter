@@ -179,13 +179,13 @@ mod tests {
                     total_files: 1,
                     total_bytes: 1,
                 },
-                P::AllocationError("a".into()),
+                P::AllocationError { path: "a".into() },
             ]
         );
         assert!(t.on_event(unresolved("a")).is_empty());
         assert_eq!(
             t.on_event(unresolved("b")),
-            vec![P::AllocationError("b".into())]
+            vec![P::AllocationError { path: "b".into() }]
         );
     }
 

@@ -42,7 +42,7 @@ flutter_rust_bridge::frb_generated_boilerplate!(
     default_rust_auto_opaque = RustAutoOpaqueMoi,
 );
 pub(crate) const FLUTTER_RUST_BRIDGE_CODEGEN_VERSION: &str = "2.13.0";
-pub(crate) const FLUTTER_RUST_BRIDGE_CODEGEN_CONTENT_HASH: i32 = 1008882147;
+pub(crate) const FLUTTER_RUST_BRIDGE_CODEGEN_CONTENT_HASH: i32 = 2134617427;
 
 // Section: executor
 
@@ -585,66 +585,6 @@ fn wire__crate__api__gogdl__GogdlApi_download_save_files_impl(
         },
     )
 }
-fn wire__crate__api__gogdl__GogdlApi_get_background_image_link_impl(
-    port_: flutter_rust_bridge::for_generated::MessagePort,
-    ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
-    rust_vec_len_: i32,
-    data_len_: i32,
-) {
-    FLUTTER_RUST_BRIDGE_HANDLER.wrap_async::<flutter_rust_bridge::for_generated::SseCodec, _, _, _>(
-        flutter_rust_bridge::for_generated::TaskInfo {
-            debug_name: "GogdlApi_get_background_image_link",
-            port: Some(port_),
-            mode: flutter_rust_bridge::for_generated::FfiCallMode::Normal,
-        },
-        move || {
-            let message = unsafe {
-                flutter_rust_bridge::for_generated::Dart2RustMessageSse::from_wire(
-                    ptr_,
-                    rust_vec_len_,
-                    data_len_,
-                )
-            };
-            let mut deserializer =
-                flutter_rust_bridge::for_generated::SseDeserializer::new(message);
-            let api_that = <RustOpaqueMoi<
-                flutter_rust_bridge::for_generated::RustAutoOpaqueInner<GogdlApi>,
-            >>::sse_decode(&mut deserializer);
-            let api_game_id = <i32>::sse_decode(&mut deserializer);
-            deserializer.end();
-            move |context| async move {
-                transform_result_sse::<_, GogError>(
-                    (move || async move {
-                        let mut api_that_guard = None;
-                        let decode_indices_ =
-                            flutter_rust_bridge::for_generated::lockable_compute_decode_order(
-                                vec![flutter_rust_bridge::for_generated::LockableOrderInfo::new(
-                                    &api_that, 0, false,
-                                )],
-                            );
-                        for i in decode_indices_ {
-                            match i {
-                                0 => {
-                                    api_that_guard =
-                                        Some(api_that.lockable_decode_async_ref().await)
-                                }
-                                _ => unreachable!(),
-                            }
-                        }
-                        let api_that_guard = api_that_guard.unwrap();
-                        let output_ok = crate::api::gogdl::GogdlApi::get_background_image_link(
-                            &*api_that_guard,
-                            api_game_id,
-                        )
-                        .await?;
-                        std::result::Result::Ok(output_ok)
-                    })()
-                    .await,
-                )
-            }
-        },
-    )
-}
 fn wire__crate__api__gogdl__GogdlApi_get_downloadable_products_impl(
     port_: flutter_rust_bridge::for_generated::MessagePort,
     ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
@@ -757,66 +697,6 @@ fn wire__crate__api__gogdl__GogdlApi_get_free_space_impl(
                         let output_ok = crate::api::gogdl::GogdlApi::get_free_space(
                             &*api_that_guard,
                             &api_path,
-                        )
-                        .await?;
-                        std::result::Result::Ok(output_ok)
-                    })()
-                    .await,
-                )
-            }
-        },
-    )
-}
-fn wire__crate__api__gogdl__GogdlApi_get_game_boxart_link_impl(
-    port_: flutter_rust_bridge::for_generated::MessagePort,
-    ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
-    rust_vec_len_: i32,
-    data_len_: i32,
-) {
-    FLUTTER_RUST_BRIDGE_HANDLER.wrap_async::<flutter_rust_bridge::for_generated::SseCodec, _, _, _>(
-        flutter_rust_bridge::for_generated::TaskInfo {
-            debug_name: "GogdlApi_get_game_boxart_link",
-            port: Some(port_),
-            mode: flutter_rust_bridge::for_generated::FfiCallMode::Normal,
-        },
-        move || {
-            let message = unsafe {
-                flutter_rust_bridge::for_generated::Dart2RustMessageSse::from_wire(
-                    ptr_,
-                    rust_vec_len_,
-                    data_len_,
-                )
-            };
-            let mut deserializer =
-                flutter_rust_bridge::for_generated::SseDeserializer::new(message);
-            let api_that = <RustOpaqueMoi<
-                flutter_rust_bridge::for_generated::RustAutoOpaqueInner<GogdlApi>,
-            >>::sse_decode(&mut deserializer);
-            let api_game_id = <i32>::sse_decode(&mut deserializer);
-            deserializer.end();
-            move |context| async move {
-                transform_result_sse::<_, GogError>(
-                    (move || async move {
-                        let mut api_that_guard = None;
-                        let decode_indices_ =
-                            flutter_rust_bridge::for_generated::lockable_compute_decode_order(
-                                vec![flutter_rust_bridge::for_generated::LockableOrderInfo::new(
-                                    &api_that, 0, false,
-                                )],
-                            );
-                        for i in decode_indices_ {
-                            match i {
-                                0 => {
-                                    api_that_guard =
-                                        Some(api_that.lockable_decode_async_ref().await)
-                                }
-                                _ => unreachable!(),
-                            }
-                        }
-                        let api_that_guard = api_that_guard.unwrap();
-                        let output_ok = crate::api::gogdl::GogdlApi::get_game_boxart_link(
-                            &*api_that_guard,
-                            api_game_id,
                         )
                         .await?;
                         std::result::Result::Ok(output_ok)
@@ -1343,66 +1223,6 @@ fn wire__crate__api__gogdl__GogdlApi_get_proton_release_page_impl(
                         }
                         let api_that_guard = api_that_guard.unwrap();
                         let output_ok = crate::api::gogdl::GogdlApi::get_proton_release_page(
-                            &*api_that_guard,
-                            api_page,
-                        )
-                        .await?;
-                        std::result::Result::Ok(output_ok)
-                    })()
-                    .await,
-                )
-            }
-        },
-    )
-}
-fn wire__crate__api__gogdl__GogdlApi_get_proton_releases_impl(
-    port_: flutter_rust_bridge::for_generated::MessagePort,
-    ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
-    rust_vec_len_: i32,
-    data_len_: i32,
-) {
-    FLUTTER_RUST_BRIDGE_HANDLER.wrap_async::<flutter_rust_bridge::for_generated::SseCodec, _, _, _>(
-        flutter_rust_bridge::for_generated::TaskInfo {
-            debug_name: "GogdlApi_get_proton_releases",
-            port: Some(port_),
-            mode: flutter_rust_bridge::for_generated::FfiCallMode::Normal,
-        },
-        move || {
-            let message = unsafe {
-                flutter_rust_bridge::for_generated::Dart2RustMessageSse::from_wire(
-                    ptr_,
-                    rust_vec_len_,
-                    data_len_,
-                )
-            };
-            let mut deserializer =
-                flutter_rust_bridge::for_generated::SseDeserializer::new(message);
-            let api_that = <RustOpaqueMoi<
-                flutter_rust_bridge::for_generated::RustAutoOpaqueInner<GogdlApi>,
-            >>::sse_decode(&mut deserializer);
-            let api_page = <i32>::sse_decode(&mut deserializer);
-            deserializer.end();
-            move |context| async move {
-                transform_result_sse::<_, GogError>(
-                    (move || async move {
-                        let mut api_that_guard = None;
-                        let decode_indices_ =
-                            flutter_rust_bridge::for_generated::lockable_compute_decode_order(
-                                vec![flutter_rust_bridge::for_generated::LockableOrderInfo::new(
-                                    &api_that, 0, false,
-                                )],
-                            );
-                        for i in decode_indices_ {
-                            match i {
-                                0 => {
-                                    api_that_guard =
-                                        Some(api_that.lockable_decode_async_ref().await)
-                                }
-                                _ => unreachable!(),
-                            }
-                        }
-                        let api_that_guard = api_that_guard.unwrap();
-                        let output_ok = crate::api::gogdl::GogdlApi::get_proton_releases(
                             &*api_that_guard,
                             api_page,
                         )
@@ -2261,8 +2081,8 @@ impl SseDecode for crate::api::progress_reporting::game_download::DownloadGamePr
                 return crate::api::progress_reporting::game_download::DownloadGameProgress::FileAllocation{allocated_files: var_allocatedFiles, allocated_bytes: var_allocatedBytes};
             }
             4 => {
-                let mut var_field0 = <String>::sse_decode(deserializer);
-                return crate::api::progress_reporting::game_download::DownloadGameProgress::AllocationError(var_field0);
+                let mut var_path = <String>::sse_decode(deserializer);
+                return crate::api::progress_reporting::game_download::DownloadGameProgress::AllocationError{path: var_path};
             }
             5 => {
                 let mut var_downloadedBytes = <u64>::sse_decode(deserializer);
@@ -2324,7 +2144,8 @@ impl SseDecode for crate::api::models::downloadable_product::DownloadableProduct
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
         let mut var_id = <i32>::sse_decode(deserializer);
         let mut var_name = <String>::sse_decode(deserializer);
-        let mut var_productType = <String>::sse_decode(deserializer);
+        let mut var_productType =
+            <crate::api::models::downloadable_product::ProductType>::sse_decode(deserializer);
         return crate::api::models::downloadable_product::DownloadableProduct {
             id: var_id,
             name: var_name,
@@ -2338,12 +2159,10 @@ impl SseDecode for crate::api::models::game_build::GameBuild {
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
         let mut var_buildId = <String>::sse_decode(deserializer);
         let mut var_versionName = <String>::sse_decode(deserializer);
-        let mut var_releaseDate = <String>::sse_decode(deserializer);
         let mut var_releaseDateTimestamp = <i64>::sse_decode(deserializer);
         return crate::api::models::game_build::GameBuild {
             build_id: var_buildId,
             version_name: var_versionName,
-            release_date: var_releaseDate,
             release_date_timestamp: var_releaseDateTimestamp,
         };
     }
@@ -2367,13 +2186,14 @@ impl SseDecode for crate::api::error::GogErrorKind {
         let mut inner = <i32>::sse_decode(deserializer);
         return match inner {
             0 => crate::api::error::GogErrorKind::SessionExpired,
-            1 => crate::api::error::GogErrorKind::Network,
-            2 => crate::api::error::GogErrorKind::NotFound,
-            3 => crate::api::error::GogErrorKind::NotEnoughSpace,
-            4 => crate::api::error::GogErrorKind::Integrity,
-            5 => crate::api::error::GogErrorKind::FileSystem,
-            6 => crate::api::error::GogErrorKind::CloudSavesUnsupported,
-            7 => crate::api::error::GogErrorKind::Unknown,
+            1 => crate::api::error::GogErrorKind::InvalidLoginCode,
+            2 => crate::api::error::GogErrorKind::Network,
+            3 => crate::api::error::GogErrorKind::NotFound,
+            4 => crate::api::error::GogErrorKind::NotEnoughSpace,
+            5 => crate::api::error::GogErrorKind::Integrity,
+            6 => crate::api::error::GogErrorKind::FileSystem,
+            7 => crate::api::error::GogErrorKind::CloudSavesUnsupported,
+            8 => crate::api::error::GogErrorKind::Unknown,
             _ => unreachable!("Invalid variant for GogErrorKind: {}", inner),
         };
     }
@@ -2548,26 +2368,39 @@ impl SseDecode for crate::api::models::install_size::ProductSize {
     }
 }
 
+impl SseDecode for crate::api::models::downloadable_product::ProductType {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut inner = <i32>::sse_decode(deserializer);
+        return match inner {
+            0 => crate::api::models::downloadable_product::ProductType::Game,
+            1 => crate::api::models::downloadable_product::ProductType::Dlc,
+            2 => crate::api::models::downloadable_product::ProductType::Other,
+            _ => unreachable!("Invalid variant for ProductType: {}", inner),
+        };
+    }
+}
+
 impl SseDecode for crate::api::progress_reporting::proton_download::ProtonDownloadProgress {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
         let mut tag_ = <i32>::sse_decode(deserializer);
         match tag_ {
             0 => {
-                let mut var_field0 = <u64>::sse_decode(deserializer);
-                return crate::api::progress_reporting::proton_download::ProtonDownloadProgress::Started(var_field0);
+                let mut var_totalBytes = <u64>::sse_decode(deserializer);
+                return crate::api::progress_reporting::proton_download::ProtonDownloadProgress::Started{total_bytes: var_totalBytes};
             }
             1 => {
-                let mut var_field0 = <u64>::sse_decode(deserializer);
-                return crate::api::progress_reporting::proton_download::ProtonDownloadProgress::Progress(var_field0);
+                let mut var_downloadedBytes = <u64>::sse_decode(deserializer);
+                return crate::api::progress_reporting::proton_download::ProtonDownloadProgress::Progress{downloaded_bytes: var_downloadedBytes};
             }
             2 => {
-                let mut var_field0 = <String>::sse_decode(deserializer);
-                return crate::api::progress_reporting::proton_download::ProtonDownloadProgress::Extracted(var_field0);
+                let mut var_path = <String>::sse_decode(deserializer);
+                return crate::api::progress_reporting::proton_download::ProtonDownloadProgress::Extracted{path: var_path};
             }
             3 => {
-                let mut var_field0 = <String>::sse_decode(deserializer);
-                return crate::api::progress_reporting::proton_download::ProtonDownloadProgress::Finished(var_field0);
+                let mut var_path = <String>::sse_decode(deserializer);
+                return crate::api::progress_reporting::proton_download::ProtonDownloadProgress::Finished{path: var_path};
             }
             4 => {
                 return crate::api::progress_reporting::proton_download::ProtonDownloadProgress::Cancelled;
@@ -2632,27 +2465,27 @@ impl SseDecode for crate::api::progress_reporting::game_repair::RepairGameProgre
                 return crate::api::progress_reporting::game_repair::RepairGameProgress::FileAllocation{allocated_files: var_allocatedFiles, allocated_bytes: var_allocatedBytes};
             }
             4 => {
-                let mut var_field0 = <String>::sse_decode(deserializer);
-                return crate::api::progress_reporting::game_repair::RepairGameProgress::AllocationError(var_field0);
+                let mut var_path = <String>::sse_decode(deserializer);
+                return crate::api::progress_reporting::game_repair::RepairGameProgress::AllocationError{path: var_path};
             }
             5 => {
                 let mut var_checkedBytes = <u64>::sse_decode(deserializer);
                 return crate::api::progress_reporting::game_repair::RepairGameProgress::Verification{checked_bytes: var_checkedBytes};
             }
             6 => {
-                let mut var_field0 = <String>::sse_decode(deserializer);
-                let mut var_field1 = <u64>::sse_decode(deserializer);
-                return crate::api::progress_reporting::game_repair::RepairGameProgress::CouldNotResolvePath(var_field0, var_field1);
+                let mut var_path = <String>::sse_decode(deserializer);
+                let mut var_chunkSize = <u64>::sse_decode(deserializer);
+                return crate::api::progress_reporting::game_repair::RepairGameProgress::CouldNotResolvePath{path: var_path, chunk_size: var_chunkSize};
             }
             7 => {
-                let mut var_field0 = <String>::sse_decode(deserializer);
-                let mut var_field1 = <u64>::sse_decode(deserializer);
-                return crate::api::progress_reporting::game_repair::RepairGameProgress::FileNotFound(var_field0, var_field1);
+                let mut var_path = <String>::sse_decode(deserializer);
+                let mut var_chunkSize = <u64>::sse_decode(deserializer);
+                return crate::api::progress_reporting::game_repair::RepairGameProgress::FileNotFound{path: var_path, chunk_size: var_chunkSize};
             }
             8 => {
-                let mut var_field0 = <String>::sse_decode(deserializer);
-                let mut var_field1 = <u64>::sse_decode(deserializer);
-                return crate::api::progress_reporting::game_repair::RepairGameProgress::ChecksumMismatch(var_field0, var_field1);
+                let mut var_path = <String>::sse_decode(deserializer);
+                let mut var_chunkSize = <u64>::sse_decode(deserializer);
+                return crate::api::progress_reporting::game_repair::RepairGameProgress::ChecksumMismatch{path: var_path, chunk_size: var_chunkSize};
             }
             9 => {
                 let mut var_totalBytes = <u64>::sse_decode(deserializer);
@@ -2756,31 +2589,31 @@ impl SseDecode for crate::api::progress_reporting::verify_download::VerifyDownlo
         let mut tag_ = <i32>::sse_decode(deserializer);
         match tag_ {
             0 => {
-                let mut var_field0 = <u64>::sse_decode(deserializer);
-                return crate::api::progress_reporting::verify_download::VerifyDownloadProgress::Started(var_field0);
+                let mut var_totalBytes = <u64>::sse_decode(deserializer);
+                return crate::api::progress_reporting::verify_download::VerifyDownloadProgress::Started{total_bytes: var_totalBytes};
             }
             1 => {
-                let mut var_field0 = <u64>::sse_decode(deserializer);
-                return crate::api::progress_reporting::verify_download::VerifyDownloadProgress::Progress(var_field0);
+                let mut var_checkedBytes = <u64>::sse_decode(deserializer);
+                return crate::api::progress_reporting::verify_download::VerifyDownloadProgress::Progress{checked_bytes: var_checkedBytes};
             }
             2 => {
-                let mut var_field0 = <String>::sse_decode(deserializer);
-                let mut var_field1 = <u64>::sse_decode(deserializer);
-                return crate::api::progress_reporting::verify_download::VerifyDownloadProgress::CouldNotResolvePath(var_field0, var_field1);
+                let mut var_path = <String>::sse_decode(deserializer);
+                let mut var_chunkSize = <u64>::sse_decode(deserializer);
+                return crate::api::progress_reporting::verify_download::VerifyDownloadProgress::CouldNotResolvePath{path: var_path, chunk_size: var_chunkSize};
             }
             3 => {
-                let mut var_field0 = <String>::sse_decode(deserializer);
-                let mut var_field1 = <u64>::sse_decode(deserializer);
-                return crate::api::progress_reporting::verify_download::VerifyDownloadProgress::FileNotFound(var_field0, var_field1);
+                let mut var_path = <String>::sse_decode(deserializer);
+                let mut var_chunkSize = <u64>::sse_decode(deserializer);
+                return crate::api::progress_reporting::verify_download::VerifyDownloadProgress::FileNotFound{path: var_path, chunk_size: var_chunkSize};
             }
             4 => {
-                let mut var_field0 = <String>::sse_decode(deserializer);
-                let mut var_field1 = <u64>::sse_decode(deserializer);
-                return crate::api::progress_reporting::verify_download::VerifyDownloadProgress::ChecksumMismatch(var_field0, var_field1);
+                let mut var_path = <String>::sse_decode(deserializer);
+                let mut var_chunkSize = <u64>::sse_decode(deserializer);
+                return crate::api::progress_reporting::verify_download::VerifyDownloadProgress::ChecksumMismatch{path: var_path, chunk_size: var_chunkSize};
             }
             5 => {
-                let mut var_field0 = <u64>::sse_decode(deserializer);
-                return crate::api::progress_reporting::verify_download::VerifyDownloadProgress::Finished(var_field0);
+                let mut var_badChunks = <u64>::sse_decode(deserializer);
+                return crate::api::progress_reporting::verify_download::VerifyDownloadProgress::Finished{bad_chunks: var_badChunks};
             }
             6 => {
                 return crate::api::progress_reporting::verify_download::VerifyDownloadProgress::Cancelled;
@@ -2817,110 +2650,92 @@ fn pde_ffi_dispatcher_primary_impl(
             rust_vec_len,
             data_len,
         ),
-        10 => wire__crate__api__gogdl__GogdlApi_get_background_image_link_impl(
+        10 => wire__crate__api__gogdl__GogdlApi_get_downloadable_products_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        11 => wire__crate__api__gogdl__GogdlApi_get_downloadable_products_impl(
-            port,
-            ptr,
-            rust_vec_len,
-            data_len,
-        ),
-        12 => {
+        11 => {
             wire__crate__api__gogdl__GogdlApi_get_free_space_impl(port, ptr, rust_vec_len, data_len)
         }
-        13 => wire__crate__api__gogdl__GogdlApi_get_game_boxart_link_impl(
+        12 => wire__crate__api__gogdl__GogdlApi_get_game_builds_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        14 => wire__crate__api__gogdl__GogdlApi_get_game_builds_impl(
-            port,
-            ptr,
-            rust_vec_len,
-            data_len,
-        ),
-        15 => {
+        13 => {
             wire__crate__api__gogdl__GogdlApi_get_game_links_impl(port, ptr, rust_vec_len, data_len)
         }
-        16 => wire__crate__api__gogdl__GogdlApi_get_game_screenshots_impl(
+        14 => wire__crate__api__gogdl__GogdlApi_get_game_screenshots_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        17 => wire__crate__api__gogdl__GogdlApi_get_game_summary_impl(
+        15 => wire__crate__api__gogdl__GogdlApi_get_game_summary_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        18 => {
+        16 => {
             wire__crate__api__gogdl__GogdlApi_get_game_title_impl(port, ptr, rust_vec_len, data_len)
         }
-        19 => wire__crate__api__gogdl__GogdlApi_get_install_size_impl(
+        17 => wire__crate__api__gogdl__GogdlApi_get_install_size_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        21 => wire__crate__api__gogdl__GogdlApi_get_owned_games_impl(
+        19 => wire__crate__api__gogdl__GogdlApi_get_owned_games_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        22 => wire__crate__api__gogdl__GogdlApi_get_proton_release_page_impl(
+        20 => wire__crate__api__gogdl__GogdlApi_get_proton_release_page_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        23 => wire__crate__api__gogdl__GogdlApi_get_proton_releases_impl(
+        21 => wire__crate__api__gogdl__GogdlApi_login_with_code_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        24 => wire__crate__api__gogdl__GogdlApi_login_with_code_impl(
+        23 => wire__crate__api__gogdl__GogdlApi_remove_products_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        26 => wire__crate__api__gogdl__GogdlApi_remove_products_impl(
+        24 => wire__crate__api__gogdl__GogdlApi_remove_token_refresh_callback_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        27 => wire__crate__api__gogdl__GogdlApi_remove_token_refresh_callback_impl(
-            port,
-            ptr,
-            rust_vec_len,
-            data_len,
-        ),
-        28 => wire__crate__api__gogdl__GogdlApi_repair_game_impl(port, ptr, rust_vec_len, data_len),
-        29 => {
+        25 => wire__crate__api__gogdl__GogdlApi_repair_game_impl(port, ptr, rust_vec_len, data_len),
+        26 => {
             wire__crate__api__gogdl__GogdlApi_restore_auth_impl(port, ptr, rust_vec_len, data_len)
         }
-        30 => wire__crate__api__gogdl__GogdlApi_set_token_refresh_callback_impl(
+        27 => wire__crate__api__gogdl__GogdlApi_set_token_refresh_callback_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        31 => wire__crate__api__gogdl__GogdlApi_upload_save_files_impl(
+        28 => wire__crate__api__gogdl__GogdlApi_upload_save_files_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        32 => wire__crate__api__gogdl__GogdlApi_verify_download_impl(
+        29 => wire__crate__api__gogdl__GogdlApi_verify_download_impl(
             port,
             ptr,
             rust_vec_len,
@@ -2943,8 +2758,8 @@ fn pde_ffi_dispatcher_sync_impl(
         3 => wire__crate__api__error__GogError_kind_impl(ptr, rust_vec_len, data_len),
         4 => wire__crate__api__error__GogError_message_impl(ptr, rust_vec_len, data_len),
         5 => wire__crate__api__error__GogError_space_shortfall_impl(ptr, rust_vec_len, data_len),
-        20 => wire__crate__api__gogdl__GogdlApi_get_login_link_impl(ptr, rust_vec_len, data_len),
-        25 => wire__crate__api__gogdl__GogdlApi_new_impl(ptr, rust_vec_len, data_len),
+        18 => wire__crate__api__gogdl__GogdlApi_get_login_link_impl(ptr, rust_vec_len, data_len),
+        22 => wire__crate__api__gogdl__GogdlApi_new_impl(ptr, rust_vec_len, data_len),
         _ => unreachable!(),
     }
 }
@@ -3012,8 +2827,8 @@ total_bytes.into_into_dart().into_dart()].into_dart() }
 crate::api::progress_reporting::game_download::DownloadGameProgress::FileAllocation{allocated_files,allocated_bytes} => { [3.into_dart(),
 allocated_files.into_into_dart().into_dart(),
 allocated_bytes.into_into_dart().into_dart()].into_dart() }
-crate::api::progress_reporting::game_download::DownloadGameProgress::AllocationError(field0) => { [4.into_dart(),
-field0.into_into_dart().into_dart()].into_dart() }
+crate::api::progress_reporting::game_download::DownloadGameProgress::AllocationError{path} => { [4.into_dart(),
+path.into_into_dart().into_dart()].into_dart() }
 crate::api::progress_reporting::game_download::DownloadGameProgress::DownloadProgress{downloaded_bytes} => { [5.into_dart(),
 downloaded_bytes.into_into_dart().into_dart()].into_dart() }
 crate::api::progress_reporting::game_download::DownloadGameProgress::Finished => { [6.into_dart()].into_dart() }
@@ -3102,7 +2917,6 @@ impl flutter_rust_bridge::IntoDart for crate::api::models::game_build::GameBuild
         [
             self.build_id.into_into_dart().into_dart(),
             self.version_name.into_into_dart().into_dart(),
-            self.release_date.into_into_dart().into_dart(),
             self.release_date_timestamp.into_into_dart().into_dart(),
         ]
         .into_dart()
@@ -3145,13 +2959,14 @@ impl flutter_rust_bridge::IntoDart for crate::api::error::GogErrorKind {
     fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
         match self {
             Self::SessionExpired => 0.into_dart(),
-            Self::Network => 1.into_dart(),
-            Self::NotFound => 2.into_dart(),
-            Self::NotEnoughSpace => 3.into_dart(),
-            Self::Integrity => 4.into_dart(),
-            Self::FileSystem => 5.into_dart(),
-            Self::CloudSavesUnsupported => 6.into_dart(),
-            Self::Unknown => 7.into_dart(),
+            Self::InvalidLoginCode => 1.into_dart(),
+            Self::Network => 2.into_dart(),
+            Self::NotFound => 3.into_dart(),
+            Self::NotEnoughSpace => 4.into_dart(),
+            Self::Integrity => 5.into_dart(),
+            Self::FileSystem => 6.into_dart(),
+            Self::CloudSavesUnsupported => 7.into_dart(),
+            Self::Unknown => 8.into_dart(),
             _ => unreachable!(),
         }
     }
@@ -3233,30 +3048,42 @@ impl flutter_rust_bridge::IntoIntoDart<crate::api::models::install_size::Product
     }
 }
 // Codec=Dco (DartCObject based), see doc to use other codecs
+impl flutter_rust_bridge::IntoDart for crate::api::models::downloadable_product::ProductType {
+    fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
+        match self {
+            Self::Game => 0.into_dart(),
+            Self::Dlc => 1.into_dart(),
+            Self::Other => 2.into_dart(),
+            _ => unreachable!(),
+        }
+    }
+}
+impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive
+    for crate::api::models::downloadable_product::ProductType
+{
+}
+impl flutter_rust_bridge::IntoIntoDart<crate::api::models::downloadable_product::ProductType>
+    for crate::api::models::downloadable_product::ProductType
+{
+    fn into_into_dart(self) -> crate::api::models::downloadable_product::ProductType {
+        self
+    }
+}
+// Codec=Dco (DartCObject based), see doc to use other codecs
 impl flutter_rust_bridge::IntoDart
     for crate::api::progress_reporting::proton_download::ProtonDownloadProgress
 {
     fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
-        match self {
-            crate::api::progress_reporting::proton_download::ProtonDownloadProgress::Started(
-                field0,
-            ) => [0.into_dart(), field0.into_into_dart().into_dart()].into_dart(),
-            crate::api::progress_reporting::proton_download::ProtonDownloadProgress::Progress(
-                field0,
-            ) => [1.into_dart(), field0.into_into_dart().into_dart()].into_dart(),
-            crate::api::progress_reporting::proton_download::ProtonDownloadProgress::Extracted(
-                field0,
-            ) => [2.into_dart(), field0.into_into_dart().into_dart()].into_dart(),
-            crate::api::progress_reporting::proton_download::ProtonDownloadProgress::Finished(
-                field0,
-            ) => [3.into_dart(), field0.into_into_dart().into_dart()].into_dart(),
-            crate::api::progress_reporting::proton_download::ProtonDownloadProgress::Cancelled => {
-                [4.into_dart()].into_dart()
-            }
-            _ => {
-                unimplemented!("");
-            }
-        }
+        match self {crate::api::progress_reporting::proton_download::ProtonDownloadProgress::Started{total_bytes} => { [0.into_dart(),
+total_bytes.into_into_dart().into_dart()].into_dart() }
+crate::api::progress_reporting::proton_download::ProtonDownloadProgress::Progress{downloaded_bytes} => { [1.into_dart(),
+downloaded_bytes.into_into_dart().into_dart()].into_dart() }
+crate::api::progress_reporting::proton_download::ProtonDownloadProgress::Extracted{path} => { [2.into_dart(),
+path.into_into_dart().into_dart()].into_dart() }
+crate::api::progress_reporting::proton_download::ProtonDownloadProgress::Finished{path} => { [3.into_dart(),
+path.into_into_dart().into_dart()].into_dart() }
+crate::api::progress_reporting::proton_download::ProtonDownloadProgress::Cancelled => { [4.into_dart()].into_dart() }
+ _ => { unimplemented!(""); }}
     }
 }
 impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive
@@ -3332,19 +3159,19 @@ total_bytes.into_into_dart().into_dart()].into_dart() }
 crate::api::progress_reporting::game_repair::RepairGameProgress::FileAllocation{allocated_files,allocated_bytes} => { [3.into_dart(),
 allocated_files.into_into_dart().into_dart(),
 allocated_bytes.into_into_dart().into_dart()].into_dart() }
-crate::api::progress_reporting::game_repair::RepairGameProgress::AllocationError(field0) => { [4.into_dart(),
-field0.into_into_dart().into_dart()].into_dart() }
+crate::api::progress_reporting::game_repair::RepairGameProgress::AllocationError{path} => { [4.into_dart(),
+path.into_into_dart().into_dart()].into_dart() }
 crate::api::progress_reporting::game_repair::RepairGameProgress::Verification{checked_bytes} => { [5.into_dart(),
 checked_bytes.into_into_dart().into_dart()].into_dart() }
-crate::api::progress_reporting::game_repair::RepairGameProgress::CouldNotResolvePath(field0,field1) => { [6.into_dart(),
-field0.into_into_dart().into_dart(),
-field1.into_into_dart().into_dart()].into_dart() }
-crate::api::progress_reporting::game_repair::RepairGameProgress::FileNotFound(field0,field1) => { [7.into_dart(),
-field0.into_into_dart().into_dart(),
-field1.into_into_dart().into_dart()].into_dart() }
-crate::api::progress_reporting::game_repair::RepairGameProgress::ChecksumMismatch(field0,field1) => { [8.into_dart(),
-field0.into_into_dart().into_dart(),
-field1.into_into_dart().into_dart()].into_dart() }
+crate::api::progress_reporting::game_repair::RepairGameProgress::CouldNotResolvePath{path,chunk_size} => { [6.into_dart(),
+path.into_into_dart().into_dart(),
+chunk_size.into_into_dart().into_dart()].into_dart() }
+crate::api::progress_reporting::game_repair::RepairGameProgress::FileNotFound{path,chunk_size} => { [7.into_dart(),
+path.into_into_dart().into_dart(),
+chunk_size.into_into_dart().into_dart()].into_dart() }
+crate::api::progress_reporting::game_repair::RepairGameProgress::ChecksumMismatch{path,chunk_size} => { [8.into_dart(),
+path.into_into_dart().into_dart(),
+chunk_size.into_into_dart().into_dart()].into_dart() }
 crate::api::progress_reporting::game_repair::RepairGameProgress::DownloadStarted{total_bytes} => { [9.into_dart(),
 total_bytes.into_into_dart().into_dart()].into_dart() }
 crate::api::progress_reporting::game_repair::RepairGameProgress::DownloadProgress{downloaded_bytes} => { [10.into_dart(),
@@ -3450,21 +3277,21 @@ impl flutter_rust_bridge::IntoDart
     for crate::api::progress_reporting::verify_download::VerifyDownloadProgress
 {
     fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
-        match self {crate::api::progress_reporting::verify_download::VerifyDownloadProgress::Started(field0) => { [0.into_dart(),
-field0.into_into_dart().into_dart()].into_dart() }
-crate::api::progress_reporting::verify_download::VerifyDownloadProgress::Progress(field0) => { [1.into_dart(),
-field0.into_into_dart().into_dart()].into_dart() }
-crate::api::progress_reporting::verify_download::VerifyDownloadProgress::CouldNotResolvePath(field0,field1) => { [2.into_dart(),
-field0.into_into_dart().into_dart(),
-field1.into_into_dart().into_dart()].into_dart() }
-crate::api::progress_reporting::verify_download::VerifyDownloadProgress::FileNotFound(field0,field1) => { [3.into_dart(),
-field0.into_into_dart().into_dart(),
-field1.into_into_dart().into_dart()].into_dart() }
-crate::api::progress_reporting::verify_download::VerifyDownloadProgress::ChecksumMismatch(field0,field1) => { [4.into_dart(),
-field0.into_into_dart().into_dart(),
-field1.into_into_dart().into_dart()].into_dart() }
-crate::api::progress_reporting::verify_download::VerifyDownloadProgress::Finished(field0) => { [5.into_dart(),
-field0.into_into_dart().into_dart()].into_dart() }
+        match self {crate::api::progress_reporting::verify_download::VerifyDownloadProgress::Started{total_bytes} => { [0.into_dart(),
+total_bytes.into_into_dart().into_dart()].into_dart() }
+crate::api::progress_reporting::verify_download::VerifyDownloadProgress::Progress{checked_bytes} => { [1.into_dart(),
+checked_bytes.into_into_dart().into_dart()].into_dart() }
+crate::api::progress_reporting::verify_download::VerifyDownloadProgress::CouldNotResolvePath{path,chunk_size} => { [2.into_dart(),
+path.into_into_dart().into_dart(),
+chunk_size.into_into_dart().into_dart()].into_dart() }
+crate::api::progress_reporting::verify_download::VerifyDownloadProgress::FileNotFound{path,chunk_size} => { [3.into_dart(),
+path.into_into_dart().into_dart(),
+chunk_size.into_into_dart().into_dart()].into_dart() }
+crate::api::progress_reporting::verify_download::VerifyDownloadProgress::ChecksumMismatch{path,chunk_size} => { [4.into_dart(),
+path.into_into_dart().into_dart(),
+chunk_size.into_into_dart().into_dart()].into_dart() }
+crate::api::progress_reporting::verify_download::VerifyDownloadProgress::Finished{bad_chunks} => { [5.into_dart(),
+bad_chunks.into_into_dart().into_dart()].into_dart() }
 crate::api::progress_reporting::verify_download::VerifyDownloadProgress::Cancelled => { [6.into_dart()].into_dart() }
  _ => { unimplemented!(""); }}
     }
@@ -3653,7 +3480,7 @@ crate::api::progress_reporting::game_download::DownloadGameProgress::FileAllocat
 crate::api::progress_reporting::game_download::DownloadGameProgress::FileAllocation{allocated_files,allocated_bytes} => { <i32>::sse_encode(3, serializer); <u64>::sse_encode(allocated_files, serializer);
 <u64>::sse_encode(allocated_bytes, serializer);
  }
-crate::api::progress_reporting::game_download::DownloadGameProgress::AllocationError(field0) => { <i32>::sse_encode(4, serializer); <String>::sse_encode(field0, serializer);
+crate::api::progress_reporting::game_download::DownloadGameProgress::AllocationError{path} => { <i32>::sse_encode(4, serializer); <String>::sse_encode(path, serializer);
  }
 crate::api::progress_reporting::game_download::DownloadGameProgress::DownloadProgress{downloaded_bytes} => { <i32>::sse_encode(5, serializer); <u64>::sse_encode(downloaded_bytes, serializer);
  }
@@ -3689,7 +3516,10 @@ impl SseEncode for crate::api::models::downloadable_product::DownloadableProduct
     fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
         <i32>::sse_encode(self.id, serializer);
         <String>::sse_encode(self.name, serializer);
-        <String>::sse_encode(self.product_type, serializer);
+        <crate::api::models::downloadable_product::ProductType>::sse_encode(
+            self.product_type,
+            serializer,
+        );
     }
 }
 
@@ -3698,7 +3528,6 @@ impl SseEncode for crate::api::models::game_build::GameBuild {
     fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
         <String>::sse_encode(self.build_id, serializer);
         <String>::sse_encode(self.version_name, serializer);
-        <String>::sse_encode(self.release_date, serializer);
         <i64>::sse_encode(self.release_date_timestamp, serializer);
     }
 }
@@ -3717,13 +3546,14 @@ impl SseEncode for crate::api::error::GogErrorKind {
         <i32>::sse_encode(
             match self {
                 crate::api::error::GogErrorKind::SessionExpired => 0,
-                crate::api::error::GogErrorKind::Network => 1,
-                crate::api::error::GogErrorKind::NotFound => 2,
-                crate::api::error::GogErrorKind::NotEnoughSpace => 3,
-                crate::api::error::GogErrorKind::Integrity => 4,
-                crate::api::error::GogErrorKind::FileSystem => 5,
-                crate::api::error::GogErrorKind::CloudSavesUnsupported => 6,
-                crate::api::error::GogErrorKind::Unknown => 7,
+                crate::api::error::GogErrorKind::InvalidLoginCode => 1,
+                crate::api::error::GogErrorKind::Network => 2,
+                crate::api::error::GogErrorKind::NotFound => 3,
+                crate::api::error::GogErrorKind::NotEnoughSpace => 4,
+                crate::api::error::GogErrorKind::Integrity => 5,
+                crate::api::error::GogErrorKind::FileSystem => 6,
+                crate::api::error::GogErrorKind::CloudSavesUnsupported => 7,
+                crate::api::error::GogErrorKind::Unknown => 8,
                 _ => {
                     unimplemented!("");
                 }
@@ -3865,41 +3695,36 @@ impl SseEncode for crate::api::models::install_size::ProductSize {
     }
 }
 
+impl SseEncode for crate::api::models::downloadable_product::ProductType {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <i32>::sse_encode(
+            match self {
+                crate::api::models::downloadable_product::ProductType::Game => 0,
+                crate::api::models::downloadable_product::ProductType::Dlc => 1,
+                crate::api::models::downloadable_product::ProductType::Other => 2,
+                _ => {
+                    unimplemented!("");
+                }
+            },
+            serializer,
+        );
+    }
+}
+
 impl SseEncode for crate::api::progress_reporting::proton_download::ProtonDownloadProgress {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
-        match self {
-            crate::api::progress_reporting::proton_download::ProtonDownloadProgress::Started(
-                field0,
-            ) => {
-                <i32>::sse_encode(0, serializer);
-                <u64>::sse_encode(field0, serializer);
-            }
-            crate::api::progress_reporting::proton_download::ProtonDownloadProgress::Progress(
-                field0,
-            ) => {
-                <i32>::sse_encode(1, serializer);
-                <u64>::sse_encode(field0, serializer);
-            }
-            crate::api::progress_reporting::proton_download::ProtonDownloadProgress::Extracted(
-                field0,
-            ) => {
-                <i32>::sse_encode(2, serializer);
-                <String>::sse_encode(field0, serializer);
-            }
-            crate::api::progress_reporting::proton_download::ProtonDownloadProgress::Finished(
-                field0,
-            ) => {
-                <i32>::sse_encode(3, serializer);
-                <String>::sse_encode(field0, serializer);
-            }
-            crate::api::progress_reporting::proton_download::ProtonDownloadProgress::Cancelled => {
-                <i32>::sse_encode(4, serializer);
-            }
-            _ => {
-                unimplemented!("");
-            }
-        }
+        match self {crate::api::progress_reporting::proton_download::ProtonDownloadProgress::Started{total_bytes} => { <i32>::sse_encode(0, serializer); <u64>::sse_encode(total_bytes, serializer);
+ }
+crate::api::progress_reporting::proton_download::ProtonDownloadProgress::Progress{downloaded_bytes} => { <i32>::sse_encode(1, serializer); <u64>::sse_encode(downloaded_bytes, serializer);
+ }
+crate::api::progress_reporting::proton_download::ProtonDownloadProgress::Extracted{path} => { <i32>::sse_encode(2, serializer); <String>::sse_encode(path, serializer);
+ }
+crate::api::progress_reporting::proton_download::ProtonDownloadProgress::Finished{path} => { <i32>::sse_encode(3, serializer); <String>::sse_encode(path, serializer);
+ }
+crate::api::progress_reporting::proton_download::ProtonDownloadProgress::Cancelled => { <i32>::sse_encode(4, serializer);  }
+ _ => { unimplemented!(""); }}
     }
 }
 
@@ -3936,18 +3761,18 @@ crate::api::progress_reporting::game_repair::RepairGameProgress::FileAllocationS
 crate::api::progress_reporting::game_repair::RepairGameProgress::FileAllocation{allocated_files,allocated_bytes} => { <i32>::sse_encode(3, serializer); <u64>::sse_encode(allocated_files, serializer);
 <u64>::sse_encode(allocated_bytes, serializer);
  }
-crate::api::progress_reporting::game_repair::RepairGameProgress::AllocationError(field0) => { <i32>::sse_encode(4, serializer); <String>::sse_encode(field0, serializer);
+crate::api::progress_reporting::game_repair::RepairGameProgress::AllocationError{path} => { <i32>::sse_encode(4, serializer); <String>::sse_encode(path, serializer);
  }
 crate::api::progress_reporting::game_repair::RepairGameProgress::Verification{checked_bytes} => { <i32>::sse_encode(5, serializer); <u64>::sse_encode(checked_bytes, serializer);
  }
-crate::api::progress_reporting::game_repair::RepairGameProgress::CouldNotResolvePath(field0,field1) => { <i32>::sse_encode(6, serializer); <String>::sse_encode(field0, serializer);
-<u64>::sse_encode(field1, serializer);
+crate::api::progress_reporting::game_repair::RepairGameProgress::CouldNotResolvePath{path,chunk_size} => { <i32>::sse_encode(6, serializer); <String>::sse_encode(path, serializer);
+<u64>::sse_encode(chunk_size, serializer);
  }
-crate::api::progress_reporting::game_repair::RepairGameProgress::FileNotFound(field0,field1) => { <i32>::sse_encode(7, serializer); <String>::sse_encode(field0, serializer);
-<u64>::sse_encode(field1, serializer);
+crate::api::progress_reporting::game_repair::RepairGameProgress::FileNotFound{path,chunk_size} => { <i32>::sse_encode(7, serializer); <String>::sse_encode(path, serializer);
+<u64>::sse_encode(chunk_size, serializer);
  }
-crate::api::progress_reporting::game_repair::RepairGameProgress::ChecksumMismatch(field0,field1) => { <i32>::sse_encode(8, serializer); <String>::sse_encode(field0, serializer);
-<u64>::sse_encode(field1, serializer);
+crate::api::progress_reporting::game_repair::RepairGameProgress::ChecksumMismatch{path,chunk_size} => { <i32>::sse_encode(8, serializer); <String>::sse_encode(path, serializer);
+<u64>::sse_encode(chunk_size, serializer);
  }
 crate::api::progress_reporting::game_repair::RepairGameProgress::DownloadStarted{total_bytes} => { <i32>::sse_encode(9, serializer); <u64>::sse_encode(total_bytes, serializer);
  }
@@ -4046,20 +3871,20 @@ impl SseEncode for usize {
 impl SseEncode for crate::api::progress_reporting::verify_download::VerifyDownloadProgress {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
-        match self {crate::api::progress_reporting::verify_download::VerifyDownloadProgress::Started(field0) => { <i32>::sse_encode(0, serializer); <u64>::sse_encode(field0, serializer);
+        match self {crate::api::progress_reporting::verify_download::VerifyDownloadProgress::Started{total_bytes} => { <i32>::sse_encode(0, serializer); <u64>::sse_encode(total_bytes, serializer);
  }
-crate::api::progress_reporting::verify_download::VerifyDownloadProgress::Progress(field0) => { <i32>::sse_encode(1, serializer); <u64>::sse_encode(field0, serializer);
+crate::api::progress_reporting::verify_download::VerifyDownloadProgress::Progress{checked_bytes} => { <i32>::sse_encode(1, serializer); <u64>::sse_encode(checked_bytes, serializer);
  }
-crate::api::progress_reporting::verify_download::VerifyDownloadProgress::CouldNotResolvePath(field0,field1) => { <i32>::sse_encode(2, serializer); <String>::sse_encode(field0, serializer);
-<u64>::sse_encode(field1, serializer);
+crate::api::progress_reporting::verify_download::VerifyDownloadProgress::CouldNotResolvePath{path,chunk_size} => { <i32>::sse_encode(2, serializer); <String>::sse_encode(path, serializer);
+<u64>::sse_encode(chunk_size, serializer);
  }
-crate::api::progress_reporting::verify_download::VerifyDownloadProgress::FileNotFound(field0,field1) => { <i32>::sse_encode(3, serializer); <String>::sse_encode(field0, serializer);
-<u64>::sse_encode(field1, serializer);
+crate::api::progress_reporting::verify_download::VerifyDownloadProgress::FileNotFound{path,chunk_size} => { <i32>::sse_encode(3, serializer); <String>::sse_encode(path, serializer);
+<u64>::sse_encode(chunk_size, serializer);
  }
-crate::api::progress_reporting::verify_download::VerifyDownloadProgress::ChecksumMismatch(field0,field1) => { <i32>::sse_encode(4, serializer); <String>::sse_encode(field0, serializer);
-<u64>::sse_encode(field1, serializer);
+crate::api::progress_reporting::verify_download::VerifyDownloadProgress::ChecksumMismatch{path,chunk_size} => { <i32>::sse_encode(4, serializer); <String>::sse_encode(path, serializer);
+<u64>::sse_encode(chunk_size, serializer);
  }
-crate::api::progress_reporting::verify_download::VerifyDownloadProgress::Finished(field0) => { <i32>::sse_encode(5, serializer); <u64>::sse_encode(field0, serializer);
+crate::api::progress_reporting::verify_download::VerifyDownloadProgress::Finished{bad_chunks} => { <i32>::sse_encode(5, serializer); <u64>::sse_encode(bad_chunks, serializer);
  }
 crate::api::progress_reporting::verify_download::VerifyDownloadProgress::Cancelled => { <i32>::sse_encode(6, serializer);  }
  _ => { unimplemented!(""); }}

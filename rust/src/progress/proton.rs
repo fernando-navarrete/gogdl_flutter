@@ -19,12 +19,14 @@ impl ProtonTranslator {
         if !std::mem::take(&mut self.dirty) {
             return Vec::new();
         }
-        let mut out = vec![ProtonDownloadProgress::Progress(self.downloaded)];
+        let mut out = vec![ProtonDownloadProgress::Progress {
+            downloaded_bytes: self.downloaded,
+        }];
         // Only the latest extracted path since the last flush is reported.
         out.extend(
             self.last_extracted
                 .take()
-                .map(ProtonDownloadProgress::Extracted),
+                .map(|path| ProtonDownloadProgress::Extracted { path }),
         );
         out
     }
@@ -38,7 +40,7 @@ impl Translator for ProtonTranslator {
         match event {
             // one-shot signal, flush immediately regardless of ticker
             ProtonDownloadEvent::Downloading { total_bytes } => {
-                vec![ProtonDownloadProgress::Started(total_bytes)]
+                vec![ProtonDownloadProgress::Started { total_bytes }]
             }
             ProtonDownloadEvent::Progress(delta) => {
                 self.downloaded += delta as u64;
@@ -73,7 +75,7 @@ mod tests {
         let mut t = ProtonTranslator::new();
         assert_eq!(
             t.on_event(ProtonDownloadEvent::Downloading { total_bytes: 100 }),
-            vec![ProtonDownloadProgress::Started(100)]
+            vec![ProtonDownloadProgress::Started { total_bytes: 100 }]
         );
     }
 
@@ -82,7 +84,12 @@ mod tests {
         let mut t = ProtonTranslator::new();
         assert!(t.on_event(ProtonDownloadEvent::Progress(10)).is_empty());
         assert!(t.on_event(ProtonDownloadEvent::Progress(5)).is_empty());
-        assert_eq!(t.on_tick(), vec![ProtonDownloadProgress::Progress(15)]);
+        assert_eq!(
+            t.on_tick(),
+            vec![ProtonDownloadProgress::Progress {
+                downloaded_bytes: 15
+            }]
+        );
         assert!(t.on_tick().is_empty());
     }
 
@@ -94,8 +101,10 @@ mod tests {
         assert_eq!(
             t.on_tick(),
             vec![
-                ProtonDownloadProgress::Progress(0),
-                ProtonDownloadProgress::Extracted("b".into()),
+                ProtonDownloadProgress::Progress {
+                    downloaded_bytes: 0
+                },
+                ProtonDownloadProgress::Extracted { path: "b".into() },
             ]
         );
         assert!(t.on_tick().is_empty());
@@ -106,6 +115,11 @@ mod tests {
         let mut t = ProtonTranslator::new();
         assert!(t.finish().is_empty());
         t.on_event(ProtonDownloadEvent::Progress(7));
-        assert_eq!(t.finish(), vec![ProtonDownloadProgress::Progress(7)]);
+        assert_eq!(
+            t.finish(),
+            vec![ProtonDownloadProgress::Progress {
+                downloaded_bytes: 7
+            }]
+        );
     }
 }

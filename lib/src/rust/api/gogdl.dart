@@ -73,9 +73,6 @@ abstract class GogdlApi implements RustOpaqueInterface {
     required CancelToken cancel,
   });
 
-  /// Deprecated: use `getGameLinks`, which fetches both links in one call. Removed in `v1.5.0`.
-  Future<String> getBackgroundImageLink({required int gameId});
-
   /// The products of `buildName` that the account owns (the base game and its DLCs), in
   /// upstream's order, with their names and types. Their details are fetched 8 at a time.
   ///
@@ -93,9 +90,6 @@ abstract class GogdlApi implements RustOpaqueInterface {
   ///
   /// Fails with `fileSystem` when no ancestor of `path` can be resolved or no disk matches it.
   Future<BigInt> getFreeSpace({required String path});
-
-  /// Deprecated: use `getGameLinks`, which fetches both links in one call. Removed in `v1.5.0`.
-  Future<String> getGameBoxartLink({required int gameId});
 
   Future<List<GameBuild>> getGameBuilds({required int gameId});
 
@@ -134,13 +128,11 @@ abstract class GogdlApi implements RustOpaqueInterface {
   /// A negative `page` fails with `unknown` instead of wrapping around.
   Future<ProtonReleasePage> getProtonReleasePage({required int page});
 
-  /// Deprecated: use `getProtonReleasePage`, which says whether more pages exist. This can't
-  /// tell a page whose releases were all left out from the end of the list. Removed in
-  /// `v1.5.0`. (flutter_rust_bridge doesn't emit `@Deprecated`, so the analyzer won't warn.)
+  /// Exchanges the code from the login redirect for a session, and returns the string to persist
+  /// and give back to `restoreAuth`.
   ///
-  /// A negative `page` fails with `unknown` instead of wrapping around.
-  Future<List<ProtonRelease>> getProtonReleases({required int page});
-
+  /// Fails with `invalidLoginCode` when GOG rejects the code, and `network` when it can't be
+  /// reached.
   Future<String> loginWithCode({required String code});
 
   /// Connections time out after 10s, and a request fails after 30s without reading anything.

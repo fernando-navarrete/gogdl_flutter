@@ -27,9 +27,15 @@ fn client(e: &ClientError) -> GogErrorKind {
         | ClientError::MaxRetriesReached
         | ClientError::AuthError(AuthError::NetworkError(_)) => GogErrorKind::Network,
         ClientError::HttpError { status, .. } => http(status.as_u16()),
-        ClientError::AuthError(AuthError::NotAuthenticated | AuthError::TokenExpired) => {
-            GogErrorKind::SessionExpired
+        ClientError::AuthError(
+            AuthError::NotAuthenticated
+            | AuthError::TokenExpired
+            | AuthError::SessionRevoked { .. },
+        ) => GogErrorKind::SessionExpired,
+        ClientError::AuthError(AuthError::InvalidLoginCode { .. }) => {
+            GogErrorKind::InvalidLoginCode
         }
+        ClientError::AuthError(AuthError::Rejected { status, .. }) => http(status.as_u16()),
         _ => GogErrorKind::Unknown,
     }
 }
@@ -137,6 +143,10 @@ mod tests {
         }
     }
 
+    fn login(e: AuthError) -> GogError {
+        GogError::GogdlError(GogDlError::ClientError(ClientError::AuthError(e)))
+    }
+
     fn download(e: DownloadError) -> GogError {
         GogError::GogdlError(GogDlError::DownloadError(e))
     }
@@ -174,6 +184,21 @@ mod tests {
                     ClientError::AuthError(AuthError::TokenExpired),
                 ))),
                 SessionExpired,
+            ),
+            (
+                download(DownloadError::ClientError(ClientError::AuthError(
+                    AuthError::SessionRevoked {
+                        description: "Invalid refresh token".into(),
+                    },
+                ))),
+                SessionExpired,
+            ),
+            // invalidLoginCode
+            (
+                login(AuthError::InvalidLoginCode {
+                    description: "Code doesn't exist".into(),
+                }),
+                InvalidLoginCode,
             ),
             // network
             (
@@ -301,22 +326,46 @@ mod tests {
             ClientError::AuthError(revoked()),
         ));
         assert_eq!(from_saves.kind(), from_download.kind());
+        assert_eq!(from_saves.kind(), GogErrorKind::SessionExpired);
+    }
+
+    #[test]
+    fn login_with_code_errors_map_to_their_kinds() {
+        let rejected = |status| AuthError::Rejected {
+            status: StatusCode::from_u16(status).unwrap(),
+            body: String::new(),
+        };
+        let cases = [
+            (
+                AuthError::InvalidLoginCode {
+                    description: String::new(),
+                },
+                GogErrorKind::InvalidLoginCode,
+            ),
+            (AuthError::NetworkError(network()), GogErrorKind::Network),
+            (rejected(400), GogErrorKind::Unknown),
+            (rejected(404), GogErrorKind::NotFound),
+            (
+                AuthError::InvalidResponse(serde_json::from_str::<u8>("x").unwrap_err()),
+                GogErrorKind::Unknown,
+            ),
+        ];
+        for (error, kind) in cases {
+            let error = login(error);
+            assert_eq!(error.kind(), kind, "{error:?}");
+        }
     }
 
     #[test]
     fn anything_unmapped_is_unknown() {
         let cases = [
-            // The login kinds, until Step 4 maps them.
-            download(DownloadError::ClientError(ClientError::AuthError(
-                AuthError::SessionRevoked {
-                    description: "Invalid refresh token".into(),
-                },
-            ))),
-            download(DownloadError::ClientError(ClientError::AuthError(
-                AuthError::InvalidLoginCode {
-                    description: "Code doesn't exist".into(),
-                },
-            ))),
+            login(AuthError::Rejected {
+                status: StatusCode::SERVICE_UNAVAILABLE,
+                body: String::new(),
+            }),
+            login(AuthError::InvalidResponse(
+                serde_json::from_str::<u8>("x").unwrap_err(),
+            )),
             download(DownloadError::ClientError(http(500))),
             download(DownloadError::ClientError(http(401))),
             proton(ProtonError::NoSuitableAsset("GE-Proton".into())),

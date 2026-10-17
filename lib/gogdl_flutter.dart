@@ -3,7 +3,7 @@ library;
 export 'src/rust/api/cancel_token.dart' show CancelToken;
 export 'src/rust/api/error.dart' show GogError, GogErrorKind, SpaceShortfall;
 export 'src/rust/api/gogdl.dart' show GogdlApi;
-export 'src/rust/api/models/downloadable_product.dart' show DownloadableProduct;
+export 'src/rust/api/models/downloadable_product.dart' show DownloadableProduct, ProductType;
 export 'src/rust/api/models/game_build.dart' show GameBuild;
 export 'src/rust/api/models/game_links.dart' show GameLinks;
 export 'src/rust/api/models/install_size.dart' show InstallSize, ProductSize;

@@ -15,37 +15,40 @@ sealed class VerifyDownloadProgress with _$VerifyDownloadProgress {
   const VerifyDownloadProgress._();
 
   /// Total bytes to be checked, known before any chunk is read.
-  const factory VerifyDownloadProgress.started(BigInt field0) =
+  const factory VerifyDownloadProgress.started({required BigInt totalBytes}) =
       VerifyDownloadProgress_Started;
 
   /// Bytes checked so far, verified and failed alike. Coalesced on a
   /// 150ms ticker.
-  const factory VerifyDownloadProgress.progress(BigInt field0) =
-      VerifyDownloadProgress_Progress;
+  const factory VerifyDownloadProgress.progress({
+    required BigInt checkedBytes,
+  }) = VerifyDownloadProgress_Progress;
 
   /// The file's relative path could not be resolved on disk. Sent once
-  /// per path; the `u64` is the first failing chunk's size, not the
-  /// file's.
-  const factory VerifyDownloadProgress.couldNotResolvePath(
-    String field0,
-    BigInt field1,
-  ) = VerifyDownloadProgress_CouldNotResolvePath;
+  /// per path; `chunk_size` is the first failing chunk's uncompressed
+  /// size, not the file's.
+  const factory VerifyDownloadProgress.couldNotResolvePath({
+    required String path,
+    required BigInt chunkSize,
+  }) = VerifyDownloadProgress_CouldNotResolvePath;
 
-  /// No file exists yet at the resolved path. Sent once per path.
-  const factory VerifyDownloadProgress.fileNotFound(
-    String field0,
-    BigInt field1,
-  ) = VerifyDownloadProgress_FileNotFound;
+  /// No file exists yet at the resolved path. Sent once per path;
+  /// `chunk_size` is as in `CouldNotResolvePath`.
+  const factory VerifyDownloadProgress.fileNotFound({
+    required String path,
+    required BigInt chunkSize,
+  }) = VerifyDownloadProgress_FileNotFound;
 
-  /// A chunk's on-disk MD5 didn't match the manifest. Sent once per path.
-  const factory VerifyDownloadProgress.checksumMismatch(
-    String field0,
-    BigInt field1,
-  ) = VerifyDownloadProgress_ChecksumMismatch;
+  /// A chunk's on-disk MD5 didn't match the manifest. Sent once per path;
+  /// `chunk_size` is as in `CouldNotResolvePath`.
+  const factory VerifyDownloadProgress.checksumMismatch({
+    required String path,
+    required BigInt chunkSize,
+  }) = VerifyDownloadProgress_ChecksumMismatch;
 
-  /// Verification ran to completion; the `u64` is how many chunks need
-  /// re-downloading. Zero means the install is intact.
-  const factory VerifyDownloadProgress.finished(BigInt field0) =
+  /// Verification ran to completion. `bad_chunks` is how many chunks need
+  /// re-downloading; zero means the install is intact. Terminal.
+  const factory VerifyDownloadProgress.finished({required BigInt badChunks}) =
       VerifyDownloadProgress_Finished;
 
   /// The job was cancelled with its `CancelToken`. Verifying writes
