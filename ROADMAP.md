@@ -9,8 +9,8 @@ under.
 - **Patch** (`1.x.y`): one tag per small, self-contained fix or addition.
 - **Minor** (`1.x.0`): a big update, meaning a feature set or cross-cutting refactor. Patches then
   continue from `.1` under that minor.
-- Tags use the existing `vX.Y.Z` format. `v1.4.3` is the newest tag, so the next stage is
-  **`v1.5.0`**.
+- Tags use the existing `vX.Y.Z` format. `v1.5.0` is the newest tag, so the next stage is
+  **`v1.6.0`**.
 - For each release: bump `version:` in `pubspec.yaml` **and** `version` in `rust/Cargo.toml` to
   match, tick the item(s) in `GAPS.md` and add a `CHANGELOG.md` entry on a release branch, merge it
   through an MR, then tag the merged commit on `main` (README "CI and releases").
@@ -154,7 +154,7 @@ Follow-up patches (`v1.4.1+`), one per tag. None blocks Lumen; they make its new
 
 ## v1.5.0 ✅ — Polish and API cleanup (for Lumen `v1.5.0`)
 
-Work plan: [v1.5.0-POLISH-AND-CLEANUP.md](v1.5.0-POLISH-AND-CLEANUP.md). Lumen's polish and packaging
+Devlog: [devlog/v1.5.0-polish.md](devlog/v1.5.0-polish.md). Lumen's polish and packaging
 stage is its cleanup release, so the bridge's breaking cleanups ship here and Lumen migrates once (its
 Phase 7). Lumen's work plan (`../lumen/v1.5.0-POLISH-AND-PACKAGING.md`) asks for D1 and D3 below.
 Upstream's half is `gogdl-lib` `v1.4.0` (GAPS §7.3), already tagged.
@@ -180,9 +180,8 @@ the bundle its CI image already compiles, so nothing consumes one. It stays open
 build-time speedup, unscheduled.
 
 Follow-up patches (`v1.5.1+`), one per tag:
-1. `v1.5.1`: revisit bounded progress channels (GAPS §5). Upstream's senders are unbounded by
-   signature, so this measures the bridge's own hops first, and ships a tag only if something here
-   changes.
+1. ~~`v1.5.1`: bounded progress channels (GAPS §5).~~ Measured bounded in the bridge's own hops, so
+   GAPS §5 is closed and no tag was cut.
 
 ## v1.6.0 — Cloud saves (not on Lumen's roadmap yet)
 

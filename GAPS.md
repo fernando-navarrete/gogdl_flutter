@@ -44,6 +44,11 @@ collects them as the list of things to request upstream.
   per-product `get_product_details` loop uses `?`, so one bad DLC hides the base game and every
   other DLC on Lumen's DLC tab (Lumen `v1.4.0` DLC install/remove).
   Fixed in `v1.4.1`: a failed DLC lookup is dropped; the base game's still fails the call.
+- [ ] **P2 — A build name that doesn't exist ends a job silently.** `downloadGame` and
+  `verifyDownload` called with a `buildName` that isn't a build's version name (for example its
+  build id) end the stream after about 10 ms with no event and no error, while
+  `getDownloadableProducts` fails with `notFound` ("Build not found"). Not investigated; it may be
+  **[lib]**. Found in `v1.5.0`'s progress channel check.
 - [x] **P2 — Requests have no timeouts.** `GogdlApi::new` uses a default `Client::new()` with no
   connect or read timeout, so a stalled connection can hang metadata calls (and Lumen's spinners)
   indefinitely. Build the client with timeouts via `gogdl_lib::Client::builder()` (it re-exports
@@ -180,9 +185,14 @@ needs it; ROADMAP.md schedules each item to land before that stage starts.
   one request per DLC. Games with many DLCs (dozens) make the DLC tab slow. Use a bounded
   `join_all`.
   Fixed in `v1.4.1`: lookups run 8 at a time, in order.
-- [ ] **P2 — Progress channels are unbounded.** The coalescer drains fast enough today, but a
+- [x] **P2 — Progress channels are unbounded.** The coalescer drains fast enough today, but a
   stalled Dart isolate lets memory grow without limit during a large download. Worth revisiting
   once the coalescers are extracted (§4).
+  Fixed in `v1.5.0` (measured, no code change): upstream's sender is unbounded by signature, but the
+  bridge drains it continuously and emits one update per 150 ms tick, plus one event per bad path. With
+  the Dart isolate stalled for 30 s, a 60 GB download grew RSS by about 100 MB (the same as without
+  the stall), and a verify with 17028 bad chunks in 1745 files by about 30 MB. See
+  `devlog/v1.5.0-polish.md`.
 
 ## 6. Testing, CI/CD, tooling and docs
 
